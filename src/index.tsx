@@ -15,3 +15,9 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+// These are injected by fleek (our IPFS hosting service).
+// See README.md for more information.
+if (process.env.REACT_APP_NODE_ENV! === 'staging') {
+  console.log('You are browsing a staging environment!')
+}
