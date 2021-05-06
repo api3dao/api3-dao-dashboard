@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
-// TODO: how to make this available for fleek hostings
-import _deployments from './contract-deployments/dao.json';
+import localhostDao from './contract-deployments/localhost-dao.json';
+import ropstenDao from './contract-deployments/ropsten-dao.json';
 
-const deployments = _deployments as any; // silence TS strict mode
+const daoNetworks = [localhostDao, ropstenDao] as any[]; // silence TS strict mode
 
 const WalletConnectDemo = () => {
   const [provider, setProvider] = useState<ethers.providers.Provider | null>(null);
@@ -57,7 +57,6 @@ const WalletConnectDemo = () => {
     });
 
     wcProvider.on('chainChanged', () => {
-      console.log('wtf');
       upsertData();
     });
 
@@ -74,9 +73,10 @@ const WalletConnectDemo = () => {
   };
 
   let contractsData = 'Unsupported chain!';
-  if (data && deployments[data.network.chainId]) {
+  const current = data && daoNetworks.find(({ chainId }) => chainId === data.network.chainId.toString());
+  if (current) {
     contractsData = JSON.stringify(
-      Object.entries(deployments[data.network.chainId][data.network.name].contracts).map(([k, v]) => ({
+      Object.entries(current.contracts).map(([k, v]) => ({
         name: k,
         address: (v as any).address,
       }))

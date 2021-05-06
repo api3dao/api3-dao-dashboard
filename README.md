@@ -16,21 +16,26 @@ For more info see the [deployments section](#contract-deployments).
 
 ## Contract deployments
 
-Currently supported networks are `localhost`, `ropsten` and `mainnet`. Each of these has a separate deploy command.
+Currently supported networks are `localhost` and `ropsten` _(the `mainnet` network will be supported a bit later)_. Each
+of these has a separate deploy command.
+
 - You'll need to have credentials in `.env` _(see `.env.example`)_ when deploying to `ropsten` or `mainnet`.
 - For deployments to localhost, you'll need to be running hardhat node. Use `yarn eth:node` for that.
 
 Deployment scripts will deploy the necessary contracts to target chain and also export the deployed data to
-`contract-deployments` folder in the dashboard app. 
+`contract-deployments` folder in the dashboard app.
 
 > Deployment files produced by localhost deployments are ignored, however deployment of all other networks is saved for
 > checked in git and available for public.
 
+_(Because, we can't conditionally and synchronously import ES modules, we copy `localhost-dao.example.json` as a
+placeholder for `localhost-dao.json` deployment output.)_
+
 ### Contract deployments are not automatic
 
 It's important to mention that all deployed (hosted) applications will connect to the contracts specified in
-`contract-deployments/dao.json`. This means, that you need to redeploy the contracts manually before hosting the testnet
-or mainnet networks.
+`contract-deployments/<chain-name>-dao.json`. This means, that you need to redeploy the contracts manually before
+hosting the testnet or mainnet networks.
 
 ## Hosting
 

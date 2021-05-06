@@ -5,8 +5,9 @@
   "homepage": ".",
   "scripts": {
     "start": "BROWSER=none react-scripts start",
-    "build": "react-scripts build",
+    "build": "yarn copy-localhost-deployment && react-scripts build",
     "test": "react-scripts test --watchAll=false",
+    "copy-localhost-deployment": "cd src/contract-deployments && cp localhost-dao.example.json localhost-dao.json",
     "test:watch": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write src/**/*.{js,jsx,ts,tsx,json,css,scss,md}",
@@ -14,9 +15,9 @@
     "lint": "eslint --ext js,ts,tsx src",
     "prepare": "husky install",
     "eth:node": "cd hardhat && npx hardhat node --network hardhat",
-    "eth:deploy:localhost": "cd hardhat && npx hardhat deploy --export-all ../src/contract-deployments/dao.json --reset",
-    "eth:deploy:ropsten": "cd hardhat && npx hardhat deploy --reset --network ropsten --export ../src/contract-deployments/ropsten-dao.json  --export-all ../src/contract-deployments/dao.json",
-    "eth:deploy:mainnet": "cd hardhat && npx hardhat deploy --reset --network mainnet --export ../src/contract-deployments/mainnet-dao.json  --export-all ../src/contract-deployments/dao.json"
+    "eth:deploy:localhost": "cd hardhat && npx hardhat deploy --reset --export ../src/contract-deployments/localhost-dao.json",
+    "eth:deploy:ropsten": "cd hardhat && npx hardhat deploy --reset --network ropsten --export ../src/contract-deployments/ropsten-dao.json",
+    "eth:deploy:mainnet": "cd hardhat && npx hardhat deploy --reset --network mainnet --export ../src/contract-deployments/mainnet-dao.json"
   },
   "husky": {
     "hooks": {
