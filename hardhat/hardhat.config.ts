@@ -1,5 +1,16 @@
 import '@nomiclabs/hardhat-waffle';
+import 'hardhat-deploy';
 import { task, HardhatUserConfig } from 'hardhat/config';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '../.env' });
+
+const fromEnvVariables = (key: string) => {
+  const value = process.env[key];
+  if (!value) throw new Error(`Expected '${key}' to be defined in environment variables!`);
+
+  return value;
+};
 
 task('accounts', 'Prints the list of accounts', async (_args, hre) => {
   const accounts = await hre.ethers.getSigners();
@@ -15,6 +26,14 @@ const config: HardhatUserConfig = {
   defaultNetwork: 'localhost',
   networks: {
     hardhat: {},
+    ropsten: {
+      url: fromEnvVariables('ROPSTEN_PROVIDER_URL'),
+      accounts: [fromEnvVariables('ROPSTEN_DEPLOYER_PRIVATE_KEY')],
+    },
+    mainnet: {
+      url: fromEnvVariables('MAINNET_PROVIDER_URL'),
+      accounts: [fromEnvVariables('MAINNET_DEPLOYER_PRIVATE_KEY')],
+    },
   },
   paths: {
     /**

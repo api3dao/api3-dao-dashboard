@@ -13,8 +13,10 @@
     "tsc": "tsc --project tsconfig.json",
     "lint": "eslint --ext js,ts,tsx src",
     "prepare": "husky install",
-    "eth:node": "cd hardhat && npx hardhat node",
-    "eth:redeploy": "cd hardhat && npx hardhat run deploy.ts"
+    "eth:node": "cd hardhat && npx hardhat node --network hardhat",
+    "eth:deploy:localhost": "cd hardhat && npx hardhat deploy --export-all ../src/contract-deployments/dao.json --reset",
+    "eth:deploy:ropsten": "cd hardhat && npx hardhat deploy --reset --network ropsten --export ../src/contract-deployments/ropsten-dao.json  --export-all ../src/contract-deployments/dao.json",
+    "eth:deploy:mainnet": "cd hardhat && npx hardhat deploy --reset --network mainnet --export ../src/contract-deployments/mainnet-dao.json  --export-all ../src/contract-deployments/dao.json"
   },
   "husky": {
     "hooks": {
@@ -67,9 +69,11 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
     "chai": "^4.3.4",
+    "dotenv": "^9.0.0",
     "ethereum-waffle": "^3.0.0",
     "ethers": "^5.0.0",
     "hardhat": "^2.2.1",
+    "hardhat-deploy": "^0.7.5",
     "husky": "^6.0.0",
     "lint-staged": "^10.5.4",
     "npx": "^10.2.2",

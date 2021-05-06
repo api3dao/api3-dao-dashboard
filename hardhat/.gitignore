@@ -1,2 +1,4 @@
 /cache
 /artifacts
+# Ignoring localhost deployments, because they will change on every redeploy for every developer
+/deployments/localhost
