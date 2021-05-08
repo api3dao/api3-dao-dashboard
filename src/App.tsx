@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import WalletConnectDemo from './wallet-connect-demo';
 
 const Dashboard = () => {
   return <div>dashboard</div>;
@@ -27,6 +28,8 @@ function App() {
           </li>
         </ul>
       </nav>
+
+      <WalletConnectDemo />
 
       {/* NOTE: The first matching root is used. This imples that `/` must be last */}
       <Switch>

@@ -25,3 +25,11 @@ yarn-error.log*
 
 # IDEs
 .vscode
+
+# DAO contract deployments - Will be regenerated after every localhost deploy.
+# We still want deployments to mainnet/testnet checked in git.
+/src/contract-deployments/localhost-dao.json
+
+# I disagree with https://create-react-app.dev/docs/adding-custom-environment-variables/#adding-development-environment-variables-in-env
+# and I want to have `.env` in gitignore and have `.env.example` checked in git instead.
+.env
