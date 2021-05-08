@@ -4,11 +4,22 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Instructions
 
-To install dependencies, run `yarn`.
+To install dependencies, run `yarn`. This will also compile the DAO contracts and generate
+[TypeChain](https://github.com/ethereum-ts/TypeChain) wrappers to be used in the client application.
 
-1. To run the hardhat _(local blockchain simulator)_ use: `yarn eth:node`
-2. Open a new terminal and deploy the DAO contracts: `yarn eth:deploy:localhost`
-3. In a separate terminal, start a development server with `yarn start`.
+1. To run the hardhat _(local blockchain simulator)_ use: `yarn eth:node`. This command will also deploy and export the
+   deployment information under the hood for you _(similarly how `yarn eth:deploy:localhost` works)_.
+2. In a separate terminal, start a development server with `yarn start`.
+3. Run `yarn fund-account <address>` _(and optionally pass `amount` parameter)_ to send some ETH to your account.
+4. You can use `yarn send-tokens:<network> <address>` _(and optionally pass `amount` parameter)_ to transfer some API3
+   tokens.
+
+MetaMask doesn't handle localhost development, particularly that the chain is reset after on every `yarn eth:node`. If
+that happens, you can [reset the
+account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
+
+> If you need tokens for ropsten, ask [@siegrift](https://github.com/Siegrift) to send you some. Creating simple faucet
+> for this is tracked under https://github.com/api3dao/api3-dao-dashboard/issues/16
 
 The deployment task will make sure the DAO dashboard will use the contracts you have deployed.
 You can use metamask (or any other wallet to connect to the application).

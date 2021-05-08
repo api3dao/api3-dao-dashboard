@@ -6,7 +6,7 @@ import ropstenDao from './contract-deployments/ropsten-dao.json';
 import { initialChainData, useChainData } from './chain-data';
 import Button from './components/button/button';
 
-const daoNetworks = [localhostDao, ropstenDao] as any[]; // silence TS strict mode
+const daoNetworks = [localhostDao, ropstenDao];
 
 const WalletConnectDemo = () => {
   const { setChainData, provider, ...data } = useChainData();
@@ -45,11 +45,15 @@ const WalletConnectDemo = () => {
 
     const upsertData = async () => {
       const provider = new ethers.providers.Web3Provider(wcProvider);
+      const networkChainId = await (await provider.getNetwork()).chainId.toString();
+
+      const daoNetwork = daoNetworks.find(({ chainId }) => chainId === networkChainId);
 
       const newData = {
         userAccount: await provider.getSigner().getAddress(),
         networkName: await (await provider.getNetwork()).name,
-        chainId: await (await provider.getNetwork()).chainId.toString(),
+        chainId: networkChainId,
+        contracts: daoNetwork?.contracts ?? null,
       };
       if (newData.networkName === 'unknown') newData.networkName = 'localhost';
 
@@ -91,7 +95,6 @@ const WalletConnectDemo = () => {
       {!provider && <Button onClick={onWalletConnect}>Wallet connect</Button>}
       {provider && <Button onClick={onDisconnect}>Disconnect</Button>}
 
-      {provider && <p>{JSON.stringify(data)}</p>}
       {provider && <p>{contractsData}</p>}
       {false && (
         <button onClick={() => setChainData({ ...data, provider, networkName: data.networkName + 'a' })}>
