@@ -1,15 +1,14 @@
-import { useState } from 'react';
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
 import localhostDao from './contract-deployments/localhost-dao.json';
 import ropstenDao from './contract-deployments/ropsten-dao.json';
+import { initialChainData, useChainData } from './chain-data';
 
 const daoNetworks = [localhostDao, ropstenDao] as any[]; // silence TS strict mode
 
 const WalletConnectDemo = () => {
-  const [provider, setProvider] = useState<ethers.providers.Provider | null>(null);
-  const [data, setData] = useState<any>(null);
+  const { setChainData, provider, ...data } = useChainData();
 
   const onWalletConnect = async () => {
     const providerOptions = {
@@ -45,11 +44,15 @@ const WalletConnectDemo = () => {
 
     const upsertData = async () => {
       const provider = new ethers.providers.Web3Provider(wcProvider);
-      setProvider(provider);
 
-      const data = { account: await provider.getSigner().getAddress(), network: await provider.getNetwork() };
-      if (data.network.name === 'unknown') data.network.name = 'localhost';
-      setData(data);
+      const newData = {
+        userAccount: await provider.getSigner().getAddress(),
+        networkName: await (await provider.getNetwork()).name,
+        chainId: await (await provider.getNetwork()).chainId.toString(),
+      };
+      if (newData.networkName === 'unknown') newData.networkName = 'localhost';
+
+      setChainData({ ...newData, provider });
     };
 
     wcProvider.on('accountsChanged', () => {
@@ -68,12 +71,11 @@ const WalletConnectDemo = () => {
   };
 
   const onDisconnect = () => {
-    setProvider(null);
-    setData(null);
+    setChainData(initialChainData);
   };
 
   let contractsData = 'Unsupported chain!';
-  const current = data && daoNetworks.find(({ chainId }) => chainId === data.network.chainId.toString());
+  const current = data && daoNetworks.find(({ chainId }) => chainId === data.chainId);
   if (current) {
     contractsData = JSON.stringify(
       Object.entries(current.contracts).map(([k, v]) => ({
@@ -88,9 +90,12 @@ const WalletConnectDemo = () => {
       {!provider && <button onClick={onWalletConnect}>Wallet connect</button>}
       {provider && <button onClick={onDisconnect}>Disconnect</button>}
 
-      {data && <p>{JSON.stringify(data.network)}</p>}
-      {data && <p>{JSON.stringify(data.account)}</p>}
-      {data && <p>{contractsData}</p>}
+      {provider && <p>{JSON.stringify(data)}</p>}
+      {provider && <p>{contractsData}</p>}
+
+      <button onClick={() => setChainData({ ...data, provider, networkName: data.networkName + 'a' })}>
+        Set chain data
+      </button>
     </div>
   );
 };
