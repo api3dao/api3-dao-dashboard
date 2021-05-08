@@ -47,10 +47,10 @@ task('send-tokens', 'Sends tokens to a specified account')
     const api3Token = new hre.ethers.Contract(deploymentFile.address, deploymentFile.abi, tokenOwner);
 
     const receiver: string = args.address;
-    const amount = args.amount;
+    const amount = hre.ethers.utils.parseEther(args.amount);
 
-    await api3Token.transfer(receiver, '100');
-    console.log(`Sent ${amount} API3 tokens to address ${receiver}`);
+    await api3Token.transfer(receiver, amount);
+    console.log(`Sent ${hre.ethers.utils.formatEther(amount)} API3 tokens to address ${receiver}`);
   });
 
 task('fund-account', 'Sends funds to a specified account on localhost network')

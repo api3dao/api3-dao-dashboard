@@ -5,6 +5,8 @@ import { useChainData } from './chain-data';
 import { useApi3Pool, useApi3Token } from './contracts';
 import { Api3Pool } from './generated-contracts';
 import { usePromise } from './utils/usePromise';
+import { ethers } from 'ethers';
+import { parseApi3 } from './utils/api3-format';
 
 const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => {
   const poolFilters = [
@@ -46,7 +48,7 @@ const getScheduledUnstakes = async (api3Pool: Api3Pool, userAccount: string) => 
   const toDate = (timestamp: BigNumber) => new Date(timestamp.toNumber()).toUTCString();
 
   return JSON.stringify({
-    amount: lastUnstake.args.amount.toString(),
+    amount: lastUnstake.args.amount,
     scheduledFor: toDate(scheduledFor.mul(1000)),
     deadline: toDate(scheduledFor.add(epochLength)),
   });
@@ -61,13 +63,14 @@ const DashboardPanels = () => {
     if (!api3Pool || !api3Token || !provider) return null;
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
+    const formatEther = ethers.utils.formatEther;
 
     return {
-      ethBalance: await provider.getSigner().getBalance(),
-      ownedTokens: await api3Token.balanceOf(userAccount),
-      balance: tokenBalances.balance,
-      withdrawable: tokenBalances.withdrawable,
-      userStake: await api3Pool.userStake(userAccount),
+      ethBalance: formatEther(await provider.getSigner().getBalance()),
+      ownedTokens: formatEther(await api3Token.balanceOf(userAccount)),
+      balance: formatEther(tokenBalances.balance),
+      withdrawable: formatEther(tokenBalances.withdrawable),
+      userStake: formatEther(await api3Pool.userStake(userAccount)),
       pendingUnstakes: await getScheduledUnstakes(api3Pool, userAccount),
     };
   }, [api3Pool, api3Token, userAccount, provider]);
@@ -84,11 +87,11 @@ const DashboardPanels = () => {
         <h5>Balance</h5>
 
         {/* TODO: remove this */}
-        <p>ETH balance: {data.ethBalance.toString()}</p>
+        <p>ETH balance: {data.ethBalance}</p>
 
-        <p>Owned tokens outside pool: {data.ownedTokens.toString()}</p>
-        <p>Total: {data.balance.toString()}</p>
-        <p>Withdrawable: {data.withdrawable.toString()}</p>
+        <p>Owned tokens outside pool: {data.ownedTokens}</p>
+        <p>Total: {data.balance}</p>
+        <p>Withdrawable: {data.withdrawable}</p>
         <p>
           <button
             onClick={() => {
@@ -106,7 +109,7 @@ const DashboardPanels = () => {
           <button
             onClick={() => {
               // TODO: handle errors
-              api3Pool.deposit(userAccount, 10, userAccount);
+              api3Pool.deposit(userAccount, parseApi3('10'), userAccount);
             }}
           >
             Deposit 10 tokens
@@ -116,7 +119,7 @@ const DashboardPanels = () => {
           <button
             onClick={() => {
               // TODO: handle errors
-              api3Pool.withdraw(userAccount, 10);
+              api3Pool.withdraw(userAccount, parseApi3('10'));
             }}
           >
             Withdraw 10 tokens
@@ -126,14 +129,14 @@ const DashboardPanels = () => {
       <div>
         <h5>Staking</h5>
 
-        <p>Staked: {data.userStake.toString()}</p>
+        <p>Staked: {data.userStake}</p>
         {/* TODO: is this correct? */}
-        <p>Unstaked: {data.withdrawable.toString()}</p>
+        <p>Unstaked: {data.withdrawable}</p>
         <p>
           <button
             onClick={() => {
               // TODO: handle errors
-              api3Pool.stake('10');
+              api3Pool.stake(parseApi3('10'));
             }}
           >
             Stake 10 tokens
@@ -143,7 +146,7 @@ const DashboardPanels = () => {
           <button
             onClick={async () => {
               // TODO: handle errors
-              const res = await api3Pool.scheduleUnstake('10');
+              const res = await api3Pool.scheduleUnstake(parseApi3('10'));
               console.log('Unstaking scheduled', res);
             }}
           >
