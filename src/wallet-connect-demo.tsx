@@ -3,13 +3,49 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
 import localhostDao from './contract-deployments/localhost-dao.json';
 import ropstenDao from './contract-deployments/ropsten-dao.json';
-import { initialChainData, useChainData } from './chain-data';
+import { initialChainData, useChainData, ChainData } from './chain-data';
 import Button from './components/button/button';
+import { useEffect } from 'react';
 
 const daoNetworks = [localhostDao, ropstenDao];
 
+const getChainData = async (provider: ethers.providers.Web3Provider): Promise<ChainData> => {
+  const networkChainId = await (await provider.getNetwork()).chainId.toString();
+
+  const daoNetwork = daoNetworks.find(({ chainId }) => chainId === networkChainId);
+
+  const newData = {
+    userAccount: await provider.getSigner().getAddress(),
+    networkName: await (await provider.getNetwork()).name,
+    chainId: networkChainId,
+    contracts: daoNetwork?.contracts ?? null,
+    latestBlock: await provider.getBlockNumber(),
+  };
+  if (newData.networkName === 'unknown') newData.networkName = 'localhost';
+
+  return { ...newData, provider };
+};
+
+const useRefreshChainDataAfterMinedBlock = () => {
+  const { provider, setChainData } = useChainData();
+
+  useEffect(() => {
+    if (!provider) return;
+
+    const handler = async () => {
+      setChainData(await getChainData(provider));
+    };
+
+    provider.on('block', handler);
+    return () => {
+      provider.off('block', handler);
+    };
+  }, [provider, setChainData]);
+};
+
 const WalletConnectDemo = () => {
   const { setChainData, provider, ...data } = useChainData();
+  useRefreshChainDataAfterMinedBlock();
 
   const onDisconnect = () => {
     if (provider) {
@@ -47,19 +83,7 @@ const WalletConnectDemo = () => {
     const web3ModalProvider = await web3Modal.connect();
     const upsertData = async () => {
       const provider = new ethers.providers.Web3Provider(web3ModalProvider);
-      const networkChainId = await (await provider.getNetwork()).chainId.toString();
-
-      const daoNetwork = daoNetworks.find(({ chainId }) => chainId === networkChainId);
-
-      const newData = {
-        userAccount: await provider.getSigner().getAddress(),
-        networkName: await (await provider.getNetwork()).name,
-        chainId: networkChainId,
-        contracts: daoNetwork?.contracts ?? null,
-      };
-      if (newData.networkName === 'unknown') newData.networkName = 'localhost';
-
-      setChainData({ ...newData, provider });
+      setChainData(await getChainData(provider));
     };
 
     try {

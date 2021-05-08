@@ -7,6 +7,7 @@ import { Api3Pool } from './generated-contracts';
 import { usePromise } from './utils/usePromise';
 import { ethers } from 'ethers';
 import { parseApi3 } from './utils/api3-format';
+import { unusedHookDependency } from './utils/hooks';
 
 const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => {
   const poolFilters = [
@@ -55,12 +56,13 @@ const getScheduledUnstakes = async (api3Pool: Api3Pool, userAccount: string) => 
 };
 
 const DashboardPanels = () => {
-  const { userAccount, provider } = useChainData();
+  const { userAccount, provider, latestBlock } = useChainData();
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
 
   const loadData = useCallback(async () => {
     if (!api3Pool || !api3Token || !provider) return null;
+    unusedHookDependency(latestBlock);
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
     const formatEther = ethers.utils.formatEther;
@@ -73,7 +75,7 @@ const DashboardPanels = () => {
       userStake: formatEther(await api3Pool.userStake(userAccount)),
       pendingUnstakes: await getScheduledUnstakes(api3Pool, userAccount),
     };
-  }, [api3Pool, api3Token, userAccount, provider]);
+  }, [api3Pool, api3Token, userAccount, provider, latestBlock]);
 
   // TODO: handle error
   const [_error, data] = usePromise(loadData);

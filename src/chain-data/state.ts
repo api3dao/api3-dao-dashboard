@@ -3,12 +3,13 @@ import type localhostDao from '../contract-deployments/localhost-dao.json';
 
 type ContractsInfo = typeof localhostDao['contracts'];
 
-interface ChainData {
+export interface ChainData {
   provider: ethers.providers.Web3Provider | null;
   userAccount: string;
   networkName: string;
   chainId: string;
   contracts: ContractsInfo | null;
+  latestBlock: number;
 }
 
 interface SettableChainData extends ChainData {
@@ -21,6 +22,7 @@ export const initialChainData: ChainData = {
   networkName: '',
   chainId: '',
   contracts: null,
+  latestBlock: 0,
 };
 
 export const initialSettableChainData: SettableChainData = { ...initialChainData, setChainData: () => {} };
