@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import last from 'lodash/last';
 import { useCallback } from 'react';
 import { useChainData } from './chain-data';
-import { useApi3Pool, useApi3Token } from './contracts';
+import { calculateApy, useApi3Pool, useApi3Token } from './contracts';
 import { Api3Pool } from './generated-contracts';
 import { usePromise } from './utils/usePromise';
 import { ethers } from 'ethers';
@@ -66,6 +66,13 @@ const DashboardPanels = () => {
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
     const formatEther = ethers.utils.formatEther;
+    const currentApr = await api3Pool.currentApr();
+    const annualApy = calculateApy(currentApr);
+    const totalStaked = await api3Pool.totalStake();
+    const stakeTarget = await api3Pool.stakeTarget();
+    const totalSupply = await api3Token.totalSupply();
+    const annualMintedTokens = totalStaked.mul(annualApy).div(BigNumber.from(100));
+    const annualInflationRate = annualMintedTokens.div(annualMintedTokens.add(totalSupply)).mul(100);
 
     return {
       ethBalance: formatEther(await provider.getSigner().getBalance()),
@@ -74,6 +81,12 @@ const DashboardPanels = () => {
       withdrawable: formatEther(tokenBalances.withdrawable),
       userStake: formatEther(await api3Pool.userStake(userAccount)),
       pendingUnstakes: await getScheduledUnstakes(api3Pool, userAccount),
+      annualApy: formatEther(annualApy),
+      annualInflationRate: formatEther(annualInflationRate),
+      stakeTarget: stakeTarget.toString(),
+      totalStaked: totalStaked.toString(),
+      totalStakedPercentage: stakeTarget.div(totalStaked).mul(100).toString(),
+      currentApr: currentApr.toString(), // TODO: remove
     };
   }, [api3Pool, api3Token, userAccount, provider, latestBlock]);
 
@@ -86,10 +99,26 @@ const DashboardPanels = () => {
   return (
     <div style={{ margin: 200 }}>
       <div>
-        <h5>Balance</h5>
+        <h5>Account</h5>
 
         {/* TODO: remove this */}
         <p>ETH balance: {data.ethBalance}</p>
+        <p>User account: {userAccount}</p>
+      </div>
+      <div>
+        <h5>Insurance pool</h5>
+
+        <p>Annual rewards APY: {data.annualApy}</p>
+        <p>Annual inflation rate: {data.annualInflationRate}</p>
+        <p>Total staked: {data.totalStaked}</p>
+        <p>Stake target: {data.stakeTarget}</p>
+        <p>Stake target in %: {data.totalStakedPercentage}</p>
+
+        {/* TODO: remove this */}
+        <p>Current APR: {data.currentApr}</p>
+      </div>
+      <div>
+        <h5>Balance</h5>
 
         <p>Owned tokens outside pool: {data.ownedTokens}</p>
         <p>Total: {data.balance}</p>
