@@ -1,7 +1,10 @@
 import '@nomiclabs/hardhat-waffle';
 import 'hardhat-deploy';
-import { task, HardhatUserConfig } from 'hardhat/config';
+import { subtask, task, HardhatUserConfig } from 'hardhat/config';
 import dotenv from 'dotenv';
+import { existsSync } from 'fs';
+import { execSync } from 'child_process';
+import { TASK_NODE_SERVER_READY } from 'hardhat/builtin-tasks/task-names';
 
 dotenv.config({ path: '../.env' });
 
@@ -26,6 +29,58 @@ task('accounts', 'Prints the list of accounts', async (_args, hre) => {
   for (const account of accounts) {
     console.log(account.address);
   }
+});
+
+task('send-tokens', 'Sends tokens to a specified account')
+  .addParam('address', 'The address where to send the funds to')
+  .addOptionalParam('amount', 'Number of tokens to send. Default is 100', '100')
+  .setAction(async (args, hre) => {
+    const network = hre.network.name;
+    const deploymentFileName = `./deployments/${network}/Api3Token.json`;
+
+    if (!existsSync(deploymentFileName)) {
+      throw new Error(`Couldn't find deployment file for network: '${network}'.`);
+    }
+
+    const deploymentFile = require(deploymentFileName);
+    const tokenOwner = (await hre.ethers.getSigners())[0]; // This needs to be in sync with deployer implementation
+    const api3Token = new hre.ethers.Contract(deploymentFile.address, deploymentFile.abi, tokenOwner);
+
+    const receiver: string = args.address;
+    const amount = args.amount;
+
+    await api3Token.transfer(receiver, '100');
+    console.log(`Sent ${amount} API3 tokens to address ${receiver}`);
+  });
+
+task('fund-account', 'Sends funds to a specified account on localhost network')
+  .addParam('address', 'The address where to send the funds to')
+  .addOptionalParam('amount', 'Number of ETH to send. Default is 1', '1')
+  .setAction(async (args, hre) => {
+    const network = hre.network.name;
+
+    // For testnets use the correspoding chain faucet
+    if (network !== 'localhost') {
+      throw new Error(`This commands only supports localhost network`);
+    }
+
+    const funder = (await hre.ethers.getSigners())[0];
+    const receiver: string = args.address;
+    const amount = hre.ethers.utils.parseEther(args.amount);
+
+    await funder.sendTransaction({ to: receiver, value: amount });
+    console.log(`Sent ${hre.ethers.utils.formatEther(amount)} ETH to address ${receiver}`);
+  });
+
+// Inspired by https://github.com/wighawag/hardhat-deploy/blob/master/src/index.ts#L631
+subtask(TASK_NODE_SERVER_READY).setAction(async (args, hre, runSuper) => {
+  await runSuper(args);
+
+  const exportPath = '../src/contract-deployments/localhost-dao.json';
+  // Unfortunately, calling the deploy task from yarn doesn't work at this stage.
+  // Keep this logic in sync with the deploy:localhost task in package.json.
+  hre.run('export', { export: exportPath });
+  console.info(`Local network deployment data exported to: ${exportPath}`);
 });
 
 // See https://hardhat.org/config/

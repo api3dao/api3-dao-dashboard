@@ -2,9 +2,15 @@ import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import WalletConnectDemo from './wallet-connect-demo';
 import ChainDataContextProvider from './chain-data';
+import DashboardPanels from './dashboard-panels';
 
 const Dashboard = () => {
-  return <div>dashboard</div>;
+  return (
+    <div>
+      dashboard
+      <DashboardPanels />
+    </div>
+  );
 };
 
 const Proposals = () => {
