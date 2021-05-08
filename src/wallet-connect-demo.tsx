@@ -12,25 +12,25 @@ const WalletConnectDemo = () => {
   const { setChainData, provider, ...data } = useChainData();
 
   const onWalletConnect = async () => {
-    const providerOptions = {
-      walletconnect: {
-        package: WalletConnectProvider,
-        options: {
-          // TODO: use mapping function for this
-          rpc: {
-            3: process.env.REACT_APP_ROPSTEN_PROVIDER_URL,
-            31337: 'http://127.0.0.1:8545/',
-          },
-        },
-      },
-    };
-
     const web3Modal = new Web3Modal({
       // If true, it the provider will be cached in local storage and there will be no modal
       // asking on re-login and the same provider will be used.
       cacheProvider: false,
       disableInjectedProvider: false,
-      providerOptions, // required
+      providerOptions: {
+        walletconnect: {
+          package: WalletConnectProvider,
+          options: {
+            // This is actually the default value in WalletConnectProvider, but I'd rather be explicit about this
+            bridge: 'https://bridge.walletconnect.org',
+            // TODO: use mapping function for this
+            rpc: {
+              3: process.env.REACT_APP_ROPSTEN_PROVIDER_URL,
+              31337: 'http://127.0.0.1:8545/',
+            },
+          },
+        },
+      },
     });
 
     const wcProvider = await web3Modal.connect();
