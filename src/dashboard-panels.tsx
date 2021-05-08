@@ -2,7 +2,13 @@ import { BigNumber } from '@ethersproject/bignumber';
 import last from 'lodash/last';
 import { useCallback } from 'react';
 import { useChainData } from './chain-data';
-import { calculateApy, useApi3Pool, useApi3Token } from './contracts';
+import {
+  calculateAnnualInflationRate,
+  calculateAnnualMintedTokens,
+  calculateApy,
+  useApi3Pool,
+  useApi3Token,
+} from './contracts';
 import { Api3Pool } from './generated-contracts';
 import { usePromise } from './utils/usePromise';
 import { ethers } from 'ethers';
@@ -71,8 +77,8 @@ const DashboardPanels = () => {
     const totalStaked = await api3Pool.totalStake();
     const stakeTarget = await api3Pool.stakeTarget();
     const totalSupply = await api3Token.totalSupply();
-    const annualMintedTokens = totalStaked.mul(annualApy).div(BigNumber.from(100));
-    const annualInflationRate = annualMintedTokens.div(annualMintedTokens.add(totalSupply)).mul(100);
+    const annualMintedTokens = calculateAnnualMintedTokens(totalStaked, annualApy);
+    const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
 
     return {
       ethBalance: formatEther(await provider.getSigner().getBalance()),
@@ -81,11 +87,11 @@ const DashboardPanels = () => {
       withdrawable: formatEther(tokenBalances.withdrawable),
       userStake: formatEther(await api3Pool.userStake(userAccount)),
       pendingUnstakes: await getScheduledUnstakes(api3Pool, userAccount),
-      annualApy: formatEther(annualApy),
-      annualInflationRate: formatEther(annualInflationRate),
+      annualApy: annualApy.toString(),
+      annualInflationRate: annualInflationRate.toString(),
       stakeTarget: stakeTarget.toString(),
       totalStaked: totalStaked.toString(),
-      totalStakedPercentage: stakeTarget.div(totalStaked).mul(100).toString(),
+      totalStakedPercentage: totalStaked.div(stakeTarget).mul(100).toString(),
       currentApr: currentApr.toString(), // TODO: remove
     };
   }, [api3Pool, api3Token, userAccount, provider, latestBlock]);
