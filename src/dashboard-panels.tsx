@@ -3,9 +3,12 @@ import last from 'lodash/last';
 import { useCallback } from 'react';
 import { useChainData } from './chain-data';
 import {
+  absoluteStakeTarget,
   calculateAnnualInflationRate,
   calculateAnnualMintedTokens,
   calculateApy,
+  convertPercentage,
+  totalStakedPercentage,
   useApi3Pool,
   useApi3Token,
 } from './contracts';
@@ -75,8 +78,8 @@ const DashboardPanels = () => {
     const currentApr = await api3Pool.currentApr();
     const annualApy = calculateApy(currentApr);
     const totalStaked = await api3Pool.totalStake();
-    const stakeTarget = await api3Pool.stakeTarget();
     const totalSupply = await api3Token.totalSupply();
+    const stakeTarget = absoluteStakeTarget(await api3Pool.stakeTarget(), totalSupply);
     const annualMintedTokens = calculateAnnualMintedTokens(totalStaked, annualApy);
     const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
 
@@ -91,8 +94,8 @@ const DashboardPanels = () => {
       annualInflationRate: annualInflationRate.toString(),
       stakeTarget: stakeTarget.toString(),
       totalStaked: totalStaked.toString(),
-      totalStakedPercentage: totalStaked.div(stakeTarget).mul(100).toString(),
-      currentApr: currentApr.toString(), // TODO: remove
+      totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
+      currentApr: convertPercentage(currentApr, true).toString(), // TODO: remove
     };
   }, [api3Pool, api3Token, userAccount, provider, latestBlock]);
 

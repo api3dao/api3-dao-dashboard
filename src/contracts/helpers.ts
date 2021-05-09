@@ -20,9 +20,43 @@ export const calculateApy = (apr: BigNumber) => {
 export const calculateAnnualMintedTokens = (totalStake: BigNumber, currentApy: FixedNumber) =>
   toBigNumber(FixedNumber.from(totalStake).mulUnsafe(currentApy).divUnsafe(FixedNumber.from(100)));
 
+// TODO: this seems very low at the moment
 export const calculateAnnualInflationRate = (annualMintedTokens: BigNumber, totalSupply: BigNumber) => {
-  const annualMintedTokensBn = FixedNumber.from(annualMintedTokens);
-  return annualMintedTokensBn
-    .divUnsafe(annualMintedTokensBn.addUnsafe(FixedNumber.from(totalSupply)))
+  const annualMintedTokensFn = FixedNumber.from(annualMintedTokens);
+  return annualMintedTokensFn
+    .divUnsafe(annualMintedTokensFn.addUnsafe(FixedNumber.from(totalSupply)))
     .mulUnsafe(FixedNumber.from(100));
 };
+
+// See: https://github.com/api3dao/api3-dao/blob/692d148e04e70cd22969149b2a0945f763bb9425/packages/pool/contracts/StateUtils.sol#L73
+export const HUNDRED_PERCENT = BigNumber.from(100_000_000);
+
+/**
+ * Convert smart contract percentages to human readable percentages.
+ * For example, 75_000_000 should convert to 0.75.
+ * If humanReadable is true, percentage is multiplied by 100
+ */
+export const convertPercentage = (daoPercentage: BigNumber, humanReadable = false) => {
+  const percentage = FixedNumber.from(daoPercentage).divUnsafe(FixedNumber.from(HUNDRED_PERCENT));
+  if (humanReadable) return percentage.mulUnsafe(FixedNumber.from(100));
+  else return percentage;
+};
+
+/**
+ * Staking target is in percentages, where HUNDRED_PERCENT is the maximum value.
+ * The absolute stake target is percentage of total token supply.
+ */
+export const absoluteStakeTarget = (stakeTargetPercentages: BigNumber, totalSupply: BigNumber) =>
+  // Intentionally avoiding FixedNumber calculations
+  totalSupply.mul(stakeTargetPercentages).div(HUNDRED_PERCENT);
+
+/**
+ * Compute the percentage of total stakes in the pool rounding to 1 decimal place.
+ * The stakeTarget is the absolute value (not in percentages).
+ */
+export const totalStakedPercentage = (totalStaked: BigNumber, stakeTarget: BigNumber) =>
+  FixedNumber.from(totalStaked)
+    .divUnsafe(FixedNumber.from(stakeTarget))
+    .mulUnsafe(FixedNumber.from(100))
+    .round(1)
+    .toString();
