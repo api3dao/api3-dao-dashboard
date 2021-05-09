@@ -17,10 +17,11 @@ export const calculateApy = (apr: BigNumber) => {
   return apy.subUnsafe(FixedNumber.from(1)).mulUnsafe(FixedNumber.from(100));
 };
 
+// based on https://github.com/api3dao/api3-web-client/issues/2#issuecomment-831891578
 export const calculateAnnualMintedTokens = (totalStake: BigNumber, currentApy: FixedNumber) =>
   toBigNumber(FixedNumber.from(totalStake).mulUnsafe(currentApy).divUnsafe(FixedNumber.from(100)));
 
-// TODO: this seems very low at the moment
+// based on https://github.com/api3dao/api3-web-client/issues/2#issuecomment-831891578
 export const calculateAnnualInflationRate = (annualMintedTokens: BigNumber, totalSupply: BigNumber) => {
   const annualMintedTokensFn = FixedNumber.from(annualMintedTokens);
   return annualMintedTokensFn
