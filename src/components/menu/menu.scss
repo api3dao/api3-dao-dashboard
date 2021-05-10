@@ -1,0 +1,43 @@
+@import '../../styles/main.scss';
+
+.menu {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+
+  & > * {
+    margin-bottom: $space-xs;
+  }
+
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .menu-active-item {
+    .menu-item {
+      color: $green-color;
+    }
+    .menu-active-line {
+      display: block;
+    }
+  }
+}
+
+.menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $primary-color;
+}
+
+.menu-active-line {
+  position: absolute;
+  left: -40px;
+  display: none;
+  width: 2px;
+  height: 40px;
+  background-color: $green-color;
+}

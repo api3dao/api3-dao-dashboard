@@ -1,0 +1,13 @@
+@import '../../styles/main.scss';
+
+.layout {
+  background: $background-gradient;
+  height: 100vh;
+}
+
+.container {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: $space-xxl;
+  padding-left: 74px;
+}

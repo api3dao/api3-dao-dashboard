@@ -1,0 +1,12 @@
+@import '../../styles/main.scss';
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-xl $space-xxl;
+}
+
+.navigation-menu {
+  position: relative;
+}

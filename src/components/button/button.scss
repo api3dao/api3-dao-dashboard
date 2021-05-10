@@ -1,0 +1,63 @@
+@import '../../styles/main.scss';
+
+.button-wrapper {
+  display: inline-block;
+  &._disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+.button {
+  background-color: transparent;
+  color: $primary-color;
+  height: 51px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $text-small;
+  line-height: 17px;
+  font-weight: 500;
+  padding: 17px $space-lg;
+  border-width: 1px;
+  border-style: solid;
+  outline: none;
+  transform: 0.25ms linear;
+  cursor: pointer;
+
+  &._primary {
+    border-image-source: $primary-border;
+    border-image-slice: 1;
+  }
+
+  &._secondary {
+    border-color: $secondary-border;
+  }
+
+  &._small {
+    height: 62px;
+    font-size: $text-normal;
+    line-height: 22px;
+    padding: 20px 44px;
+  }
+
+  &._secondary {
+    border-color: $secondary-border;
+  }
+
+  &:hover {
+    border-width: 2px;
+  }
+}
+
+.button-underline {
+  margin-top: $space-xxs;
+  height: 1px;
+  width: 100%;
+  &._primary {
+    background: linear-gradient(to left, $green-color, $violet-color);
+  }
+  &._secondary {
+    background-color: $secondary-border;
+  }
+}
