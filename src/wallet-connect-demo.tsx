@@ -4,6 +4,7 @@ import Web3Modal from 'web3modal';
 import localhostDao from './contract-deployments/localhost-dao.json';
 import ropstenDao from './contract-deployments/ropsten-dao.json';
 import { initialChainData, useChainData } from './chain-data';
+import Button from './components/button/button';
 
 const daoNetworks = [localhostDao, ropstenDao] as any[]; // silence TS strict mode
 
@@ -86,17 +87,18 @@ const WalletConnectDemo = () => {
   }
 
   return (
-    <div style={{ margin: 200 }}>
-      {!provider && <button onClick={onWalletConnect}>Wallet connect</button>}
-      {provider && <button onClick={onDisconnect}>Disconnect</button>}
+    <>
+      {!provider && <Button onClick={onWalletConnect}>Wallet connect</Button>}
+      {provider && <Button onClick={onDisconnect}>Disconnect</Button>}
 
       {provider && <p>{JSON.stringify(data)}</p>}
       {provider && <p>{contractsData}</p>}
-
-      <button onClick={() => setChainData({ ...data, provider, networkName: data.networkName + 'a' })}>
-        Set chain data
-      </button>
-    </div>
+      {false && (
+        <button onClick={() => setChainData({ ...data, provider, networkName: data.networkName + 'a' })}>
+          Set chain data
+        </button>
+      )}
+    </>
   );
 };
 
