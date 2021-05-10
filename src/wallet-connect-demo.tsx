@@ -3,101 +3,121 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
 import localhostDao from './contract-deployments/localhost-dao.json';
 import ropstenDao from './contract-deployments/ropsten-dao.json';
-import { initialChainData, useChainData } from './chain-data';
+import { initialChainData, useChainData, ChainData } from './chain-data';
 import Button from './components/button/button';
+import { useEffect } from 'react';
 
-const daoNetworks = [localhostDao, ropstenDao] as any[]; // silence TS strict mode
+const daoNetworks = [localhostDao, ropstenDao];
 
-const WalletConnectDemo = () => {
-  const { setChainData, provider, ...data } = useChainData();
+const getChainData = async (provider: ethers.providers.Web3Provider): Promise<ChainData> => {
+  const networkChainId = await (await provider.getNetwork()).chainId.toString();
 
-  const onWalletConnect = async () => {
-    const providerOptions = {
-      walletconnect: {
-        package: WalletConnectProvider,
-        options: {
-          // TODO: use mapping function for this
-          rpc: {
-            3: process.env.REACT_APP_ROPSTEN_PROVIDER_URL,
-            31337: 'http://127.0.0.1:8545/',
-          },
-        },
-      },
+  const daoNetwork = daoNetworks.find(({ chainId }) => chainId === networkChainId);
+
+  const newData = {
+    userAccount: await provider.getSigner().getAddress(),
+    networkName: await (await provider.getNetwork()).name,
+    chainId: networkChainId,
+    contracts: daoNetwork?.contracts ?? null,
+    latestBlock: await provider.getBlockNumber(),
+  };
+  if (newData.networkName === 'unknown') newData.networkName = 'localhost';
+
+  return { ...newData, provider };
+};
+
+const useRefreshChainDataAfterMinedBlock = () => {
+  const { provider, setChainData } = useChainData();
+
+  useEffect(() => {
+    if (!provider) return;
+
+    const handler = async () => {
+      setChainData(await getChainData(provider));
     };
 
+    provider.on('block', handler);
+    return () => {
+      provider.off('block', handler);
+    };
+  }, [provider, setChainData]);
+};
+
+const WalletConnectDemo = () => {
+  const { setChainData, provider } = useChainData();
+  useRefreshChainDataAfterMinedBlock();
+
+  const onDisconnect = () => {
+    if (provider) {
+      const externalProvider: any = provider.provider;
+      if (typeof externalProvider.close === 'function') {
+        externalProvider.close();
+      }
+    }
+
+    setChainData(initialChainData);
+  };
+
+  const onWalletConnect = async () => {
     const web3Modal = new Web3Modal({
       // If true, it the provider will be cached in local storage and there will be no modal
       // asking on re-login and the same provider will be used.
       cacheProvider: false,
       disableInjectedProvider: false,
-      providerOptions, // required
+      providerOptions: {
+        walletconnect: {
+          package: WalletConnectProvider,
+          options: {
+            // This is actually the default value in WalletConnectProvider, but I'd rather be explicit about this
+            bridge: 'https://bridge.walletconnect.org',
+            // TODO: use mapping function for this
+            rpc: {
+              3: process.env.REACT_APP_ROPSTEN_PROVIDER_URL,
+              31337: 'http://127.0.0.1:8545/',
+            },
+          },
+        },
+      },
     });
 
-    const wcProvider = await web3Modal.connect();
+    const web3ModalProvider = await web3Modal.connect();
+    const upsertData = async () => {
+      const provider = new ethers.providers.Web3Provider(web3ModalProvider);
+      setChainData(await getChainData(provider));
+    };
 
     try {
       // Enable session (triggers QR Code modal)
-      await wcProvider.enable();
+      await web3ModalProvider.enable();
+      // User has chosen a provider and has signed in
+      upsertData();
     } catch {
       // TODO: handle error (e.g. user closes the modal)
       return;
     }
 
-    const upsertData = async () => {
-      const provider = new ethers.providers.Web3Provider(wcProvider);
-
-      const newData = {
-        userAccount: await provider.getSigner().getAddress(),
-        networkName: await (await provider.getNetwork()).name,
-        chainId: await (await provider.getNetwork()).chainId.toString(),
-      };
-      if (newData.networkName === 'unknown') newData.networkName = 'localhost';
-
-      setChainData({ ...newData, provider });
-    };
-
-    wcProvider.on('accountsChanged', () => {
+    web3ModalProvider.on('accountsChanged', () => {
       upsertData();
     });
 
-    wcProvider.on('chainChanged', () => {
+    web3ModalProvider.on('chainChanged', () => {
       upsertData();
     });
 
-    wcProvider.on('networkChanged', () => {
+    web3ModalProvider.on('networkChanged', () => {
       upsertData();
     });
 
-    upsertData();
+    // NOTE: This callback might get called multiple times for a single disconnect
+    web3ModalProvider.on('disconnect', () => {
+      onDisconnect();
+    });
   };
-
-  const onDisconnect = () => {
-    setChainData(initialChainData);
-  };
-
-  let contractsData = 'Unsupported chain!';
-  const current = data && daoNetworks.find(({ chainId }) => chainId === data.chainId);
-  if (current) {
-    contractsData = JSON.stringify(
-      Object.entries(current.contracts).map(([k, v]) => ({
-        name: k,
-        address: (v as any).address,
-      }))
-    );
-  }
 
   return (
     <>
       {!provider && <Button onClick={onWalletConnect}>Wallet connect</Button>}
       {provider && <Button onClick={onDisconnect}>Disconnect</Button>}
-
-      {provider && <p>{JSON.stringify(data)}</p>}
-      {provider && <p>{contractsData}</p>}
-      {false && (
-        <button onClick={() => setChainData({ ...data, provider, networkName: data.networkName + 'a' })}>
-          Set chain data
-        </button>
-      )}
     </>
   );
 };

@@ -14,10 +14,16 @@
     "tsc": "tsc --project tsconfig.json",
     "lint": "eslint --ext js,ts,tsx src",
     "prepare": "husky install",
+    "eth:compile-contracts": "cd hardhat && npx hardhat compile",
     "eth:node": "cd hardhat && npx hardhat node --network hardhat",
     "eth:deploy:localhost": "cd hardhat && npx hardhat deploy --reset --export ../src/contract-deployments/localhost-dao.json",
     "eth:deploy:ropsten": "cd hardhat && npx hardhat deploy --reset --network ropsten --export ../src/contract-deployments/ropsten-dao.json",
-    "eth:deploy:mainnet": "cd hardhat && npx hardhat deploy --reset --network mainnet --export ../src/contract-deployments/mainnet-dao.json"
+    "eth:deploy:mainnet": "cd hardhat && npx hardhat deploy --reset --network mainnet --export ../src/contract-deployments/mainnet-dao.json",
+    "generate-contracts": "yarn typechain --target ethers-v5 --outDir ./src/generated-contracts './hardhat/artifacts/contracts-symlink/**/!(*.dbg).json'",
+    "send-tokens:localhost": "cd hardhat && npx hardhat send-tokens --address",
+    "send-tokens:ropsten": "cd hardhat && npx hardhat send-tokens --network ropsten --address",
+    "fund-account": "cd hardhat && npx hardhat fund-account --address",
+    "postinstall": "yarn eth:compile-contracts && yarn generate-contracts"
   },
   "husky": {
     "hooks": {
@@ -55,6 +61,7 @@
     "api3-dao": "git+https://github.com/api3dao/api3-dao.git#692d148e04e70cd22969149b2a0945f763bb9425",
     "classnames": "^2.3.1",
     "node-sass": "^5.0.0",
+    "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
@@ -66,8 +73,10 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@typechain/ethers-v5": "^6.0.5",
     "@types/chai": "^4.2.17",
     "@types/jest": "^26.0.15",
+    "@types/lodash": "^4.14.168",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.0.2",
     "@types/react": "^17.0.0",
@@ -86,6 +95,7 @@
     "react-scripts": "4.0.3",
     "sort-package-json": "^1.50.0",
     "ts-node": "^9.1.1",
+    "typechain": "^4.0.3",
     "typescript": "^4.2.4",
     "web-vitals": "^1.0.1"
   }

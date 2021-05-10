@@ -6,13 +6,22 @@ export const ChainDataContext = createContext(initialSettableChainData);
 const ChainDataContextProvider: React.FC = ({ children }) => {
   const [chainData, setChainData] = useState(initialChainData);
 
-  const settableChainData = useMemo(
-    () => ({
+  const settableChainData = useMemo(() => {
+    const loggableSetChainData: typeof setChainData = (data) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.group('Setting chain data');
+        console.info(data);
+        console.groupEnd();
+      }
+
+      setChainData(data);
+    };
+
+    return {
       ...chainData,
-      setChainData,
-    }),
-    [chainData, setChainData]
-  );
+      setChainData: loggableSetChainData,
+    };
+  }, [chainData, setChainData]);
 
   return <ChainDataContext.Provider value={settableChainData}>{children}</ChainDataContext.Provider>;
 };
