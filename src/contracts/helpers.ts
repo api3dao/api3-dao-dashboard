@@ -5,10 +5,12 @@ import range from 'lodash/range';
 
 const toBigNumber = (fixed: FixedNumber) => BigNumber.from(fixed.round().toString().split('.')[0]);
 
+export const min = (first: BigNumber, ...other: BigNumber[]) => other.reduce((min, n) => (min.lt(n) ? min : n), first);
+
 // based on https://github.com/api3dao/api3-web-client/issues/2#issuecomment-831891578
 export const calculateApy = (apr: BigNumber) => {
   const base = FixedNumber.from(1).addUnsafe(
-    FixedNumber.from(apr.toString()).divUnsafe(FixedNumber.from(100000000)).divUnsafe(FixedNumber.from(52))
+    FixedNumber.from(apr.toString()).divUnsafe(FixedNumber.from(HUNDRED_PERCENT)).divUnsafe(FixedNumber.from(52))
   );
   let apy = FixedNumber.from(1);
   range(52).forEach(() => {
@@ -30,6 +32,7 @@ export const calculateAnnualInflationRate = (annualMintedTokens: BigNumber, tota
 };
 
 // See: https://github.com/api3dao/api3-dao/blob/692d148e04e70cd22969149b2a0945f763bb9425/packages/pool/contracts/StateUtils.sol#L73
+// TODO: This convention will be updated before the launch by replacing 8 with 18
 export const HUNDRED_PERCENT = BigNumber.from(100_000_000);
 
 /**

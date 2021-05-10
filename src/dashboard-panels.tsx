@@ -8,6 +8,7 @@ import {
   calculateAnnualMintedTokens,
   calculateApy,
   convertPercentage,
+  min,
   totalStakedPercentage,
   useApi3Pool,
   useApi3Token,
@@ -15,28 +16,22 @@ import {
 import { Api3Pool } from './generated-contracts';
 import { usePromise } from './utils/usePromise';
 import { ethers } from 'ethers';
-import { parseApi3 } from './utils/api3-format';
+import { formatApi3, parseApi3 } from './utils/api3-format';
 import { unusedHookDependency } from './utils/hooks';
 
 const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => {
-  const poolFilters = [
-    api3Pool.filters.Deposited(userAccount, null),
-    api3Pool.filters.Withdrawn(userAccount, null, null),
-    api3Pool.filters.Staked(userAccount, null, null),
-    api3Pool.filters.Unstaked(userAccount, null, null),
-  ] as const;
+  const user = await api3Pool.users(userAccount);
+  const staked = await api3Pool.userStake(userAccount);
+  const unstaked = user.unstaked;
+  const balance = staked.add(unstaked);
 
-  const sum = (values: BigNumber[]) => values.reduce((acc, x) => acc.add(x), BigNumber.from(0));
-  const [deposits, withdraws, stakes, unstakes] = (
-    await Promise.all(poolFilters.map((filter) => api3Pool.queryFilter(filter)))
-  )
-    .map((events) => events.map((event) => event.args.amount))
-    .flatMap(sum);
+  const userLocked = await api3Pool.getUserLocked(userAccount);
+  const lockedAndVesting = userLocked.add(user.vesting);
+  const withdrawable = min(unstaked, balance.sub(lockedAndVesting));
 
-  const balance = BigNumber.from(0).add(deposits).sub(withdraws);
   return {
     balance,
-    withdrawable: balance.sub(stakes).add(unstakes),
+    withdrawable,
   };
 };
 
@@ -69,6 +64,7 @@ const DashboardPanels = () => {
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
 
+  // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
   const loadData = useCallback(async () => {
     if (!api3Pool || !api3Token || !provider) return null;
     unusedHookDependency(latestBlock);
@@ -84,16 +80,16 @@ const DashboardPanels = () => {
     const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
 
     return {
-      ethBalance: formatEther(await provider.getSigner().getBalance()),
-      ownedTokens: formatEther(await api3Token.balanceOf(userAccount)),
-      balance: formatEther(tokenBalances.balance),
-      withdrawable: formatEther(tokenBalances.withdrawable),
-      userStake: formatEther(await api3Pool.userStake(userAccount)),
+      ethBalance: formatEther(await provider.getSigner().getBalance()), // TODO: remove
+      ownedTokens: formatApi3(await api3Token.balanceOf(userAccount)),
+      balance: formatApi3(tokenBalances.balance),
+      withdrawable: formatApi3(tokenBalances.withdrawable),
+      userStake: formatApi3(await api3Pool.userStake(userAccount)),
+      stakeTarget: formatApi3(stakeTarget),
+      totalStaked: formatApi3(totalStaked),
       pendingUnstakes: await getScheduledUnstakes(api3Pool, userAccount),
       annualApy: annualApy.toString(),
       annualInflationRate: annualInflationRate.toString(),
-      stakeTarget: stakeTarget.toString(),
-      totalStaked: totalStaked.toString(),
       totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
       currentApr: convertPercentage(currentApr, true).toString(), // TODO: remove
     };
