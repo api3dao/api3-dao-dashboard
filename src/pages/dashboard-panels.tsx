@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import last from 'lodash/last';
 import { useCallback } from 'react';
-import { useChainData } from './chain-data';
+import { useChainData } from '../chain-data';
 import {
   absoluteStakeTarget,
   calculateAnnualInflationRate,
@@ -12,12 +12,12 @@ import {
   totalStakedPercentage,
   useApi3Pool,
   useApi3Token,
-} from './contracts';
-import { Api3Pool } from './generated-contracts';
-import { usePromise } from './utils/usePromise';
+} from '../contracts';
+import { Api3Pool } from '../generated-contracts';
+import { usePromise } from '../utils/usePromise';
 import { ethers } from 'ethers';
-import { formatApi3, parseApi3 } from './utils/api3-format';
-import { unusedHookDependency } from './utils/hooks';
+import { formatApi3, parseApi3 } from '../utils/api3-format';
+import { unusedHookDependency } from '../utils/hooks';
 
 const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => {
   const user = await api3Pool.users(userAccount);

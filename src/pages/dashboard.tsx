@@ -1,5 +1,5 @@
 import Layout from '../components/layout/layout';
-import DashboardPanels from '../dashboard-panels';
+import DashboardPanels from './dashboard-panels';
 
 const Dashboard = () => {
   return (
