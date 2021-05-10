@@ -5,19 +5,20 @@ import './button.scss';
 type Props = {
   children: ReactNode;
   type?: 'primary' | 'secondary';
-  large?: boolean;
+  size?: 'normal' | 'large';
   disabled?: boolean;
   onClick?: () => void;
 };
 
-const Button = ({ children, disabled, type = 'primary', large, onClick }: Props) => {
+const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick }: Props) => {
   return (
     <div className={classNames('button-wrapper', { [`_disabled`]: disabled })}>
       <button
         className={classNames('button', {
           [`_primary`]: type === 'primary',
           [`_secondary`]: type === 'secondary',
-          [`_large`]: large,
+          [`_normal`]: size === 'normal',
+          [`_large`]: size === 'large',
         })}
         onClick={onClick}
       >

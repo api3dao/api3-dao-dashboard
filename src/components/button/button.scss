@@ -11,14 +11,10 @@
 .button {
   background-color: transparent;
   color: $primary-color;
-  height: 51px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: $text-small;
-  line-height: 17px;
   font-weight: 500;
-  padding: 17px $space-lg;
   border-width: 1px;
   border-style: solid;
   outline: none;
@@ -34,7 +30,14 @@
     border-color: $secondary-border;
   }
 
-  &._small {
+  &._normal {
+    height: 51px;
+    font-size: $text-small;
+    line-height: 17px;
+    padding: 17px $space-lg;
+  }
+
+  &._large {
     height: 62px;
     font-size: $text-normal;
     line-height: 22px;
