@@ -1,37 +1,13 @@
-import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import WalletConnectDemo from './wallet-connect-demo';
+import './styles/main.scss';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import ChainDataContextProvider from './chain-data';
-
-const Dashboard = () => {
-  return <div>dashboard</div>;
-};
-
-const Proposals = () => {
-  return <div>proposals</div>;
-};
+import Dashboard from './pages/dashboard';
+import Proposals from './pages/proposals';
 
 function App() {
   return (
     <ChainDataContextProvider>
       <Router>
-        {/* TODO: remove */}
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/proposals">Proposals</Link>
-            </li>
-          </ul>
-        </nav>
-
-        <WalletConnectDemo />
-
         {/* NOTE: The first matching root is used. This imples that `/` must be last */}
         <Switch>
           <Route path="/dashboard">
