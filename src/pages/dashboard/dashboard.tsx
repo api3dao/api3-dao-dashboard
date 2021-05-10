@@ -1,4 +1,4 @@
-import Layout from '../components/layout/layout';
+import Layout from '../../components/layout/layout';
 import DashboardPanels from './dashboard-panels';
 
 const Dashboard = () => {
