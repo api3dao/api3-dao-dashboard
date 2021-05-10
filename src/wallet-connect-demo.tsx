@@ -44,7 +44,7 @@ const useRefreshChainDataAfterMinedBlock = () => {
 };
 
 const WalletConnectDemo = () => {
-  const { setChainData, provider, ...data } = useChainData();
+  const { setChainData, provider } = useChainData();
   useRefreshChainDataAfterMinedBlock();
 
   const onDisconnect = () => {
@@ -114,28 +114,10 @@ const WalletConnectDemo = () => {
     });
   };
 
-  let contractsData = 'Unsupported chain!';
-  const current = data && daoNetworks.find(({ chainId }) => chainId === data.chainId);
-  if (current) {
-    contractsData = JSON.stringify(
-      Object.entries(current.contracts).map(([k, v]) => ({
-        name: k,
-        address: (v as any).address,
-      }))
-    );
-  }
-
   return (
     <>
       {!provider && <Button onClick={onWalletConnect}>Wallet connect</Button>}
       {provider && <Button onClick={onDisconnect}>Disconnect</Button>}
-
-      {provider && <p>{contractsData}</p>}
-      {false && (
-        <button onClick={() => setChainData({ ...data, provider, networkName: data.networkName + 'a' })}>
-          Set chain data
-        </button>
-      )}
     </>
   );
 };

@@ -7,7 +7,6 @@ import {
   calculateAnnualInflationRate,
   calculateAnnualMintedTokens,
   calculateApy,
-  convertPercentage,
   min,
   totalStakedPercentage,
   useApi3Pool,
@@ -15,7 +14,6 @@ import {
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
 import { usePromise } from '../../utils/usePromise';
-import { ethers } from 'ethers';
 import { formatApi3, parseApi3 } from '../../utils/api3-format';
 import { unusedHookDependency } from '../../utils/hooks';
 
@@ -70,7 +68,6 @@ const DashboardPanels = () => {
     unusedHookDependency(latestBlock);
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
-    const formatEther = ethers.utils.formatEther;
     const currentApr = await api3Pool.currentApr();
     const annualApy = calculateApy(currentApr);
     const totalStaked = await api3Pool.totalStake();
@@ -80,7 +77,6 @@ const DashboardPanels = () => {
     const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
 
     return {
-      ethBalance: formatEther(await provider.getSigner().getBalance()), // TODO: remove
       ownedTokens: formatApi3(await api3Token.balanceOf(userAccount)),
       balance: formatApi3(tokenBalances.balance),
       withdrawable: formatApi3(tokenBalances.withdrawable),
@@ -91,7 +87,6 @@ const DashboardPanels = () => {
       annualApy: annualApy.toString(),
       annualInflationRate: annualInflationRate.toString(),
       totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
-      currentApr: convertPercentage(currentApr, true).toString(), // TODO: remove
     };
   }, [api3Pool, api3Token, userAccount, provider, latestBlock]);
 
@@ -106,8 +101,6 @@ const DashboardPanels = () => {
       <div>
         <h5>Account</h5>
 
-        {/* TODO: remove this */}
-        <p>ETH balance: {data.ethBalance}</p>
         <p>User account: {userAccount}</p>
       </div>
       <div>
@@ -118,9 +111,6 @@ const DashboardPanels = () => {
         <p>Total staked: {data.totalStaked}</p>
         <p>Stake target: {data.stakeTarget}</p>
         <p>Stake target in %: {data.totalStakedPercentage}</p>
-
-        {/* TODO: remove this */}
-        <p>Current APR: {data.currentApr}</p>
       </div>
       <div>
         <h5>Balance</h5>
@@ -131,9 +121,7 @@ const DashboardPanels = () => {
         <p>
           <button
             onClick={() => {
-              // TODO: is this correct?
               const maxAllowance = BigNumber.from(2).pow(256).sub(1);
-
               // TODO: handle errors
               api3Token.approve(api3Pool.address, maxAllowance);
             }}
@@ -166,7 +154,6 @@ const DashboardPanels = () => {
         <h5>Staking</h5>
 
         <p>Staked: {data.userStake}</p>
-        {/* TODO: is this correct? */}
         <p>Unstaked: {data.withdrawable}</p>
         <p>
           <button
