@@ -10,7 +10,6 @@
 
 .button {
   background-color: transparent;
-  color: $primary-color;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,11 +21,13 @@
   cursor: pointer;
 
   &._primary {
+    color: $primary-color;
     border-image-source: $primary-border;
     border-image-slice: 1;
   }
 
   &._secondary {
+    color: $secondary-color;
     border-color: $secondary-border;
   }
 
