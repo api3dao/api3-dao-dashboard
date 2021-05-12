@@ -4,9 +4,11 @@ import { useCallback } from 'react';
 import { useChainData } from '../../chain-data';
 import {
   absoluteStakeTarget,
+  ALLOWANCE_REFILL_TRESHOLD,
   calculateAnnualInflationRate,
   calculateAnnualMintedTokens,
   calculateApy,
+  MAX_ALLOWANCE,
   min,
   totalStakedPercentage,
   useApi3Pool,
@@ -89,6 +91,7 @@ const DashboardPanels = () => {
       annualApy: annualApy.toString(),
       annualInflationRate: annualInflationRate.toString(),
       totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
+      allowance: await api3Token.allowance(userAccount, api3Pool.address),
     };
   }, [api3Pool, api3Token, userAccount, provider, latestBlock]);
 
@@ -122,31 +125,32 @@ const DashboardPanels = () => {
         <p>Owned tokens outside pool: {data.ownedTokens}</p>
         <p>Total: {data.balance}</p>
         <p>Withdrawable: {data.withdrawable}</p>
-        <p>
-          {/* TODO: show this button only when current allowance is under trashold (instead of deposit button) */}
-          <button
-            onClick={() => {
-              const maxAllowance = BigNumber.from(2).pow(256).sub(1);
-              // TODO: handle errors
-              api3Token.approve(api3Pool.address, maxAllowance);
-            }}
-          >
-            Approve infinite deposit to pool
-          </button>
-        </p>
-        <p>
-          <button onClick={() => setOpenModal('deposit')}>Deposit</button>
-          <TokenAmountModal
-            title="How many tokens would you like to deposit?"
-            open={openModal === 'deposit'}
-            onClose={closeModal}
-            action="Deposit"
-            onConfirm={(tokens) => {
-              // TODO: handle errors
-              api3Pool.deposit(userAccount, parseApi3(tokens), userAccount);
-            }}
-          />
-        </p>
+        {data.allowance.lt(ALLOWANCE_REFILL_TRESHOLD) ? (
+          <p>
+            <button
+              onClick={() => {
+                // TODO: handle errors
+                api3Token.approve(api3Pool.address, MAX_ALLOWANCE);
+              }}
+            >
+              Approve infinite deposit to pool
+            </button>
+          </p>
+        ) : (
+          <p>
+            <button onClick={() => setOpenModal('deposit')}>Deposit</button>
+            <TokenAmountModal
+              title="How many tokens would you like to deposit?"
+              open={openModal === 'deposit'}
+              onClose={closeModal}
+              action="Deposit"
+              onConfirm={(tokens) => {
+                // TODO: handle errors
+                api3Pool.deposit(userAccount, parseApi3(tokens), userAccount);
+              }}
+            />
+          </p>
+        )}
         <p>
           <button onClick={() => setOpenModal('withdraw')}>Withdraw</button>
           <TokenAmountModal
