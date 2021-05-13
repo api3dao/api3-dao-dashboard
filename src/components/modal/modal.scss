@@ -1,0 +1,59 @@
+@import '../../styles/main.scss';
+
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .hidden {
+    display: none;
+    background: transparent;
+    margin: 0;
+    border: 0;
+  }
+
+  &.backdrop {
+    opacity: 0.9;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: $black-color;
+  }
+
+  // TODO: add animation?
+  &.content {
+    position: relative;
+    background-color: $black-color;
+    border: 1px solid;
+    border-image-source: $primary-border;
+    border-image-slice: 1;
+    width: 550px;
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    color: $secondary-color;
+    padding: $space-xxl;
+
+    .close-button {
+      position: absolute;
+      top: 10%;
+      right: 10%;
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    .action-button {
+      margin-top: $space-xxl;
+    }
+  }
+}

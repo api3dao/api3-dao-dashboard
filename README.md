@@ -65,7 +65,7 @@ We use [Fleek](https://fleek.co/) to host the application on IPFS. The hosting w
 
 Apart from that, we are using [environment
 variables](https://create-react-app.dev/docs/adding-custom-environment-variables/), specifically `REACT_APP_NODE_ENV` to
-signal on which environment we are. Possible values `staging` and `production`.
+signal on which environment we are. Possible values `development`, `staging` and `production`.
 
 ### Hosting new version of production app
 

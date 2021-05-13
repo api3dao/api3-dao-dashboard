@@ -64,3 +64,7 @@ export const totalStakedPercentage = (totalStaked: BigNumber, stakeTarget: BigNu
     .mulUnsafe(FixedNumber.from(100))
     .round(1)
     .toString();
+
+export const MAX_ALLOWANCE = BigNumber.from(2).pow(256).sub(1);
+
+export const ALLOWANCE_REFILL_TRESHOLD = MAX_ALLOWANCE.div(2);

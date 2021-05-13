@@ -4,9 +4,11 @@ import { useCallback } from 'react';
 import { useChainData } from '../../chain-data';
 import {
   absoluteStakeTarget,
+  ALLOWANCE_REFILL_TRESHOLD,
   calculateAnnualInflationRate,
   calculateAnnualMintedTokens,
   calculateApy,
+  MAX_ALLOWANCE,
   min,
   totalStakedPercentage,
   useApi3Pool,
@@ -16,6 +18,8 @@ import { Api3Pool } from '../../generated-contracts';
 import { usePromise } from '../../utils/usePromise';
 import { formatApi3, parseApi3 } from '../../utils/api3-format';
 import { unusedHookDependency } from '../../utils/hooks';
+import { TokenAmountModal } from '../../components/modal/modal';
+import { useState } from 'react';
 
 const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => {
   const user = await api3Pool.users(userAccount);
@@ -87,11 +91,14 @@ const DashboardPanels = () => {
       annualApy: annualApy.toString(),
       annualInflationRate: annualInflationRate.toString(),
       totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
+      allowance: await api3Token.allowance(userAccount, api3Pool.address),
     };
   }, [api3Pool, api3Token, userAccount, provider, latestBlock]);
 
   // TODO: handle error
   const [_error, data] = usePromise(loadData);
+  const [openModal, setOpenModal] = useState<string | null>(null);
+  const closeModal = () => setOpenModal(null);
 
   if (!api3Pool || !api3Token) return null;
   if (!data) return null;
@@ -118,36 +125,44 @@ const DashboardPanels = () => {
         <p>Owned tokens outside pool: {data.ownedTokens}</p>
         <p>Total: {data.balance}</p>
         <p>Withdrawable: {data.withdrawable}</p>
+        {data.allowance.lt(ALLOWANCE_REFILL_TRESHOLD) ? (
+          <p>
+            <button
+              onClick={() => {
+                // TODO: handle errors
+                api3Token.approve(api3Pool.address, MAX_ALLOWANCE);
+              }}
+            >
+              Approve infinite deposit to pool
+            </button>
+          </p>
+        ) : (
+          <p>
+            <button onClick={() => setOpenModal('deposit')}>Deposit</button>
+            <TokenAmountModal
+              title="How many tokens would you like to deposit?"
+              open={openModal === 'deposit'}
+              onClose={closeModal}
+              action="Deposit"
+              onConfirm={(tokens) => {
+                // TODO: handle errors
+                api3Pool.deposit(userAccount, parseApi3(tokens), userAccount);
+              }}
+            />
+          </p>
+        )}
         <p>
-          <button
-            onClick={() => {
-              const maxAllowance = BigNumber.from(2).pow(256).sub(1);
+          <button onClick={() => setOpenModal('withdraw')}>Withdraw</button>
+          <TokenAmountModal
+            title="How many tokens would you like to withdraw?"
+            open={openModal === 'withdraw'}
+            onClose={closeModal}
+            action="Withdraw"
+            onConfirm={(tokens) => {
               // TODO: handle errors
-              api3Token.approve(api3Pool.address, maxAllowance);
+              api3Pool.withdraw(userAccount, parseApi3(tokens));
             }}
-          >
-            Approve infinite deposit to pool
-          </button>
-        </p>
-        <p>
-          <button
-            onClick={() => {
-              // TODO: handle errors
-              api3Pool.deposit(userAccount, parseApi3('10'), userAccount);
-            }}
-          >
-            Deposit 10 tokens
-          </button>
-        </p>
-        <p>
-          <button
-            onClick={() => {
-              // TODO: handle errors
-              api3Pool.withdraw(userAccount, parseApi3('10'));
-            }}
-          >
-            Withdraw 10 tokens
-          </button>
+          />
         </p>
       </div>
       <div>
@@ -156,25 +171,31 @@ const DashboardPanels = () => {
         <p>Staked: {data.userStake}</p>
         <p>Unstaked: {data.withdrawable}</p>
         <p>
-          <button
-            onClick={() => {
+          <button onClick={() => setOpenModal('stake')}>Stake</button>
+          <TokenAmountModal
+            title="How many tokens would you like to stake?"
+            open={openModal === 'stake'}
+            onClose={closeModal}
+            action="Stake"
+            onConfirm={(tokens) => {
               // TODO: handle errors
-              api3Pool.stake(parseApi3('10'));
+              api3Pool.stake(parseApi3(tokens));
             }}
-          >
-            Stake 10 tokens
-          </button>
+          />
         </p>
         <p>
-          <button
-            onClick={async () => {
+          <button onClick={() => setOpenModal('unstake')}>Unstake</button>
+          <TokenAmountModal
+            title="How many tokens would you like to unstake?"
+            open={openModal === 'unstake'}
+            onClose={closeModal}
+            action="Unstake"
+            onConfirm={async (tokens) => {
               // TODO: handle errors
-              const res = await api3Pool.scheduleUnstake(parseApi3('10'));
+              const res = await api3Pool.scheduleUnstake(parseApi3(tokens));
               console.log('Unstaking scheduled', res);
             }}
-          >
-            Unstake 10 tokens
-          </button>
+          />
         </p>
         <p>Scheduled unstake: {data.pendingUnstakes}</p>
       </div>

@@ -6,6 +6,8 @@ import ropstenDao from './contract-deployments/ropsten-dao.json';
 import { initialChainData, useChainData, ChainData } from './chain-data';
 import Button from './components/button/button';
 import { useEffect } from 'react';
+import GenericModal from './components/modal/modal';
+import './wallet-connect-demo.scss';
 
 const daoNetworks = [localhostDao, ropstenDao];
 
@@ -44,7 +46,7 @@ const useRefreshChainDataAfterMinedBlock = () => {
 };
 
 const WalletConnectDemo = () => {
-  const { setChainData, provider } = useChainData();
+  const { setChainData, provider, contracts, networkName } = useChainData();
   useRefreshChainDataAfterMinedBlock();
 
   const onDisconnect = () => {
@@ -88,7 +90,7 @@ const WalletConnectDemo = () => {
 
     try {
       // Enable session (triggers QR Code modal)
-      await web3ModalProvider.enable();
+      await web3ModalProvider.request({ method: 'eth_requestAccounts' });
       // User has chosen a provider and has signed in
       upsertData();
     } catch {
@@ -104,7 +106,7 @@ const WalletConnectDemo = () => {
       upsertData();
     });
 
-    web3ModalProvider.on('networkChanged', () => {
+    web3ModalProvider.on('chainChanged', () => {
       upsertData();
     });
 
@@ -114,10 +116,28 @@ const WalletConnectDemo = () => {
     });
   };
 
+  const isSupportedNetwork = !!provider && contracts === null;
+  const supportedNetworks = daoNetworks
+    .map((network) => network.name)
+    .filter((name) => {
+      // disable localhost network on non-development environment
+      if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
+      else return true;
+    })
+    .join(', ');
+
   return (
     <>
       {!provider && <Button onClick={onWalletConnect}>Wallet connect</Button>}
       {provider && <Button onClick={onDisconnect}>Disconnect</Button>}
+      <GenericModal open={isSupportedNetwork} onClose={() => {}} hideCloseButton>
+        <h5>Unsupported chain!</h5>
+
+        <span className="marginTop">Supported networks are: {supportedNetworks}</span>
+        <span>Current network: {networkName}</span>
+
+        <p>Please use your wallet and connect to one of the supported networks</p>
+      </GenericModal>
     </>
   );
 };
