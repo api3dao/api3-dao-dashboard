@@ -64,6 +64,7 @@
     "node-sass": "^5.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-input-autosize": "^3.0.0",
     "react-responsive-carousel": "^3.2.18",
     "react-router-dom": "^5.2.0",
     "web3modal": "^1.9.3"
@@ -82,6 +83,7 @@
     "@types/node": "^15.0.2",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/react-input-autosize": "^2.2.0",
     "@types/react-router-dom": "^5.1.7",
     "chai": "^4.3.4",
     "dotenv": "^9.0.0",

@@ -1,6 +1,6 @@
 @import '../../styles/main.scss';
 
-.modal {
+.modal-wrapper {
   position: fixed;
   top: 0;
   right: 0;
@@ -9,51 +9,67 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 100;
+}
 
-  .hidden {
+.modal-backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: $black-color;
+}
+
+// TODO: add animation?
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: $black-color;
+  border: 1px solid;
+  border-image-source: $primary-border;
+  border-image-slice: 1;
+  max-width: 550px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  color: $secondary-color;
+  padding: 2 * $space-xxl;
+  box-sizing: border-box;
+}
+
+.close-button {
+  position: absolute;
+  top: $space-xxl;
+  right: $space-xxl;
+  cursor: pointer;
+  transition: transform 0.35s;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  ._hidden {
     display: none;
-    background: transparent;
-    margin: 0;
-    border: 0;
   }
+}
 
-  &.backdrop {
-    opacity: 0.9;
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: $black-color;
-  }
+.modal-footer {
+  margin-top: 2 * $space-xxl;
+}
 
-  // TODO: add animation?
-  &.content {
-    position: relative;
-    background-color: $black-color;
-    border: 1px solid;
-    border-image-source: $primary-border;
-    border-image-slice: 1;
-    width: 550px;
-    height: 550px;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    color: $secondary-color;
-    padding: $space-xxl;
+.modal-header {
+  margin-bottom: $space-xxxl;
+}
 
-    .close-button {
-      position: absolute;
-      top: 10%;
-      right: 10%;
-      cursor: pointer;
-      &:hover {
-        transform: scale(1.1);
-      }
-    }
-
-    .action-button {
-      margin-top: $space-xxl;
-    }
-  }
+.tokenAmountModal-token {
+  margin-bottom: $space-lg;
+  text-transform: uppercase;
 }
