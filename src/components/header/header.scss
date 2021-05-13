@@ -1,17 +1,13 @@
-@import '../../styles/main.scss';
+@import '../../styles/variables.scss';
 
 .header {
   position: relative;
   margin-bottom: 2.5 * $space-xxl;
-  h4 {
-    text-transform: capitalize;
-  }
 }
 
 .header-title {
   position: absolute;
   bottom: -20px;
-  text-transform: capitalize;
   background-image: linear-gradient(76.31deg, #c3c4c3 2.01%, #f3f3f3 99.02%);
   background-clip: text;
   color: transparent;

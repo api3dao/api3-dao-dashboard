@@ -2,7 +2,8 @@ h1,
 h2,
 h3,
 h4,
-h5 {
+h5,
+p {
   margin: 0;
 }
 
@@ -59,4 +60,28 @@ h5 {
 .text-xsmall {
   font-size: 12px;
   line-height: 14px;
+}
+
+.primary-color {
+  color: #fff;
+}
+
+.secondary-color {
+  color: #c3c4c3;
+}
+
+.tertiary-color {
+  color: #878888;
+}
+
+.green-color {
+  color: #7ce3cb;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.medium {
+  font-weight: 500;
 }

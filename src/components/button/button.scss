@@ -1,4 +1,4 @@
-@import '../../styles/main.scss';
+@import '../../styles/variables.scss';
 
 .button-wrapper {
   display: inline-block;
@@ -17,7 +17,7 @@
   border-width: 1px;
   border-style: solid;
   outline: none;
-  transform: 0.25ms linear;
+  transition: 0.25ms linear;
   cursor: pointer;
 
   &._primary {
@@ -29,6 +29,13 @@
   &._secondary {
     color: $secondary-color;
     border-color: $secondary-border;
+  }
+
+  &._link {
+    font-size: $text-small;
+    color: $link-color;
+    border: 0;
+    text-decoration: underline;
   }
 
   &._normal {
@@ -43,10 +50,6 @@
     font-size: $text-normal;
     line-height: 22px;
     padding: 20px 44px;
-  }
-
-  &._secondary {
-    border-color: $secondary-border;
   }
 
   &:hover {

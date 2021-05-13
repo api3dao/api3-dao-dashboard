@@ -128,7 +128,7 @@ const WalletConnectDemo = () => {
 
   return (
     <>
-      {!provider && <Button onClick={onWalletConnect}>Wallet connect</Button>}
+      {!provider && <Button onClick={onWalletConnect}>Connect Wallet</Button>}
       {provider && <Button onClick={onDisconnect}>Disconnect</Button>}
       <GenericModal open={isSupportedNetwork} onClose={() => {}} hideCloseButton>
         <h5>Unsupported chain!</h5>

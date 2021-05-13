@@ -1,12 +1,13 @@
 @import '../../styles/variables.scss';
 
-.navigation {
+.bordered-boxes {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $space-xl $space-xxl;
-}
-
-.navigation-menu {
-  position: relative;
+  & > * {
+    margin-right: $space-xxl;
+  }
+  & > *:last-child {
+    margin-right: 0;
+  }
 }

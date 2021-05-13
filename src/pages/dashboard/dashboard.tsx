@@ -1,12 +1,8 @@
-import Layout from '../../components/layout/layout';
 import DashboardPanels from './dashboard-panels';
+import './dashboard.scss';
 
 const Dashboard = () => {
-  return (
-    <Layout title="dashboard" subtitle="dashboard">
-      <DashboardPanels />
-    </Layout>
-  );
+  return <DashboardPanels />;
 };
 
 export default Dashboard;

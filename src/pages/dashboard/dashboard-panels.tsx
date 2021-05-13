@@ -20,6 +20,12 @@ import { formatApi3, parseApi3 } from '../../utils/api3-format';
 import { unusedHookDependency } from '../../utils/hooks';
 import { TokenAmountModal } from '../../components/modal/modal';
 import { useState } from 'react';
+import Layout from '../../components/layout/layout';
+import Button from '../../components/button/button';
+import StakingPool from '../../components/staking/staking-pool';
+import Slider from '../../components/slider/slider';
+import BorderedBox from '../../components/bordered-box/bordered-box';
+import './dashboard.scss';
 
 const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => {
   const user = await api3Pool.users(userAccount);
@@ -100,106 +106,127 @@ const DashboardPanels = () => {
   const [openModal, setOpenModal] = useState<string | null>(null);
   const closeModal = () => setOpenModal(null);
 
-  if (!api3Pool || !api3Token) return null;
-  if (!data) return null;
+  const disconnected = !api3Pool || !api3Token || !data;
+
+  const abbrStr = (str: string) => {
+    return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
+  };
 
   return (
-    <div style={{ margin: 200 }}>
-      <div>
-        <h5>Account</h5>
-
-        <p>User account: {userAccount}</p>
+    <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">
+      {disconnected && (
+        <>
+          <h5 className="green-color">How This Works</h5>
+          <Slider />
+        </>
+      )}
+      <h5 className="green-color">Staking Pool</h5>
+      <StakingPool data={data || undefined} />
+      <div className="bordered-boxes">
+        <BorderedBox
+          header={
+            <>
+              <h5>Balance</h5>
+              {data?.allowance.lt(ALLOWANCE_REFILL_TRESHOLD) ? (
+                <Button
+                  onClick={() => {
+                    api3Token?.approve(api3Pool ? api3Pool.address : "", MAX_ALLOWANCE);
+                  }}
+                  disabled={disconnected}
+                >
+                  Approve
+                </Button>
+              ) : (
+                <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>+ Deposit</Button>
+              )}
+            </>
+          }
+          content={
+            <>
+              <div className="bordered-box-data">
+                <p className="text-small secondary-color uppercase medium">total</p>
+                <p className="text-xlarge">{data?.balance || 0.0}</p>
+              </div>
+              <div className="bordered-box-data">
+                <p className="text-small secondary-color uppercase medium">withdrawable</p>
+                <p className="text-xlarge">{data?.withdrawable || 0.0}</p>
+              </div>
+            </>
+          }
+          footer={
+            <Button type="link" onClick={() => setOpenModal('withdraw')} disabled={disconnected}>
+              Withdraw
+            </Button>
+          }
+        />
+        <BorderedBox
+          header={
+            <>
+              <h5>Staking</h5>
+              <Button onClick={() => setOpenModal('stake')} disabled={disconnected}>+ Stake</Button>
+            </>
+          }
+          content={
+            <>
+              <div className="bordered-box-data">
+                <p className="text-small secondary-color uppercase medium">staked</p>
+                <p className="text-xlarge">{data?.userStake || 0.0}</p>
+              </div>
+              <div className="bordered-box-data">
+                <p className="text-small secondary-color uppercase medium">unstaked</p>
+                <p className="text-xlarge">{data?.withdrawable || 0.0}</p>
+              </div>
+            </>
+          }
+          footer={
+            <Button type="link" onClick={() => setOpenModal('unstake')} disabled={disconnected}>
+              Iniciate Unstake
+            </Button>
+          }
+        />
       </div>
-      <div>
-        <h5>Insurance pool</h5>
-
-        <p>Annual rewards APY: {data.annualApy}</p>
-        <p>Annual inflation rate: {data.annualInflationRate}</p>
-        <p>Total staked: {data.totalStaked}</p>
-        <p>Stake target: {data.stakeTarget}</p>
-        <p>Stake target in %: {data.totalStakedPercentage}</p>
-      </div>
-      <div>
-        <h5>Balance</h5>
-
-        <p>Owned tokens outside pool: {data.ownedTokens}</p>
-        <p>Total: {data.balance}</p>
-        <p>Withdrawable: {data.withdrawable}</p>
-        {data.allowance.lt(ALLOWANCE_REFILL_TRESHOLD) ? (
-          <p>
-            <button
-              onClick={() => {
-                // TODO: handle errors
-                api3Token.approve(api3Pool.address, MAX_ALLOWANCE);
-              }}
-            >
-              Approve infinite deposit to pool
-            </button>
-          </p>
-        ) : (
-          <p>
-            <button onClick={() => setOpenModal('deposit')}>Deposit</button>
-            <TokenAmountModal
-              title="How many tokens would you like to deposit?"
-              open={openModal === 'deposit'}
-              onClose={closeModal}
-              action="Deposit"
-              onConfirm={(tokens) => {
-                // TODO: handle errors
-                api3Pool.deposit(userAccount, parseApi3(tokens), userAccount);
-              }}
-            />
-          </p>
-        )}
-        <p>
-          <button onClick={() => setOpenModal('withdraw')}>Withdraw</button>
-          <TokenAmountModal
-            title="How many tokens would you like to withdraw?"
-            open={openModal === 'withdraw'}
-            onClose={closeModal}
-            action="Withdraw"
-            onConfirm={(tokens) => {
-              // TODO: handle errors
-              api3Pool.withdraw(userAccount, parseApi3(tokens));
-            }}
-          />
-        </p>
-      </div>
-      <div>
-        <h5>Staking</h5>
-
-        <p>Staked: {data.userStake}</p>
-        <p>Unstaked: {data.withdrawable}</p>
-        <p>
-          <button onClick={() => setOpenModal('stake')}>Stake</button>
-          <TokenAmountModal
-            title="How many tokens would you like to stake?"
-            open={openModal === 'stake'}
-            onClose={closeModal}
-            action="Stake"
-            onConfirm={(tokens) => {
-              // TODO: handle errors
-              api3Pool.stake(parseApi3(tokens));
-            }}
-          />
-        </p>
-        <p>
-          <button onClick={() => setOpenModal('unstake')}>Unstake</button>
-          <TokenAmountModal
-            title="How many tokens would you like to unstake?"
-            open={openModal === 'unstake'}
-            onClose={closeModal}
-            action="Unstake"
-            onConfirm={async (tokens) => {
-              // TODO: handle errors
-              const res = await api3Pool.scheduleUnstake(parseApi3(tokens));
-              console.log('Unstaking scheduled', res);
-            }}
-          />
-        </p>
-        <p>Scheduled unstake: {data.pendingUnstakes}</p>
-      </div>
-    </div>
+      <TokenAmountModal
+        title="How many tokens would you like to deposit?"
+        open={openModal === 'deposit'}
+        onClose={closeModal}
+        action="Deposit"
+        onConfirm={(tokens) => {
+          // TODO: handle errors
+          api3Pool?.deposit(userAccount, parseApi3(tokens), userAccount);
+        }}
+      />
+      <TokenAmountModal
+        title="How many tokens would you like to withdraw?"
+        open={openModal === 'withdraw'}
+        onClose={closeModal}
+        action="Withdraw"
+        onConfirm={(tokens) => {
+          // TODO: handle errors
+          api3Pool?.withdraw(userAccount, parseApi3(tokens));
+        }}
+      />
+      <TokenAmountModal
+        title="How many tokens would you like to stake?"
+        open={openModal === 'stake'}
+        onClose={closeModal}
+        action="Stake"
+        onConfirm={(tokens) => {
+          // TODO: handle errors
+          api3Pool?.stake(parseApi3(tokens));
+        }}
+      />
+      <TokenAmountModal
+        title="How many tokens would you like to unstake?"
+        open={openModal === 'unstake'}
+        onClose={closeModal}
+        action="Unstake"
+        onConfirm={async (tokens) => {
+          // TODO: handle errors
+          const res = await api3Pool?.scheduleUnstake(parseApi3(tokens));
+          console.log('Unstaking scheduled', res);
+        }}
+      />
+    </Layout>
   );
 };
 

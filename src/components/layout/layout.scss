@@ -1,13 +1,24 @@
-@import '../../styles/main.scss';
+@import '../../styles/variables.scss';
 
 .layout {
   background: $background-gradient;
-  height: 100vh;
+  min-height: 100vh;
+  position: relative;
 }
 
 .container {
+  position: relative;
+  z-index: 1;
   max-width: 1020px;
   margin: 0 auto;
-  padding: $space-xxl;
+  padding-top: $space-xxl;
+  padding-right: $space-xxl;
   padding-left: 110px;
+  padding-bottom: 100px;
+}
+
+.layout-texture {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
