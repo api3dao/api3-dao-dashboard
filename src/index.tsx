@@ -9,9 +9,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-
-// These are injected by fleek (our IPFS hosting service).
-// See README.md for more information.
-if (process.env.REACT_APP_NODE_ENV! === 'staging') {
-  console.log('You are browsing a staging environment!');
-}

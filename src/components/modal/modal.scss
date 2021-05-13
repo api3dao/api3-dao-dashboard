@@ -10,6 +10,10 @@
   align-items: center;
   justify-content: center;
 
+  .hidden {
+    display: none;
+  }
+
   &.backdrop {
     opacity: 0.9;
     position: fixed;
@@ -33,6 +37,7 @@
     flex-direction: column;
     text-align: center;
     color: $secondary-color;
+    padding: $space-xxl;
 
     .close-button {
       position: absolute;

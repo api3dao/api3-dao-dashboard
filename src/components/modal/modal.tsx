@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Button from '../button/button';
@@ -6,6 +7,7 @@ import './modal.scss';
 interface BaseProps {
   open: boolean;
   onClose: () => void;
+  hideCloseButton?: true;
 }
 
 interface GenericModalProps extends BaseProps {
@@ -20,14 +22,14 @@ const CloseButton = () => (
 );
 
 const GenericModal = (props: GenericModalProps) => {
-  const { onClose, open, children } = props;
+  const { onClose, open, hideCloseButton, children } = props;
 
   if (!open) return null;
   return ReactDOM.createPortal(
     <div className="modal">
       <div className="modal backdrop"></div>
       <div className="modal content">
-        <div onClick={onClose} className="close-button">
+        <div onClick={onClose} className={classNames('close-button', hideCloseButton && 'hidden')}>
           <CloseButton />
         </div>
 
