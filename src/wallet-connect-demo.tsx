@@ -88,7 +88,7 @@ const WalletConnectDemo = () => {
 
     try {
       // Enable session (triggers QR Code modal)
-      await web3ModalProvider.enable();
+      await web3ModalProvider.request({ method: 'eth_requestAccounts' });
       // User has chosen a provider and has signed in
       upsertData();
     } catch {
@@ -104,7 +104,7 @@ const WalletConnectDemo = () => {
       upsertData();
     });
 
-    web3ModalProvider.on('networkChanged', () => {
+    web3ModalProvider.on('chainChanged', () => {
       upsertData();
     });
 
