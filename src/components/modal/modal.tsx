@@ -14,7 +14,7 @@ interface GenericModalProps extends BaseProps {
   children: React.ReactNode;
 }
 
-const CloseButton = () => (
+const CloseIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M2 2L21.8 21.8" stroke="#F3F3F3" strokeWidth="1.5" />
     <path d="M2 21.8L21.8 2" stroke="#F3F3F3" strokeWidth="1.5" />
@@ -29,9 +29,9 @@ const GenericModal = (props: GenericModalProps) => {
     <div className="modal">
       <div className="modal backdrop"></div>
       <div className="modal content">
-        <div onClick={onClose} className={classNames('close-button', hideCloseButton && 'hidden')}>
-          <CloseButton />
-        </div>
+        <button onClick={onClose} className={classNames('close-button', { hidden: hideCloseButton })}>
+          <CloseIcon />
+        </button>
 
         {children}
       </div>
@@ -43,7 +43,7 @@ const GenericModal = (props: GenericModalProps) => {
 interface TokenAmountModalProps extends BaseProps {
   title: string;
   action: string;
-  onConfirm: (value: string) => void;
+  onConfirm: (value: string) => void | Promise<any>;
 }
 
 export const TokenAmountModal = (props: TokenAmountModalProps) => {
@@ -62,8 +62,9 @@ export const TokenAmountModal = (props: TokenAmountModalProps) => {
       <Button
         type="secondary"
         className="action-button"
-        onClick={() => {
-          onConfirm(inputValue);
+        onClick={async () => {
+          // TODO: maybe show loading spinner while we wait for confirmation?
+          await onConfirm(inputValue);
           baseProps.onClose();
         }}
       >

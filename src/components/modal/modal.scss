@@ -12,6 +12,9 @@
 
   .hidden {
     display: none;
+    background: transparent;
+    margin: 0;
+    border: 0;
   }
 
   &.backdrop {
