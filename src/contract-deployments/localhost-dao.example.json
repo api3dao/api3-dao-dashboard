@@ -1996,6 +1996,10 @@
           "type": "function"
         }
       ]
-    }
+    },
+    "PrimaryAgentAppAddress": "0x37c21F74C2Aabc3ee52FEdB19e3987BCAfd88C3a",
+    "SecondaryAgentAppAddress": "0x0d2234fb6DA5423a5cF6C1d3F77D97c4d045fDbB",
+    "PrimaryVotingAppAddress": "0x94B6244747B3fCf46224e4e22df1Cf314b40987B",
+    "SecondaryVotingAppAddress": "0x5B7Aa34F9c56912DC89b81A34058A5043769aED4"
   }
 }

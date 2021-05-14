@@ -42,6 +42,10 @@ Deployment scripts will deploy the necessary contracts to target chain and also 
 _(Because, we can't conditionally and synchronously import ES modules, we copy `localhost-dao.example.json` as a
 placeholder for `localhost-dao.json` deployment output.)_
 
+Unfortunately, aragon DAO contracts are not deployed as easily. Instead we use
+[api3-dao](https://github.com/Siegrift/api3-dao/tree/api3pool-deployment) for that. TODO: update rest when we are sure
+it works.
+
 ### Contract deployments are not automatic
 
 It's important to mention that all deployed (hosted) applications will connect to the contracts specified in

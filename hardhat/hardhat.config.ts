@@ -3,7 +3,6 @@ import 'hardhat-deploy';
 import { subtask, task, HardhatUserConfig } from 'hardhat/config';
 import dotenv from 'dotenv';
 import { existsSync } from 'fs';
-import { execSync } from 'child_process';
 import { TASK_NODE_SERVER_READY } from 'hardhat/builtin-tasks/task-names';
 
 dotenv.config({ path: '../.env' });
@@ -107,13 +106,14 @@ const config: HardhatUserConfig = {
      *  1) Use DAO contracts dependency with github URL
      *  2) We need to manually install contract dependencies (@openzeppelin/contracts)
      *  3) Hardhat complains when we want to compile source files in `../node_modules` As a
-     *     workaround, I've created a symlink `contracts-symlink` which links to the DAO contracts.
+     *     workaround, I've created a `contracts` directory which contains symbolic links to
+     *     the DAO contracts.
      *  4) We need to use npx to run hardhat, because if we use hardhat from node_modules it wants
      *     to initialize new project in the project root (and ignores hardhat directory).
      *
      * I've tried to workaround this using solidity `--allow-paths` but that didn't work.
      */
-    sources: 'contracts-symlink',
+    sources: 'contracts',
   },
   solidity: {
     compilers: [
@@ -132,6 +132,16 @@ const config: HardhatUserConfig = {
           optimizer: {
             enabled: true,
             runs: 200,
+          },
+        },
+      },
+      // Needed to compile aragorn DAO contracts
+      {
+        version: '0.4.24',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 10000,
           },
         },
       },

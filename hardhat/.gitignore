@@ -2,3 +2,4 @@
 /artifacts
 # Ignoring localhost deployments, because they will change on every redeploy for every developer
 /deployments/localhost
+/scripts/set-dao-apps-in-pool/voting-apps-addresses.json
