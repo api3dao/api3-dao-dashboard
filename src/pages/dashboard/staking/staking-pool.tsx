@@ -2,7 +2,7 @@ import RadialChart from './radial-chart';
 import './staking-pool.scss';
 
 type Props = {
-  data?: {
+  data: {
     annualApy: string;
     annualInflationRate: string;
     totalStaked: string;
@@ -12,11 +12,11 @@ type Props = {
 };
 
 const StakingPool = ({ data }: Props) => {
-  const annualApy = parseFloat(data?.annualApy || '0').toFixed(1);
-  const annualInflationRate = parseFloat(data?.annualInflationRate || '0');
-  const totalStaked = parseFloat(data?.totalStaked || '0').toLocaleString();
-  const stakeTarget = parseFloat(data?.stakeTarget || '0').toLocaleString();
-  const totalStakedPercentage = parseFloat(data?.totalStakedPercentage || '0');
+  const annualApy = parseFloat(data.annualApy || '0').toFixed(1);
+  const annualInflationRate = parseFloat(data.annualInflationRate || '0');
+  const totalStaked = parseFloat(data.totalStaked || '0').toLocaleString();
+  const stakeTarget = parseFloat(data.stakeTarget || '0').toLocaleString();
+  const totalStakedPercentage = parseFloat(data.totalStakedPercentage || '0');
 
   return (
     <div className="staking-pool">

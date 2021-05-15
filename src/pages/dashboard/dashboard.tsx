@@ -184,7 +184,7 @@ const Dashboard = () => {
           }
           footer={
             <Button type="link" onClick={() => setOpenModal('unstake')} disabled={disconnected}>
-              Iniciate Unstake
+              Initiate Unstake
             </Button>
           }
         />
