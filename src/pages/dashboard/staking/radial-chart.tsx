@@ -51,7 +51,7 @@ const RadialChart = ({ completionPercent }: Props) => {
   );
 };
 
-export default RadialChart; // eslint-disable-line max-len
+export default RadialChart;
 
 /* Following functions copied from:
  * https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle */ const describeArc = (

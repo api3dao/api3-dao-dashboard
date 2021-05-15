@@ -3,7 +3,6 @@
 .input-wrapper {
   display: inline-block;
   max-width: 100%;
-  overflow: hidden;
   &._disabled {
     opacity: 0.4;
     pointer-events: none;
@@ -11,31 +10,45 @@
 }
 
 .input {
-  min-width: 50px;
-  text-align: center;
-  background-color: transparent;
-  color: $secondary-color;
-  font-weight: 500;
-  border-width: 0;
-  outline: none;
-  cursor: pointer;
-
-  &:focus {
-    color: $primary-color;
+  max-width: 100%;
+  overflow: hidden;
+  input {
+    min-width: 50px;
+    text-align: center;
+    background-color: transparent;
+    color: $secondary-color;
+    font-weight: 500;
+    border-width: 0;
+    outline: none;
   }
 
-  &::placeholder {
-    color: $tertiary-color;
+  input {
+    &:focus {
+      color: $primary-color;
+    }
+    &::placeholder {
+      color: $tertiary-color;
+    }
   }
 
   &._normal {
-    font-size: $text-small;
-    line-height: 24px;
+    input {
+      font-size: $text-small;
+      line-height: 24px;
+    }
+    & > div {
+      font-size: $text-small !important;
+    }
   }
 
   &._large {
-    font-size: $text-xlarge;
-    line-height: 44px;
+    input {
+      font-size: $text-xlarge;
+      line-height: 44px;
+    }
+    & > div {
+      font-size: $text-xlarge !important;
+    }
   }
 }
 

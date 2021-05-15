@@ -12,11 +12,11 @@ type Props = {
 };
 
 const StakingPool = ({ data }: Props) => {
-  const annualApy = parseFloat(data?.annualApy || '10').toFixed(1);
-  const annualInflationRate = parseFloat(data?.annualInflationRate || '2');
-  const totalStaked = parseFloat(data?.totalStaked || '8540000').toLocaleString();
-  const stakeTarget = parseFloat(data?.stakeTarget || '10000000').toLocaleString();
-  const totalStakedPercentage = parseFloat(data?.totalStakedPercentage || '85.4');
+  const annualApy = parseFloat(data?.annualApy || '0').toFixed(1);
+  const annualInflationRate = parseFloat(data?.annualInflationRate || '0');
+  const totalStaked = parseFloat(data?.totalStaked || '0').toLocaleString();
+  const stakeTarget = parseFloat(data?.stakeTarget || '0').toLocaleString();
+  const totalStakedPercentage = parseFloat(data?.totalStakedPercentage || '0');
 
   return (
     <div className="staking-pool">

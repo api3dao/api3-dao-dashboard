@@ -1,0 +1,10 @@
+@import '../../../styles/variables.scss';
+
+.tokenAmountModal-token {
+  margin-bottom: $space-lg;
+  text-transform: uppercase;
+}
+
+.tokenAmountModal-balance {
+  margin-top: $space-lg;
+}

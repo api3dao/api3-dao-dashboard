@@ -18,11 +18,11 @@ import { Api3Pool } from '../../generated-contracts';
 import { usePromise } from '../../utils/usePromise';
 import { formatApi3, parseApi3 } from '../../utils/api3-format';
 import { unusedHookDependency } from '../../utils/hooks';
-import { TokenAmountModal } from '../../components/modal/modal';
+import TokenAmountModal from './token-amount-modal/token-amount-modal';
 import { useState } from 'react';
 import Layout from '../../components/layout/layout';
 import Button from '../../components/button/button';
-import StakingPool from '../../components/staking/staking-pool';
+import StakingPool from './staking/staking-pool';
 import Slider from '../../components/slider/slider';
 import BorderedBox from '../../components/bordered-box/bordered-box';
 import './dashboard.scss';
@@ -198,6 +198,7 @@ const Dashboard = () => {
           // TODO: handle errors
           api3Pool?.deposit(userAccount, parseApi3(tokens), userAccount);
         }}
+        ownedTokens={data?.ownedTokens}
       />
       <TokenAmountModal
         title="How many tokens would you like to withdraw?"
@@ -208,6 +209,7 @@ const Dashboard = () => {
           // TODO: handle errors
           api3Pool?.withdraw(userAccount, parseApi3(tokens));
         }}
+        ownedTokens={data?.ownedTokens}
       />
       <TokenAmountModal
         title="How many tokens would you like to stake?"
@@ -218,6 +220,7 @@ const Dashboard = () => {
           // TODO: handle errors
           api3Pool?.stake(parseApi3(tokens));
         }}
+        ownedTokens={data?.ownedTokens}
       />
       <TokenAmountModal
         title="How many tokens would you like to unstake?"
@@ -229,6 +232,7 @@ const Dashboard = () => {
           const res = await api3Pool?.scheduleUnstake(parseApi3(tokens));
           console.log('Unstaking scheduled', res);
         }}
+        ownedTokens={data?.ownedTokens}
       />
     </Layout>
   );
