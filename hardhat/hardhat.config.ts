@@ -135,7 +135,7 @@ const config: HardhatUserConfig = {
           },
         },
       },
-      // Needed to compile aragorn DAO contracts
+      // Needed to compile aragon DAO contracts
       {
         version: '0.4.24',
         settings: {
