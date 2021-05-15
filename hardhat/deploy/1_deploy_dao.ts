@@ -32,11 +32,7 @@ const main: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       log: true,
     });
 
-    // TODO: Needed for read-proposal, remove once not needed
-    await deploy('Api3Voting', {
-      from: deployer,
-      log: true,
-    });
+    // TODO: console log info to deploy DAO?
   }
 };
 
