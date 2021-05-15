@@ -3,8 +3,10 @@ import { ethers } from 'hardhat';
 import { getDeploymentFile } from '../../utils';
 import { writeFileSync } from 'fs';
 
+const NETWORK = 'localhost';
+
 async function main() {
-  const Api3Pool = getDeploymentFile('localhost', 'Api3Pool');
+  const Api3Pool = getDeploymentFile(NETWORK, 'Api3Pool');
   const deployerSigner = (await ethers.getSigners())[0];
   const api3Pool = new ethers.Contract(Api3Pool.address, Api3Pool.abi, deployerSigner);
 
@@ -17,15 +19,17 @@ async function main() {
   if (logs.length !== 1 || logs[0].event !== 'SetDaoApps') {
     throw new Error('Expected single SetDaoApps event to be emitted!');
   }
+  console.log('Successfully set DAO apps on api3pool');
 
   // For convenience add the apps addresses to the exported deployment files
-  const exportedFilePath = `${__dirname}/../../../src/contract-deployments/localhost-dao.json`;
+  const exportedFilePath = `${__dirname}/../../../src/contract-deployments/${NETWORK}-dao.json`;
   const deployData = require(exportedFilePath);
   deployData.contracts.PrimaryAgentAppAddress = apps.agentPrimary;
   deployData.contracts.SecondaryAgentAppAddress = apps.agentSecondary;
   deployData.contracts.PrimaryVotingAppAddress = apps.votingPrimary;
   deployData.contracts.SecondaryVotingAppAddress = apps.votingSecondary;
   writeFileSync(exportedFilePath, JSON.stringify(deployData, null, 2));
+  console.log('Successfully appended the apps addresses for the application');
 }
 
 main()
