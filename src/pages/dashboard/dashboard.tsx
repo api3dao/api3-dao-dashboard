@@ -205,7 +205,7 @@ const Dashboard = () => {
           await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
           closeModal();
         }}
-        helperText={<HelperText helperText={data?.ownedTokens || ''} />}
+        helperText={<HelperText helperText={data?.ownedTokens || '0.0'} />}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
       />
