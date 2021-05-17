@@ -42,9 +42,45 @@ Deployment scripts will deploy the necessary contracts to target chain and also 
 _(Because, we can't conditionally and synchronously import ES modules, we copy `localhost-dao.example.json` as a
 placeholder for `localhost-dao.json` deployment output.)_
 
+### Automatic contaract deployments are BROKEN AT THE MOMENT
+
 Unfortunately, aragon DAO contracts are not deployed as easily. Instead we use
-[api3-dao](https://github.com/Siegrift/api3-dao/tree/api3pool-deployment) for that. TODO: update rest when we are sure
-it works.
+[api3-dao](https://github.com/Siegrift/api3-dao/blob/c6d531162e3bc0b6931514c6bc92ed9c35763670/packages/dao/scripts/new-dao-instance.js)
+for that. This deployment only works for localhost and there is an issue to make the deploy possible for other networks
+https://github.com/api3dao/api3-dao/issues/217.
+
+To make it possible to deploy to localhost, you'll need some initial preparation:
+
+1. Run `yarn eth:node` - you'll need some local node running
+2. Clone [forked-dao-repo](https://github.com/Siegrift/api3-dao) and `cd` into it.
+3. Run `npm run bootstrap`
+4. `cd packages/dao`
+5. `npm run deploy:rpc`
+6. If everything goes well, your it will deploy bunch of contract with no error
+
+Follow these steps to deploy to localhost:
+
+1. Run the localhost node `yarn eth:node`. It will also deploy the token and pool contract for you and export it to
+   `localhost-dao.json`.
+2. Copy the deployed address of the `Api3Pool` from `localhost-dao.json`
+3. Open [forked-dao-repo](https://github.com/Siegrift/api3-dao)
+4. `cd packages/dao`
+5. Paste the address to the `API3_POOL_ADDRESS` variable in
+   [new-dao-instance.js](https://github.com/Siegrift/api3-dao/blob/c6d531162e3bc0b6931514c6bc92ed9c35763670/packages/dao/scripts/new-dao-instance.js#L26)
+   in the forked DAO repo
+6. Run `npm run no-compile:deploy:localhost` - if this fails, try removing `arapp_local.json` and re-run.
+7. It will print out JSON in following format:
+   ```json
+   {
+     "votingPrimary": "0x18538A817401Eeff7be8eB3964959cecb5522532",
+     "votingSecondary": "0xb43a9b2175786FcCb8C445a41529D8aEF99E5841",
+     "agentPrimary": "0xDEB864805544b7415d211a8206684F9c5b906C1c",
+     "agentSecondary": "0x92ccc96B4681683194fA1cF9A3212d332872821a"
+   }
+   ```
+8. Paste the JSON to `voting-apps-addresses.json`
+9. In the api3-dao-dahsboard, run `eth:set-dao-apps:localhost`
+10. At this point you should have address of aragon apps _(agents and voting)_ exported in `localhost-dao.json`
 
 ### Contract deployments are not automatic
 

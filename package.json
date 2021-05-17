@@ -23,7 +23,8 @@
     "send-tokens:localhost": "cd hardhat && npx hardhat send-tokens --address",
     "send-tokens:ropsten": "cd hardhat && npx hardhat send-tokens --network ropsten --address",
     "fund-account": "cd hardhat && npx hardhat fund-account --address",
-    "postinstall": "yarn eth:compile-contracts && yarn generate-contracts"
+    "postinstall": "yarn eth:compile-contracts && yarn generate-contracts",
+    "eth:set-dao-apps:localhost": "cd hardhat && npx hardhat run scripts/set-dao-apps-in-pool"
   },
   "husky": {
     "hooks": {

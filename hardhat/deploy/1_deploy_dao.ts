@@ -32,7 +32,8 @@ const main: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       log: true,
     });
 
-    // TODO: console log info to deploy DAO?
+    console.log('Do not forget to deploy DAO contracts if you want to develop proposals!');
+    console.log('Check out README for instructions');
   }
 };
 
