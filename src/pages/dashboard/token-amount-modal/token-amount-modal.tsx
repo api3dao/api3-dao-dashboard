@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from 'react';
+import { ChangeEventHandler, ReactNode } from 'react';
 import classNames from 'classnames';
 import Modal from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
@@ -13,14 +13,9 @@ interface Props {
   open: boolean;
   onChange: ChangeEventHandler<HTMLInputElement>;
   inputValue: string;
-  helperText?: string;
+  helperText?: ReactNode;
   showTokenInput?: boolean;
 }
-
-const HelperText = (props: { helperText: string }) => {
-  const { helperText } = props;
-  return <div className="depositModal-balance">Your balance: {helperText}</div>;
-};
 
 const TokenAmountModal = (props: Props) => {
   const { title, action, onConfirm, onClose, open, onChange, inputValue, helperText, showTokenInput = true } = props;
@@ -48,7 +43,7 @@ const TokenAmountModal = (props: Props) => {
           <p className="tokenAmountModal-token medium">TOKEN</p>
 
           <Input value={inputValue} onChange={onChange} size="large" />
-          {helperText && <HelperText helperText={helperText} />}
+          {helperText}
         </>
       )}
     </Modal>

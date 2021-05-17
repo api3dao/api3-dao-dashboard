@@ -67,6 +67,11 @@ const getScheduledUnstakes = async (api3Pool: Api3Pool, userAccount: string) => 
   });
 };
 
+const HelperText = (props: { helperText: string }) => {
+  const { helperText } = props;
+  return <div className="depositModal-balance">Your balance: {helperText}</div>;
+};
+
 const Dashboard = () => {
   const { userAccount, provider, latestBlock } = useChainData();
   const api3Pool = useApi3Pool();
@@ -200,7 +205,7 @@ const Dashboard = () => {
           await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
           closeModal();
         }}
-        helperText={data?.ownedTokens}
+        helperText={<HelperText helperText={data?.ownedTokens || ''} />}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
       />
