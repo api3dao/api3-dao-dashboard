@@ -59,6 +59,7 @@ const getProposals = async (
   }));
 };
 
+// TODO: error handling
 export const useProposalState = () => {
   const { setChainData, ...chainData } = useChainData();
   const { userAccount, proposalState } = chainData;
@@ -70,16 +71,13 @@ export const useProposalState = () => {
     if (!api3Voting || proposalState !== null || !api3Pool) return;
 
     const { primary, secondary } = api3Voting;
-    const startVoteFilter = primary.filters.StartVote(null, userAccount, null);
+    const startVoteFilter = primary.filters.StartVote(null, null, null);
     const primaryStartVotes = (await primary.queryFilter(startVoteFilter)).map((p) => p.args);
     const secondaryStartVotes = (await secondary.queryFilter(startVoteFilter)).map((p) => p.args);
 
-    // TODO: error handling
     setChainData({
       ...chainData,
       proposalState: {
-        // TODO: 1) make sure the app is refreshed after this is loaded
-        // TODO: 2), should this even be here? It belongs to proposal page, but is not about proposals
         delegationAddress: await api3Pool.userDelegate(userAccount),
         primary: {
           proposals: await getProposals(primary, userAccount, primaryStartVotes),
@@ -95,19 +93,20 @@ export const useProposalState = () => {
     loadInitialData();
   }, [loadInitialData]);
 
-  // Ensure that the state is up to date with blockchain
+  // Ensure that the proposals are up to date with blockchain
   useEffect(() => {
     if (!api3Voting || !proposalState) return;
 
     type Api3VotingFilters = typeof api3Voting.primary.filters;
     type Api3VotingFiltersMap = { [key in keyof Api3VotingFilters]: ReturnType<Api3VotingFilters[key]> };
     // Let's enforce we list out every Api3Voting event to make it harder to forget process some.
+    // NOTE: We want to load all proposals, not just the ones from current user
     const votingEvents: Api3VotingFiltersMap = {
-      CastVote: api3Voting.primary.filters.CastVote(null, userAccount, null, null),
+      CastVote: api3Voting.primary.filters.CastVote(null, null, null, null),
       ChangeMinQuorum: api3Voting.primary.filters.ChangeMinQuorum(null),
       ChangeSupportRequired: api3Voting.primary.filters.ChangeSupportRequired(null),
       ExecuteVote: api3Voting.primary.filters.ExecuteVote(null),
-      StartVote: api3Voting.primary.filters.StartVote(null, userAccount, null),
+      StartVote: api3Voting.primary.filters.StartVote(null, null, null),
       // Filters below are not used at the moment.
       ScriptResult: api3Voting.primary.filters.ScriptResult(null, null, null, null),
       RecoverToVault: api3Voting.primary.filters.RecoverToVault(null, null, null),
@@ -116,25 +115,60 @@ export const useProposalState = () => {
 
     votingAppTypes.forEach((type) => {
       const votingApp = api3Voting[type];
-      // TODO: add logic for other events
-      votingApp.on(votingEvents.StartVote, (...args) => {
+
+      // On StartVote event just add a new proposal to the list
+      votingApp.on(votingEvents.StartVote, async (...args) => {
         const startVote = last(args).args;
+        const newProposal = await getProposals(votingApp, userAccount, [startVote]);
 
         setChainData(
-          updateImmutably(chainData, async (data) => {
-            const newProposal = await getProposals(votingApp, userAccount, [startVote]);
+          updateImmutably(chainData, (data) => {
             // NOTE: There will only be one proposal per event callback
             data.proposalState![type].proposals.push(newProposal[0]);
           })
         );
       });
+
+      // For other events just reload everything
+      const reloadEverything = loadInitialData;
+      votingApp.on(votingEvents.CastVote, reloadEverything);
+      votingApp.on(votingEvents.ChangeMinQuorum, reloadEverything);
+      votingApp.on(votingEvents.ChangeSupportRequired, reloadEverything);
+      votingApp.on(votingEvents.ExecuteVote, reloadEverything);
     });
 
     return () => {
       api3Voting.primary.removeAllListeners();
       api3Voting.secondary.removeAllListeners();
     };
-  }, [userAccount, chainData, proposalState, api3Voting, setChainData]);
+  }, [userAccount, chainData, proposalState, api3Voting, setChainData, loadInitialData]);
+
+  useEffect(() => {
+    if (!api3Pool) return;
+
+    const delegationEvents = {
+      Delegated: api3Pool.filters.Delegated(userAccount, null),
+      Undelegated: api3Pool.filters.Undelegated(userAccount, null),
+    };
+
+    Object.values(delegationEvents).forEach((filter) => {
+      api3Pool.on(filter, async () => {
+        const newDelegationAddress = await api3Pool.userDelegate(userAccount);
+
+        setChainData(
+          updateImmutably(chainData, (data) => {
+            data.proposalState!.delegationAddress = newDelegationAddress;
+          })
+        );
+      });
+    });
+
+    return () => {
+      Object.keys(delegationEvents).forEach((eventName) => {
+        api3Pool.removeAllListeners(eventName);
+      });
+    };
+  }, [api3Pool, userAccount, setChainData, chainData]);
 
   return proposalState;
 };
