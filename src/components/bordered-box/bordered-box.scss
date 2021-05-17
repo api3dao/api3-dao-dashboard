@@ -1,0 +1,43 @@
+@import '../../styles/variables.scss';
+
+.bordered-box {
+  display: flex;
+  max-width: 420px;
+  width: 100%;
+}
+
+.bordered-box-col {
+  width: 32px;
+  border: 1px solid $secondary-border;
+
+  &._right {
+    border-left-width: 0;
+  }
+
+  &._left {
+    border-right-width: 0;
+  }
+}
+
+.bordered-box-content {
+  width: 100%;
+  margin: 0 $space-xs;
+}
+
+.bordered-box-data {
+  margin-bottom: $space-lg;
+  text-align: center;
+}
+
+.bordered-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transform: translateY(-50%);
+}
+
+.bordered-box-footer {
+  margin-top: $space-lg;
+  text-align: center;
+  transform: translateY(50%);
+}

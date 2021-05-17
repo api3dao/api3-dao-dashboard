@@ -5,7 +5,7 @@ import './button.scss';
 type Props = {
   children: ReactNode;
   className?: string;
-  type?: 'primary' | 'secondary';
+  type?: 'primary' | 'secondary' | 'link' | 'text';
   size?: 'normal' | 'large';
   disabled?: boolean;
   onClick?: () => void;
@@ -18,19 +18,23 @@ const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick
         className={classNames('button', {
           [`_primary`]: type === 'primary',
           [`_secondary`]: type === 'secondary',
-          [`_normal`]: size === 'normal',
-          [`_large`]: size === 'large',
+          [`_link`]: type === 'link',
+          [`_text`]: type === 'text',
+          [`_normal`]: size === 'normal' && type !== 'link',
+          [`_large`]: size === 'large' && type !== 'link',
         })}
         onClick={onClick}
       >
         {children}
       </button>
-      <div
-        className={classNames('button-underline', {
-          [`_primary`]: type === 'primary',
-          [`_secondary`]: type === 'secondary',
-        })}
-      />
+      {type !== 'link' && (
+        <div
+          className={classNames('button-underline', {
+            [`_primary`]: type === 'primary',
+            [`_secondary`]: type === 'secondary',
+          })}
+        />
+      )}
     </div>
   );
 };

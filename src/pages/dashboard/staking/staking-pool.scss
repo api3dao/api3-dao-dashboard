@@ -1,0 +1,40 @@
+@import '../../../styles/variables.scss';
+
+.staking-pool {
+  display: flex;
+  align-items: center;
+  margin-top: $space-xxxl;
+  margin-bottom: 100px;
+}
+
+.staking-table {
+  max-width: 200px;
+  width: 100%;
+  margin-right: 2 * $space-xxxl;
+
+  &._twoCells {
+    max-width: 400px;
+    margin-right: $space-xxxl;
+    .staking-table-cell {
+      width: 50%;
+    }
+  }
+}
+
+.staking-table-row {
+  height: 96px;
+  display: flex;
+  align-items: center;
+  padding: $space-md 0;
+  border-top: 1px solid #404141;
+  box-sizing: border-box;
+}
+
+.staking-table-cell {
+  width: 100%;
+  padding: 0 $space-md;
+  box-sizing: border-box;
+  &._rightAlign {
+    text-align: right;
+  }
+}

@@ -1,0 +1,60 @@
+@import '../../styles/variables.scss';
+
+.input-wrapper {
+  display: inline-block;
+  max-width: 100%;
+  &._disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+.input {
+  max-width: 100%;
+  overflow: hidden;
+  input {
+    min-width: 50px;
+    text-align: center;
+    background-color: transparent;
+    color: $secondary-color;
+    font-weight: 500;
+    border-width: 0;
+    outline: none;
+  }
+
+  input {
+    &:focus {
+      color: $primary-color;
+    }
+    &::placeholder {
+      color: $tertiary-color;
+    }
+  }
+
+  &._normal {
+    input {
+      font-size: $text-small;
+      line-height: 24px;
+    }
+    & > div {
+      font-size: $text-small !important;
+    }
+  }
+
+  &._large {
+    input {
+      font-size: $text-xlarge;
+      line-height: 44px;
+    }
+    & > div {
+      font-size: $text-xlarge !important;
+    }
+  }
+}
+
+.input-underline {
+  height: 1px;
+  width: 100%;
+  background-color: $secondary-border;
+  margin-top: $space-sm;
+}
