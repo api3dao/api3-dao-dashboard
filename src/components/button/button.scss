@@ -13,6 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: $button-color;
   font-weight: 500;
   border-width: 1px;
   border-style: solid;
@@ -21,19 +22,21 @@
   cursor: pointer;
 
   &._primary {
-    color: $primary-color;
     border-image-source: $primary-border;
     border-image-slice: 1;
   }
 
   &._secondary {
-    color: $secondary-color;
     border-color: $secondary-border;
   }
 
   &._link {
-    font-size: $text-small;
     color: $link-color;
+    border: 0;
+    text-decoration: underline;
+  }
+
+  &._text {
     border: 0;
     text-decoration: underline;
   }

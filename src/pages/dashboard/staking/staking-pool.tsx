@@ -13,7 +13,7 @@ type Props = {
 
 const StakingPool = ({ data }: Props) => {
   const annualApy = parseFloat(data?.annualApy || '0').toFixed(1);
-  const annualInflationRate = parseFloat(data ? data.annualInflationRate : '0');
+  const annualInflationRate = parseFloat(data ? data.annualInflationRate : '0').toFixed(2);
   const totalStaked = parseFloat(data?.totalStaked || '0').toLocaleString();
   const stakeTarget = parseFloat(data?.stakeTarget || '0').toLocaleString();
   const totalStakedPercentage = parseFloat(data?.totalStakedPercentage || '0');

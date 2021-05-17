@@ -5,6 +5,12 @@
   text-transform: uppercase;
 }
 
-.tokenAmountModal-balance {
+.depositModal-balance {
   margin-top: $space-lg;
+}
+
+.tokenAmountModal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

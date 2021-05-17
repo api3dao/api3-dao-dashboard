@@ -104,6 +104,7 @@ const Dashboard = () => {
   // TODO: handle error
   const [_error, data] = usePromise(loadData);
   const [openModal, setOpenModal] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState('');
   const closeModal = () => setOpenModal(null);
 
   const disconnected = !api3Pool || !api3Token || !data;
@@ -194,45 +195,64 @@ const Dashboard = () => {
         open={openModal === 'deposit'}
         onClose={closeModal}
         action="Deposit"
-        onConfirm={(tokens) => {
+        onConfirm={async () => {
           // TODO: handle errors
-          api3Pool?.deposit(userAccount, parseApi3(tokens), userAccount);
+          await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
+          closeModal();
         }}
-        ownedTokens={data?.ownedTokens}
+        helperText={data?.ownedTokens}
+        inputValue={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
       />
       <TokenAmountModal
         title="How many tokens would you like to withdraw?"
         open={openModal === 'withdraw'}
         onClose={closeModal}
         action="Withdraw"
-        onConfirm={(tokens) => {
+        onConfirm={async () => {
           // TODO: handle errors
-          api3Pool?.withdraw(userAccount, parseApi3(tokens));
+          await api3Pool?.withdraw(userAccount, parseApi3(inputValue));
+          closeModal();
         }}
-        ownedTokens={data?.ownedTokens}
+        inputValue={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
       />
       <TokenAmountModal
         title="How many tokens would you like to stake?"
         open={openModal === 'stake'}
         onClose={closeModal}
         action="Stake"
-        onConfirm={(tokens) => {
+        onConfirm={async () => {
           // TODO: handle errors
-          api3Pool?.stake(parseApi3(tokens));
+          await api3Pool?.stake(parseApi3(inputValue));
+          closeModal();
         }}
-        ownedTokens={data?.ownedTokens}
+        inputValue={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
       />
       <TokenAmountModal
         title="How many tokens would you like to unstake?"
         open={openModal === 'unstake'}
         onClose={closeModal}
-        action="Unstake"
-        onConfirm={async (tokens) => {
+        action="Initiate Unstaking"
+        onConfirm={() => setOpenModal('confirm')}
+        inputValue={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      <TokenAmountModal
+        title={`Are you sure you would like to unstake ${inputValue} tokens?`}
+        open={openModal === 'confirm'}
+        onClose={closeModal}
+        action="Initiate Unstaking"
+        onConfirm={async () => {
           // TODO: handle errors
-          const res = await api3Pool?.scheduleUnstake(parseApi3(tokens));
+          const res = await api3Pool?.scheduleUnstake(parseApi3(inputValue));
+          closeModal();
           console.log('Unstaking scheduled', res);
         }}
-        ownedTokens={data?.ownedTokens}
+        inputValue={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        showTokenInput={false}
       />
     </Layout>
   );

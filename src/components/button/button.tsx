@@ -5,7 +5,7 @@ import './button.scss';
 type Props = {
   children: ReactNode;
   className?: string;
-  type?: 'primary' | 'secondary' | 'link';
+  type?: 'primary' | 'secondary' | 'link' | 'text';
   size?: 'normal' | 'large';
   disabled?: boolean;
   onClick?: () => void;
@@ -19,6 +19,7 @@ const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick
           [`_primary`]: type === 'primary',
           [`_secondary`]: type === 'secondary',
           [`_link`]: type === 'link',
+          [`_text`]: type === 'text',
           [`_normal`]: size === 'normal' && type !== 'link',
           [`_large`]: size === 'large' && type !== 'link',
         })}
