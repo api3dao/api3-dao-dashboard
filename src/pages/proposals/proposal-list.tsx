@@ -18,17 +18,6 @@ const ProposalList = () => {
     ].sort((p1, p2) => (p1.startDateRaw.lt(p2.startDateRaw) ? -1 : 1));
   }, [proposalState?.primary.proposals, proposalState?.secondary.proposals]);
 
-  // TODO: compute data for slider (progress bar) from this data
-  console.log(
-    allProposals.map((p) => ({
-      minAcceptQuorum: p.minAcceptQuorum.toString(),
-      supportRequired: p.supportRequired.toString(),
-      yea: p.yea.toString(),
-      nay: p.nay.toString(),
-      votingPower: p.votingPower.toString(),
-    }))
-  );
-
   return (
     <>
       <p>Proposal list</p>
