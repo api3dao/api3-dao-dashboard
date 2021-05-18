@@ -14,7 +14,6 @@ export const usePromise = <T, E = Error>(
 
   const execute = useCallback(async () => {
     setStatus('pending');
-    setValue(null);
     setError(null);
 
     try {
