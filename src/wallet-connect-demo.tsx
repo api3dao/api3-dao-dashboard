@@ -3,7 +3,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
 import localhostDao from './contract-deployments/localhost-dao.json';
 import ropstenDao from './contract-deployments/ropsten-dao.json';
-import { initialChainData, useChainData, ChainData } from './chain-data';
+import { initialChainData, useChainData } from './chain-data';
 import Button from './components/button/button';
 import { useEffect } from 'react';
 import GenericModal from './components/modal/modal';
@@ -11,7 +11,7 @@ import './wallet-connect-demo.scss';
 
 const daoNetworks = [localhostDao, ropstenDao];
 
-const getChainData = async (provider: ethers.providers.Web3Provider): Promise<ChainData> => {
+const getChainData = async (provider: ethers.providers.Web3Provider) => {
   const networkChainId = await (await provider.getNetwork()).chainId.toString();
 
   const daoNetwork = daoNetworks.find(({ chainId }) => chainId === networkChainId);
@@ -28,25 +28,26 @@ const getChainData = async (provider: ethers.providers.Web3Provider): Promise<Ch
   return { ...newData, provider };
 };
 
+// TODO: remove - we don't want to reload after every mined block
 const useRefreshChainDataAfterMinedBlock = () => {
-  const { provider, setChainData } = useChainData();
+  const { provider, setChainData, ...otherChainData } = useChainData();
 
   useEffect(() => {
     if (!provider) return;
 
     const handler = async () => {
-      setChainData(await getChainData(provider));
+      setChainData({ ...otherChainData, ...(await getChainData(provider)) });
     };
 
     provider.on('block', handler);
     return () => {
       provider.off('block', handler);
     };
-  }, [provider, setChainData]);
+  }, [provider, setChainData, otherChainData]);
 };
 
 const WalletConnectDemo = () => {
-  const { setChainData, provider, contracts, networkName } = useChainData();
+  const { setChainData, provider, contracts, networkName, ...otherChainData } = useChainData();
   useRefreshChainDataAfterMinedBlock();
 
   const onDisconnect = () => {
@@ -85,7 +86,7 @@ const WalletConnectDemo = () => {
     const web3ModalProvider = await web3Modal.connect();
     const upsertData = async () => {
       const provider = new ethers.providers.Web3Provider(web3ModalProvider);
-      setChainData(await getChainData(provider));
+      setChainData({ ...otherChainData, ...(await getChainData(provider)) });
     };
 
     try {

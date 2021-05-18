@@ -31,6 +31,9 @@ const main: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       args: [api3TokenInstance.address],
       log: true,
     });
+
+    console.log('Do not forget to deploy DAO contracts if you want to develop proposals!');
+    console.log('Check out README for instructions');
   }
 };
 
