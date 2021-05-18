@@ -1,20 +1,24 @@
 import { ReactNode } from 'react';
+import classNames from 'classnames';
 import './bordered-box.scss';
 
 type Props = {
-  header: ReactNode;
+  header: ReactNode[];
   content: ReactNode | ReactNode[];
-  footer: ReactNode;
+  footer?: ReactNode;
+  borderColor?: 'green' | 'grey';
 };
 
-const BorderedBoxes = ({ header, content, footer }: Props) => {
+const BorderedBoxes = ({ header, content, footer, borderColor = 'grey' }: Props) => {
   return (
-    <div className="bordered-box">
+    <div className={classNames('bordered-box', borderColor)}>
       <div className="bordered-box-col _left" />
-      <div className="bordered-box-content">
-        <div className="bordered-box-header">{header}</div>
+      <div className={classNames('bordered-box-innerWrap', { [`_borderBottom`]: !footer })}>
+        {header && (
+          <div className={classNames('bordered-box-header', { [`_alignCenter`]: header.length < 2 })}>{header}</div>
+        )}
         {content}
-        <div className="bordered-box-footer">{footer}</div>
+        {footer && <div className="bordered-box-footer">{footer}</div>}
       </div>
       <div className="bordered-box-col _right" />
     </div>
