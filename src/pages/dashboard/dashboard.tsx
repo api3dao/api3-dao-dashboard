@@ -201,9 +201,7 @@ const Dashboard = () => {
         onClose={closeModal}
         action="Deposit"
         onConfirm={async () => {
-          // TODO: handle errors
           await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
-          closeModal();
         }}
         helperText={<HelperText helperText={data?.ownedTokens || '0.0'} />}
         inputValue={inputValue}

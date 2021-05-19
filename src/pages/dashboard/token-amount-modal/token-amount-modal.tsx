@@ -1,4 +1,4 @@
-import { ChangeEventHandler, ReactNode } from 'react';
+import { ChangeEventHandler, ReactNode, useState } from 'react';
 import classNames from 'classnames';
 import Modal from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
@@ -18,7 +18,27 @@ interface Props {
 }
 
 const TokenAmountModal = (props: Props) => {
+  const [error, setError] = useState('');
   const { title, action, onConfirm, onClose, open, onChange, inputValue, helperText, showTokenInput = true } = props;
+
+  async function handleAction() {
+    // Zero is also not a valid value
+    if (!inputValue) {
+      setError('Please ensure you have entered a non-zero value');
+      return;
+    }
+    setError('');
+    const [err, data] = await onConfirm();
+    if (err) {
+      setError('Please ensure you confirm the transaction');
+      return;
+    }
+  }
+
+  function handleClose() {
+    setError('');
+    onClose();
+  }
 
   return (
     <Modal
@@ -31,18 +51,19 @@ const TokenAmountModal = (props: Props) => {
               Cancel
             </Button>
           )}
-          <Button type="secondary" onClick={onConfirm}>
+          <Button type="secondary" onClick={handleAction}>
             {action}
           </Button>
         </div>
       }
-      onClose={onClose}
+      onClose={handleClose}
     >
       {showTokenInput && (
         <>
           <p className="tokenAmountModal-token medium">TOKEN</p>
 
           <Input value={inputValue} onChange={onChange} size="large" />
+          {error && <p className="error">{error}</p>}
           {helperText}
         </>
       )}
