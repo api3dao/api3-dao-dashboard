@@ -108,17 +108,24 @@ const Dashboard = () => {
     });
   }, [provider, api3Pool, api3Token, userAccount, latestBlock, chainData, setChainData]);
 
+  // If the user is navigating to the dashboard from another page, and they
+  // are already connected, refresh the data immediately.
+  useEffect(() => {
+    if (!provider) return;
+    loadDashboardData();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (!api3Pool || !api3Token || !provider) return;
 
     // Load the data again on every block (10 - 20 seconds on average)
-    // TODO: This also fires immediately, at least on localhost. Ensure
-    // it fires immediately on testnet/mainnet
+    // This will also run immediately if the user is already on the dashboard
+    // and they have just connected.
     provider.on('block', loadDashboardData);
     return () => {
       provider.off('block', loadDashboardData);
     };
-  }, [provider, api3Pool, api3Token]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [provider, api3Pool, api3Token, loadDashboardData]);
 
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
