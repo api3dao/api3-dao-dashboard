@@ -44,10 +44,6 @@ const SignIn = () => {
     });
 
     const web3ModalProvider = await web3Modal.connect();
-    const refreshChainData = async () => {
-      const provider = new ethers.providers.Web3Provider(web3ModalProvider);
-      setChainData({ ...otherChainData, ...(await getChainData(provider)) });
-    };
 
     // Enable session (triggers QR Code modal)
     const [err] = await go(() => web3ModalProvider.request({ method: 'eth_requestAccounts' }));
@@ -56,15 +52,8 @@ const SignIn = () => {
       return;
     }
     // User has chosen a provider and has signed in
-    refreshChainData();
-
-    web3ModalProvider.on('accountsChanged', () => refreshChainData());
-    web3ModalProvider.on('chainChanged', () => refreshChainData());
-
-    // NOTE: This callback might get called multiple times for a single disconnect
-    web3ModalProvider.on('disconnect', () => {
-      onDisconnect();
-    });
+    const provider = new ethers.providers.Web3Provider(web3ModalProvider);
+    setChainData({ ...otherChainData, ...(await getChainData(provider)) });
   };
 
   const isSupportedNetwork = !!provider && contracts === null;
