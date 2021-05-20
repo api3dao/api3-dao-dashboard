@@ -83,7 +83,6 @@ const Dashboard = () => {
   const loadDashboardData = useCallback(async () => {
     if (!api3Pool || !api3Token || !provider || !userAccount) return null;
     unusedHookDependency(latestBlock);
-    console.log('Loading dashboard data...');
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
     const currentApr = await api3Pool.currentApr();
