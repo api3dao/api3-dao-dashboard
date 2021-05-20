@@ -80,7 +80,7 @@ const Dashboard = () => {
   const [data, setData] = useState<any>(null);
 
   // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
-  const loadData = useCallback(async () => {
+  const loadDashboardData = useCallback(async () => {
     if (!api3Pool || !api3Token || !provider || !userAccount) return null;
     unusedHookDependency(latestBlock);
 
@@ -111,12 +111,12 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!api3Pool || !api3Token || !provider) return;
-    loadData();
+    loadDashboardData();
 
     // Load the data again on every block (10 - 20 seconds on average)
-    provider.on('block', loadData);
+    provider.on('block', loadDashboardData);
     return () => {
-      provider.off('block', loadData);
+      provider.off('block', loadDashboardData);
     };
   }, [provider, api3Pool, api3Token]); // eslint-disable-line react-hooks/exhaustive-deps
 
