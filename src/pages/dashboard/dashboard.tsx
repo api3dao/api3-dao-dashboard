@@ -72,12 +72,9 @@ const HelperText = (props: { helperText: string }) => {
 
 const Dashboard = () => {
   const chainData = useChainData();
-  const { userAccount, provider, latestBlock, transactions, setChainData } = chainData;
+  const { dashboardState: data, userAccount, provider, latestBlock, transactions, setChainData } = chainData;
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
-
-  // TODO: move to the "global" state
-  const [data, setData] = useState<any>(null);
 
   // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
   const loadDashboardData = useCallback(async () => {
@@ -93,21 +90,23 @@ const Dashboard = () => {
     const annualMintedTokens = calculateAnnualMintedTokens(totalStaked, annualApy);
     const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
 
-    const latestData = {
-      ownedTokens: formatApi3(await api3Token.balanceOf(userAccount)),
-      balance: formatApi3(tokenBalances.balance),
-      withdrawable: formatApi3(tokenBalances.withdrawable),
-      userStake: formatApi3(await api3Pool.userStake(userAccount)),
-      stakeTarget: formatApi3(stakeTarget),
-      totalStaked: formatApi3(totalStaked),
-      pendingUnstakes: await getScheduledUnstakes(api3Pool, userAccount),
-      annualApy: annualApy.toString(),
-      annualInflationRate: annualInflationRate.toString(),
-      totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
-      allowance: await api3Token.allowance(userAccount, api3Pool.address),
-    };
-    setData(latestData);
-  }, [provider, api3Pool, api3Token, userAccount, latestBlock]);
+    setChainData({
+      ...chainData,
+      dashboardState: {
+        ownedTokens: formatApi3(await api3Token.balanceOf(userAccount)),
+        balance: formatApi3(tokenBalances.balance),
+        withdrawable: formatApi3(tokenBalances.withdrawable),
+        userStake: formatApi3(await api3Pool.userStake(userAccount)),
+        stakeTarget: formatApi3(stakeTarget),
+        totalStaked: formatApi3(totalStaked),
+        pendingUnstakes: await getScheduledUnstakes(api3Pool, userAccount),
+        annualApy: annualApy.toString(),
+        annualInflationRate: annualInflationRate.toString(),
+        totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
+        allowance: await api3Token.allowance(userAccount, api3Pool.address),
+      },
+    });
+  }, [provider, api3Pool, api3Token, userAccount, latestBlock, chainData, setChainData]);
 
   useEffect(() => {
     if (!api3Pool || !api3Token || !provider) return;
