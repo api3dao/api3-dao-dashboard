@@ -45,6 +45,7 @@ export interface ChainData {
   contracts: ContractsInfo | null;
   latestBlock: number;
   proposalState: ProposalState | null;
+  transactions: ethers.ContractTransaction[];
 }
 
 interface SettableChainData extends ChainData {
@@ -59,6 +60,7 @@ export const initialChainData: ChainData = {
   contracts: null,
   latestBlock: 0,
   proposalState: null,
+  transactions: [],
 };
 
 export const initialSettableChainData: SettableChainData = { ...initialChainData, setChainData: () => {} };

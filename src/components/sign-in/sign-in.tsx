@@ -1,54 +1,15 @@
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
-import localhostDao from './contract-deployments/localhost-dao.json';
-import ropstenDao from './contract-deployments/ropsten-dao.json';
-import { initialChainData, useChainData } from './chain-data';
-import Button from './components/button/button';
-import { useEffect } from 'react';
-import GenericModal from './components/modal/modal';
-import './wallet-connect-demo.scss';
+import { initialChainData, getChainData, useChainData } from '../../chain-data';
+import { daoAbis } from '../../contracts';
+import { go } from '../../utils/generic';
+import Button from '../../components/button/button';
+import GenericModal from '../../components/modal/modal';
+import './sign-in.scss';
 
-const daoNetworks = [localhostDao, ropstenDao];
-
-const getChainData = async (provider: ethers.providers.Web3Provider) => {
-  const networkChainId = await (await provider.getNetwork()).chainId.toString();
-
-  const daoNetwork = daoNetworks.find(({ chainId }) => chainId === networkChainId);
-
-  const newData = {
-    userAccount: await provider.getSigner().getAddress(),
-    networkName: await (await provider.getNetwork()).name,
-    chainId: networkChainId,
-    contracts: daoNetwork?.contracts ?? null,
-    latestBlock: await provider.getBlockNumber(),
-  };
-  if (newData.networkName === 'unknown') newData.networkName = 'localhost';
-
-  return { ...newData, provider };
-};
-
-// TODO: remove - we don't want to reload after every mined block
-const useRefreshChainDataAfterMinedBlock = () => {
-  const { provider, setChainData, ...otherChainData } = useChainData();
-
-  useEffect(() => {
-    if (!provider) return;
-
-    const handler = async () => {
-      setChainData({ ...otherChainData, ...(await getChainData(provider)) });
-    };
-
-    provider.on('block', handler);
-    return () => {
-      provider.off('block', handler);
-    };
-  }, [provider, setChainData, otherChainData]);
-};
-
-const WalletConnectDemo = () => {
+const SignIn = () => {
   const { setChainData, provider, contracts, networkName, ...otherChainData } = useChainData();
-  useRefreshChainDataAfterMinedBlock();
 
   const onDisconnect = () => {
     if (provider) {
@@ -57,7 +18,6 @@ const WalletConnectDemo = () => {
         externalProvider.close();
       }
     }
-
     setChainData(initialChainData);
   };
 
@@ -84,32 +44,22 @@ const WalletConnectDemo = () => {
     });
 
     const web3ModalProvider = await web3Modal.connect();
-    const upsertData = async () => {
+    const refreshChainData = async () => {
       const provider = new ethers.providers.Web3Provider(web3ModalProvider);
       setChainData({ ...otherChainData, ...(await getChainData(provider)) });
     };
 
-    try {
-      // Enable session (triggers QR Code modal)
-      await web3ModalProvider.request({ method: 'eth_requestAccounts' });
-      // User has chosen a provider and has signed in
-      upsertData();
-    } catch {
+    // Enable session (triggers QR Code modal)
+    const [err] = await go(() => web3ModalProvider.request({ method: 'eth_requestAccounts' }));
+    if (err) {
       // TODO: handle error (e.g. user closes the modal)
       return;
     }
+    // User has chosen a provider and has signed in
+    refreshChainData();
 
-    web3ModalProvider.on('accountsChanged', () => {
-      upsertData();
-    });
-
-    web3ModalProvider.on('chainChanged', () => {
-      upsertData();
-    });
-
-    web3ModalProvider.on('chainChanged', () => {
-      upsertData();
-    });
+    web3ModalProvider.on('accountsChanged', () => refreshChainData());
+    web3ModalProvider.on('chainChanged', () => refreshChainData());
 
     // NOTE: This callback might get called multiple times for a single disconnect
     web3ModalProvider.on('disconnect', () => {
@@ -118,8 +68,8 @@ const WalletConnectDemo = () => {
   };
 
   const isSupportedNetwork = !!provider && contracts === null;
-  const supportedNetworks = daoNetworks
-    .map((network) => network.name)
+  const supportedNetworks = daoAbis
+    .map((abi) => abi.name)
     .filter((name) => {
       // disable localhost network on non-development environment
       if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
@@ -143,4 +93,4 @@ const WalletConnectDemo = () => {
   );
 };
 
-export default WalletConnectDemo;
+export default SignIn;
