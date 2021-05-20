@@ -1,4 +1,4 @@
-import WalletConnectDemo from '../../wallet-connect-demo';
+import SignIn from '../sign-in/sign-in';
 import Menu from '../menu/menu';
 import './navigation.scss';
 
@@ -9,7 +9,7 @@ const Navigation = () => {
         <img src="/api3-logo-white.svg" alt="logo" />
         <Menu />
       </div>
-      <WalletConnectDemo />
+      <SignIn />
     </div>
   );
 };

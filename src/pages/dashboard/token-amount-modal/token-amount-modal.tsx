@@ -3,18 +3,20 @@ import classNames from 'classnames';
 import Modal from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
+import { go } from '../../../utils/generic';
 import './token-amount-modal.scss';
 
 interface Props {
   title: string;
   action: string;
-  onConfirm: () => void | Promise<any>;
+  onConfirm: () => undefined | Promise<any>;
   onClose: () => void;
   open: boolean;
   onChange: ChangeEventHandler<HTMLInputElement>;
   inputValue: string;
   helperText?: ReactNode;
   showTokenInput?: boolean;
+  closeOnConfirm?: boolean;
 }
 
 const TokenAmountModal = (props: Props) => {
@@ -28,10 +30,15 @@ const TokenAmountModal = (props: Props) => {
       return;
     }
     setError('');
-    const [err, data] = await onConfirm();
+    const [err, tx] = await go(() => onConfirm());
+    console.log(err)
     if (err) {
       setError('Please ensure you confirm the transaction');
       return;
+    }
+
+    if (props.closeOnConfirm) {
+      props.onClose();
     }
   }
 

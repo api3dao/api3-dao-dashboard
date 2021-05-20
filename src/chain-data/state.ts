@@ -3,6 +3,20 @@ import type localhostDao from '../contract-deployments/localhost-dao.json';
 
 type ContractsInfo = typeof localhostDao['contracts'];
 
+export interface DashboardState {
+  allowance: BigNumber;
+  annualApy: string;
+  annualInflationRate: string;
+  balance: string;
+  ownedTokens: string;
+  pendingUnstakes: string;
+  stakeTarget: string;
+  totalStaked: string;
+  totalStakedPercentage: string;
+  userStake: string;
+  withdrawable: string;
+}
+
 export interface ProposalMetadata {
   targetSignature: string;
   description: string;
@@ -44,7 +58,9 @@ export interface ChainData {
   chainId: string;
   contracts: ContractsInfo | null;
   latestBlock: number;
+  dashboardState: DashboardState | null;
   proposalState: ProposalState | null;
+  transactions: ethers.ContractTransaction[];
 }
 
 interface SettableChainData extends ChainData {
@@ -58,7 +74,9 @@ export const initialChainData: ChainData = {
   chainId: '',
   contracts: null,
   latestBlock: 0,
+  dashboardState: null,
   proposalState: null,
+  transactions: [],
 };
 
 export const initialSettableChainData: SettableChainData = { ...initialChainData, setChainData: () => {} };
