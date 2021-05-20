@@ -1,21 +1,23 @@
+import { FixedNumber } from 'ethers';
 import { ChangeEventHandler, ReactNode, useState } from 'react';
 import classNames from 'classnames';
 import Modal from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import { go } from '../../../utils/generic';
+import { go, fixedToBigNumber } from '../../../utils';
 import './token-amount-modal.scss';
 
 interface Props {
   title: string;
   action: string;
-  onConfirm: () => undefined | Promise<any>;
+  onConfirm: () => void | Promise<any>;
   onClose: () => void;
   open: boolean;
   onChange: ChangeEventHandler<HTMLInputElement>;
   inputValue: string;
   helperText?: ReactNode;
   showTokenInput?: boolean;
+  maxValue?: string;
   closeOnConfirm?: boolean;
 }
 
@@ -23,15 +25,25 @@ const TokenAmountModal = (props: Props) => {
   const [error, setError] = useState('');
   const { title, action, onConfirm, onClose, open, onChange, inputValue, helperText, showTokenInput = true } = props;
 
-  async function handleAction() {
+  const handleAction = async () => {
     // Zero is also not a valid value
     if (!inputValue) {
       setError('Please ensure you have entered a non-zero value');
       return;
     }
+    if (props.maxValue) {
+      const maxValueBigNum = fixedToBigNumber(FixedNumber.from(props.maxValue));
+      const inputBigNum = fixedToBigNumber(FixedNumber.from(inputValue));
+      if (inputBigNum.gt(maxValueBigNum)) {
+        // TODO: update this error message
+        setError('Input value cannot be higher than the available balance');
+        return;
+      }
+    }
+
     setError('');
-    const [err, tx] = await go(() => onConfirm());
-    console.log(err)
+
+    const [err] = await go(() => onConfirm());
     if (err) {
       setError('Please ensure you confirm the transaction');
       return;
@@ -40,12 +52,12 @@ const TokenAmountModal = (props: Props) => {
     if (props.closeOnConfirm) {
       props.onClose();
     }
-  }
+  };
 
-  function handleClose() {
+  const handleClose = () => {
     setError('');
     onClose();
-  }
+  };
 
   return (
     <Modal

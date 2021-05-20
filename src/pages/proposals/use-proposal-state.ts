@@ -6,7 +6,7 @@ import { Proposal } from '../../chain-data';
 import { decodeMetadata } from './encoding';
 import zip from 'lodash/zip';
 import { BigNumber } from '@ethersproject/bignumber';
-import { blockTimestampToDate } from '../../utils/generic';
+import { blockTimestampToDate } from '../../utils';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type Last<T extends any[]> = T extends [...infer _, infer L] ? L : never;

@@ -3,7 +3,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
 import { initialChainData, getChainData, useChainData } from '../../chain-data';
 import { daoAbis } from '../../contracts';
-import { go } from '../../utils/generic';
+import { go } from '../../utils';
 import Button from '../../components/button/button';
 import GenericModal from '../../components/modal/modal';
 import './sign-in.scss';

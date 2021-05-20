@@ -9,13 +9,12 @@ import {
   calculateAnnualMintedTokens,
   calculateApy,
   MAX_ALLOWANCE,
-  min,
   totalStakedPercentage,
   useApi3Pool,
   useApi3Token,
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
-import { formatApi3, parseApi3 } from '../../utils/api3-format';
+import { formatApi3, min, parseApi3 } from '../../utils';
 import { unusedHookDependency } from '../../utils/hooks';
 import TokenAmountModal from './token-amount-modal/token-amount-modal';
 import Layout from '../../components/layout/layout';
@@ -219,10 +218,16 @@ const Dashboard = () => {
         open={openModal === 'deposit'}
         onClose={closeModal}
         action="Deposit"
-        onConfirm={() => api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount)}
+        onConfirm={async () => {
+          const tx = await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
+          if (tx) {
+            setChainData({ ...chainData, transactions: [...transactions, tx] });
+          }
+        }}
         helperText={<HelperText helperText={data?.ownedTokens || '0.0'} />}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        maxValue={data?.ownedTokens}
         closeOnConfirm
       />
       <TokenAmountModal

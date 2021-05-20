@@ -7,7 +7,6 @@ import {
   absoluteStakeTarget,
   HUNDRED_PERCENT,
   totalStakedPercentage,
-  min,
 } from './helpers';
 
 describe('calculateAnnualInflationRate and friends', () => {
@@ -99,12 +98,4 @@ test('totalStakedPercentage', () => {
   expect(totalStakedPercentage(totalStaked2, stakeTarget)).toBe('100.0');
   expect(totalStakedPercentage(totalStaked3, stakeTarget)).toBe('1.0');
   expect(totalStakedPercentage(totalStaked4, stakeTarget)).toBe('0.0');
-});
-
-test('min', () => {
-  const a = BigNumber.from(100);
-  const b = BigNumber.from(200);
-  const c = BigNumber.from(300);
-  expect(min(b, a, c).toString()).toBe('100');
-  expect(min(c, b).toString()).toBe('200');
 });

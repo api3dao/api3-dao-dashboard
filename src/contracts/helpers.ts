@@ -1,11 +1,8 @@
-import { BigNumber, FixedNumber } from '@ethersproject/bignumber';
+import { BigNumber, FixedNumber } from 'ethers';
 import range from 'lodash/range';
+import { fixedToBigNumber } from '../utils/bignum-utils';
 
 // TODO: this API is awful, create a bit nicer wrapper around this
-
-const toBigNumber = (fixed: FixedNumber) => BigNumber.from(fixed.round().toString().split('.')[0]);
-
-export const min = (first: BigNumber, ...other: BigNumber[]) => other.reduce((min, n) => (min.lt(n) ? min : n), first);
 
 // based on https://github.com/api3dao/api3-web-client/issues/2#issuecomment-831891578
 export const calculateApy = (apr: BigNumber) => {
@@ -20,8 +17,9 @@ export const calculateApy = (apr: BigNumber) => {
 };
 
 // based on https://github.com/api3dao/api3-web-client/issues/2#issuecomment-831891578
-export const calculateAnnualMintedTokens = (totalStake: BigNumber, currentApy: FixedNumber) =>
-  toBigNumber(FixedNumber.from(totalStake).mulUnsafe(currentApy).divUnsafe(FixedNumber.from(100)));
+export const calculateAnnualMintedTokens = (totalStake: BigNumber, currentApy: FixedNumber) => {
+  return fixedToBigNumber(FixedNumber.from(totalStake).mulUnsafe(currentApy).divUnsafe(FixedNumber.from(100)));
+};
 
 // based on https://github.com/api3dao/api3-web-client/issues/2#issuecomment-831891578
 export const calculateAnnualInflationRate = (annualMintedTokens: BigNumber, totalSupply: BigNumber) => {
@@ -50,9 +48,10 @@ export const convertPercentage = (daoPercentage: BigNumber, humanReadable = fals
  * Staking target is in percentages, where HUNDRED_PERCENT is the maximum value.
  * The absolute stake target is percentage of total token supply.
  */
-export const absoluteStakeTarget = (stakeTargetPercentages: BigNumber, totalSupply: BigNumber) =>
+export const absoluteStakeTarget = (stakeTargetPercentages: BigNumber, totalSupply: BigNumber) => {
   // Intentionally avoiding FixedNumber calculations
-  totalSupply.mul(stakeTargetPercentages).div(HUNDRED_PERCENT);
+  return totalSupply.mul(stakeTargetPercentages).div(HUNDRED_PERCENT);
+};
 
 /**
  * Compute the percentage of total stakes in the pool rounding to 1 decimal place.
