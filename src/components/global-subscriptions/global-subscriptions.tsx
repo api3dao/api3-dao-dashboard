@@ -33,7 +33,7 @@ const GlobalSubscriptions = () => {
       provider.off('connect', () => {});
       provider.off('disconnect', () => {});
     };
-  }, [provider, setChainData, otherChainData]);
+  }, [provider, setChainData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return null;
 };
