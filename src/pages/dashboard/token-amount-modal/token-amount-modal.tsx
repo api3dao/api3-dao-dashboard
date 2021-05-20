@@ -26,7 +26,7 @@ const TokenAmountModal = (props: Props) => {
   const { title, action, onConfirm, onClose, open, onChange, inputValue, helperText, showTokenInput = true } = props;
 
   const handleAction = async () => {
-    // Zero is also not a valid value
+    // Zero (falsey) is also not a valid value
     if (!inputValue) {
       setError('Please ensure you have entered a non-zero value');
       return;
@@ -35,7 +35,6 @@ const TokenAmountModal = (props: Props) => {
       const maxValueBigNum = fixedToBigNumber(FixedNumber.from(props.maxValue));
       const inputBigNum = fixedToBigNumber(FixedNumber.from(inputValue));
       if (inputBigNum.gt(maxValueBigNum)) {
-        // TODO: update this error message
         setError('Input value cannot be higher than the available balance');
         return;
       }
@@ -45,7 +44,7 @@ const TokenAmountModal = (props: Props) => {
 
     const [err] = await go(() => onConfirm());
     if (err) {
-      setError('Please ensure you confirm the transaction');
+      setError('Please ensure you confirm the transaction and try again');
       return;
     }
 
