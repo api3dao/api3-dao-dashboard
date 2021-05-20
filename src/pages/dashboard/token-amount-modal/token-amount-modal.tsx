@@ -26,8 +26,7 @@ const TokenAmountModal = (props: Props) => {
   const { title, action, onConfirm, onClose, open, onChange, inputValue, helperText, showTokenInput = true } = props;
 
   const handleAction = async () => {
-    // Zero (falsey) is also not a valid value
-    if (!inputValue) {
+    if (!inputValue || inputValue === '0') {
       setError('Please ensure you have entered a non-zero value');
       return;
     }
@@ -44,7 +43,7 @@ const TokenAmountModal = (props: Props) => {
 
     const [err] = await go(() => onConfirm());
     if (err) {
-      setError('Please ensure you confirm the transaction and try again');
+      setError('Please try again and ensure you confirm the transaction');
       return;
     }
 
