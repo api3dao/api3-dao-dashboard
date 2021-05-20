@@ -111,9 +111,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!api3Pool || !api3Token || !provider) return;
-    loadDashboardData();
 
     // Load the data again on every block (10 - 20 seconds on average)
+    // TODO: This also fires immediately, at least on localhost. Ensure
+    // it fires immediately on testnet/mainnet
     provider.on('block', loadDashboardData);
     return () => {
       provider.off('block', loadDashboardData);
