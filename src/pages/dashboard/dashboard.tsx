@@ -126,7 +126,7 @@ const Dashboard = () => {
     return () => {
       provider.off('block', loadDashboardData);
     };
-  }, [provider, api3Pool, api3Token]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [provider, api3Pool, api3Token, loadDashboardData]);
 
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
