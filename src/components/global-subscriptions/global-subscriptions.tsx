@@ -21,7 +21,7 @@ const GlobalSubscriptions = () => {
     // See: https://github.com/Web3Modal/web3modal#provider-events
     provider.on('accountsChanged', () => onRefreshChainData());
     provider.on('chainChanged', () => onRefreshChainData());
-    // Chain data is already refreshed immediately on sign
+    // Chain data is already refreshed immediately on sign in
     provider.on('connect', () => {});
     // Chain data is cleared immediately through the "disconnect" button
     provider.on('disconnect', () => {});
