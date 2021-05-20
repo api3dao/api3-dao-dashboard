@@ -83,6 +83,7 @@ const Dashboard = () => {
   const loadDashboardData = useCallback(async () => {
     if (!api3Pool || !api3Token || !provider || !userAccount) return null;
     unusedHookDependency(latestBlock);
+    console.log('Loading dashboard data...');
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
     const currentApr = await api3Pool.currentApr();
@@ -109,12 +110,19 @@ const Dashboard = () => {
     setData(latestData);
   }, [provider, api3Pool, api3Token, userAccount, latestBlock]);
 
+  // If the user is navigating to the dashboard from another page, and they
+  // are already connected, refresh the data immediately.
+  useEffect(() => {
+    if (!provider) return;
+    loadDashboardData();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (!api3Pool || !api3Token || !provider) return;
 
     // Load the data again on every block (10 - 20 seconds on average)
-    // TODO: This also fires immediately, at least on localhost. Ensure
-    // it fires immediately on testnet/mainnet
+    // This will also run immediately if the user is already on the dashboard
+    // and they have just connected.
     provider.on('block', loadDashboardData);
     return () => {
       provider.off('block', loadDashboardData);
