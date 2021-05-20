@@ -236,7 +236,6 @@ const Dashboard = () => {
         onClose={closeModal}
         action="Withdraw"
         onConfirm={async () => {
-          // TODO: handle errors
           const tx = await api3Pool?.withdraw(userAccount, parseApi3(inputValue));
           if (tx) {
             setChainData({ ...chainData, transactions: [...transactions, tx] });
@@ -244,6 +243,7 @@ const Dashboard = () => {
         }}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        maxValue={data?.withdrawable}
         closeOnConfirm
       />
       <TokenAmountModal
@@ -252,7 +252,6 @@ const Dashboard = () => {
         onClose={closeModal}
         action="Stake"
         onConfirm={async () => {
-          // TODO: handle errors
           const tx = await api3Pool?.stake(parseApi3(inputValue));
           if (tx) {
             setChainData({ ...chainData, transactions: [...transactions, tx] });
@@ -260,6 +259,7 @@ const Dashboard = () => {
         }}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        maxValue={data?.withdrawable /* TODO: is this the right value? */}
         closeOnConfirm
       />
       <TokenAmountModal
@@ -277,13 +277,15 @@ const Dashboard = () => {
         onClose={closeModal}
         action="Initiate Unstaking"
         onConfirm={async () => {
-          // TODO: handle errors
-          const res = await api3Pool?.scheduleUnstake(parseApi3(inputValue));
-          console.log('Unstaking scheduled', res);
+          const tx = await api3Pool?.scheduleUnstake(parseApi3(inputValue));
+          if (tx) {
+            setChainData({ ...chainData, transactions: [...transactions, tx] });
+          }
         }}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         showTokenInput={false}
+        maxValue={data?.userStake}
         closeOnConfirm
       />
     </Layout>
