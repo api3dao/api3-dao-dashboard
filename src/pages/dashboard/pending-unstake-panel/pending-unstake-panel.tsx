@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import BorderedBox from '../../../components/bordered-box/bordered-box';
 import Button from '../../../components/button/button';
+import { getDays, getHours, getMinutes, getSeconds } from '../../../utils/generic';
 import './pending-unstake-panel.scss';
 
 interface Props {
   amount: string;
-  scheduledFor: string;
-  deadline: string;
+  scheduledFor: Date;
+  deadline: Date;
 }
 
 const PendingUnstakePanel = (props: Props) => {
@@ -20,10 +21,10 @@ const PendingUnstakePanel = (props: Props) => {
   const [timerDeadline, setTimerDeadline] = useState('You have 0 days 0 hours 0 min 0 sec remaining to unstake.');
 
   useEffect(() => {
-    const deadlineDate = new Date(deadline).getTime();
+    const deadlineDate = deadline.getTime();
     const timer = setInterval(() => {
       const now = new Date().getTime();
-      const scheduledDate = new Date(scheduledFor).getTime();
+      const scheduledDate = scheduledFor.getTime();
       let distance;
 
       if (scheduledDate > now) {
@@ -32,10 +33,10 @@ const PendingUnstakePanel = (props: Props) => {
         distance = deadlineDate - now;
       }
 
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24)).toString();
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString();
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString();
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000).toString();
+      const days = getDays(distance);
+      const hours = getHours(distance);
+      const minutes = getMinutes(distance);
+      const seconds = getSeconds(distance);
 
       setTimerDays(days);
       setTimerHours(hours);
@@ -53,14 +54,22 @@ const PendingUnstakePanel = (props: Props) => {
 
       if (deadlineDate < now) {
         clearInterval(timer);
+        // TODO: This will be incorrect for singular, e.g. 1 days
         setTimerDeadline(`You have 0 days 0 hours 0 min 0 sec remaining to unstake.`);
       }
     }, 1000);
+    return () => {
+      clearInterval(timer);
+    };
   }, [deadline, scheduledFor]);
 
   return (
     <BorderedBox
-      header={[<img src="/arrow-down.svg" alt="arrow down" />]}
+      header={
+        <div className="bordered-box-header _alignCenter">
+          <img src="/arrow-down.svg" alt="arrow down" />
+        </div>
+      }
       content={
         <div className="pending-unstake-content">
           <p className="pending-unstake-title text-small medium green-color text-center">

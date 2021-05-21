@@ -42,7 +42,7 @@ const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => 
   };
 };
 
-const getScheduledUnstakes = async (api3Pool: Api3Pool, userAccount: string) => {
+const getScheduledUnstake= async (api3Pool: Api3Pool, userAccount: string) => {
   const scheduledUnstakeFilter = api3Pool.filters.ScheduledUnstake(userAccount, null, null);
 
   const lastUnstake = last(await api3Pool.queryFilter(scheduledUnstakeFilter));
@@ -57,7 +57,7 @@ const getScheduledUnstakes = async (api3Pool: Api3Pool, userAccount: string) => 
   const epochLength = await api3Pool.EPOCH_LENGTH();
   const scheduledFor = lastUnstake.args.scheduledFor;
 
-  const toDate = (timestamp: BigNumber) => new Date(timestamp.toNumber()).toUTCString();
+  const toDate = (timestamp: BigNumber) => new Date(timestamp.toNumber());
 
   return {
     amount: lastUnstake.args.amount,
@@ -100,7 +100,7 @@ const Dashboard = () => {
         annualInflationRate,
         balance: tokenBalances.balance,
         ownedTokens: await api3Token.balanceOf(userAccount),
-        pendingUnstake: await getScheduledUnstakes(api3Pool, userAccount),
+        pendingUnstake: await getScheduledUnstake(api3Pool, userAccount),
         stakeTarget,
         totalStaked,
         totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
@@ -138,9 +138,9 @@ const Dashboard = () => {
       <StakingPool data={data || undefined} />
       <div className="bordered-boxes">
         <BorderedBox
-          header={[
-            <h5>Balance</h5>,
-            <>
+          header={
+            <div className="bordered-box-header">
+              <h5>Balance</h5>,
               {data?.allowance.lt(ALLOWANCE_REFILL_TRESHOLD) ? (
                 <Button
                   onClick={() => {
@@ -155,8 +155,8 @@ const Dashboard = () => {
                   + Deposit
                 </Button>
               )}
-            </>,
-          ]}
+            </div>
+          }
           content={
             <>
               <div className="bordered-box-data">
@@ -210,12 +210,14 @@ const Dashboard = () => {
         />
         <div className="staking-boxes">
           <BorderedBox
-            header={[
-              <h5>Staking</h5>,
-              <Button onClick={() => setOpenModal('stake')} disabled={disconnected}>
-                + Stake
-              </Button>,
-            ]}
+            header={
+              <div className="bordered-box-header">
+                <h5>Staking</h5>
+                <Button onClick={() => setOpenModal('stake')} disabled={disconnected}>
+                  + Stake
+                </Button>
+              </div>
+            }
             content={
               <>
                 <div className="bordered-box-data">
