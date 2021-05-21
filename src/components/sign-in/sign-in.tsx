@@ -53,7 +53,8 @@ const SignIn = () => {
     }
     // User has chosen a provider and has signed in
     const provider = new ethers.providers.Web3Provider(web3ModalProvider);
-    setChainData({ ...otherChainData, ...(await getChainData(provider)) });
+    const latestChainData = await getChainData(provider);
+    setChainData({ ...otherChainData, ...latestChainData, web3Modal });
   };
 
   const isSupportedNetwork = !!provider && contracts === null;
