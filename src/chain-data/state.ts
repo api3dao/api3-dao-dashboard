@@ -39,7 +39,6 @@ export interface ProposalState {
 }
 
 export interface ChainData {
-  web3Modal: Web3Modal | null;
   provider: ethers.providers.Web3Provider | null;
   userAccount: string;
   networkName: string;
@@ -55,7 +54,6 @@ interface SettableChainData extends ChainData {
 }
 
 export const initialChainData: ChainData = {
-  web3Modal: null,
   provider: null,
   userAccount: '',
   networkName: '',
