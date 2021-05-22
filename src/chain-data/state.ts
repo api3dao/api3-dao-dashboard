@@ -1,4 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
+import Web3Modal from 'web3modal';
 import type localhostDao from '../contract-deployments/localhost-dao.json';
 
 type ContractsInfo = typeof localhostDao['contracts'];
@@ -38,6 +39,7 @@ export interface ProposalState {
 }
 
 export interface ChainData {
+  web3Modal: Web3Modal | null;
   provider: ethers.providers.Web3Provider | null;
   userAccount: string;
   networkName: string;
@@ -49,10 +51,11 @@ export interface ChainData {
 }
 
 interface SettableChainData extends ChainData {
-  setChainData: (newChainData: ChainData) => void;
+  setChainData: (newChainData: Partial<ChainData>) => void;
 }
 
 export const initialChainData: ChainData = {
+  web3Modal: null,
   provider: null,
   userAccount: '',
   networkName: '',

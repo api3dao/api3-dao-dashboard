@@ -112,9 +112,8 @@ const Dashboard = () => {
   // If the user is navigating to the dashboard from another page, and they
   // are already connected, refresh the data immediately.
   useEffect(() => {
-    if (!provider) return;
     loadDashboardData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loadDashboardData]);
 
   useEffect(() => {
     if (!api3Pool || !api3Token || !provider) return;

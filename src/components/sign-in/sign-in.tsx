@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
+import { useEffect } from 'react';
 import { initialChainData, getChainData, useChainData } from '../../chain-data';
 import { daoAbis } from '../../contracts';
 import { go } from '../../utils/generic';
@@ -9,7 +10,7 @@ import GenericModal from '../../components/modal/modal';
 import './sign-in.scss';
 
 const SignIn = () => {
-  const { setChainData, provider, contracts, networkName, ...otherChainData } = useChainData();
+  const { setChainData, provider, contracts, networkName } = useChainData();
 
   const onDisconnect = () => {
     if (provider) {
@@ -19,6 +20,10 @@ const SignIn = () => {
       }
     }
     setChainData(initialChainData);
+  };
+
+  const refreshChainData = async (provider: ethers.providers.Web3Provider) => {
+    setChainData({ ...(await getChainData(provider)) });
   };
 
   const onWalletConnect = async () => {
@@ -44,6 +49,7 @@ const SignIn = () => {
     });
 
     const web3ModalProvider = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(web3ModalProvider);
 
     // Enable session (triggers QR Code modal)
     const [err] = await go(() => web3ModalProvider.request({ method: 'eth_requestAccounts' }));
@@ -51,16 +57,33 @@ const SignIn = () => {
       // TODO: handle error (e.g. user closes the modal)
       return;
     }
+
     // User has chosen a provider and has signed in
-    const provider = new ethers.providers.Web3Provider(web3ModalProvider);
-    setChainData({ ...otherChainData, ...(await getChainData(provider)) });
+    refreshChainData(provider);
+
+    // NOTE: These callback might get called multiple times
+    web3ModalProvider.on('accountsChanged', () => refreshChainData(provider));
+    web3ModalProvider.on('chainChanged', () => refreshChainData(provider));
+    web3ModalProvider.on('disconnect', () => onDisconnect());
   };
+
+  // NOTE: we need to subscribe to this AFTER the provider is set and the component
+  // re-rendered, otherwise it will overwrite with stale data. This is because the
+  // 'block' event is fired immediately on connection
+  useEffect(() => {
+    if (!provider) return;
+    const onLatestBlock = (latestBlock: number) => setChainData({ latestBlock });
+    provider.on('block', onLatestBlock);
+    return () => {
+      provider.off('block', onLatestBlock);
+    };
+  }, [provider, setChainData]);
 
   const isSupportedNetwork = !!provider && contracts === null;
   const supportedNetworks = daoAbis
     .map((abi) => abi.name)
     .filter((name) => {
-      // disable localhost network on non-development environment
+      // Disable localhost network on non-development environment
       if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
       else return true;
     })
