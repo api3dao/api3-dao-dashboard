@@ -25,7 +25,7 @@ export const getChainData = async (provider: ethers.providers.Web3Provider) => {
 
   // NOTE: The localhost doesn't have a name, so set any unknown networks
   // to localhost. The network name is needed to display the "Unsupported Network"
-  //  message to the user
+  // message to the user if required.
   if (newData.networkName === 'unknown') newData.networkName = 'localhost';
 
   return { ...newData, provider };
