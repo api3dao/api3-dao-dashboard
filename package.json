@@ -23,7 +23,8 @@
     "send-tokens:localhost": "cd hardhat && npx hardhat send-tokens --address",
     "send-tokens:ropsten": "cd hardhat && npx hardhat send-tokens --network ropsten --address",
     "fund-account": "cd hardhat && npx hardhat fund-account --address",
-    "postinstall": "yarn eth:compile-contracts && yarn generate-contracts",
+    "postinstall": "yarn fix-contract-imports && yarn eth:compile-contracts && yarn generate-contracts",
+    "fix-contract-imports": "yarn replace-in-file @api3-dao/pool/contracts ../pool-contracts-symlink hardhat/contracts/voting-contracts-symlink/Api3Voting.sol",
     "eth:set-dao-apps:localhost": "cd hardhat && npx hardhat run scripts/set-dao-apps-in-pool"
   },
   "husky": {
@@ -59,7 +60,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "^3.4.1",
     "@walletconnect/web3-provider": "^1.4.1",
-    "api3-dao": "git+https://github.com/api3dao/api3-dao.git#692d148e04e70cd22969149b2a0945f763bb9425",
+    "api3-dao": "git+https://github.com/api3dao/api3-dao.git#1dc0cfd219addcded295e0ae246461eaf6fae6e8",
     "classnames": "^2.3.1",
     "date-fns": "^2.21.3",
     "immer": "^9.0.2",
@@ -101,6 +102,7 @@
     "npx": "^10.2.2",
     "prettier": "^2.2.1",
     "react-scripts": "4.0.3",
+    "replace-in-file": "^6.2.0",
     "sort-package-json": "^1.50.0",
     "ts-node": "^9.1.1",
     "typechain": "^4.0.3",
