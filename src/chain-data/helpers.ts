@@ -22,6 +22,10 @@ export const getChainData = async (provider: ethers.providers.Web3Provider) => {
     contracts: daoNetwork?.contracts ?? null,
     latestBlock: await provider.getBlockNumber(),
   };
+
+  // NOTE: The localhost doesn't have a name, so set any unknown networks
+  // to localhost. The network name is needed to display the "Unsupported Network"
+  //  message to the user
   if (newData.networkName === 'unknown') newData.networkName = 'localhost';
 
   return { ...newData, provider };
