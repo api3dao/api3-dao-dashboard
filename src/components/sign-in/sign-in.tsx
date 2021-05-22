@@ -61,7 +61,6 @@ const SignIn = () => {
     // User has chosen a provider and has signed in
     refreshChainData(provider);
 
-    // NOTE: These callback might get called multiple times
     web3ModalProvider.on('accountsChanged', () => refreshChainData(provider));
     web3ModalProvider.on('chainChanged', () => refreshChainData(provider));
     web3ModalProvider.on('disconnect', () => onDisconnect());
