@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import last from 'lodash/last';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useChainData } from '../../chain-data';
 import {
   absoluteStakeTarget,
@@ -15,11 +15,9 @@ import {
   useApi3Token,
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
-import { usePromise } from '../../utils/usePromise';
 import { formatApi3, parseApi3 } from '../../utils/api3-format';
 import { unusedHookDependency } from '../../utils/hooks';
 import TokenAmountModal from './token-amount-modal/token-amount-modal';
-import { useState } from 'react';
 import Layout from '../../components/layout/layout';
 import Button from '../../components/button/button';
 import StakingPool from './staking/staking-pool';
@@ -73,13 +71,19 @@ const HelperText = (props: { helperText: string }) => {
 };
 
 const Dashboard = () => {
-  const { userAccount, provider, latestBlock } = useChainData();
+  const chainData = useChainData();
+  const { userAccount, provider, latestBlock, transactions, setChainData } = chainData;
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
 
+  // TODO: move to the "global" state
+  const [data, setData] = useState<any>(null);
+
+  // Load the data again on every block (10 - 20 seconds on average). This will also run
+  // immediately if the user is already on the dashboard and they have just connected.
   // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
-  const loadData = useCallback(async () => {
-    if (!api3Pool || !api3Token || !provider) return null;
+  const loadDashboardData = useCallback(async () => {
+    if (!api3Pool || !api3Token || !provider || !userAccount) return null;
     unusedHookDependency(latestBlock);
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
@@ -91,7 +95,7 @@ const Dashboard = () => {
     const annualMintedTokens = calculateAnnualMintedTokens(totalStaked, annualApy);
     const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
 
-    return {
+    const latestData = {
       ownedTokens: formatApi3(await api3Token.balanceOf(userAccount)),
       balance: formatApi3(tokenBalances.balance),
       withdrawable: formatApi3(tokenBalances.withdrawable),
@@ -104,10 +108,24 @@ const Dashboard = () => {
       totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
       allowance: await api3Token.allowance(userAccount, api3Pool.address),
     };
-  }, [api3Pool, api3Token, userAccount, provider, latestBlock]);
+    setData(latestData);
+  }, [provider, api3Pool, api3Token, userAccount, latestBlock]);
 
-  // TODO: handle error
-  const [_error, data] = usePromise(loadData);
+  // If the user is navigating to the dashboard from another page, and they
+  // are already connected, refresh the data immediately.
+  useEffect(() => {
+    loadDashboardData();
+  }, [loadDashboardData]);
+
+  useEffect(() => {
+    if (!api3Pool || !api3Token || !provider) return;
+    // NOTE: the 'block' event fires immediately on connection
+    provider.on('block', loadDashboardData);
+    return () => {
+      provider.off('block', loadDashboardData);
+    };
+  }, [provider, api3Pool, api3Token, loadDashboardData]);
+
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
   const closeModal = () => setOpenModal(null);
@@ -202,7 +220,10 @@ const Dashboard = () => {
         action="Deposit"
         onConfirm={async () => {
           // TODO: handle errors
-          await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
+          const tx = await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
+          if (tx) {
+            setChainData({ ...chainData, transactions: [...transactions, tx] });
+          }
           closeModal();
         }}
         helperText={<HelperText helperText={data?.ownedTokens || '0.0'} />}
@@ -216,7 +237,10 @@ const Dashboard = () => {
         action="Withdraw"
         onConfirm={async () => {
           // TODO: handle errors
-          await api3Pool?.withdraw(userAccount, parseApi3(inputValue));
+          const tx = await api3Pool?.withdraw(userAccount, parseApi3(inputValue));
+          if (tx) {
+            setChainData({ ...chainData, transactions: [...transactions, tx] });
+          }
           closeModal();
         }}
         inputValue={inputValue}
@@ -229,7 +253,10 @@ const Dashboard = () => {
         action="Stake"
         onConfirm={async () => {
           // TODO: handle errors
-          await api3Pool?.stake(parseApi3(inputValue));
+          const tx = await api3Pool?.stake(parseApi3(inputValue));
+          if (tx) {
+            setChainData({ ...chainData, transactions: [...transactions, tx] });
+          }
           closeModal();
         }}
         inputValue={inputValue}
