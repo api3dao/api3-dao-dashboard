@@ -43,12 +43,12 @@ const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => 
 };
 
 const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {
-  const scheduledUnstakeFilter = api3Pool.filters.ScheduledUnstake(userAccount, null, null);
+  const scheduledUnstakeFilter = api3Pool.filters.ScheduledUnstake(userAccount, null, null, null);
 
   const lastUnstake = last(await api3Pool.queryFilter(scheduledUnstakeFilter));
   if (!lastUnstake) return null;
 
-  const unstakedFilter = api3Pool.filters.Unstaked(userAccount, null, null);
+  const unstakedFilter = api3Pool.filters.Unstaked(userAccount, null);
   const unstakedEvents = await api3Pool.queryFilter(unstakedFilter, lastUnstake.blockNumber);
   if (unstakedEvents.length > 0) {
     return null;
