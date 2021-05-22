@@ -1,7 +1,27 @@
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, FixedNumber, ethers } from 'ethers';
 import type localhostDao from '../contract-deployments/localhost-dao.json';
 
 type ContractsInfo = typeof localhostDao['contracts'];
+
+export interface PendingUnstake {
+  amount: BigNumber;
+  deadline: string;
+  scheduledFor: string;
+}
+
+export interface DashboardState {
+  allowance: BigNumber;
+  annualApy: FixedNumber;
+  annualInflationRate: FixedNumber;
+  balance: BigNumber;
+  ownedTokens: BigNumber;
+  pendingUnstake: PendingUnstake | string;
+  stakeTarget: BigNumber;
+  totalStaked: BigNumber;
+  totalStakedPercentage: FixedNumber;
+  userStake: BigNumber;
+  withdrawable: BigNumber;
+}
 
 export interface ProposalMetadata {
   targetSignature: string;
@@ -44,6 +64,7 @@ export interface ChainData {
   chainId: string;
   contracts: ContractsInfo | null;
   latestBlock: number;
+  dashboardState: DashboardState | null;
   proposalState: ProposalState | null;
   transactions: ethers.ContractTransaction[];
 }
@@ -59,6 +80,7 @@ export const initialChainData: ChainData = {
   chainId: '',
   contracts: null,
   latestBlock: 0,
+  dashboardState: null,
   proposalState: null,
   transactions: [],
 };

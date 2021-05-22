@@ -1,22 +1,24 @@
+import { BigNumber, FixedNumber } from 'ethers';
+import { formatApi3 } from '../../../utils/api3-format';
 import RadialChart from './radial-chart';
 import './staking-pool.scss';
 
 type Props = {
   data?: {
-    annualApy: string;
-    annualInflationRate: string;
-    totalStaked: string;
-    stakeTarget: string;
-    totalStakedPercentage: string;
+    annualApy: FixedNumber;
+    annualInflationRate: FixedNumber;
+    totalStaked: BigNumber;
+    stakeTarget: BigNumber;
+    totalStakedPercentage: FixedNumber;
   };
 };
 
 const StakingPool = ({ data }: Props) => {
-  const annualApy = parseFloat(data?.annualApy || '0').toFixed(1);
-  const annualInflationRate = parseFloat(data ? data.annualInflationRate : '0').toFixed(2);
-  const totalStaked = parseFloat(data?.totalStaked || '0').toLocaleString();
-  const stakeTarget = parseFloat(data?.stakeTarget || '0').toLocaleString();
-  const totalStakedPercentage = parseFloat(data?.totalStakedPercentage || '0');
+  const annualApy = parseFloat(data?.annualApy.toString() || '0').toFixed(1);
+  const annualInflationRate = parseFloat(data ? data.annualInflationRate.toString() : '0').toFixed(2);
+  const totalStaked = parseFloat(data ? formatApi3(data.totalStaked) : '0').toLocaleString();
+  const stakeTarget = parseFloat(data ? formatApi3(data.stakeTarget) : '0').toLocaleString();
+  const totalStakedPercentage = parseFloat(data?.totalStakedPercentage.toString() || '0');
 
   return (
     <div className="staking-pool">
