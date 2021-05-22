@@ -1,5 +1,5 @@
 import { BigNumber, FixedNumber } from 'ethers';
-import { formatApi3 } from '../../../utils/api3-format';
+import { formatApi3 } from '../../../utils';
 import RadialChart from './radial-chart';
 import './staking-pool.scss';
 

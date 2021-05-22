@@ -1,4 +1,4 @@
-import { FixedNumber } from 'ethers';
+import { BigNumber, FixedNumber } from 'ethers';
 import { ChangeEventHandler, ReactNode, useState } from 'react';
 import classNames from 'classnames';
 import Modal from '../../../components/modal/modal';
@@ -17,7 +17,7 @@ interface Props {
   inputValue: string;
   helperText?: ReactNode;
   showTokenInput?: boolean;
-  maxValue?: string;
+  maxValue?: BigNumber;
   closeOnConfirm?: boolean;
 }
 
@@ -31,9 +31,8 @@ const TokenAmountModal = (props: Props) => {
       return;
     }
     if (props.maxValue) {
-      const maxValueBigNum = fixedToBigNumber(FixedNumber.from(props.maxValue));
       const inputBigNum = fixedToBigNumber(FixedNumber.from(inputValue));
-      if (inputBigNum.gt(maxValueBigNum)) {
+      if (inputBigNum.gt(props.maxValue)) {
         setError('Input value cannot be higher than the available balance');
         return;
       }

@@ -15,15 +15,12 @@ interface ModalProps {
 
 const Modal = (props: ModalProps) => {
   const { onClose, open, hideCloseButton, children, header, footer } = props;
-  const { provider, web3Modal } = useChainData();
+  const { userAccount } = useChainData();
 
   useEffect(() => {
-    if (!provider || !web3Modal || !open) return;
-    web3Modal.on('accountsChanged', onClose);
-    return () => {
-      web3Modal.off('accountsChanged', onClose);
-    };
-  }, [provider, web3Modal]);
+    if (!open || !userAccount) return;
+    onClose();
+  }, [open, userAccount, onClose]);
 
   if (!open) return null;
 
