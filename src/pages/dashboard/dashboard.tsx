@@ -81,6 +81,7 @@ const Dashboard = () => {
   // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
   const loadDashboardData = useCallback(async () => {
     if (!api3Pool || !api3Token || !provider || !userAccount) return null;
+    unusedHookDependency(latestBlock);
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
     const currentApr = await api3Pool.currentApr();
@@ -106,22 +107,13 @@ const Dashboard = () => {
         withdrawable: tokenBalances.withdrawable,
       },
     });
-  }, [provider, api3Pool, api3Token, userAccount, chainData, setChainData]);
+  }, [provider, api3Pool, api3Token, latestBlock, userAccount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // If the user is navigating to the dashboard from another page, and they
   // are already connected, refresh the data immediately.
   useEffect(() => {
     loadDashboardData();
-  }, []);
-
-  useEffect(() => {
-    if (!api3Pool || !api3Token || !provider) return;
-    // NOTE: the 'block' event fires immediately on connection
-    provider.on('block', loadDashboardData);
-    return () => {
-      provider.off('block', loadDashboardData);
-    };
-  }, [provider, api3Pool, api3Token, loadDashboardData]);
+  }, [loadDashboardData]);
 
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
