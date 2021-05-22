@@ -79,6 +79,8 @@ const Dashboard = () => {
   // TODO: move to the "global" state
   const [data, setData] = useState<any>(null);
 
+  // Load the data again on every block (10 - 20 seconds on average). This will also run
+  // immediately if the user is already on the dashboard and they have just connected.
   // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
   const loadDashboardData = useCallback(async () => {
     if (!api3Pool || !api3Token || !provider || !userAccount) return null;
@@ -117,15 +119,12 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!api3Pool || !api3Token || !provider) return;
-
-    // Load the data again on every block (10 - 20 seconds on average)
-    // This will also run immediately if the user is already on the dashboard
-    // and they have just connected.
+    // NOTE: the 'block' event fires immediately on connection
     provider.on('block', loadDashboardData);
     return () => {
       provider.off('block', loadDashboardData);
     };
-  }, [provider, api3Pool, api3Token]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [provider, api3Pool, api3Token, loadDashboardData]);
 
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
