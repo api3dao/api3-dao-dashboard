@@ -58,11 +58,11 @@ const getScheduledUnstakes = async (api3Pool: Api3Pool, userAccount: string) => 
 
   const toDate = (timestamp: BigNumber) => new Date(timestamp.toNumber()).toUTCString();
 
-  return JSON.stringify({
+  return {
     amount: lastUnstake.args.amount,
     scheduledFor: toDate(scheduledFor.mul(1000)),
     deadline: toDate(scheduledFor.add(epochLength)),
-  });
+  };
 };
 
 const HelperText = (props: { helperText: string }) => {
@@ -81,7 +81,6 @@ const Dashboard = () => {
   // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
   const loadDashboardData = useCallback(async () => {
     if (!api3Pool || !api3Token || !provider || !userAccount) return null;
-    unusedHookDependency(latestBlock);
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
     const currentApr = await api3Pool.currentApr();
@@ -93,28 +92,27 @@ const Dashboard = () => {
     const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
 
     setChainData({
-      ...chainData,
       dashboardState: {
-        ownedTokens: formatApi3(await api3Token.balanceOf(userAccount)),
-        balance: formatApi3(tokenBalances.balance),
-        withdrawable: formatApi3(tokenBalances.withdrawable),
-        userStake: formatApi3(await api3Pool.userStake(userAccount)),
-        stakeTarget: formatApi3(stakeTarget),
-        totalStaked: formatApi3(totalStaked),
-        pendingUnstakes: await getScheduledUnstakes(api3Pool, userAccount),
-        annualApy: annualApy.toString(),
-        annualInflationRate: annualInflationRate.toString(),
-        totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
         allowance: await api3Token.allowance(userAccount, api3Pool.address),
+        annualApy,
+        annualInflationRate,
+        balance: tokenBalances.balance,
+        ownedTokens: await api3Token.balanceOf(userAccount),
+        pendingUnstake: await getScheduledUnstakes(api3Pool, userAccount),
+        stakeTarget,
+        totalStaked,
+        totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
+        userStake: await api3Pool.userStake(userAccount),
+        withdrawable: tokenBalances.withdrawable,
       },
     });
-  }, [provider, api3Pool, api3Token, userAccount, latestBlock, chainData, setChainData]);
+  }, [provider, api3Pool, api3Token, userAccount, chainData, setChainData]);
 
   // If the user is navigating to the dashboard from another page, and they
   // are already connected, refresh the data immediately.
   useEffect(() => {
     loadDashboardData();
-  }, [loadDashboardData]);
+  }, []);
 
   useEffect(() => {
     if (!api3Pool || !api3Token || !provider) return;
@@ -170,11 +168,11 @@ const Dashboard = () => {
             <>
               <div className="bordered-box-data">
                 <p className="text-small secondary-color uppercase medium">total</p>
-                <p className="text-xlarge">{data?.balance || 0.0}</p>
+                <p className="text-xlarge">{data ? formatApi3(data.balance) : '0.0'}</p>
               </div>
               <div className="bordered-box-data">
                 <p className="text-small secondary-color uppercase medium">withdrawable</p>
-                <p className="text-xlarge">{data?.withdrawable || 0.0}</p>
+                <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
               </div>
             </>
           }
@@ -197,11 +195,11 @@ const Dashboard = () => {
             <>
               <div className="bordered-box-data">
                 <p className="text-small secondary-color uppercase medium">staked</p>
-                <p className="text-xlarge">{data?.userStake || 0.0}</p>
+                <p className="text-xlarge">{data ? formatApi3(data.userStake) : '0.0'}</p>
               </div>
               <div className="bordered-box-data">
                 <p className="text-small secondary-color uppercase medium">unstaked</p>
-                <p className="text-xlarge">{data?.withdrawable || 0.0}</p>
+                <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
               </div>
             </>
           }
@@ -225,7 +223,7 @@ const Dashboard = () => {
           }
           closeModal();
         }}
-        helperText={<HelperText helperText={data?.ownedTokens || '0.0'} />}
+        helperText={<HelperText helperText={data ? formatApi3(data.ownedTokens) : '0.0'} />}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
       />

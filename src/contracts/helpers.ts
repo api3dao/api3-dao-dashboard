@@ -20,8 +20,9 @@ export const calculateApy = (apr: BigNumber) => {
 };
 
 // based on https://github.com/api3dao/api3-web-client/issues/2#issuecomment-831891578
-export const calculateAnnualMintedTokens = (totalStake: BigNumber, currentApy: FixedNumber) =>
-  toBigNumber(FixedNumber.from(totalStake).mulUnsafe(currentApy).divUnsafe(FixedNumber.from(100)));
+export const calculateAnnualMintedTokens = (totalStake: BigNumber, currentApy: FixedNumber) => {
+  return toBigNumber(FixedNumber.from(totalStake).mulUnsafe(currentApy).divUnsafe(FixedNumber.from(100)));
+};
 
 // based on https://github.com/api3dao/api3-web-client/issues/2#issuecomment-831891578
 export const calculateAnnualInflationRate = (annualMintedTokens: BigNumber, totalSupply: BigNumber) => {
@@ -50,20 +51,21 @@ export const convertPercentage = (daoPercentage: BigNumber, humanReadable = fals
  * Staking target is in percentages, where HUNDRED_PERCENT is the maximum value.
  * The absolute stake target is percentage of total token supply.
  */
-export const absoluteStakeTarget = (stakeTargetPercentages: BigNumber, totalSupply: BigNumber) =>
+export const absoluteStakeTarget = (stakeTargetPercentages: BigNumber, totalSupply: BigNumber) => {
   // Intentionally avoiding FixedNumber calculations
-  totalSupply.mul(stakeTargetPercentages).div(HUNDRED_PERCENT);
+  return totalSupply.mul(stakeTargetPercentages).div(HUNDRED_PERCENT);
+};
 
 /**
  * Compute the percentage of total stakes in the pool rounding to 1 decimal place.
  * The stakeTarget is the absolute value (not in percentages).
  */
-export const totalStakedPercentage = (totalStaked: BigNumber, stakeTarget: BigNumber) =>
-  FixedNumber.from(totalStaked)
+export const totalStakedPercentage = (totalStaked: BigNumber, stakeTarget: BigNumber) => {
+  return FixedNumber.from(totalStaked)
     .divUnsafe(FixedNumber.from(stakeTarget))
     .mulUnsafe(FixedNumber.from(100))
-    .round(1)
-    .toString();
+    .round(1);
+};
 
 export const MAX_ALLOWANCE = BigNumber.from(2).pow(256).sub(1);
 
