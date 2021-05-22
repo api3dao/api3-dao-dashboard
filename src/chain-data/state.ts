@@ -1,4 +1,4 @@
-import { BigNumber, FixedNumber, ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import type localhostDao from '../contract-deployments/localhost-dao.json';
 
 type ContractsInfo = typeof localhostDao['contracts'];
@@ -11,14 +11,14 @@ export interface PendingUnstake {
 
 export interface DashboardState {
   allowance: BigNumber;
-  annualApy: FixedNumber;
-  annualInflationRate: FixedNumber;
+  annualApy: number;
+  annualInflationRate: number;
   balance: BigNumber;
   ownedTokens: BigNumber;
   pendingUnstake: PendingUnstake | null;
   stakeTarget: BigNumber;
   totalStaked: BigNumber;
-  totalStakedPercentage: FixedNumber;
+  totalStakedPercentage: number;
   userStake: BigNumber;
   withdrawable: BigNumber;
 }
