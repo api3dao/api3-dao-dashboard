@@ -1,5 +1,4 @@
 import { BigNumber, ethers } from 'ethers';
-import Web3Modal from 'web3modal';
 import type localhostDao from '../contract-deployments/localhost-dao.json';
 
 type ContractsInfo = typeof localhostDao['contracts'];
