@@ -1,21 +1,26 @@
-import Web3Modal from 'web3modal';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, FixedNumber, ethers } from 'ethers';
 import type localhostDao from '../contract-deployments/localhost-dao.json';
 
 type ContractsInfo = typeof localhostDao['contracts'];
 
+export interface PendingUnstake {
+  amount: BigNumber;
+  deadline: string;
+  scheduledFor: string;
+}
+
 export interface DashboardState {
   allowance: BigNumber;
-  annualApy: string;
-  annualInflationRate: string;
-  balance: string;
-  ownedTokens: string;
-  pendingUnstakes: string;
-  stakeTarget: string;
-  totalStaked: string;
-  totalStakedPercentage: string;
-  userStake: string;
-  withdrawable: string;
+  annualApy: FixedNumber;
+  annualInflationRate: FixedNumber;
+  balance: BigNumber;
+  ownedTokens: BigNumber;
+  pendingUnstake: PendingUnstake | string;
+  stakeTarget: BigNumber;
+  totalStaked: BigNumber;
+  totalStakedPercentage: FixedNumber;
+  userStake: BigNumber;
+  withdrawable: BigNumber;
 }
 
 export interface ProposalMetadata {
@@ -54,7 +59,6 @@ export interface ProposalState {
 
 export interface ChainData {
   provider: ethers.providers.Web3Provider | null;
-  web3Modal: Web3Modal | null;
   userAccount: string;
   networkName: string;
   chainId: string;
@@ -66,12 +70,11 @@ export interface ChainData {
 }
 
 interface SettableChainData extends ChainData {
-  setChainData: (newChainData: ChainData) => void;
+  setChainData: (newChainData: Partial<ChainData>) => void;
 }
 
 export const initialChainData: ChainData = {
   provider: null,
-  web3Modal: null,
   userAccount: '',
   networkName: '',
   chainId: '',

@@ -9,7 +9,7 @@ import GenericModal from '../../components/modal/modal';
 import './sign-in.scss';
 
 const SignIn = () => {
-  const { setChainData, provider, contracts, networkName, ...otherChainData } = useChainData();
+  const { setChainData, provider, contracts, networkName } = useChainData();
 
   const onDisconnect = () => {
     if (provider) {
@@ -44,24 +44,34 @@ const SignIn = () => {
     });
 
     const web3ModalProvider = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(web3ModalProvider);
+
+    const refreshChainData = async () => {
+      setChainData({ ...(await getChainData(provider)) });
+    };
 
     // Enable session (triggers QR Code modal)
-    const [err] = await go(() => web3ModalProvider.request({ method: 'eth_requestAccounts' }));
+    const [err] = await go(web3ModalProvider.request({ method: 'eth_requestAccounts' }));
     if (err) {
       // TODO: handle error (e.g. user closes the modal)
       return;
     }
+
     // User has chosen a provider and has signed in
-    const provider = new ethers.providers.Web3Provider(web3ModalProvider);
-    const latestChainData = await getChainData(provider);
-    setChainData({ ...otherChainData, ...latestChainData, web3Modal });
+    refreshChainData();
+
+    provider.on('block', (latestBlock: number) => setChainData({ latestBlock }));
+
+    web3ModalProvider.on('accountsChanged', () => refreshChainData());
+    web3ModalProvider.on('chainChanged', () => refreshChainData());
+    web3ModalProvider.on('disconnect', () => onDisconnect());
   };
 
   const isSupportedNetwork = !!provider && contracts === null;
   const supportedNetworks = daoAbis
     .map((abi) => abi.name)
     .filter((name) => {
-      // disable localhost network on non-development environment
+      // Disable localhost network on non-development environment
       if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
       else return true;
     })

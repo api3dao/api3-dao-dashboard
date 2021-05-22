@@ -57,12 +57,12 @@ export const absoluteStakeTarget = (stakeTargetPercentages: BigNumber, totalSupp
  * Compute the percentage of total stakes in the pool rounding to 1 decimal place.
  * The stakeTarget is the absolute value (not in percentages).
  */
-export const totalStakedPercentage = (totalStaked: BigNumber, stakeTarget: BigNumber) =>
-  FixedNumber.from(totalStaked)
+export const totalStakedPercentage = (totalStaked: BigNumber, stakeTarget: BigNumber) => {
+  return FixedNumber.from(totalStaked)
     .divUnsafe(FixedNumber.from(stakeTarget))
     .mulUnsafe(FixedNumber.from(100))
-    .round(1)
-    .toString();
+    .round(1);
+};
 
 export const MAX_ALLOWANCE = BigNumber.from(2).pow(256).sub(1);
 
