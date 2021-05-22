@@ -4,12 +4,15 @@ export const blockTimestampToDate = (timestamp: BigNumber) => new Date(timestamp
 
 type GoResult<T> = [Error, null] | [null, T];
 
-export const go = <T>(fn: () => Promise<T>): Promise<GoResult<T>> => {
+export const go = <T>(fn: Promise<T> | (() => Promise<T>)): Promise<GoResult<T>> => {
   function successFn(value: T): [null, T] {
     return [null, value];
   }
   function errorFn(err: Error): [Error, null] {
     return [err, null];
   }
-  return fn().then(successFn).catch(errorFn);
+  if (typeof fn === 'function') {
+    return fn().then(successFn).catch(errorFn);
+  }
+  return fn.then(successFn).catch(errorFn);
 };

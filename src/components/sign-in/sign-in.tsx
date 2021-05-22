@@ -52,7 +52,7 @@ const SignIn = () => {
     const provider = new ethers.providers.Web3Provider(web3ModalProvider);
 
     // Enable session (triggers QR Code modal)
-    const [err] = await go(() => web3ModalProvider.request({ method: 'eth_requestAccounts' }));
+    const [err] = await go(web3ModalProvider.request({ method: 'eth_requestAccounts' }));
     if (err) {
       // TODO: handle error (e.g. user closes the modal)
       return;
