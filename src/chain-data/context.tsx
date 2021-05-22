@@ -8,21 +8,20 @@ const ChainDataContextProvider: React.FC = ({ children }) => {
 
   const settableChainData = useMemo(() => {
     const loggableSetChainData = (newChainData: Partial<ChainData>) => {
-      const updatedChainData = { ...chainData, ...newChainData };
+      setChainData((oldChainData) => {
+        const updatedChainData = { ...oldChainData, ...newChainData };
 
-      if (process.env.NODE_ENV === 'development') {
-        console.group('Setting chain data');
-        console.info(updatedChainData);
-        console.groupEnd();
-      }
+        if (process.env.NODE_ENV === 'development') {
+          console.group('Setting chain data');
+          console.info(updatedChainData);
+          console.groupEnd();
+        }
 
-      setChainData(updatedChainData);
+        return updatedChainData;
+      });
     };
 
-    return {
-      ...chainData,
-      setChainData: loggableSetChainData,
-    };
+    return { ...chainData, setChainData: loggableSetChainData };
   }, [chainData, setChainData]);
 
   return <ChainDataContext.Provider value={settableChainData}>{children}</ChainDataContext.Provider>;
