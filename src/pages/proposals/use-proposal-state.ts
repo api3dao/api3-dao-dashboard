@@ -78,7 +78,7 @@ export const useProposalState = () => {
     setChainData({
       ...chainData,
       proposalState: {
-        delegationAddress: await api3Pool.userDelegate(userAccount),
+        delegationAddress: await api3Pool.getUserDelegate(userAccount),
         primary: {
           proposals: await getProposals(primary, userAccount, primaryStartVotes),
         },
