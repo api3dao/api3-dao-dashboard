@@ -31,11 +31,8 @@ export const ONE_PERCENT = HUNDRED_PERCENT.div(100);
  * For example, 75 * 1e18 should convert to 0.75
  * If humanReadable is true, percentage is multiplied by 100
  */
-export const convertPercentage = (daoPercentage: BigNumber, humanReadable = false) => {
-  const percentage = daoPercentage.mul(precision).div(HUNDRED_PERCENT).toNumber() / precision;
-  if (humanReadable) return percentage * 100;
-  else return percentage;
-};
+export const convertPercentage = (daoPercentage: BigNumber, humanReadable = false) =>
+  computePercentage(daoPercentage, HUNDRED_PERCENT, humanReadable);
 
 /**
  * Staking target is in percentages, where HUNDRED_PERCENT is the maximum value.
@@ -54,3 +51,9 @@ export const totalStakedPercentage = (totalStaked: BigNumber, stakeTarget: BigNu
 export const MAX_ALLOWANCE = BigNumber.from(2).pow(256).sub(1);
 
 export const ALLOWANCE_REFILL_TRESHOLD = MAX_ALLOWANCE.div(2);
+
+export const computePercentage = (value: BigNumber, hundredPercent: BigNumber, humanReadable = false) => {
+  const percentage = value.mul(precision).div(hundredPercent).toNumber() / precision;
+  if (humanReadable) return percentage * 100;
+  else return percentage;
+};

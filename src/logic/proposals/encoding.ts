@@ -1,7 +1,15 @@
 import { ethers } from 'ethers';
-import { ProposalMetadata } from '../../chain-data';
+import { ProposalMetadata, ProposalType } from '../../chain-data';
 import { Api3Agent } from '../../contracts';
-import { NewProposalFormData } from './new-proposal-modal';
+
+export interface NewProposalFormData {
+  type: ProposalType;
+  description: string;
+  targetAddress: string;
+  targetSignature: string;
+  targetValue: string;
+  parameters: string;
+}
 
 export const decodeMetadata = (metadata: string): ProposalMetadata => {
   const tokens = metadata.split(' ');
@@ -57,4 +65,10 @@ export const buildEVMScript = (formData: NewProposalFormData, api3Agent: Api3Age
     '0x00000001' + api3Agent[formData.type].substring(2) + callDataLengthInBytes.substring(2) + callData.substring(2);
 
   return evmScript;
+};
+
+export const encodeProposalTypeAndId = (type: ProposalType, id: string) => `${type}-${id}`;
+export const decodeProposalTypeAndId = (typeAndId: string) => {
+  const [type, id] = typeAndId.split('-');
+  return { type: type as ProposalType, id };
 };

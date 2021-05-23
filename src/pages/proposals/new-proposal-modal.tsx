@@ -1,15 +1,8 @@
 import { useState } from 'react';
+import { ProposalType } from '../../chain-data';
 import Button from '../../components/button/button';
 import GenericModal from '../../components/modal/modal';
-
-export interface NewProposalFormData {
-  type: 'primary' | 'secondary';
-  description: string;
-  targetAddress: string;
-  targetSignature: string;
-  targetValue: string;
-  parameters: string;
-}
+import { NewProposalFormData } from '../../logic/proposals/encoding';
 
 interface Props {
   open: boolean;
@@ -20,7 +13,7 @@ interface Props {
 const NewProposalModal = (props: Props) => {
   const { onClose, open, onConfirm } = props;
 
-  const [type, setType] = useState<'primary' | 'secondary'>('primary');
+  const [type, setType] = useState<ProposalType>('primary');
   const [description, setDescription] = useState('');
   const [targetAddress, setTargetAddress] = useState('');
   const [targetSignature, setTargetSignature] = useState('');

@@ -29,6 +29,7 @@ export interface ProposalMetadata {
 }
 
 export type VoterState = 0 | 1 | 2; // Absent, Yea, Nay
+export type ProposalType = 'primary' | 'secondary';
 
 export interface Proposal {
   voteId: ethers.BigNumber;
@@ -45,6 +46,7 @@ export interface Proposal {
   votingPower: BigNumber;
   deadline: Date;
   startDateRaw: BigNumber;
+  type: ProposalType;
 }
 
 export interface ProposalState {

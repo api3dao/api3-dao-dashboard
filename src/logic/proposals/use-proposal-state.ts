@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { updateImmutably, useChainData, VoterState } from '../../chain-data';
+import { ProposalType, updateImmutably, useChainData, VoterState } from '../../chain-data';
 import { Api3Voting } from '../../generated-contracts';
 import { useApi3Pool, useApi3Voting } from '../../contracts/hooks';
 import { Proposal } from '../../chain-data';
@@ -21,7 +21,8 @@ interface StartVoteProposal {
 const getProposals = async (
   api3Voting: Api3Voting,
   userAccount: string,
-  startVoteProposals: StartVoteProposal[]
+  startVoteProposals: StartVoteProposal[],
+  type: ProposalType
 ): Promise<Proposal[]> => {
   const startVotesInfo = startVoteProposals.map((p) => ({
     voteId: p.voteId,
@@ -56,6 +57,7 @@ const getProposals = async (
     ...startVote!,
     ...getVote!,
     voterState: voterState! as VoterState,
+    type,
   }));
 };
 
@@ -80,10 +82,10 @@ export const useProposalState = () => {
       proposalState: {
         delegationAddress: await api3Pool.getUserDelegate(userAccount),
         primary: {
-          proposals: await getProposals(primary, userAccount, primaryStartVotes),
+          proposals: await getProposals(primary, userAccount, primaryStartVotes, 'primary'),
         },
         secondary: {
-          proposals: await getProposals(secondary, userAccount, secondaryStartVotes),
+          proposals: await getProposals(secondary, userAccount, secondaryStartVotes, 'secondary'),
         },
       },
     });
@@ -119,7 +121,7 @@ export const useProposalState = () => {
       // On StartVote event just add a new proposal to the list
       votingApp.on(votingEvents.StartVote, async (...args) => {
         const startVote = last(args).args;
-        const newProposal = await getProposals(votingApp, userAccount, [startVote]);
+        const newProposal = await getProposals(votingApp, userAccount, [startVote], type);
 
         setChainData(
           updateImmutably(chainData, (data) => {
