@@ -3,7 +3,7 @@
   "chainId": "3",
   "contracts": {
     "Api3Token": {
-      "address": "0xC1e7E7ed412DFa978E3B214f3DE6460e1EDB21A4",
+      "address": "0x802aa1649f1d9cce8e213a6b4c6e880c0e691f00",
       "abi": [
         {
           "inputs": [
@@ -484,7 +484,7 @@
       ]
     },
     "Api3Pool": {
-      "address": "0x69c40A6908Ba996A0c22110117E53e77Fde5bB75",
+      "address": "0xd8b5dd2f3c6d530bcaa90c38fa815a9a3996f3ed",
       "abi": [
         {
           "inputs": [
@@ -1997,9 +1997,9 @@
         }
       ]
     },
-    "PrimaryAgentAppAddress": "0x600214CFaf9f0734659F57656F31E4A11E833F40",
-    "SecondaryAgentAppAddress": "0x71F1337dc27cd188b3c116B0b874311eFe144A0a",
-    "PrimaryVotingAppAddress": "0xc8F18fc8faF682CE4b27124a4aB7f976AB10292F",
-    "SecondaryVotingAppAddress": "0xD78bc0F7cdBB88eBA36eEd08c1152f80fBEbBBce"
+    "PrimaryAgentAppAddress": "0x64cd17a65f943d976dbda3ba525775ef4132fc09",
+    "SecondaryAgentAppAddress": "0x52c8c85c3896dc4833794bab635fc2b5c48b9874",
+    "PrimaryVotingAppAddress": "0xbae023a1538e4f1e382fc5ca304e042d077056c2",
+    "SecondaryVotingAppAddress": "0xf9647391b42b5f17c11b8946886263e910099fe7"
   }
 }
