@@ -11,7 +11,7 @@ export const useApi3Pool = () => {
 
   return useMemo(() => {
     if (!provider || !contracts) return null;
-    return Api3PoolFactory.connect(contracts.Api3Pool.address, provider.getSigner());
+    return Api3PoolFactory.connect(contracts.api3Pool, provider.getSigner());
   }, [provider, contracts]);
 };
 
@@ -20,7 +20,7 @@ export const useApi3Token = () => {
 
   return useMemo(() => {
     if (!provider || !contracts) return null;
-    return Api3TokenFactory.connect(contracts.Api3Token.address, provider.getSigner());
+    return Api3TokenFactory.connect(contracts.api3Token, provider.getSigner());
   }, [provider, contracts]);
 };
 
@@ -30,8 +30,8 @@ export const useApi3Voting = () => {
   return useMemo(() => {
     if (!provider || !contracts) return null;
     return {
-      primary: Api3VotingFactory.connect(contracts.PrimaryVotingAppAddress, provider.getSigner()),
-      secondary: Api3VotingFactory.connect(contracts.SecondaryVotingAppAddress, provider.getSigner()),
+      primary: Api3VotingFactory.connect(contracts.votingAppPrimary, provider.getSigner()),
+      secondary: Api3VotingFactory.connect(contracts.votingAppSecondary, provider.getSigner()),
     };
   }, [provider, contracts]);
 };
@@ -47,8 +47,8 @@ export const useApi3AgentAddresses = (): Api3Agent | null => {
   return useMemo(() => {
     if (!contracts) return null;
     return {
-      primary: contracts.PrimaryAgentAppAddress,
-      secondary: contracts.SecondaryAgentAppAddress,
+      primary: contracts.agentAppPrimary,
+      secondary: contracts.agentAppSecondary,
     };
   }, [contracts]);
 };

@@ -2,11 +2,11 @@ import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
 import { initialChainData, getChainData, useChainData } from '../../chain-data';
-import { daoAbis } from '../../contracts';
 import { go } from '../../utils/generic';
 import Button from '../../components/button/button';
 import GenericModal from '../../components/modal/modal';
 import './sign-in.scss';
+import { getSupportedNetworks, getWalletConnectRpcProviders } from '../../contracts';
 
 const SignIn = () => {
   const { setChainData, provider, contracts, networkName } = useChainData();
@@ -33,18 +33,15 @@ const SignIn = () => {
           options: {
             // This is actually the default value in WalletConnectProvider, but I'd rather be explicit about this
             bridge: 'https://bridge.walletconnect.org',
-            // TODO: use mapping function for this
-            rpc: {
-              3: process.env.REACT_APP_ROPSTEN_PROVIDER_URL,
-              31337: 'http://127.0.0.1:8545/',
-            },
+            rpc: getWalletConnectRpcProviders(),
           },
         },
       },
     });
 
     const web3ModalProvider = await web3Modal.connect();
-    const provider = new ethers.providers.Web3Provider(web3ModalProvider);
+    // https://github.com/ethers-io/ethers.js/discussions/1480
+    const provider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
 
     const refreshChainData = async () => {
       setChainData({ ...(await getChainData(provider)) });
@@ -68,8 +65,7 @@ const SignIn = () => {
   };
 
   const isSupportedNetwork = !!provider && contracts === null;
-  const supportedNetworks = daoAbis
-    .map((abi) => abi.name)
+  const supportedNetworks = getSupportedNetworks()
     .filter((name) => {
       // Disable localhost network on non-development environment
       if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
