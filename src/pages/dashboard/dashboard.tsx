@@ -4,17 +4,16 @@ import { useCallback, useEffect, useState } from 'react';
 import { useChainData } from '../../chain-data';
 import {
   absoluteStakeTarget,
-  ALLOWANCE_REFILL_TRESHOLD,
   calculateAnnualInflationRate,
   calculateAnnualMintedTokens,
   calculateApy,
-  MAX_ALLOWANCE,
+  min,
   totalStakedPercentage,
   useApi3Pool,
   useApi3Token,
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
-import { formatApi3, min, parseApi3 } from '../../utils';
+import { formatApi3, parseApi3 } from '../../utils';
 import { unusedHookDependency } from '../../utils/hooks';
 import TokenAmountModal from './token-amount-modal/token-amount-modal';
 import TokenDepositModal from './token-amount-modal/token-deposit-modal';

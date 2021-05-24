@@ -57,9 +57,6 @@ const TokenAmountModal = (props: Props) => {
     onClose();
   };
 
-  const isDeposit = action === 'Deposit';
-  const amountWithinAllowance = isDeposit && maxValue && !!inputValue && inputBigNum.lte(maxValue);
-
   return (
     <Modal
       open={props.open}
@@ -69,16 +66,6 @@ const TokenAmountModal = (props: Props) => {
           {!showTokenInput && (
             <Button type="text" onClick={onClose}>
               Cancel
-            </Button>
-          )}
-          {isDeposit && (
-            <Button
-              type={amountWithinAllowance ? 'secondary' : 'primary'}
-              onClick={handleAction}
-              disabled={amountWithinAllowance}
-              className="tokenAmountModal-approve"
-            >
-              Approve
             </Button>
           )}
           <Button type="secondary" onClick={handleAction}>

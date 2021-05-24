@@ -1,6 +1,8 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber, FixedNumber } from 'ethers';
 
 export const blockTimestampToDate = (timestamp: BigNumber) => new Date(timestamp.mul(1000).toNumber());
+
+export const fixedToBigNumber = (fixed: FixedNumber) => BigNumber.from(fixed.round().toString().split('.')[0]);
 
 type GoResult<T> = [Error, null] | [null, T];
 
