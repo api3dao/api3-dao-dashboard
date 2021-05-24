@@ -15,7 +15,11 @@
   justify-content: space-between;
 }
 
-.error {
+.tokenAmountModal-approve {
+  margin-right: $space-lg;
+}
+
+.tokenAmountModal-error {
   margin-top: $space-lg;
   color: red;
 }

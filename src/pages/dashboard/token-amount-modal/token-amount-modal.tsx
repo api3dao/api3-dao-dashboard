@@ -9,7 +9,7 @@ import './token-amount-modal.scss';
 
 interface Props {
   title: string;
-  action: string;
+  action: 'Withdraw' | 'Stake' | 'Initiate Unstaking';
   onConfirm: () => void | Promise<any>;
   onClose: () => void;
   open: boolean;
@@ -23,7 +23,9 @@ interface Props {
 
 const TokenAmountModal = (props: Props) => {
   const [error, setError] = useState('');
-  const { title, action, onConfirm, onClose, open, onChange, inputValue, helperText, showTokenInput = true } = props;
+  const { action, onConfirm, onClose, maxValue, onChange, inputValue, helperText, showTokenInput = true } = props;
+
+  const inputBigNum = fixedToBigNumber(FixedNumber.from(inputValue || '0'));
 
   const handleAction = async () => {
     if (!inputValue || inputValue === '0') {
@@ -31,7 +33,6 @@ const TokenAmountModal = (props: Props) => {
       return;
     }
     if (props.maxValue) {
-      const inputBigNum = fixedToBigNumber(FixedNumber.from(inputValue));
       if (inputBigNum.gt(props.maxValue)) {
         setError('Input value cannot be higher than the available balance');
         return;
@@ -40,7 +41,7 @@ const TokenAmountModal = (props: Props) => {
 
     setError('');
 
-    const [err] = await go(() => onConfirm());
+    const [err] = await go(onConfirm());
     if (err) {
       setError('Please try again and ensure you confirm the transaction');
       return;
@@ -56,15 +57,28 @@ const TokenAmountModal = (props: Props) => {
     onClose();
   };
 
+  const isDeposit = action === 'Deposit';
+  const amountWithinAllowance = isDeposit && maxValue && !!inputValue && inputBigNum.lte(maxValue)
+
   return (
     <Modal
-      open={open}
-      header={title}
+      open={props.open}
+      header={props.title}
       footer={
         <div className={classNames({ [`tokenAmountModal-actions`]: !showTokenInput })}>
           {!showTokenInput && (
             <Button type="text" onClick={onClose}>
               Cancel
+            </Button>
+          )}
+          {isDeposit && (
+            <Button
+              type={amountWithinAllowance ? 'secondary' : 'primary'}
+              onClick={handleAction}
+              disabled={amountWithinAllowance}
+              className="tokenAmountModal-approve"
+            >
+              Approve
             </Button>
           )}
           <Button type="secondary" onClick={handleAction}>

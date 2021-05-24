@@ -17,6 +17,7 @@ import { Api3Pool } from '../../generated-contracts';
 import { formatApi3, min, parseApi3 } from '../../utils';
 import { unusedHookDependency } from '../../utils/hooks';
 import TokenAmountModal from './token-amount-modal/token-amount-modal';
+import TokenDepositModal from './token-amount-modal/token-deposit-modal';
 import Layout from '../../components/layout/layout';
 import Button from '../../components/button/button';
 import StakingPool from './staking/staking-pool';
@@ -62,11 +63,6 @@ const getScheduledUnstakes = async (api3Pool: Api3Pool, userAccount: string) => 
     scheduledFor: toDate(scheduledFor.mul(1000)),
     deadline: toDate(scheduledFor.add(epochLength)),
   };
-};
-
-const HelperText = (props: { helperText: string }) => {
-  const { helperText } = props;
-  return <div className="depositModal-balance">Your balance: {helperText}</div>;
 };
 
 const Dashboard = () => {
@@ -190,22 +186,11 @@ const Dashboard = () => {
           }
         />
       </div>
-      <TokenAmountModal
-        title="How many tokens would you like to deposit?"
+      <TokenDepositModal
+        allowance={data?.allowance || BigNumber.from('0')}
+        balance={data?.ownedTokens || BigNumber.from('0')}
         open={openModal === 'deposit'}
         onClose={closeModal}
-        action="Deposit"
-        onConfirm={async () => {
-          const tx = await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
-          if (tx) {
-            setChainData({ ...chainData, transactions: [...transactions, tx] });
-          }
-        }}
-        helperText={<HelperText helperText={data ? formatApi3(data.ownedTokens) : '0.0'} />}
-        inputValue={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        maxValue={data?.ownedTokens}
-        closeOnConfirm
       />
       <TokenAmountModal
         title="How many tokens would you like to withdraw?"

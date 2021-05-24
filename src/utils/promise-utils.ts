@@ -3,17 +3,22 @@ export const isPromise = (obj: any) => {
   return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function';
 };
 
-type PromiseOrFn<T> = Promise<T> | (() => any);
 type GoResult<T> = [Error, null] | [null, T | void];
 
-export const go = async <T>(fn: PromiseOrFn<T>): Promise<GoResult<T>> => {
-  function successFn(value: T): [null, T] {
-    return [null, value];
-  }
-  function errorFn(err: Error): [Error, null] {
-    return [err, null];
-  }
+const successFn = <T>(value: T): [null, T] => [null, value];
+const errorFn = (err: Error): [Error, null] => [err, null];
 
+export const goSync = <T>(fn: () => T): GoResult<T> => {
+  try {
+    return successFn(fn());
+  } catch (err) {
+    return errorFn(err);
+  }
+};
+
+type PromiseOrFn<T> = Promise<T> | (() => Promise<T>);
+
+export const go = async <T>(fn: PromiseOrFn<T>): Promise<GoResult<T>> => {
   if (typeof fn === 'function') {
     try {
       const res = fn();
