@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 /**
  * Use this to bypass eslint rule checking if all hook dependencies are used.
@@ -41,4 +41,14 @@ export const usePromise = <T, E = Error>(
 
   // Promise value is returned second to remind developers to handle the error
   return [error, value, status];
+};
+
+export const usePrevious = (value: any) => {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]); // Only re-run if value changes
+
+  return ref.current;
 };

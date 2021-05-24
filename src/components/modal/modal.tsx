@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { useChainData } from '../../chain-data';
+import { usePrevious } from '../../utils';
 import './modal.scss';
 
 interface ModalProps {
@@ -16,11 +17,15 @@ interface ModalProps {
 const Modal = (props: ModalProps) => {
   const { onClose, open, hideCloseButton, children, header, footer } = props;
   const { userAccount } = useChainData();
+  const prevUserAccount = usePrevious(userAccount);
 
   useEffect(() => {
-    if (!open || !userAccount) return;
-    onClose();
-  }, [open, userAccount, onClose]);
+    if (!open || !prevUserAccount || !userAccount) return;
+    // If the user changed their selected account, close any open modals
+    if (prevUserAccount !== userAccount) {
+      onClose();
+    }
+  }, [open, prevUserAccount, userAccount, onClose]);
 
   if (!open) return null;
 

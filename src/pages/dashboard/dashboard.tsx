@@ -139,20 +139,9 @@ const Dashboard = () => {
           header={
             <>
               <h5>Balance</h5>
-              {data?.allowance.lt(ALLOWANCE_REFILL_TRESHOLD) ? (
-                <Button
-                  onClick={() => {
-                    api3Token?.approve(api3Pool ? api3Pool.address : '', MAX_ALLOWANCE);
-                  }}
-                  disabled={disconnected}
-                >
-                  Approve
-                </Button>
-              ) : (
-                <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
-                  + Deposit
-                </Button>
-              )}
+              <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
+                + Deposit
+              </Button>
             </>
           }
           content={
