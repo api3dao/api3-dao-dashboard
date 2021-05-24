@@ -62,7 +62,7 @@ const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {
   return {
     amount: formatApi3(lastUnstake.args.amount),
     scheduledFor: toDate(scheduledFor.mul(1000)),
-    deadline: toDate(scheduledFor.add(epochLength)),
+    deadline: toDate(scheduledFor.add(epochLength).mul(1000)),
   };
 };
 
