@@ -71,8 +71,7 @@ const HelperText = (props: { helperText: string }) => {
 };
 
 const Dashboard = () => {
-  const chainData = useChainData();
-  const { dashboardState: data, userAccount, provider, transactions, setChainData } = chainData;
+  const { dashboardState: data, userAccount, provider, transactions, setChainData } = useChainData();
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
 
@@ -91,7 +90,7 @@ const Dashboard = () => {
     const annualMintedTokens = calculateAnnualMintedTokens(totalStaked, annualApy);
     const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
 
-    setChainData({
+    setChainData('Load dashboard data', {
       dashboardState: {
         allowance: await api3Token.allowance(userAccount, api3Pool.address),
         annualApy,
@@ -219,7 +218,7 @@ const Dashboard = () => {
           // TODO: handle errors
           const tx = await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
           if (tx) {
-            setChainData({ ...chainData, transactions: [...transactions, tx] });
+            setChainData('Save deposit transaction', { transactions: [...transactions, tx] });
           }
           closeModal();
         }}
@@ -236,7 +235,7 @@ const Dashboard = () => {
           // TODO: handle errors
           const tx = await api3Pool?.withdraw(userAccount, parseApi3(inputValue));
           if (tx) {
-            setChainData({ ...chainData, transactions: [...transactions, tx] });
+            setChainData('Save withdraw transaction', { transactions: [...transactions, tx] });
           }
           closeModal();
         }}
@@ -252,7 +251,7 @@ const Dashboard = () => {
           // TODO: handle errors
           const tx = await api3Pool?.stake(parseApi3(inputValue));
           if (tx) {
-            setChainData({ ...chainData, transactions: [...transactions, tx] });
+            setChainData('Save stake transaction', { transactions: [...transactions, tx] });
           }
           closeModal();
         }}
