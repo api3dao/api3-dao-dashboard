@@ -42,7 +42,7 @@ const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => 
   };
 };
 
-const getScheduledUnstake= async (api3Pool: Api3Pool, userAccount: string) => {
+const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {
   const scheduledUnstakeFilter = api3Pool.filters.ScheduledUnstake(userAccount, null, null);
 
   const lastUnstake = last(await api3Pool.queryFilter(scheduledUnstakeFilter));
@@ -60,7 +60,7 @@ const getScheduledUnstake= async (api3Pool: Api3Pool, userAccount: string) => {
   const toDate = (timestamp: BigNumber) => new Date(timestamp.toNumber());
 
   return {
-    amount: lastUnstake.args.amount,
+    amount: formatApi3(lastUnstake.args.amount),
     scheduledFor: toDate(scheduledFor.mul(1000)),
     deadline: toDate(scheduledFor.add(epochLength)),
   };
@@ -140,7 +140,7 @@ const Dashboard = () => {
         <BorderedBox
           header={
             <div className="bordered-box-header">
-              <h5>Balance</h5>,
+              <h5>Balance</h5>
               {data?.allowance.lt(ALLOWANCE_REFILL_TRESHOLD) ? (
                 <Button
                   onClick={() => {
@@ -175,39 +175,6 @@ const Dashboard = () => {
             </Button>
           }
         />
-        <TokenAmountModal
-          title="How many tokens would you like to deposit?"
-          open={openModal === 'deposit'}
-          onClose={closeModal}
-          action="Deposit"
-          onConfirm={async () => {
-            // TODO: handle errors
-            const tx = await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
-            if (tx) {
-              setChainData({ ...chainData, transactions: [...transactions, tx] });
-            }
-            closeModal();
-          }}
-          helperText={<HelperText helperText={data ? formatApi3(data.ownedTokens) : '0.0'} />}
-          inputValue={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-        <TokenAmountModal
-          title="How many tokens would you like to withdraw?"
-          open={openModal === 'withdraw'}
-          onClose={closeModal}
-          action="Withdraw"
-          onConfirm={async () => {
-            // TODO: handle errors
-            const tx = await api3Pool?.withdraw(userAccount, parseApi3(inputValue));
-            if (tx) {
-              setChainData({ ...chainData, transactions: [...transactions, tx] });
-            }
-            closeModal();
-          }}
-          inputValue={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
         <div className="staking-boxes">
           <BorderedBox
             header={
@@ -222,11 +189,11 @@ const Dashboard = () => {
               <>
                 <div className="bordered-box-data">
                   <p className="text-small secondary-color uppercase medium">staked</p>
-                  <p className="text-xlarge">{data?.userStake || 0.0}</p>
+                  <p className="text-xlarge">{data ? formatApi3(data.userStake) : '0.0'}</p>
                 </div>
                 <div className="bordered-box-data">
                   <p className="text-small secondary-color uppercase medium">unstaked</p>
-                  <p className="text-xlarge">{data?.withdrawable || 0.0}</p>
+                  <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
                 </div>
               </>
             }
@@ -236,15 +203,48 @@ const Dashboard = () => {
               </Button>
             }
           />
-          {data?.pendingUnstakes && (
+          {data?.pendingUnstake && (
             <PendingUnstakePanel
-              amount={data.pendingUnstakes.amount}
-              scheduledFor={data.pendingUnstakes.scheduledFor}
-              deadline={data.pendingUnstakes.deadline}
+              amount={data.pendingUnstake.amount.toString()}
+              scheduledFor={data.pendingUnstake.scheduledFor}
+              deadline={data.pendingUnstake.deadline}
             />
           )}
         </div>
       </div>
+      <TokenAmountModal
+        title="How many tokens would you like to deposit?"
+        open={openModal === 'deposit'}
+        onClose={closeModal}
+        action="Deposit"
+        onConfirm={async () => {
+          // TODO: handle errors
+          const tx = await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
+          if (tx) {
+            setChainData({ ...chainData, transactions: [...transactions, tx] });
+          }
+          closeModal();
+        }}
+        helperText={<HelperText helperText={data ? formatApi3(data.ownedTokens) : '0.0'} />}
+        inputValue={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      <TokenAmountModal
+        title="How many tokens would you like to withdraw?"
+        open={openModal === 'withdraw'}
+        onClose={closeModal}
+        action="Withdraw"
+        onConfirm={async () => {
+          // TODO: handle errors
+          const tx = await api3Pool?.withdraw(userAccount, parseApi3(inputValue));
+          if (tx) {
+            setChainData({ ...chainData, transactions: [...transactions, tx] });
+          }
+          closeModal();
+        }}
+        inputValue={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
       <TokenAmountModal
         title="How many tokens would you like to stake?"
         open={openModal === 'stake'}
