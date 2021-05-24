@@ -41,11 +41,11 @@ const TokenAmountModal = (props: Props) => {
 
     setError('');
 
-    const [err] = await go(onConfirm());
-    if (err) {
-      setError('Please try again and ensure you confirm the transaction');
-      return;
-    }
+    // const [err] = await go(onConfirm());
+    // if (err) {
+    //   setError('Please try again and ensure you confirm the transaction');
+    //   return;
+    // }
 
     if (props.closeOnConfirm) {
       props.onClose();
@@ -58,7 +58,7 @@ const TokenAmountModal = (props: Props) => {
   };
 
   const isDeposit = action === 'Deposit';
-  const amountWithinAllowance = isDeposit && maxValue && !!inputValue && inputBigNum.lte(maxValue)
+  const amountWithinAllowance = isDeposit && maxValue && !!inputValue && inputBigNum.lte(maxValue);
 
   return (
     <Modal

@@ -1,0 +1,66 @@
+@import '../../styles/variables.scss';
+
+$border-radius: 100px;
+
+.vote-slider {
+  display: flex;
+  justify-content: center;
+
+  .bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-left: $space-sm;
+    margin-right: $space-sm;
+  }
+
+  .bar {
+    height: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border: 1px solid $black-line-color;
+    border-radius: $border-radius;
+
+    .acceptance-quorum {
+      position: relative;
+      display: flex;
+      width: 2px;
+      height: 80%;
+      border: 0 solid $black-line-color;
+      border-right-width: 2px;
+    }
+
+    .for {
+      height: 80%;
+      border-radius: $border-radius;
+      background: $green-color;
+    }
+
+    .against {
+      height: 80%;
+      border-radius: $border-radius;
+      background: $pink-color;
+      margin: auto;
+      margin-right: 3px;
+    }
+  }
+
+  .vote-info {
+    justify-content: space-between;
+    display: flex;
+    margin-top: $space-xxs;
+  }
+
+  .status {
+    text-transform: capitalize;
+
+    &.failing {
+      color: $pink-color;
+    }
+
+    &.passing {
+      color: $green-color;
+    }
+  }
+}

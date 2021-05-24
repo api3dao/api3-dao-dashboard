@@ -1,15 +1,15 @@
-import { BigNumber, FixedNumber } from 'ethers';
-import { formatApi3 } from '../../../utils';
+import { BigNumber } from 'ethers';
+import { formatApi3 } from '../../../utils/api3-format';
 import RadialChart from './radial-chart';
 import './staking-pool.scss';
 
 type Props = {
   data?: {
-    annualApy: FixedNumber;
-    annualInflationRate: FixedNumber;
+    annualApy: number;
+    annualInflationRate: number;
     totalStaked: BigNumber;
     stakeTarget: BigNumber;
-    totalStakedPercentage: FixedNumber;
+    totalStakedPercentage: number;
   };
 };
 

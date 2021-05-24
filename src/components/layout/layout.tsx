@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import Navigation from '../navigation/navigation';
 import Header from '../header/header';
 import './layout.scss';
@@ -11,12 +11,18 @@ type Props = {
 
 const Layout = ({ children, title, sectionTitle }: Props) => {
   return (
+    <BaseLayout>
+      <Header title={title} sectionTitle={sectionTitle} />
+      {children}
+    </BaseLayout>
+  );
+};
+
+export const BaseLayout: React.FC = ({ children }) => {
+  return (
     <div className="layout">
       <Navigation />
-      <div className="container">
-        <Header title={title} sectionTitle={sectionTitle} />
-        {children}
-      </div>
+      <div className="container">{children}</div>
       <img className="layout-texture" src="/texture.png" alt="texture background" />
     </div>
   );

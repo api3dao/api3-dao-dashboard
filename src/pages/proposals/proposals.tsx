@@ -4,10 +4,10 @@ import { useChainData } from '../../chain-data';
 import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
-import { useProposalState } from './use-proposal-state';
-import NewProposalModal, { NewProposalFormData } from './new-proposal-modal';
+import { useProposalState } from '../../logic/proposals/use-proposal-state';
+import NewProposalModal from './new-proposal-modal';
 import DelegateVotesModal from './delegate-votes-modal';
-import { buildEVMScript, buildExtendedMetadata } from './encoding';
+import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from './proposal-list';
 
 const Proposals = () => {

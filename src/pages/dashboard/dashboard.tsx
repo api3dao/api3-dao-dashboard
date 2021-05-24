@@ -20,6 +20,7 @@ import TokenAmountModal from './token-amount-modal/token-amount-modal';
 import TokenDepositModal from './token-amount-modal/token-deposit-modal';
 import Layout from '../../components/layout/layout';
 import Button from '../../components/button/button';
+import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
 import Slider from '../../components/slider/slider';
 import BorderedBox from '../../components/bordered-box/bordered-box';
@@ -41,27 +42,27 @@ const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => 
   };
 };
 
-const getScheduledUnstakes = async (api3Pool: Api3Pool, userAccount: string) => {
-  const scheduledUnstakeFilter = api3Pool.filters.ScheduledUnstake(userAccount, null, null);
+const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {
+  const scheduledUnstakeFilter = api3Pool.filters.ScheduledUnstake(userAccount, null, null, null);
 
   const lastUnstake = last(await api3Pool.queryFilter(scheduledUnstakeFilter));
-  if (!lastUnstake) return 'No scheduled pending unstake';
+  if (!lastUnstake) return null;
 
-  const unstakedFilter = api3Pool.filters.Unstaked(userAccount, null, null);
+  const unstakedFilter = api3Pool.filters.Unstaked(userAccount, null);
   const unstakedEvents = await api3Pool.queryFilter(unstakedFilter, lastUnstake.blockNumber);
   if (unstakedEvents.length > 0) {
-    return 'Already unstaked (no pending unstakes)';
+    return null;
   }
 
   const epochLength = await api3Pool.EPOCH_LENGTH();
   const scheduledFor = lastUnstake.args.scheduledFor;
 
-  const toDate = (timestamp: BigNumber) => new Date(timestamp.toNumber()).toUTCString();
+  const toDate = (timestamp: BigNumber) => new Date(timestamp.toNumber());
 
   return {
-    amount: lastUnstake.args.amount,
+    amount: formatApi3(lastUnstake.args.amount),
     scheduledFor: toDate(scheduledFor.mul(1000)),
-    deadline: toDate(scheduledFor.add(epochLength)),
+    deadline: toDate(scheduledFor.add(epochLength).mul(1000)),
   };
 };
 
@@ -94,7 +95,7 @@ const Dashboard = () => {
         annualInflationRate,
         balance: tokenBalances.balance,
         ownedTokens: await api3Token.balanceOf(userAccount),
-        pendingUnstake: await getScheduledUnstakes(api3Pool, userAccount),
+        pendingUnstake: await getScheduledUnstake(api3Pool, userAccount),
         stakeTarget,
         totalStaked,
         totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
@@ -133,12 +134,12 @@ const Dashboard = () => {
       <div className="bordered-boxes">
         <BorderedBox
           header={
-            <>
+            <div className="bordered-box-header">
               <h5>Balance</h5>
               <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
                 + Deposit
               </Button>
-            </>
+            </div>
           }
           content={
             <>
@@ -158,33 +159,42 @@ const Dashboard = () => {
             </Button>
           }
         />
-        <BorderedBox
-          header={
-            <>
-              <h5>Staking</h5>
-              <Button onClick={() => setOpenModal('stake')} disabled={disconnected}>
-                + Stake
+        <div className="staking-boxes">
+          <BorderedBox
+            header={
+              <div className="bordered-box-header">
+                <h5>Staking</h5>
+                <Button onClick={() => setOpenModal('stake')} disabled={disconnected}>
+                  + Stake
+                </Button>
+              </div>
+            }
+            content={
+              <>
+                <div className="bordered-box-data">
+                  <p className="text-small secondary-color uppercase medium">staked</p>
+                  <p className="text-xlarge">{data ? formatApi3(data.userStake) : '0.0'}</p>
+                </div>
+                <div className="bordered-box-data">
+                  <p className="text-small secondary-color uppercase medium">unstaked</p>
+                  <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
+                </div>
+              </>
+            }
+            footer={
+              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={disconnected}>
+                Initiate Unstake
               </Button>
-            </>
-          }
-          content={
-            <>
-              <div className="bordered-box-data">
-                <p className="text-small secondary-color uppercase medium">staked</p>
-                <p className="text-xlarge">{data ? formatApi3(data.userStake) : '0.0'}</p>
-              </div>
-              <div className="bordered-box-data">
-                <p className="text-small secondary-color uppercase medium">unstaked</p>
-                <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
-              </div>
-            </>
-          }
-          footer={
-            <Button type="link" onClick={() => setOpenModal('unstake')} disabled={disconnected}>
-              Initiate Unstake
-            </Button>
-          }
-        />
+            }
+          />
+          {data?.pendingUnstake && (
+            <PendingUnstakePanel
+              amount={data.pendingUnstake.amount.toString()}
+              scheduledFor={data.pendingUnstake.scheduledFor}
+              deadline={data.pendingUnstake.deadline}
+            />
+          )}
+        </div>
       </div>
       <TokenDepositModal
         allowance={data?.allowance || BigNumber.from('0')}

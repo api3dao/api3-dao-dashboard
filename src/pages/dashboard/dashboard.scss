@@ -2,12 +2,23 @@
 
 .bordered-boxes {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   & > * {
     margin-right: $space-xxl;
   }
   & > *:last-child {
     margin-right: 0;
+  }
+}
+
+.staking-boxes {
+  width: 100%;
+  max-width: 420px;
+  & > * {
+    margin-bottom: $space-xl;
+  }
+  & > *:last-child {
+    margin-bottom: 0;
   }
 }

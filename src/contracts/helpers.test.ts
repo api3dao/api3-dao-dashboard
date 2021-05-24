@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { formatApi3 } from '../utils/api3-format';
 import {
   calculateApy,
   calculateAnnualMintedTokens,
@@ -7,95 +8,86 @@ import {
   absoluteStakeTarget,
   HUNDRED_PERCENT,
   totalStakedPercentage,
+  min,
+  ONE_PERCENT,
 } from './helpers';
+
+const createPercentage = (numerator: number, denominator: number) => HUNDRED_PERCENT.mul(numerator).div(denominator);
+
+const API3_TOKEN_SUPPLY = BigNumber.from('100000000000000000000000000');
 
 describe('calculateAnnualInflationRate and friends', () => {
   describe('individual functions', () => {
-    // Values are based on https://github.com/api3dao/api3-web-client/issues/2#issuecomment-831891578
-    const currentApr = BigNumber.from(75_000_000);
-    const totalStake = BigNumber.from(50_000_000);
-    const totalSupply = BigNumber.from(100_000_000);
+    const currentApr = createPercentage(75, 100);
+    const totalStake = API3_TOKEN_SUPPLY.div(2);
 
     test('calculate APY', () => {
-      expect(calculateApy(currentApr).toString()).toBe('110.5689140647936519');
+      expect(calculateApy(currentApr)).toBe(110.5689140647935);
     });
 
     test('calculateAnnualMintedTokens', () => {
       const apy = calculateApy(currentApr);
-      expect(calculateAnnualMintedTokens(totalStake, apy).toString()).toBe('55284457');
+      expect(calculateAnnualMintedTokens(totalStake, apy).toString()).toBe('55284457030000000000000000');
+      expect(formatApi3(calculateAnnualMintedTokens(totalStake, apy))).toBe('55284457.03');
     });
 
     test('calculateAnnualInflationRate', () => {
       const apy = calculateApy(currentApr);
       const mintedTokens = calculateAnnualMintedTokens(totalStake, apy);
-      expect(calculateAnnualInflationRate(mintedTokens, totalSupply).toString()).toBe('35.6020544928073516');
+
+      expect(calculateAnnualInflationRate(mintedTokens, API3_TOKEN_SUPPLY)).toBe(35.602054);
     });
   });
 
   test('low total staked', () => {
-    const currentApr = BigNumber.from(75_000_000);
-    const totalStake = BigNumber.from('10000000000000000001');
-    const totalSupply = BigNumber.from('100000000000000000000000000');
+    const currentApr = createPercentage(3, 4);
+    const totalStake = API3_TOKEN_SUPPLY.div(1_000_000);
 
     expect(
-      calculateAnnualInflationRate(
-        calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)),
-        totalSupply
-      ).toString()
-    ).toBe('0.0000110568901839');
+      calculateAnnualInflationRate(calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)), API3_TOKEN_SUPPLY)
+    ).toBe(0.00011);
   });
 
   test('full stake pool', () => {
-    const currentApr = BigNumber.from(75_000_000);
-    const totalSupply = BigNumber.from('100000000000000000000000000');
-    const totalStake = totalSupply;
+    const currentApr = createPercentage(3, 4);
+    const totalStake = API3_TOKEN_SUPPLY;
 
     expect(
-      calculateAnnualInflationRate(
-        calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)),
-        totalSupply
-      ).toString()
-    ).toBe('52.5096092915076526');
-  });
-
-  test('overfilled stake pool', () => {
-    const currentApr = BigNumber.from(75_000_000);
-    const totalSupply = BigNumber.from('100000000000000000000000000');
-    const totalStake = totalSupply.mul(2);
-
-    expect(
-      calculateAnnualInflationRate(
-        calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)),
-        totalSupply
-      ).toString()
-    ).toBe('68.8607223314571805');
+      calculateAnnualInflationRate(calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)), API3_TOKEN_SUPPLY)
+    ).toBe(52.509609000000005);
   });
 });
 
 test('convertPercentage', () => {
-  expect(convertPercentage(BigNumber.from(75_000_000)).toString()).toBe('0.75');
-  expect(convertPercentage(BigNumber.from(0)).toString()).toBe('0.0');
-  expect(convertPercentage(BigNumber.from(100_000_000)).toString()).toBe('1.0');
+  expect(convertPercentage(BigNumber.from('75').mul(ONE_PERCENT)).toString()).toBe('0.75');
+  expect(convertPercentage(BigNumber.from(0)).toString()).toBe('0');
 
-  expect(convertPercentage(BigNumber.from(75_000_000), true).toString()).toBe('75.0');
+  expect(convertPercentage(BigNumber.from('75').mul(ONE_PERCENT), true).toString()).toBe('75');
+  expect(convertPercentage(BigNumber.from('17513972457961257'), true).toString()).toBe('1.751397');
 });
 
 test('absoluteStakeTarget', () => {
-  const totalSupply = BigNumber.from(10_000_000_000_000); // intentionally low for better understandability
-  expect(absoluteStakeTarget(HUNDRED_PERCENT.div(2), totalSupply)).toEqual(totalSupply.div(2));
-  expect(absoluteStakeTarget(BigNumber.from(1), totalSupply).toString()).toBe('100000');
+  expect(absoluteStakeTarget(HUNDRED_PERCENT.div(2), API3_TOKEN_SUPPLY)).toEqual(API3_TOKEN_SUPPLY.div(2));
+  expect(absoluteStakeTarget(ONE_PERCENT, API3_TOKEN_SUPPLY).toString()).toBe('1000000000000000000000000');
 });
 
 test('totalStakedPercentage', () => {
-  const totalSupply = BigNumber.from(10_000_000_000_000); // intentionally low for better understandability
-  const stakeTarget = absoluteStakeTarget(HUNDRED_PERCENT.div(2), totalSupply);
+  const stakeTarget = absoluteStakeTarget(HUNDRED_PERCENT.div(2), API3_TOKEN_SUPPLY);
   const totalStaked1 = stakeTarget.div(5); // 1/5 = 20% staked
   const totalStaked2 = stakeTarget; // 100% staked
   const totalStaked3 = stakeTarget.div(100); // 1% staked
   const totalStaked4 = BigNumber.from(0); // 0% staked
 
-  expect(totalStakedPercentage(totalStaked1, stakeTarget)).toBe('20.0');
-  expect(totalStakedPercentage(totalStaked2, stakeTarget)).toBe('100.0');
-  expect(totalStakedPercentage(totalStaked3, stakeTarget)).toBe('1.0');
-  expect(totalStakedPercentage(totalStaked4, stakeTarget)).toBe('0.0');
+  expect(totalStakedPercentage(totalStaked1, stakeTarget)).toBe(20);
+  expect(totalStakedPercentage(totalStaked2, stakeTarget)).toBe(100);
+  expect(totalStakedPercentage(totalStaked3, stakeTarget)).toBe(1);
+  expect(totalStakedPercentage(totalStaked4, stakeTarget)).toBe(0);
+});
+
+test('min', () => {
+  const a = BigNumber.from(100);
+  const b = BigNumber.from(200);
+  const c = BigNumber.from(300);
+  expect(min(b, a, c).toString()).toBe('100');
+  expect(min(c, b).toString()).toBe('200');
 });
