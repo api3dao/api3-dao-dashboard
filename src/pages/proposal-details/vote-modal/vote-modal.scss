@@ -1,0 +1,17 @@
+@import '../../../styles/variables.scss';
+
+.content {
+  margin: 60px;
+  display: flex;
+  flex-direction: column;
+
+  .checked {
+    &.for {
+      color: $green-color;
+    }
+
+    &.against {
+      color: $pink-color;
+    }
+  }
+}
