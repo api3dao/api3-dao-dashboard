@@ -4,9 +4,9 @@ import type localhostDao from '../contract-deployments/localhost-dao.json';
 type ContractsInfo = typeof localhostDao['contracts'];
 
 export interface PendingUnstake {
-  amount: BigNumber;
-  deadline: string;
-  scheduledFor: string;
+  amount: string;
+  deadline: Date;
+  scheduledFor: Date;
 }
 
 export interface DashboardState {
@@ -15,7 +15,7 @@ export interface DashboardState {
   annualInflationRate: FixedNumber;
   balance: BigNumber;
   ownedTokens: BigNumber;
-  pendingUnstake: PendingUnstake | string;
+  pendingUnstake: PendingUnstake | null;
   stakeTarget: BigNumber;
   totalStaked: BigNumber;
   totalStakedPercentage: FixedNumber;

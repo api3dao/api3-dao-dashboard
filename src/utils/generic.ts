@@ -15,4 +15,28 @@ export const go = <T>(fn: Promise<T> | (() => Promise<T>)): Promise<GoResult<T>>
     return fn().then(successFn).catch(errorFn);
   }
   return fn.then(successFn).catch(errorFn);
+};  
+
+export const getDays = (distance: number) => {
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24)).toString();
+
+  return days;
+};
+
+export const getHours = (distance: number) => {
+  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString();
+
+  return hours;
+};
+
+export const getMinutes = (distance: number) => {
+  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString();
+
+  return minutes;
+};
+
+export const getSeconds = (distance: number) => {
+  const seconds = Math.floor((distance % (1000 * 60)) / 1000).toString();
+
+  return seconds;
 };
