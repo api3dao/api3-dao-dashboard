@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
-import { useChainData } from '../chain-data';
+import { ethers } from 'ethers';
+import { useEffect, useMemo } from 'react';
+import { getChainData, useChainData } from '../chain-data';
 import {
   Api3Pool__factory as Api3PoolFactory,
   Api3Token__factory as Api3TokenFactory,
@@ -62,4 +63,31 @@ export const useConvenience = () => {
 
     return ConvenienceFactory.connect(contracts.convenience, provider.getSigner());
   }, [provider, contracts]);
+};
+
+/**
+ * Subscribe to events specified in EIP-1193. See: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md
+ */
+export const useProviderSubscriptions = (provider: ethers.providers.Web3Provider | null) => {
+  const { setChainData } = useChainData();
+
+  useEffect(() => {
+    if (!provider) return;
+
+    const refreshChainData = async () => {
+      setChainData({ ...(await getChainData(provider)) });
+    };
+
+    const underlyingProvider = provider.provider as ethers.providers.Provider;
+    // https://github.com/ethers-io/ethers.js/issues/1396
+    underlyingProvider.on('accountsChanged', refreshChainData);
+    underlyingProvider.on('chainChanged', refreshChainData);
+    underlyingProvider.on('disconnect', refreshChainData);
+
+    return () => {
+      underlyingProvider.removeListener('accountsChanged', refreshChainData);
+      underlyingProvider.removeListener('chainChanged', refreshChainData);
+      underlyingProvider.removeListener('disconnect', refreshChainData);
+    };
+  }, [provider, setChainData]);
 };
