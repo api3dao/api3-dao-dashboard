@@ -16,7 +16,6 @@ import {
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
 import { formatApi3, parseApi3 } from '../../utils/api3-format';
-import { unusedHookDependency } from '../../utils/hooks';
 import TokenAmountModal from './token-amount-modal/token-amount-modal';
 import Layout from '../../components/layout/layout';
 import Button from '../../components/button/button';
@@ -73,7 +72,7 @@ const HelperText = (props: { helperText: string }) => {
 
 const Dashboard = () => {
   const chainData = useChainData();
-  const { dashboardState: data, userAccount, provider, latestBlock, transactions, setChainData } = chainData;
+  const { dashboardState: data, userAccount, provider, transactions, setChainData } = chainData;
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
 
@@ -82,7 +81,6 @@ const Dashboard = () => {
   // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
   const loadDashboardData = useCallback(async () => {
     if (!api3Pool || !api3Token || !provider || !userAccount) return null;
-    unusedHookDependency(latestBlock);
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
     const currentApr = await api3Pool.currentApr();
@@ -108,7 +106,7 @@ const Dashboard = () => {
         withdrawable: tokenBalances.withdrawable,
       },
     });
-  }, [provider, api3Pool, api3Token, latestBlock, userAccount]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [provider, api3Pool, api3Token, userAccount, setChainData]);
 
   // If the user is navigating to the dashboard from another page, and they
   // are already connected, refresh the data immediately.

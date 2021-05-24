@@ -8,10 +8,6 @@ import zip from 'lodash/zip';
 import { BigNumber } from '@ethersproject/bignumber';
 import { blockTimestampToDate } from '../../utils/generic';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type Last<T extends any[]> = T extends [...infer _, infer L] ? L : never;
-const last = <T extends any[]>(array: T): Last<T> => array[array.length - 1];
-
 interface StartVoteProposal {
   voteId: BigNumber;
   creator: string;
@@ -63,14 +59,13 @@ const getProposals = async (
 
 // TODO: error handling
 export const useProposalState = () => {
-  const { setChainData, ...chainData } = useChainData();
-  const { userAccount, proposalState } = chainData;
+  const { setChainData, userAccount, proposalState } = useChainData();
 
   const api3Voting = useApi3Voting();
   const api3Pool = useApi3Pool();
 
   const loadInitialData = useCallback(async () => {
-    if (!api3Voting || proposalState !== null || !api3Pool) return;
+    if (!api3Voting || !api3Pool) return;
 
     const { primary, secondary } = api3Voting;
     const startVoteFilter = primary.filters.StartVote(null, null, null);
@@ -78,7 +73,6 @@ export const useProposalState = () => {
     const secondaryStartVotes = (await secondary.queryFilter(startVoteFilter)).map((p) => p.args);
 
     setChainData({
-      ...chainData,
       proposalState: {
         delegationAddress: await api3Pool.getUserDelegate(userAccount),
         primary: {
@@ -89,7 +83,7 @@ export const useProposalState = () => {
         },
       },
     });
-  }, [api3Voting, userAccount, proposalState, chainData, setChainData, api3Pool]);
+  }, [api3Voting, userAccount, setChainData, api3Pool]);
 
   useEffect(() => {
     loadInitialData();
@@ -115,24 +109,12 @@ export const useProposalState = () => {
     };
     const votingAppTypes = ['primary', 'secondary'] as const;
 
+    // For other events just reload everything
+    const reloadEverything = loadInitialData;
     votingAppTypes.forEach((type) => {
       const votingApp = api3Voting[type];
 
-      // On StartVote event just add a new proposal to the list
-      votingApp.on(votingEvents.StartVote, async (...args) => {
-        const startVote = last(args).args;
-        const newProposal = await getProposals(votingApp, userAccount, [startVote], type);
-
-        setChainData(
-          updateImmutably(chainData, (data) => {
-            // NOTE: There will only be one proposal per event callback
-            data.proposalState![type].proposals.push(newProposal[0]);
-          })
-        );
-      });
-
-      // For other events just reload everything
-      const reloadEverything = loadInitialData;
+      votingApp.on(votingEvents.StartVote, reloadEverything);
       votingApp.on(votingEvents.CastVote, reloadEverything);
       votingApp.on(votingEvents.ChangeMinQuorum, reloadEverything);
       votingApp.on(votingEvents.ChangeSupportRequired, reloadEverything);
@@ -140,10 +122,17 @@ export const useProposalState = () => {
     });
 
     return () => {
-      api3Voting.primary.removeAllListeners();
-      api3Voting.secondary.removeAllListeners();
+      votingAppTypes.forEach((type) => {
+        const votingApp = api3Voting[type];
+
+        votingApp.removeListener(votingEvents.StartVote, reloadEverything);
+        votingApp.removeListener(votingEvents.CastVote, reloadEverything);
+        votingApp.removeListener(votingEvents.ChangeMinQuorum, reloadEverything);
+        votingApp.removeListener(votingEvents.ChangeSupportRequired, reloadEverything);
+        votingApp.removeListener(votingEvents.ExecuteVote, reloadEverything);
+      });
     };
-  }, [userAccount, chainData, proposalState, api3Voting, setChainData, loadInitialData]);
+  }, [userAccount, proposalState, api3Voting, setChainData, loadInitialData]);
 
   useEffect(() => {
     if (!api3Pool) return;
@@ -157,8 +146,8 @@ export const useProposalState = () => {
       api3Pool.on(filter, async () => {
         const newDelegationAddress = await api3Pool.userDelegate(userAccount);
 
-        setChainData(
-          updateImmutably(chainData, (data) => {
+        setChainData((data) =>
+          updateImmutably(data, (data) => {
             data.proposalState!.delegationAddress = newDelegationAddress;
           })
         );
@@ -170,7 +159,7 @@ export const useProposalState = () => {
         api3Pool.removeAllListeners(eventName);
       });
     };
-  }, [api3Pool, userAccount, setChainData, chainData]);
+  }, [api3Pool, userAccount, setChainData]);
 
   return proposalState;
 };

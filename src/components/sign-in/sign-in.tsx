@@ -6,10 +6,11 @@ import { go } from '../../utils/generic';
 import Button from '../../components/button/button';
 import GenericModal from '../../components/modal/modal';
 import './sign-in.scss';
-import { getSupportedNetworks, getWalletConnectRpcProviders } from '../../contracts';
+import { getSupportedNetworks, getWalletConnectRpcProviders, useProviderSubscriptions } from '../../contracts';
 
 const SignIn = () => {
   const { setChainData, provider, contracts, networkName } = useChainData();
+  useProviderSubscriptions(provider);
 
   const onDisconnect = () => {
     if (provider) {
@@ -40,13 +41,6 @@ const SignIn = () => {
     });
 
     const web3ModalProvider = await web3Modal.connect();
-    // https://github.com/ethers-io/ethers.js/discussions/1480
-    const provider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
-
-    const refreshChainData = async () => {
-      setChainData({ ...(await getChainData(provider)) });
-    };
-
     // Enable session (triggers QR Code modal)
     const [err] = await go(web3ModalProvider.request({ method: 'eth_requestAccounts' }));
     if (err) {
@@ -54,14 +48,11 @@ const SignIn = () => {
       return;
     }
 
+    // https://github.com/ethers-io/ethers.js/discussions/1480
+    // NOTE: You can access the underlying 'web3ModalProvider' using 'provider' property
+    const provider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
     // User has chosen a provider and has signed in
-    refreshChainData();
-
-    provider.on('block', (latestBlock: number) => setChainData({ latestBlock }));
-
-    web3ModalProvider.on('accountsChanged', () => refreshChainData());
-    web3ModalProvider.on('chainChanged', () => refreshChainData());
-    web3ModalProvider.on('disconnect', () => onDisconnect());
+    setChainData({ ...(await getChainData(provider)) });
   };
 
   const isSupportedNetwork = !!provider && contracts === null;
