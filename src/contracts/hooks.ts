@@ -64,7 +64,7 @@ export const useProviderSubscriptions = (provider: ethers.providers.Web3Provider
     if (!provider) return;
 
     const refreshChainData = async () => {
-      setChainData({ ...(await getChainData(provider)) });
+      setChainData('EIP-1193 event triggered', { ...(await getChainData(provider)) });
     };
 
     const underlyingProvider = provider.provider as ethers.providers.Provider;

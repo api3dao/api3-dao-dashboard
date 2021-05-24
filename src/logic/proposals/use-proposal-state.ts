@@ -64,35 +64,39 @@ export const useProposalState = () => {
   const api3Voting = useApi3Voting();
   const api3Pool = useApi3Pool();
 
-  const loadInitialData = useCallback(async () => {
-    if (!api3Voting || !api3Pool) return;
+  const loadData = useCallback(
+    async (reason: string) => {
+      if (!api3Voting || !api3Pool) return;
 
-    const { primary, secondary } = api3Voting;
-    const startVoteFilter = primary.filters.StartVote(null, null, null);
-    const primaryStartVotes = (await primary.queryFilter(startVoteFilter)).map((p) => p.args);
-    const secondaryStartVotes = (await secondary.queryFilter(startVoteFilter)).map((p) => p.args);
+      const { primary, secondary } = api3Voting;
+      const startVoteFilter = primary.filters.StartVote(null, null, null);
+      const primaryStartVotes = (await primary.queryFilter(startVoteFilter)).map((p) => p.args);
+      const secondaryStartVotes = (await secondary.queryFilter(startVoteFilter)).map((p) => p.args);
 
-    setChainData({
-      proposalState: {
-        delegationAddress: await api3Pool.getUserDelegate(userAccount),
-        primary: {
-          proposals: await getProposals(primary, userAccount, primaryStartVotes, 'primary'),
+      setChainData(reason, {
+        proposalState: {
+          delegationAddress: await api3Pool.getUserDelegate(userAccount),
+          primary: {
+            proposals: await getProposals(primary, userAccount, primaryStartVotes, 'primary'),
+          },
+          secondary: {
+            proposals: await getProposals(secondary, userAccount, secondaryStartVotes, 'secondary'),
+          },
         },
-        secondary: {
-          proposals: await getProposals(secondary, userAccount, secondaryStartVotes, 'secondary'),
-        },
-      },
-    });
-  }, [api3Voting, userAccount, setChainData, api3Pool]);
+      });
+    },
+    [api3Voting, userAccount, setChainData, api3Pool]
+  );
 
   useEffect(() => {
-    loadInitialData();
-  }, [loadInitialData]);
+    loadData('Load initial proposals');
+  }, [loadData]);
 
   // Ensure that the proposals are up to date with blockchain
   useEffect(() => {
     if (!api3Voting || !proposalState) return;
 
+    // TODO: avoid using filters, subscribe to block update and refetch instead
     type Api3VotingFilters = typeof api3Voting.primary.filters;
     type Api3VotingFiltersMap = { [key in keyof Api3VotingFilters]: ReturnType<Api3VotingFilters[key]> };
     // Let's enforce we list out every Api3Voting event to make it harder to forget process some.
@@ -109,8 +113,7 @@ export const useProposalState = () => {
     };
     const votingAppTypes = ['primary', 'secondary'] as const;
 
-    // For other events just reload everything
-    const reloadEverything = loadInitialData;
+    const reloadEverything = () => loadData('Proposal event happened');
     votingAppTypes.forEach((type) => {
       const votingApp = api3Voting[type];
 
@@ -132,11 +135,12 @@ export const useProposalState = () => {
         votingApp.removeListener(votingEvents.ExecuteVote, reloadEverything);
       });
     };
-  }, [userAccount, proposalState, api3Voting, setChainData, loadInitialData]);
+  }, [userAccount, proposalState, api3Voting, setChainData, loadData]);
 
   useEffect(() => {
     if (!api3Pool) return;
 
+    // TODO: avoid using filters, subscribe to block update and refetch instead
     const delegationEvents = {
       Delegated: api3Pool.filters.Delegated(userAccount, null),
       Undelegated: api3Pool.filters.Undelegated(userAccount, null),
@@ -146,7 +150,7 @@ export const useProposalState = () => {
       api3Pool.on(filter, async () => {
         const newDelegationAddress = await api3Pool.userDelegate(userAccount);
 
-        setChainData((data) =>
+        setChainData('Update delegation after event', (data) =>
           updateImmutably(data, (data) => {
             data.proposalState!.delegationAddress = newDelegationAddress;
           })

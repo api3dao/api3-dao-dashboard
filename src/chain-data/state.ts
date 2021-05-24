@@ -68,7 +68,10 @@ export interface ChainData {
 }
 
 export interface SettableChainData extends ChainData {
-  setChainData: (newChainData: Partial<ChainData> | ((chainData: ChainData) => Partial<ChainData>)) => void;
+  setChainData: (
+    reason: string,
+    newChainData: Partial<ChainData> | ((chainData: ChainData) => Partial<ChainData>)
+  ) => void;
 }
 
 export const initialChainData: ChainData = {

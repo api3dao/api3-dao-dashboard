@@ -19,7 +19,7 @@ const SignIn = () => {
         externalProvider.close();
       }
     }
-    setChainData(initialChainData);
+    setChainData('User disconnected', initialChainData);
   };
 
   const onWalletConnect = async () => {
@@ -52,7 +52,7 @@ const SignIn = () => {
     // NOTE: You can access the underlying 'web3ModalProvider' using 'provider' property
     const provider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
     // User has chosen a provider and has signed in
-    setChainData({ ...(await getChainData(provider)) });
+    setChainData('User connected', { ...(await getChainData(provider)) });
   };
 
   const isSupportedNetwork = !!provider && contracts === null;
