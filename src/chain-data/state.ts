@@ -1,7 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
-import type localhostDao from '../contract-deployments/localhost-dao.json';
-
-type ContractsInfo = typeof localhostDao['contracts'];
+import type ContractsAddresses from '../contract-deployments/localhost-dao.json';
 
 export interface PendingUnstake {
   amount: string;
@@ -64,7 +62,7 @@ export interface ChainData {
   userAccount: string;
   networkName: string;
   chainId: string;
-  contracts: ContractsInfo | null;
+  contracts: typeof ContractsAddresses | null;
   latestBlock: number;
   dashboardState: DashboardState | null;
   proposalState: ProposalState | null;

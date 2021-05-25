@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { ethers } from 'ethers';
-import { daoAbis } from '../contracts/abis';
+import { getDaoAddresses, getNetworkName } from '../contracts';
 
 export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => void) => {
   // NOTE: This needs to be written in a function like this, to make sure `produce` doesn't return anything.
@@ -11,22 +11,14 @@ export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => vo
 };
 
 export const getChainData = async (provider: ethers.providers.Web3Provider) => {
-  const networkChainId = (await provider.getNetwork()).chainId.toString();
-
-  const daoNetwork = daoAbis.find(({ chainId }) => chainId === networkChainId);
+  const networkName = await getNetworkName(provider);
 
   const newData = {
     userAccount: await provider.getSigner().getAddress(),
     networkName: (await provider.getNetwork()).name,
-    chainId: networkChainId,
-    contracts: daoNetwork?.contracts ?? null,
+    contracts: getDaoAddresses(networkName),
     latestBlock: await provider.getBlockNumber(),
   };
-
-  // NOTE: The localhost doesn't have a name, so set any unknown networks
-  // to localhost. The network name is needed to display the "Unsupported Network"
-  // message to the user if required.
-  if (newData.networkName === 'unknown') newData.networkName = 'localhost';
 
   return { ...newData, provider };
 };
