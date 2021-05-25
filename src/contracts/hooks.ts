@@ -4,6 +4,7 @@ import {
   Api3Pool__factory as Api3PoolFactory,
   Api3Token__factory as Api3TokenFactory,
   Api3Voting__factory as Api3VotingFactory,
+  Convenience__factory as ConvenienceFactory,
 } from '../generated-contracts';
 
 export const useApi3Pool = () => {
@@ -51,4 +52,14 @@ export const useApi3AgentAddresses = (): Api3Agent | null => {
       secondary: contracts.agentAppSecondary,
     };
   }, [contracts]);
+};
+
+export const useConvenience = () => {
+  const { provider, contracts } = useChainData();
+
+  return useMemo(() => {
+    if (!provider || !contracts) return null;
+
+    return ConvenienceFactory.connect(contracts.convenience, provider.getSigner());
+  }, [provider, contracts]);
 };

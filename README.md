@@ -26,10 +26,8 @@ account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-rese
 Currently supported networks are `localhost` and `ropsten` _(the `mainnet` network will be supported a bit later)_.
 Deployments for other networks can be added if needed later.
 
-Unfortunately, aragon DAO contracts are not deployed easily. The easiest solution is to compile using the script created
-inside [api3-dao](https://github.com/api3dao/api3-dao/pull/248).
-
-TODO: change api3-dao link to point to the file once the PR is merged
+Unfortunately, aragon DAO contracts are not deployed easily. The easiest solution is to compile [using the script
+created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js).
 
 ### Localhost deployment
 

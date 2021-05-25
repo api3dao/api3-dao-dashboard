@@ -19,7 +19,7 @@
     "generate-contracts": "yarn typechain --target ethers-v5 --outDir ./src/generated-contracts './hardhat/artifacts/contracts/**/!(*.dbg).json'",
     "send-to-account": "cd hardhat && npx hardhat send-to-account --address",
     "postinstall": "yarn fix-contract-imports && yarn eth:compile-contracts && yarn generate-contracts",
-    "fix-contract-imports": "yarn replace-in-file @api3-dao/pool/contracts ../pool-contracts-symlink hardhat/contracts/voting-contracts-symlink/Api3Voting.sol",
+    "fix-contract-imports": "yarn replace-in-file @api3-dao/pool/contracts ../pool-contracts-symlink hardhat/contracts/voting-contracts-symlink/Api3Voting.sol && yarn replace-in-file @api3-dao/pool/contracts ../pool-contracts-symlink hardhat/contracts/convenience-contracts-symlink/Convenience.sol && yarn replace-in-file @api3-dao/api3-voting/interfaces ../voting-interfaces-symlink hardhat/contracts/convenience-contracts-symlink/Convenience.sol && yarn replace-in-file 0.6.12 0.8.4 $(find hardhat/contracts -type f -follow)",
     "eth:set-dao-apps:localhost": "cd hardhat && npx hardhat run scripts/set-dao-apps-in-pool"
   },
   "husky": {
@@ -70,7 +70,7 @@
   "devDependencies": {
     "@aragon/os": "^4.4.0",
     "@nomiclabs/hardhat-ethers": "^2.0.0",
-    "@openzeppelin/contracts": "^3.4.1",
+    "@openzeppelin/contracts": "^4.1.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -84,7 +84,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-input-autosize": "^2.2.0",
     "@types/react-router-dom": "^5.1.7",
-    "api3-dao": "git+https://github.com/api3dao/api3-dao.git#1dc0cfd219addcded295e0ae246461eaf6fae6e8",
+    "api3-dao": "git+https://github.com/api3dao/api3-dao.git#344feb59c3a8219c0d25300fad5a75ad391c010a",
     "chai": "^4.3.4",
     "hardhat": "^2.2.1",
     "husky": "^6.0.0",

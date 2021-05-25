@@ -1964,10 +1964,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@openzeppelin/contracts@^3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.4.1.tgz#03c891fec7f93be0ae44ed74e57a122a38732ce7"
-  integrity sha512-cUriqMauq1ylzP2TxePNdPqkwI7Le3Annh4K9rrpvKfSBB/bdW+Iu1ihBaTIABTAAJ85LmKL5SSPPL9ry8d1gQ==
+"@openzeppelin/contracts@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.1.0.tgz#baec89a7f5f73e3d8ea582a78f1980134b605375"
+  integrity sha512-TihZitscnaHNcZgXGj9zDLDyCqjziytB4tMCwXq0XimfWkAjBYyk5/pOsDbbwcavhlc79HhpTEpQcrMnPVa1mw==
 
 "@pedrouid/environment@^1.0.1":
   version "1.0.1"
@@ -3428,9 +3428,9 @@ anymatch@^3.0.3, anymatch@~3.1.1:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-"api3-dao@git+https://github.com/api3dao/api3-dao.git#1dc0cfd219addcded295e0ae246461eaf6fae6e8":
+"api3-dao@git+https://github.com/api3dao/api3-dao.git#344feb59c3a8219c0d25300fad5a75ad391c010a":
   version "0.1.0"
-  resolved "git+https://github.com/api3dao/api3-dao.git#1dc0cfd219addcded295e0ae246461eaf6fae6e8"
+  resolved "git+https://github.com/api3dao/api3-dao.git#344feb59c3a8219c0d25300fad5a75ad391c010a"
 
 aproba@^1.0.3, aproba@^1.1.1:
   version "1.2.0"
