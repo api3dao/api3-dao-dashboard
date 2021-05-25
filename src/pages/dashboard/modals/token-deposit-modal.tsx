@@ -6,7 +6,7 @@ import Modal from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
 import { go, goSync, isUserRejection, formatApi3, parseApi3 } from '../../../utils';
-import './token-amount-modal.scss';
+import './modals.scss';
 
 interface Props {
   allowance: BigNumber;
@@ -54,7 +54,7 @@ const TokenDepositModal = (props: Props) => {
       return;
     }
     if ((inputBigNum as BigNumber).gt(balance)) {
-      setError('Input value cannot be higher than the available balance');
+      setError('Deposit value cannot be higher than the available balance');
       return;
     }
 

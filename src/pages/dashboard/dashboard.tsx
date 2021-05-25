@@ -15,8 +15,8 @@ import {
 import { Api3Pool } from '../../generated-contracts';
 import { formatApi3, parseApi3 } from '../../utils';
 import { unusedHookDependency } from '../../utils/hooks';
-import TokenAmountModal from './token-amount-modal/token-amount-modal';
-import TokenDepositModal from './token-amount-modal/token-deposit-modal';
+import TokenAmountModal from './modals/token-amount-modal';
+import TokenDepositModal from './modals/token-deposit-modal';
 import Layout from '../../components/layout/layout';
 import Button from '../../components/button/button';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
@@ -238,7 +238,7 @@ const Dashboard = () => {
         open={openModal === 'unstake'}
         onClose={closeModal}
         action="Initiate Unstaking"
-        onConfirm={() => setOpenModal('confirm')}
+        onConfirm={() => Promise.resolve(setOpenModal('confirm'))}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
       />

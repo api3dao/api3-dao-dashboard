@@ -5,12 +5,12 @@ import Modal from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
 import { go, fixedToBigNumber } from '../../../utils';
-import './token-amount-modal.scss';
+import './modals.scss';
 
 interface Props {
   title: string;
   action: 'Withdraw' | 'Stake' | 'Initiate Unstaking';
-  onConfirm: () => void | Promise<any>;
+  onConfirm: () => Promise<any>;
   onClose: () => void;
   open: boolean;
   onChange: ChangeEventHandler<HTMLInputElement>;
@@ -32,8 +32,9 @@ const TokenAmountModal = (props: Props) => {
       setError('Please ensure you have entered a non-zero value');
       return;
     }
-    if (props.maxValue) {
-      if (inputBigNum.gt(props.maxValue)) {
+
+    if (maxValue) {
+      if (inputBigNum.gt(maxValue)) {
         setError('Input value cannot be higher than the available balance');
         return;
       }
@@ -41,11 +42,11 @@ const TokenAmountModal = (props: Props) => {
 
     setError('');
 
-    // const [err] = await go(onConfirm());
-    // if (err) {
-    //   setError('Please try again and ensure you confirm the transaction');
-    //   return;
-    // }
+    const [err] = await go(onConfirm());
+    if (err) {
+      setError('Please try again and ensure you confirm the transaction');
+      return;
+    }
 
     if (props.closeOnConfirm) {
       props.onClose();
