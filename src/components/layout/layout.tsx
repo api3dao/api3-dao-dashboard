@@ -7,12 +7,13 @@ type Props = {
   children: ReactNode;
   title: string;
   sectionTitle: string;
+  subtitle?: string;
 };
 
-const Layout = ({ children, title, sectionTitle }: Props) => {
+const Layout = ({ children, title, sectionTitle, subtitle }: Props) => {
   return (
     <BaseLayout>
-      <Header title={title} sectionTitle={sectionTitle} />
+      <Header title={title} sectionTitle={sectionTitle} subtitle={subtitle} />
       {children}
     </BaseLayout>
   );

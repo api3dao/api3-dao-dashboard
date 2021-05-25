@@ -134,44 +134,46 @@ const Dashboard = () => {
       <h5 className="green-color">Staking Pool</h5>
       <StakingPool data={data || undefined} />
       <div className="bordered-boxes">
-        <BorderedBox
-          header={
-            <div className="bordered-box-header">
-              <h5>Balance</h5>
-              {data?.allowance.lt(ALLOWANCE_REFILL_TRESHOLD) ? (
-                <Button
-                  onClick={() => {
-                    api3Token?.approve(api3Pool ? api3Pool.address : '', MAX_ALLOWANCE);
-                  }}
-                  disabled={disconnected}
-                >
-                  Approve
-                </Button>
-              ) : (
-                <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
-                  + Deposit
-                </Button>
-              )}
-            </div>
-          }
-          content={
-            <>
-              <div className="bordered-box-data">
-                <p className="text-small secondary-color uppercase medium">total</p>
-                <p className="text-xlarge">{data ? formatApi3(data.balance) : '0.0'}</p>
+        <div className="staking-boxes">
+          <BorderedBox
+            header={
+              <div className="bordered-box-header">
+                <h5>Balance</h5>
+                {data?.allowance.lt(ALLOWANCE_REFILL_TRESHOLD) ? (
+                  <Button
+                    onClick={() => {
+                      api3Token?.approve(api3Pool ? api3Pool.address : '', MAX_ALLOWANCE);
+                    }}
+                    disabled={disconnected}
+                  >
+                    Approve
+                  </Button>
+                ) : (
+                  <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
+                    + Deposit
+                  </Button>
+                )}
               </div>
-              <div className="bordered-box-data">
-                <p className="text-small secondary-color uppercase medium">withdrawable</p>
-                <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
-              </div>
-            </>
-          }
-          footer={
-            <Button type="link" onClick={() => setOpenModal('withdraw')} disabled={disconnected}>
-              Withdraw
-            </Button>
-          }
-        />
+            }
+            content={
+              <>
+                <div className="bordered-box-data">
+                  <p className="text-small secondary-color uppercase medium">total</p>
+                  <p className="text-xlarge">{data ? formatApi3(data.balance) : '0.0'}</p>
+                </div>
+                <div className="bordered-box-data">
+                  <p className="text-small secondary-color uppercase medium">withdrawable</p>
+                  <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
+                </div>
+              </>
+            }
+            footer={
+              <Button type="link" onClick={() => setOpenModal('withdraw')} disabled={disconnected}>
+                Withdraw
+              </Button>
+            }
+          />
+        </div>
         <div className="staking-boxes">
           <BorderedBox
             header={

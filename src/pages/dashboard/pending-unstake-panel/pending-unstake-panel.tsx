@@ -118,6 +118,7 @@ const PendingUnstakePanel = (props: Props) => {
         </div>
       }
       borderColor="green"
+      borderBottom
     />
   );
 };

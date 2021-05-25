@@ -19,13 +19,24 @@
 
 .modal-body {
   position: relative;
-  max-width: 550px;
   width: 100%;
   min-height: 100%;
   display: flex;
   align-items: center;
   margin: 0 auto;
   box-sizing: border-box;
+
+  &._small {
+    max-width: 380px;
+  }
+
+  &._medium {
+    max-width: 550px;
+  }
+
+  &._large {
+    max-width: 920px;
+  }
 }
 
 .modal {
@@ -37,7 +48,6 @@
   border: 1px solid;
   border-image-source: $primary-border;
   border-image-slice: 1;
-  text-align: center;
   color: $secondary-color;
   padding: 2 * $space-xxl;
   box-sizing: border-box;
@@ -60,6 +70,9 @@
 }
 
 .modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 2 * $space-xxl;
 }
 
