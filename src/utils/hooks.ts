@@ -48,7 +48,7 @@ export const usePrevious = (value: any) => {
 
   useEffect(() => {
     ref.current = value;
-  }, [value]); // Only re-run if value changes
+  }, [value]);
 
   return ref.current;
 };
