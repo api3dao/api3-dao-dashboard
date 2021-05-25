@@ -6,7 +6,7 @@ import { go } from '../../utils/generic';
 import Button from '../../components/button/button';
 import GenericModal from '../../components/modal/modal';
 import './sign-in.scss';
-import { getSupportedNetworks, getWalletConnectRpcProviders } from '../../contracts';
+import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS } from '../../contracts';
 
 const SignIn = () => {
   const { setChainData, provider, contracts, networkName } = useChainData();
@@ -33,7 +33,7 @@ const SignIn = () => {
           options: {
             // This is actually the default value in WalletConnectProvider, but I'd rather be explicit about this
             bridge: 'https://bridge.walletconnect.org',
-            rpc: getWalletConnectRpcProviders(),
+            rpc: WALLET_CONNECT_RPC_PROVIDERS,
           },
         },
       },
@@ -65,13 +65,11 @@ const SignIn = () => {
   };
 
   const isSupportedNetwork = !!provider && contracts === null;
-  const supportedNetworks = getSupportedNetworks()
-    .filter((name) => {
-      // Disable localhost network on non-development environment
-      if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
-      else return true;
-    })
-    .join(', ');
+  const supportedNetworks = SUPPORTED_NETWORKS.filter((name) => {
+    // Disable localhost network on non-development environment
+    if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
+    else return true;
+  }).join(', ');
 
   return (
     <>

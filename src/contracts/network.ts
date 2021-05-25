@@ -12,7 +12,7 @@ export const getNetworkName = async (provider: ethers.providers.Web3Provider) =>
   else return networkName;
 };
 
-export const getSupportedNetworks = () => ['localhost', 'ropsten'];
+export const SUPPORTED_NETWORKS = ['localhost', 'ropsten'];
 
 export const getDaoAddresses = (networkName: string) => {
   switch (networkName) {
@@ -26,9 +26,7 @@ export const getDaoAddresses = (networkName: string) => {
   }
 };
 
-export const getWalletConnectRpcProviders = () => {
-  return {
-    3: process.env.REACT_APP_ROPSTEN_PROVIDER_URL,
-    31337: 'http://127.0.0.1:8545/',
-  };
+export const WALLET_CONNECT_RPC_PROVIDERS = {
+  3: process.env.REACT_APP_ROPSTEN_PROVIDER_URL,
+  31337: 'http://127.0.0.1:8545/',
 };
