@@ -1,10 +1,10 @@
-import { BigNumber, FixedNumber } from 'ethers';
+import { BigNumber } from 'ethers';
 import { ChangeEventHandler, ReactNode, useState } from 'react';
 import classNames from 'classnames';
 import Modal from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import { go, fixedToBigNumber, isUserRejection } from '../../../utils';
+import { go, goSync, isUserRejection, parseApi3 } from '../../../utils';
 import './modals.scss';
 
 interface Props {
@@ -25,7 +25,10 @@ const TokenAmountModal = (props: Props) => {
   const [error, setError] = useState('');
   const { action, onConfirm, onClose, maxValue, onChange, inputValue, helperText, showTokenInput = true } = props;
 
-  const inputBigNum = fixedToBigNumber(FixedNumber.from(inputValue || '0'));
+  let [parseErr, inputBigNum] = goSync(() => parseApi3(inputValue));
+  if (parseErr || !inputBigNum) {
+    inputBigNum = BigNumber.from(0);
+  }
 
   const handleAction = async () => {
     if (!inputValue || inputValue === '0') {
@@ -33,7 +36,7 @@ const TokenAmountModal = (props: Props) => {
       return;
     }
     if (maxValue) {
-      if (inputBigNum.gt(maxValue)) {
+      if ((inputBigNum as BigNumber).gt(maxValue)) {
         setError('Input value cannot be higher than the available balance');
         return;
       }
