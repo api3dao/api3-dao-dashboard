@@ -113,11 +113,8 @@ const TokenDepositModal = (props: Props) => {
       onClose={handleClose}
     >
       <p className="tokenAmountModal-token medium">TOKEN</p>
-
       <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
-
       {error && <p className="tokenAmountModal-error">{error}</p>}
-
       <div className="depositModal-balance">Your balance: {balance ? formatApi3(balance) : '0.0'}</div>
     </Modal>
   );

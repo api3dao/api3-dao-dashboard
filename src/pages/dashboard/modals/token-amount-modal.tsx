@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import Modal from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import { go, fixedToBigNumber } from '../../../utils';
+import { go, fixedToBigNumber, isUserRejection } from '../../../utils';
 import './modals.scss';
 
 interface Props {
@@ -32,18 +32,20 @@ const TokenAmountModal = (props: Props) => {
       setError('Please ensure you have entered a non-zero value');
       return;
     }
-
     if (maxValue) {
       if (inputBigNum.gt(maxValue)) {
         setError('Input value cannot be higher than the available balance');
         return;
       }
     }
-
     setError('');
 
     const [err] = await go(onConfirm());
     if (err) {
+      if (isUserRejection(err)) {
+        setError('Transaction rejected. Please try again');
+        return;
+      }
       setError('Please try again and ensure you confirm the transaction');
       return;
     }
@@ -79,9 +81,8 @@ const TokenAmountModal = (props: Props) => {
       {showTokenInput && (
         <>
           <p className="tokenAmountModal-token medium">TOKEN</p>
-
           <Input value={inputValue} onChange={onChange} size="large" />
-          {error && <p className="error">{error}</p>}
+          {error && <p className="tokenAmountModal-error">{error}</p>}
           {helperText}
         </>
       )}
