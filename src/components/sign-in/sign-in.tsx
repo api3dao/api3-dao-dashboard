@@ -53,7 +53,6 @@ const SignIn = () => {
     // Enable session (triggers QR Code modal)
     const [err] = await go(web3ModalProvider.request({ method: 'eth_requestAccounts' }));
     if (err) {
-      console.log(err);
       // TODO: handle error (e.g. user closes the modal)
       return;
     }
