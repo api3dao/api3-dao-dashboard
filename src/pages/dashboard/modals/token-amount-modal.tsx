@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { ChangeEventHandler, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import classNames from 'classnames';
 import Modal from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
@@ -13,7 +13,7 @@ interface Props {
   onConfirm: () => Promise<any>;
   onClose: () => void;
   open: boolean;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  onChange: (input: string) => void;
   inputValue: string;
   helperText?: ReactNode;
   showTokenInput?: boolean;
@@ -59,6 +59,7 @@ const TokenAmountModal = (props: Props) => {
   };
 
   const handleClose = () => {
+    onChange('');
     setError('');
     onClose();
   };
@@ -84,7 +85,7 @@ const TokenAmountModal = (props: Props) => {
       {showTokenInput && (
         <>
           <p className="tokenAmountModal-token medium">TOKEN</p>
-          <Input value={inputValue} onChange={onChange} size="large" />
+          <Input value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
           {error && <p className="tokenAmountModal-error">{error}</p>}
           {helperText}
         </>

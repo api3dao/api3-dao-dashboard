@@ -217,7 +217,7 @@ const Dashboard = () => {
           }
         }}
         inputValue={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={setInputValue}
         maxValue={data?.withdrawable}
         closeOnConfirm
       />
@@ -233,7 +233,7 @@ const Dashboard = () => {
           }
         }}
         inputValue={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={setInputValue}
         maxValue={data?.withdrawable /* TODO: is this the right value? */}
         closeOnConfirm
       />
@@ -244,7 +244,7 @@ const Dashboard = () => {
         action="Initiate Unstaking"
         onConfirm={() => Promise.resolve(setOpenModal('confirm'))}
         inputValue={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={setInputValue}
       />
       <TokenAmountModal
         title={`Are you sure you would like to unstake ${inputValue} tokens?`}
@@ -258,7 +258,7 @@ const Dashboard = () => {
           }
         }}
         inputValue={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={setInputValue}
         showTokenInput={false}
         maxValue={data?.userStake}
         closeOnConfirm
