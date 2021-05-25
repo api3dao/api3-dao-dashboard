@@ -4,6 +4,10 @@ export const blockTimestampToDate = (timestamp: BigNumber) => new Date(timestamp
 
 export const fixedToBigNumber = (fixed: FixedNumber) => BigNumber.from(fixed.round().toString().split('.')[0]);
 
+// The Error object was extended to add a code for Web3 providers
+// See: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#provider-errors
+export const isUserRejection = (err: Error) => (err as any).code === 4001 || (err as any).code === 4100;
+
 type GoResult<T> = [Error, null] | [null, T];
 
 const successFn = <T>(value: T): [null, T] => [null, value];

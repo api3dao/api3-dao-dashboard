@@ -5,7 +5,7 @@ import { useChainData } from '../../../chain-data';
 import Modal from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import { go, goSync, formatApi3, parseApi3 } from '../../../utils';
+import { go, goSync, isUserRejection, formatApi3, parseApi3 } from '../../../utils';
 import './token-amount-modal.scss';
 
 interface Props {
@@ -32,12 +32,17 @@ const TokenDepositModal = (props: Props) => {
 
   const handleApprove = async () => {
     setError('');
+
     const [err, tx] = await go(api3Token!.approve(api3Pool ? api3Pool.address : '', MAX_ALLOWANCE));
-    // TODO: check error code
     if (err) {
+      if (isUserRejection(err)) {
+        setError('API3 token approval transaction rejected. Please try again');
+        return;
+      }
       setError('Failed to approve API3 token allowance. Please try again');
       return;
     }
+
     if (tx) {
       setChainData({ transactions: [...transactions, tx] });
     }
@@ -52,20 +57,28 @@ const TokenDepositModal = (props: Props) => {
       setError('Input value cannot be higher than the available balance');
       return;
     }
+
     setError('');
-    const [err, tx]  = await go(api3Pool!.deposit(userAccount, parseApi3(inputValue), userAccount));
-    // TODO: check error code
+
+    const [err, tx] = await go(api3Pool!.deposit(userAccount, parseApi3(inputValue), userAccount));
     if (err) {
-      setError('Please try again and ensure you confirm the transaction');
+      if (isUserRejection(err)) {
+        setError('API3 token deposit transaction rejected. Please try again');
+        return;
+      }
+      setError('Failed to deposit API3 tokens. Please try again');
       return;
     }
+
     if (tx) {
       setChainData({ transactions: [...transactions, tx] });
     }
+
     props.onClose();
   };
 
   const handleClose = () => {
+    setInputValue('');
     setError('');
     onClose();
   };
@@ -77,17 +90,12 @@ const TokenDepositModal = (props: Props) => {
   const approvalRequired = !!inputBigNum && inputBigNum.gt(allowance);
   const canDeposit = !approvalRequired && inputBigNum.gt(0);
 
-  console.log('============================');
-  console.log(inputValue);
-  console.log(allowance.toString());
-  console.log('============================');
-
   return (
     <Modal
       open={props.open}
       header="How many tokens would you like to deposit?"
       footer={
-        <div className="tokenAmountModal-actions">
+        <div>
           <Button
             type={approvalRequired ? 'primary' : 'secondary'}
             onClick={handleApprove}
@@ -97,11 +105,7 @@ const TokenDepositModal = (props: Props) => {
             Approve
           </Button>
 
-          <Button
-            type={canDeposit  ? 'primary' : 'secondary'}
-            onClick={handleDeposit}
-            disabled={!canDeposit}
-          >
+          <Button type={canDeposit ? 'primary' : 'secondary'} onClick={handleDeposit} disabled={!canDeposit}>
             Deposit
           </Button>
         </div>
@@ -112,11 +116,9 @@ const TokenDepositModal = (props: Props) => {
 
       <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
 
-      {error && <p className="error">{error}</p>}
+      {error && <p className="tokenAmountModal-error">{error}</p>}
 
-      <div className="depositModal-balance">
-        Your balance: {balance ? formatApi3(balance) : '0.0'}
-      </div>
+      <div className="depositModal-balance">Your balance: {balance ? formatApi3(balance) : '0.0'}</div>
     </Modal>
   );
 };
