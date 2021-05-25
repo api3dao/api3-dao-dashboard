@@ -61,25 +61,24 @@ export interface ChainData {
   provider: ethers.providers.Web3Provider | null;
   userAccount: string;
   networkName: string;
-  chainId: string;
   contracts: typeof ContractsAddresses | null;
-  latestBlock: number;
   dashboardState: DashboardState | null;
   proposalState: ProposalState | null;
   transactions: ethers.ContractTransaction[];
 }
 
-interface SettableChainData extends ChainData {
-  setChainData: (newChainData: Partial<ChainData>) => void;
+export interface SettableChainData extends ChainData {
+  setChainData: (
+    reason: string,
+    newChainData: Partial<ChainData> | ((chainData: ChainData) => Partial<ChainData>)
+  ) => void;
 }
 
 export const initialChainData: ChainData = {
   provider: null,
   userAccount: '',
   networkName: '',
-  chainId: '',
   contracts: null,
-  latestBlock: 0,
   dashboardState: null,
   proposalState: null,
   transactions: [],

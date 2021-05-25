@@ -17,7 +17,6 @@ export const SUPPORTED_NETWORKS = ['localhost', 'ropsten'];
 export const getDaoAddresses = (networkName: string) => {
   switch (networkName) {
     case 'localhost':
-    case 'unknown':
       return localhostDao;
     case 'ropsten':
       return ropstenDao;
