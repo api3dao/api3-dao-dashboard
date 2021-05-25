@@ -21,7 +21,10 @@ const Modal = (props: ModalProps) => {
 
   useEffect(() => {
     if (!open || !prevUserAccount || !userAccount) return;
-    // If the user changed their selected account, close any open modals
+    // It's possible for the user to be on a "permissioned" modal
+    // for one account, then change to another account that does not
+    // have the same privileges. So as a blanket fix, close any open
+    // modals on account change.
     if (prevUserAccount !== userAccount) {
       onClose();
     }
