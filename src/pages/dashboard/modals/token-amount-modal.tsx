@@ -56,7 +56,7 @@ const TokenAmountModal = (props: Props) => {
     const [err] = await go(onConfirm());
     if (err) {
       if (isUserRejection(err)) {
-        setError('Transaction rejected. Please try again');
+        setError('Transaction rejected');
         return;
       }
       setError('Please try again and ensure you confirm the transaction');

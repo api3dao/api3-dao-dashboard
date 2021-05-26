@@ -36,7 +36,7 @@ const TokenDepositModal = (props: Props) => {
     const [err, tx] = await go(api3Token!.approve(api3Pool ? api3Pool.address : '', MAX_ALLOWANCE));
     if (err) {
       if (isUserRejection(err)) {
-        setError('API3 token approval transaction rejected. Please try again');
+        setError('API3 token approval transaction rejected');
         return;
       }
       setError('Failed to approve API3 token allowance. Please try again');
@@ -63,7 +63,7 @@ const TokenDepositModal = (props: Props) => {
     const [err, tx] = await go(api3Pool!.deposit(userAccount, parseApi3(inputValue), userAccount));
     if (err) {
       if (isUserRejection(err)) {
-        setError('API3 token deposit transaction rejected. Please try again');
+        setError('API3 token deposit transaction rejected');
         return;
       }
       setError('Failed to deposit API3 tokens. Please try again');
