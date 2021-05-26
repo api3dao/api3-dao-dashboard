@@ -116,11 +116,11 @@ const Dashboard = () => {
   const closeModal = () => setOpenModal(null);
 
   const disconnected = !api3Pool || !api3Token || !data;
-  const canWithdraw = !disconnected && data?.withdrawable.gt(0);
+  const canWithdraw = !!data && data.withdrawable.gt(0);
 
   // TODO: update according to the specifications here:
   // https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
-  const canInitiateUnstake = !disconnected && data?.userStake.gt(0);
+  const canInitiateUnstake = !!data && data.userStake.gt(0);
 
   const abbrStr = (str: string) => {
     return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
