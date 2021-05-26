@@ -64,6 +64,8 @@ const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {
   };
 };
 
+type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
+
 const Dashboard = () => {
   const chainData = useChainData();
   const { dashboardState: data, userAccount, provider, latestBlock, transactions, setChainData } = chainData;
@@ -109,7 +111,7 @@ const Dashboard = () => {
     loadDashboardData();
   }, [loadDashboardData]);
 
-  const [openModal, setOpenModal] = useState<string | null>(null);
+  const [openModal, setOpenModal] = useState<ModalType | null>(null);
   const [inputValue, setInputValue] = useState('');
   const closeModal = () => setOpenModal(null);
 
@@ -240,14 +242,14 @@ const Dashboard = () => {
         open={openModal === 'unstake'}
         onClose={closeModal}
         action="Initiate Unstaking"
-        onConfirm={() => Promise.resolve(setOpenModal('confirm'))}
+        onConfirm={() => Promise.resolve(setOpenModal('confirm-unstake'))}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         closeOnConfirm={false}
       />
       <TokenAmountModal
         title={`Are you sure you would like to unstake ${inputValue} tokens?`}
-        open={openModal === 'confirm'}
+        open={openModal === 'confirm-unstake'}
         onClose={closeModal}
         action="Initiate Unstaking"
         onConfirm={async () => {
