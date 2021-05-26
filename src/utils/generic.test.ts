@@ -55,6 +55,9 @@ test('getMinutes', () => {
 });
 
 test('getSeconds', () => {
-  expect(getSeconds(1_234_000_000)).toBe('40');
-  expect(getSeconds(11_000_000_000)).toBe('20');
+  const fortySeconds = 1000 * 40;
+  expect(getSeconds(fortySeconds)).toBe('40');
+
+  const twentySeconds = 1000 * 20.98472;
+  expect(getSeconds(twentySeconds)).toBe('20');
 });
