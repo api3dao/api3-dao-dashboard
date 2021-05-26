@@ -219,7 +219,6 @@ const Dashboard = () => {
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         maxValue={data?.withdrawable}
-        closeOnConfirm
       />
       <TokenAmountModal
         title="How many tokens would you like to stake?"
@@ -234,8 +233,7 @@ const Dashboard = () => {
         }}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-        maxValue={data?.withdrawable /* TODO: is this the right value? */}
-        closeOnConfirm
+        maxValue={data?.withdrawable}
       />
       <TokenAmountModal
         title="How many tokens would you like to unstake?"
@@ -245,6 +243,7 @@ const Dashboard = () => {
         onConfirm={() => Promise.resolve(setOpenModal('confirm'))}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        closeOnConfirm={false}
       />
       <TokenAmountModal
         title={`Are you sure you would like to unstake ${inputValue} tokens?`}
@@ -261,7 +260,6 @@ const Dashboard = () => {
         onChange={(e) => setInputValue(e.target.value)}
         showTokenInput={false}
         maxValue={data?.userStake}
-        closeOnConfirm
       />
     </Layout>
   );

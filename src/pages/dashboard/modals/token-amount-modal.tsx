@@ -23,7 +23,17 @@ interface Props {
 
 const TokenAmountModal = (props: Props) => {
   const [error, setError] = useState('');
-  const { action, onConfirm, onClose, maxValue, onChange, inputValue, helperText, showTokenInput = true } = props;
+  const {
+    action,
+    onConfirm,
+    onClose,
+    maxValue,
+    onChange,
+    inputValue,
+    helperText,
+    showTokenInput = true,
+    closeOnConfirm = true,
+  } = props;
 
   let [parseErr, inputBigNum] = goSync(() => parseApi3(inputValue));
   if (parseErr || !inputBigNum) {
@@ -53,7 +63,7 @@ const TokenAmountModal = (props: Props) => {
       return;
     }
 
-    if (props.closeOnConfirm) {
+    if (closeOnConfirm) {
       props.onClose();
     }
   };
