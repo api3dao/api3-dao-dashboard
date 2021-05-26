@@ -1,5 +1,5 @@
 import './styles/main.scss';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import ChainDataContextProvider from './chain-data';
 import Dashboard from './pages/dashboard';
 import Proposals from './pages/proposals';
