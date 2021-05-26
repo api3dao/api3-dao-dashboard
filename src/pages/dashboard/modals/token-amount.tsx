@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import { ReactNode, useState } from 'react';
 import classNames from 'classnames';
-import Modal from '../../../components/modal/modal';
+import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
 import { go, goSync, isUserRejection, parseApi3 } from '../../../utils';
@@ -12,7 +12,6 @@ interface Props {
   action: 'Withdraw' | 'Stake' | 'Initiate Unstaking';
   onConfirm: (parsedInput: BigNumber) => Promise<any>;
   onClose: () => void;
-  open: boolean;
   onChange: (input: string) => void;
   inputValue: string;
   helperText?: ReactNode;
@@ -21,7 +20,7 @@ interface Props {
   closeOnConfirm?: boolean;
 }
 
-const TokenAmountModal = (props: Props) => {
+const TokenAmount = (props: Props) => {
   const [error, setError] = useState('');
   const {
     action,
@@ -70,17 +69,20 @@ const TokenAmountModal = (props: Props) => {
     }
   };
 
-  const handleClose = () => {
-    onChange('');
-    setError('');
-    onClose();
-  };
-
   return (
-    <Modal
-      open={props.open}
-      header={props.title}
-      footer={
+    <>
+      <ModalHeader>{props.title}</ModalHeader>
+
+      {showTokenInput && (
+        <>
+          <p className="tokenAmountModal-token medium">TOKEN</p>
+          <Input value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
+          {error && <p className="tokenAmountModal-error">{error}</p>}
+          {helperText}
+        </>
+      )}
+
+      <ModalFooter>
         <div className={classNames({ [`tokenAmountModal-actions`]: !showTokenInput })}>
           {!showTokenInput && (
             <Button type="text" onClick={onClose}>
@@ -91,19 +93,9 @@ const TokenAmountModal = (props: Props) => {
             {action}
           </Button>
         </div>
-      }
-      onClose={handleClose}
-    >
-      {showTokenInput && (
-        <>
-          <p className="tokenAmountModal-token medium">TOKEN</p>
-          <Input value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
-          {error && <p className="tokenAmountModal-error">{error}</p>}
-          {helperText}
-        </>
-      )}
-    </Modal>
+      </ModalFooter>
+    </>
   );
 };
 
-export default TokenAmountModal;
+export default TokenAmount;

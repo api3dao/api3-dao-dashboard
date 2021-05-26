@@ -14,8 +14,9 @@ import {
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
 import { formatApi3, unusedHookDependency } from '../../utils';
-import TokenAmountModal from './modals/token-amount-modal';
-import TokenDepositModal from './modals/token-deposit-modal';
+import TokenAmount from './modals/token-amount';
+import TokenDeposit from './modals/token-deposit';
+import { Modal } from '../../components/modal/modal';
 import Layout from '../../components/layout/layout';
 import Button from '../../components/button/button';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
@@ -201,68 +202,78 @@ const Dashboard = () => {
           )}
         </div>
       </div>
-      <TokenDepositModal
-        allowance={data?.allowance || BigNumber.from('0')}
-        balance={data?.ownedTokens || BigNumber.from('0')}
-        open={openModal === 'deposit'}
-        onClose={closeModal}
-      />
-      <TokenAmountModal
-        title="How many tokens would you like to withdraw?"
-        open={openModal === 'withdraw'}
-        onClose={closeModal}
-        action="Withdraw"
-        onConfirm={async (parsedValue: BigNumber) => {
-          const tx = await api3Pool?.withdraw(userAccount, parsedValue);
-          if (tx) {
-            setChainData({ ...chainData, transactions: [...transactions, tx] });
-          }
-        }}
-        inputValue={inputValue}
-        onChange={setInputValue}
-        maxValue={data?.withdrawable}
-      />
-      <TokenAmountModal
-        title="How many tokens would you like to stake?"
-        open={openModal === 'stake'}
-        onClose={closeModal}
-        action="Stake"
-        onConfirm={async (parsedValue: BigNumber) => {
-          const tx = await api3Pool?.stake(parsedValue);
-          if (tx) {
-            setChainData({ ...chainData, transactions: [...transactions, tx] });
-          }
-        }}
-        inputValue={inputValue}
-        onChange={setInputValue}
-        maxValue={data?.withdrawable}
-      />
-      <TokenAmountModal
-        title="How many tokens would you like to unstake?"
-        open={openModal === 'unstake'}
-        onClose={closeModal}
-        action="Initiate Unstaking"
-        onConfirm={() => Promise.resolve(setOpenModal('confirm-unstake'))}
-        inputValue={inputValue}
-        onChange={setInputValue}
-        closeOnConfirm={false}
-      />
-      <TokenAmountModal
-        title={`Are you sure you would like to unstake ${inputValue} tokens?`}
-        open={openModal === 'confirm-unstake'}
-        onClose={closeModal}
-        action="Initiate Unstaking"
-        onConfirm={async (parsedValue: BigNumber) => {
-          const tx = await api3Pool?.scheduleUnstake(parsedValue);
-          if (tx) {
-            setChainData({ ...chainData, transactions: [...transactions, tx] });
-          }
-        }}
-        inputValue={inputValue}
-        onChange={setInputValue}
-        showTokenInput={false}
-        maxValue={data?.userStake}
-      />
+
+      <Modal open={openModal === 'deposit'} onClose={closeModal}>
+        <TokenDeposit
+          allowance={data?.allowance || BigNumber.from(0)}
+          balance={data?.ownedTokens || BigNumber.from(0)}
+          onClose={closeModal}
+        />
+      </Modal>
+
+      <Modal open={openModal === 'withdraw'} onClose={closeModal}>
+        <TokenAmount
+          title="How many tokens would you like to withdraw?"
+          onClose={closeModal}
+          action="Withdraw"
+          onConfirm={async (parsedValue: BigNumber) => {
+            const tx = await api3Pool?.withdraw(userAccount, parsedValue);
+            if (tx) {
+              setChainData({ ...chainData, transactions: [...transactions, tx] });
+            }
+          }}
+          inputValue={inputValue}
+          onChange={setInputValue}
+          maxValue={data?.withdrawable}
+        />
+      </Modal>
+
+      <Modal open={openModal === 'stake'} onClose={closeModal}>
+        <TokenAmount
+          title="How many tokens would you like to stake?"
+          onClose={closeModal}
+          action="Stake"
+          onConfirm={async (parsedValue: BigNumber) => {
+            const tx = await api3Pool?.stake(parsedValue);
+            if (tx) {
+              setChainData({ ...chainData, transactions: [...transactions, tx] });
+            }
+          }}
+          inputValue={inputValue}
+          onChange={setInputValue}
+          maxValue={data?.withdrawable}
+        />
+      </Modal>
+
+      <Modal open={openModal === 'unstake'} onClose={closeModal}>
+        <TokenAmount
+          title="How many tokens would you like to unstake?"
+          onClose={closeModal}
+          action="Initiate Unstaking"
+          onConfirm={() => Promise.resolve(setOpenModal('confirm-unstake'))}
+          inputValue={inputValue}
+          onChange={setInputValue}
+          closeOnConfirm={false}
+        />
+      </Modal>
+
+      <Modal open={openModal === 'confirm-unstake'} onClose={closeModal}>
+        <TokenAmount
+          title={`Are you sure you would like to unstake ${inputValue} tokens?`}
+          onClose={closeModal}
+          action="Initiate Unstaking"
+          onConfirm={async (parsedValue: BigNumber) => {
+            const tx = await api3Pool?.scheduleUnstake(parsedValue);
+            if (tx) {
+              setChainData({ ...chainData, transactions: [...transactions, tx] });
+            }
+          }}
+          inputValue={inputValue}
+          onChange={setInputValue}
+          showTokenInput={false}
+          maxValue={data?.userStake}
+        />
+      </Modal>
     </Layout>
   );
 };

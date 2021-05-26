@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { useChainData } from '../../chain-data';
 import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
+import { Modal } from '../../components/modal/modal';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useProposalState } from '../../logic/proposals/use-proposal-state';
-import NewProposalModal from './new-proposal-modal';
-import DelegateVotesModal from './delegate-votes-modal';
+import NewProposalForm from './new-proposal-form';
+import DelegateVotesForm from './delegate-votes-form';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from './proposal-list';
 
@@ -39,21 +40,24 @@ const Proposals = () => {
     <Layout title="proposals" sectionTitle="proposals">
       <p>Delegated to: {proposalState?.delegationAddress}</p>
       <button onClick={() => setOpenDelegationModal(true)}>Update delegation</button>
-      <DelegateVotesModal onClose={() => setOpenDelegationModal(false)} open={openDelegationModal} />
+      <Modal open={openDelegationModal} onClose={() => setOpenDelegationModal(false)}>
+        <DelegateVotesForm onClose={() => setOpenDelegationModal(false)} />
+      </Modal>
 
       {/* TODO: Implement treasury - Burak will maybe create view functions for those dropdowns */}
 
       <div>
         <p>PROPOSALS</p>
         <Button onClick={() => setOpenNewProposalModal(true)}>New proposal</Button>
-        <NewProposalModal
-          onClose={() => setOpenNewProposalModal(false)}
-          onConfirm={(formData) => {
-            onCreateProposal(formData);
-            setOpenNewProposalModal(false);
-          }}
-          open={openNewProposalModal}
-        />
+
+        <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)}>
+          <NewProposalForm
+            onConfirm={(formData) => {
+              onCreateProposal(formData);
+              setOpenNewProposalModal(false);
+            }}
+          />
+        </Modal>
 
         <ProposalList />
       </div>

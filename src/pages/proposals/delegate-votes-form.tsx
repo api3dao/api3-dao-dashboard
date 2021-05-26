@@ -1,21 +1,19 @@
 import { useState } from 'react';
 import Button from '../../components/button/button';
-import GenericModal from '../../components/modal/modal';
 import { useApi3Pool } from '../../contracts';
 
 interface Props {
-  open: boolean;
   onClose: () => void;
 }
 
 const DelegateVotesModal = (props: Props) => {
-  const { open, onClose } = props;
+  const { onClose } = props;
 
   const [delegationAddress, setDelegationAddress] = useState('');
   const api3Pool = useApi3Pool();
 
   return (
-    <GenericModal open={open} onClose={onClose}>
+    <>
       <h5 className="title">Delegate my votes to:</h5>
       <p>ADDRESS</p>
 
@@ -35,7 +33,7 @@ const DelegateVotesModal = (props: Props) => {
       >
         Delegate votes
       </Button>
-    </GenericModal>
+    </>
   );
 };
 

@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import { ProposalType } from '../../chain-data';
 import Button from '../../components/button/button';
-import GenericModal from '../../components/modal/modal';
 import { NewProposalFormData } from '../../logic/proposals/encoding';
 
 interface Props {
-  open: boolean;
-  onClose: () => void;
   onConfirm: (formData: NewProposalFormData) => void;
 }
 
-const NewProposalModal = (props: Props) => {
-  const { onClose, open, onConfirm } = props;
+const NewProposalForm = (props: Props) => {
+  const { onConfirm } = props;
 
   const [type, setType] = useState<ProposalType>('primary');
   const [description, setDescription] = useState('');
@@ -21,7 +18,7 @@ const NewProposalModal = (props: Props) => {
   const [parameters, setParameters] = useState('');
 
   return (
-    <GenericModal onClose={onClose} open={open}>
+    <>
       <h5>New proposal</h5>
 
       <p>Proposal type</p>
@@ -89,8 +86,8 @@ const NewProposalModal = (props: Props) => {
       >
         Create
       </Button>
-    </GenericModal>
+    </>
   );
 };
 
-export default NewProposalModal;
+export default NewProposalForm;

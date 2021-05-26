@@ -6,15 +6,13 @@ import './modal.scss';
 
 interface ModalProps {
   children?: React.ReactNode;
-  header?: React.ReactNode;
-  footer?: React.ReactNode;
   open: boolean;
   onClose: () => void;
   hideCloseButton?: true;
 }
 
-const Modal = (props: ModalProps) => {
-  const { onClose, open, hideCloseButton, children, header, footer } = props;
+export const Modal = (props: ModalProps) => {
+  const { onClose, open, hideCloseButton, children } = props;
 
   // It's possible for the user to have a "permissioned" modal open while on one account,
   // then switch to another account that does not have the same permissions. As a blanket
@@ -35,9 +33,7 @@ const Modal = (props: ModalProps) => {
             src="/close.svg"
             alt="close icon"
           />
-          {header && <h5 className="modal-header">{header}</h5>}
           {children}
-          {footer && <div className="modal-footer">{footer}</div>}
         </div>
       </div>
     </div>,
@@ -45,4 +41,20 @@ const Modal = (props: ModalProps) => {
   );
 };
 
-export default Modal;
+interface ModalHeaderProps {
+  children?: React.ReactNode;
+}
+
+export const ModalHeader = (props: ModalHeaderProps) => {
+  if (props.children) return null;
+  return <h5 className="modal-header">{props.children}</h5>;
+};
+
+interface ModalFooterProps {
+  children?: React.ReactNode;
+}
+
+export const ModalFooter = (props: ModalFooterProps) => {
+  if (props.children) return null;
+  return <div className="modal-footer">{props.children}</div>;
+};

@@ -5,7 +5,7 @@ import { initialChainData, getChainData, useChainData } from '../../chain-data';
 import { daoAbis } from '../../contracts';
 import { go } from '../../utils';
 import Button from '../../components/button/button';
-import GenericModal from '../../components/modal/modal';
+import { Modal as GenericModal } from '../../components/modal/modal';
 import './sign-in.scss';
 
 const SignIn = () => {
