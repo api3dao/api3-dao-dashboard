@@ -31,18 +31,27 @@ describe('go', () => {
 });
 
 test('getDays', () => {
-  expect(getDays(1_234_000_000)).toBe('14');
-  expect(getDays(11_000_000_000)).toBe('127');
+  const twelveDays = 1000 * 60 * 60 * 24 * 12;
+  expect(getDays(twelveDays)).toBe('12');
+
+  const fiveDays = 1000 * 60 * 60 * 24 * 5.672839;
+  expect(getDays(fiveDays)).toBe('5');
 });
 
 test('getHours', () => {
-  expect(getHours(1_234_000_000)).toBe('6');
-  expect(getHours(11_000_000_000)).toBe('7');
+  const sixHours = 1000 * 60 * 60 * 6;
+  expect(getHours(sixHours)).toBe('6');
+
+  const fiveHours = 1000 * 60 * 60 * 5.672839;
+  expect(getHours(fiveHours)).toBe('5');
 });
 
 test('getMinutes', () => {
-  expect(getMinutes(1_234_000_000)).toBe('46');
-  expect(getMinutes(11_000_000_000)).toBe('33');
+  const twentyMinutes = 1000 * 60 * 20;
+  expect(getMinutes(twentyMinutes)).toBe('20');
+
+  const thirtyThreeMinutes = 1000 * 60 * 33.2158593;
+  expect(getMinutes(thirtyThreeMinutes)).toBe('33');
 });
 
 test('getSeconds', () => {

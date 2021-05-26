@@ -2,9 +2,11 @@ import { BigNumber } from 'ethers';
 
 export const blockTimestampToDate = (timestamp: BigNumber) => new Date(timestamp.mul(1000).toNumber());
 
+type ErrorWithCode = Error & { code?: number };
+
 // The Error object was extended to add a "code" for Web3 providers
 // See: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#provider-errors
-export const isUserRejection = (err: Error) => (err as any).code === 4001 || (err as any).code === 4100;
+export const isUserRejection = (err: ErrorWithCode) => err.code === 4001 || err.code === 4100;
 
 type GoResult<T> = [Error, null] | [null, T];
 
@@ -26,18 +28,22 @@ export const go = <T>(fn: Promise<T> | (() => Promise<T>)): Promise<GoResult<T>>
   return fn.then(successFn).catch(errorFn);
 };
 
+const ONE_MINUTE_AS_MS = 1000 * 60;
+const ONE_HOUR_AS_MS = ONE_MINUTE_AS_MS * 60;
+const ONE_DAY_AS_MS = ONE_HOUR_AS_MS * 24;
+
 export const getDays = (distance: number) => {
-  return Math.floor(distance / (1000 * 60 * 60 * 24)).toString();
+  return Math.floor(distance / ONE_DAY_AS_MS).toString();
 };
 
 export const getHours = (distance: number) => {
-  return Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString();
+  return Math.floor((distance % ONE_DAY_AS_MS) / ONE_HOUR_AS_MS).toString();
 };
 
 export const getMinutes = (distance: number) => {
-  return Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString();
+  return Math.floor((distance % ONE_HOUR_AS_MS) / ONE_MINUTE_AS_MS).toString();
 };
 
 export const getSeconds = (distance: number) => {
-  return Math.floor((distance % (1000 * 60)) / 1000).toString();
+  return Math.floor((distance % ONE_MINUTE_AS_MS) / 1000).toString();
 };
