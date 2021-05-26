@@ -9,7 +9,7 @@ type Props = {
   value: string;
   size?: 'normal' | 'large';
   disabled?: boolean;
-  type?: 'text' | 'autosize' | 'number';
+  type?: 'text' | 'autosize-text' | 'number';
   placeholder?: string;
   id?: string;
   block?: boolean;
@@ -32,7 +32,7 @@ const Input = ({ onChange, value, disabled, size = 'normal', type = 'text', plac
         <input id={id} value={value} onChange={onChange} placeholder={placeholder} autoFocus />
       </div>
     )}
-    {type === 'autosize' && (
+    {type === 'autosize-text' && (
       <AutosizeInput
         className={classNames('input _text-center', {
           [`_large`]: size === 'large',

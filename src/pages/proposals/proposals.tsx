@@ -42,12 +42,10 @@ const Proposals = () => {
     <Layout title="Governance" sectionTitle="Governance">
       <div className="proposals-header">
         {proposalState?.delegationAddress ? (
-          <p className="secondary-color bold">Delegated to: ${proposalState.delegationAddress}</p>
+          <p className="secondary-color bold">Delegated to: {proposalState.delegationAddress}</p>
         ) : (
           <div>
-            <p className="secondary-color bold">
-              {proposalState?.delegationAddress ? `Delegated to: ${proposalState.delegationAddress}` : 'Undelegated'}
-            </p>
+            <p className="secondary-color bold">Undelegated</p>
             <Button className="proposals-link" type="text" onClick={() => setOpenDelegationModal(true)}>
               Update delegation
             </Button>

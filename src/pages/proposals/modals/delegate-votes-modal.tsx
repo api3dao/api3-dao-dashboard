@@ -33,14 +33,14 @@ const DelegateVotesModal = (props: Props) => {
             onClose();
           }}
         >
-          Delegate votes
+          Delegate Tokens
         </Button>
       }
     >
       <div className="text-center">
         <p className="delegate-votes-modal-subtitle secondary-color medium">ADDRESS</p>
         <Input
-          type="autosize"
+          type="autosize-text"
           placeholder="Enter address here"
           value={delegationAddress}
           onChange={(e) => setDelegationAddress(e.target.value)}

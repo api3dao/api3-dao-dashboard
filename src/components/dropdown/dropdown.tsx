@@ -2,7 +2,7 @@ import { ReactNode, useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import './dropdown.scss';
 
-interface DrowdownProps {
+interface DropwdownProps {
   children: ReactNode;
   menu: ReactNode;
 }
@@ -22,7 +22,7 @@ export const DropdownMenuItem = ({ children, className }: DropdownMenuItemProps)
   <div className={classNames('dropdown-menu-item', className)}>{children}</div>
 );
 
-const Dropdown = ({ children, menu }: DrowdownProps) => {
+const Dropdown = ({ children, menu }: DropwdownProps) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 

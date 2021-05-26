@@ -10,6 +10,7 @@
   border: 0;
   border-bottom: 1px solid $secondary-border;
   padding: $space-xs 0;
+  box-sizing: border-box;
   outline: none;
   &::placeholder {
     color: $tertiary-color;
