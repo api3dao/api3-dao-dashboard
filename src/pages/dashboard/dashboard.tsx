@@ -13,7 +13,7 @@ import {
   useApi3Token,
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
-import { formatApi3, parseApi3, unusedHookDependency } from '../../utils';
+import { formatApi3, unusedHookDependency } from '../../utils';
 import TokenAmountModal from './modals/token-amount-modal';
 import TokenDepositModal from './modals/token-deposit-modal';
 import Layout from '../../components/layout/layout';
