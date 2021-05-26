@@ -8,5 +8,5 @@ test('formatApi3', () => {
 test('parseApi3', () => {
   expect(formatApi3('10000000000000000000').toString()).toBe('10.0');
   expect(formatApi3('12345000000').toString()).toBe('0.000000012345');
-  expect(() => formatApi3('abc')).toThrowError();
+  expect(() => formatApi3('abc')).toThrowError('invalid BigNumber string');
 });

@@ -13,7 +13,7 @@ import {
   useApi3Token,
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
-import { formatApi3, parseApi3, unusedHookDependency } from '../../utils';
+import { formatApi3, unusedHookDependency } from '../../utils';
 import TokenAmountModal from './modals/token-amount-modal';
 import TokenDepositModal from './modals/token-deposit-modal';
 import Layout from '../../components/layout/layout';
@@ -64,6 +64,8 @@ const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {
   };
 };
 
+type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
+
 const Dashboard = () => {
   const chainData = useChainData();
   const { dashboardState: data, userAccount, provider, latestBlock, transactions, setChainData } = chainData;
@@ -109,16 +111,16 @@ const Dashboard = () => {
     loadDashboardData();
   }, [loadDashboardData]);
 
-  const [openModal, setOpenModal] = useState<string | null>(null);
+  const [openModal, setOpenModal] = useState<ModalType | null>(null);
   const [inputValue, setInputValue] = useState('');
   const closeModal = () => setOpenModal(null);
 
   const disconnected = !api3Pool || !api3Token || !data;
-  const canWithdraw = !disconnected && data!.withdrawable.gt(0);
+  const canWithdraw = !disconnected && data?.withdrawable.gt(0);
 
   // TODO: update according to the specifications here:
   // https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
-  const canInitiateUnstake = !disconnected && data!.userStake.gt(0);
+  const canInitiateUnstake = !disconnected && data?.userStake.gt(0);
 
   const abbrStr = (str: string) => {
     return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
@@ -210,8 +212,8 @@ const Dashboard = () => {
         open={openModal === 'withdraw'}
         onClose={closeModal}
         action="Withdraw"
-        onConfirm={async () => {
-          const tx = await api3Pool?.withdraw(userAccount, parseApi3(inputValue));
+        onConfirm={async (parsedValue: BigNumber) => {
+          const tx = await api3Pool?.withdraw(userAccount, parsedValue);
           if (tx) {
             setChainData({ ...chainData, transactions: [...transactions, tx] });
           }
@@ -219,40 +221,39 @@ const Dashboard = () => {
         inputValue={inputValue}
         onChange={setInputValue}
         maxValue={data?.withdrawable}
-        closeOnConfirm
       />
       <TokenAmountModal
         title="How many tokens would you like to stake?"
         open={openModal === 'stake'}
         onClose={closeModal}
         action="Stake"
-        onConfirm={async () => {
-          const tx = await api3Pool?.stake(parseApi3(inputValue));
+        onConfirm={async (parsedValue: BigNumber) => {
+          const tx = await api3Pool?.stake(parsedValue);
           if (tx) {
             setChainData({ ...chainData, transactions: [...transactions, tx] });
           }
         }}
         inputValue={inputValue}
         onChange={setInputValue}
-        maxValue={data?.withdrawable /* TODO: is this the right value? */}
-        closeOnConfirm
+        maxValue={data?.withdrawable}
       />
       <TokenAmountModal
         title="How many tokens would you like to unstake?"
         open={openModal === 'unstake'}
         onClose={closeModal}
         action="Initiate Unstaking"
-        onConfirm={() => Promise.resolve(setOpenModal('confirm'))}
+        onConfirm={() => Promise.resolve(setOpenModal('confirm-unstake'))}
         inputValue={inputValue}
         onChange={setInputValue}
+        closeOnConfirm={false}
       />
       <TokenAmountModal
         title={`Are you sure you would like to unstake ${inputValue} tokens?`}
-        open={openModal === 'confirm'}
+        open={openModal === 'confirm-unstake'}
         onClose={closeModal}
         action="Initiate Unstaking"
-        onConfirm={async () => {
-          const tx = await api3Pool?.scheduleUnstake(parseApi3(inputValue));
+        onConfirm={async (parsedValue: BigNumber) => {
+          const tx = await api3Pool?.scheduleUnstake(parsedValue);
           if (tx) {
             setChainData({ ...chainData, transactions: [...transactions, tx] });
           }
@@ -261,7 +262,6 @@ const Dashboard = () => {
         onChange={setInputValue}
         showTokenInput={false}
         maxValue={data?.userStake}
-        closeOnConfirm
       />
     </Layout>
   );

@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { useChainData } from '../chain-data';
 
 /**
  * Use this to bypass eslint rule checking if all hook dependencies are used.
@@ -10,39 +11,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 // TODO: verify that it is eliminated from production bundle
 export const unusedHookDependency = (..._args: any[]) => {};
 
-// Inspired by https://usehooks.com/useAsync/
-// Make sure the asyncFunction is wrapped memoized otherwise there will be
-// and infinite loop.
-
-// Intentionally avoiding external dependency to reduce the attack surface
-export const usePromise = <T, E = Error>(
-  asyncFunction: () => Promise<T>
-): [E | null, T | null, 'pending' | 'success' | 'error'] => {
-  const [status, setStatus] = useState<'pending' | 'success' | 'error'>('pending');
-  const [value, setValue] = useState<T | null>(null);
-  const [error, setError] = useState<E | null>(null);
-
-  const execute = useCallback(async () => {
-    setStatus('pending');
-    setError(null);
-
-    try {
-      setValue(await asyncFunction());
-      setStatus('success');
-    } catch (error) {
-      setError(error);
-      setStatus('error');
-    }
-  }, [asyncFunction]);
-
-  useEffect(() => {
-    execute();
-  }, [execute]);
-
-  // Promise value is returned second to remind developers to handle the error
-  return [error, value, status];
-};
-
+// Allows access to the previous to the previous value when re-rendering
+// https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
 export const usePrevious = (value: any) => {
   const ref = useRef();
 
@@ -50,5 +20,23 @@ export const usePrevious = (value: any) => {
     ref.current = value;
   }, [value]);
 
+  // Return previous value (happens before update in useEffect above)
   return ref.current;
+};
+
+export const useOnAccountOrNetworkChange = (callback: () => any) => {
+  const { networkName, userAccount } = useChainData();
+  const prevUserAccount = usePrevious(userAccount);
+  const prevNetworkName = usePrevious(networkName);
+
+  useEffect(() => {
+    if (!prevUserAccount || !userAccount || !prevNetworkName || !networkName) return;
+
+    // It's possible for the user to have a "permissioned" modal open while on one account,
+    // then switch to another network or account that does not have the same permissions.
+    // As a blanket fix, close any open modals when the selected account changes.
+    if (prevUserAccount !== userAccount || prevNetworkName !== networkName) {
+      callback();
+    }
+  }, [prevUserAccount, userAccount, prevNetworkName, networkName, callback]);
 };
