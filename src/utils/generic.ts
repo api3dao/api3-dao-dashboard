@@ -1,8 +1,6 @@
-import { BigNumber, FixedNumber } from 'ethers';
+import { BigNumber } from 'ethers';
 
 export const blockTimestampToDate = (timestamp: BigNumber) => new Date(timestamp.mul(1000).toNumber());
-
-export const fixedToBigNumber = (fixed: FixedNumber) => BigNumber.from(fixed.round().toString().split('.')[0]);
 
 // The Error object was extended to add a "code" for Web3 providers
 // See: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#provider-errors
