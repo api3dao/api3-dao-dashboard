@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useChainData } from '../chain-data';
 
 /**
  * Use this to bypass eslint rule checking if all hook dependencies are used.
@@ -21,4 +22,21 @@ export const usePrevious = (value: any) => {
 
   // Return previous value (happens before update in useEffect above)
   return ref.current;
+};
+
+export const useOnAccountOrNetworkChange = (callback: () => any) => {
+  const { networkName, userAccount } = useChainData();
+  const prevUserAccount = usePrevious(userAccount);
+  const prevNetworkName = usePrevious(networkName);
+
+  useEffect(() => {
+    if (!prevUserAccount || !userAccount || !prevNetworkName || !networkName) return;
+
+    // It's possible for the user to have a "permissioned" modal open while on one account,
+    // then switch to another network or account that does not have the same permissions.
+    // As a blanket fix, close any open modals when the selected account changes.
+    if (prevUserAccount !== userAccount || prevNetworkName !== networkName) {
+      callback();
+    }
+  }, [prevUserAccount, userAccount, prevNetworkName, networkName, callback]);
 };
