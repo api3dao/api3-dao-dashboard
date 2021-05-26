@@ -31,9 +31,11 @@ const TokenDepositModal = (props: Props) => {
   }
 
   const handleApprove = async () => {
+    if (!api3Pool || !api3Token) return;
+
     setError('');
 
-    const [err, tx] = await go(api3Token!.approve(api3Pool ? api3Pool.address : '', MAX_ALLOWANCE));
+    const [err, tx] = await go(api3Token.approve(api3Pool.address, MAX_ALLOWANCE));
     if (err) {
       if (isUserRejection(err)) {
         setError('API3 token approval transaction rejected');
@@ -49,6 +51,8 @@ const TokenDepositModal = (props: Props) => {
   };
 
   const handleDeposit = async () => {
+    if (!api3Pool || !userAccount) return;
+
     if (!inputValue || inputValue === '0') {
       setError('Please ensure you have entered a non-zero value');
       return;
@@ -60,7 +64,7 @@ const TokenDepositModal = (props: Props) => {
 
     setError('');
 
-    const [err, tx] = await go(api3Pool!.deposit(userAccount, parseApi3(inputValue), userAccount));
+    const [err, tx] = await go(api3Pool.deposit(userAccount, parseApi3(inputValue), userAccount));
     if (err) {
       if (isUserRejection(err)) {
         setError('API3 token deposit transaction rejected');
