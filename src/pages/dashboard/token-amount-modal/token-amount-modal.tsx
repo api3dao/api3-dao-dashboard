@@ -27,11 +27,11 @@ const TokenAmountModal = (props: Props) => {
       footer={
         <div className={classNames({ [`tokenAmountModal-actions`]: !showTokenInput })}>
           {!showTokenInput && (
-            <Button type="text" onClick={onClose}>
+            <Button type="text" size="large" onClick={onClose}>
               Cancel
             </Button>
           )}
-          <Button type="secondary" onClick={onConfirm}>
+          <Button type="secondary" size="large" onClick={onConfirm}>
             {action}
           </Button>
         </div>
@@ -39,12 +39,12 @@ const TokenAmountModal = (props: Props) => {
       onClose={onClose}
     >
       {showTokenInput && (
-        <>
+        <div className="text-center">
           <p className="tokenAmountModal-token medium">TOKEN</p>
 
-          <Input value={inputValue} onChange={onChange} size="large" />
+          <Input type="number" value={inputValue} onChange={onChange} size="large" />
           {helperText}
-        </>
+        </div>
       )}
     </Modal>
   );

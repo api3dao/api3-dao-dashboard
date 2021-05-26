@@ -18,7 +18,7 @@ const StakingPool = ({ data }: Props) => {
   const annualInflationRate = parseFloat(data ? data.annualInflationRate.toString() : '0').toFixed(2);
   const totalStaked = parseFloat(data ? formatApi3(data.totalStaked) : '0').toLocaleString();
   const stakeTarget = parseFloat(data ? formatApi3(data.stakeTarget) : '0').toLocaleString();
-  const totalStakedPercentage = parseFloat(data?.totalStakedPercentage.toString() || '0');
+  const totalStakedPercentage = parseFloat((data?.totalStakedPercentage || 0).toFixed(2));
 
   return (
     <div className="staking-pool">

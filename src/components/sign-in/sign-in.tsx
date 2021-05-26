@@ -67,12 +67,14 @@ const SignIn = () => {
       {!provider && <Button onClick={onWalletConnect}>Connect Wallet</Button>}
       {provider && <Button onClick={onDisconnect}>Disconnect</Button>}
       <GenericModal open={isSupportedNetwork} onClose={() => {}} hideCloseButton>
-        <h5>Unsupported chain!</h5>
+        <div className="text-center">
+          <h5>Unsupported chain!</h5>
 
-        <span className="marginTop">Supported networks are: {supportedNetworks}</span>
-        <span>Current network: {networkName}</span>
+          <span className="marginTop">Supported networks are: {supportedNetworks}</span>
+          <span>Current network: {networkName}</span>
 
-        <p>Please use your wallet and connect to one of the supported networks</p>
+          <p>Please use your wallet and connect to one of the supported networks</p>
+        </div>
       </GenericModal>
     </>
   );

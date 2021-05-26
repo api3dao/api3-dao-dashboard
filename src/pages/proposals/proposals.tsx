@@ -3,12 +3,15 @@ import { useState } from 'react';
 import { useChainData } from '../../chain-data';
 import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
+import BorderedBox from '../../components/bordered-box/bordered-box';
+import Treasury from './treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useProposalState } from '../../logic/proposals/use-proposal-state';
-import NewProposalModal from './new-proposal-modal';
-import DelegateVotesModal from './delegate-votes-modal';
+import NewProposalModal from './modals/new-proposal-modal';
+import DelegateVotesModal from './modals/delegate-votes-modal';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from './proposal-list';
+import './proposals.scss';
 
 const Proposals = () => {
   const { provider, proposalState } = useChainData();
@@ -36,27 +39,42 @@ const Proposals = () => {
   };
 
   return (
-    <Layout title="proposals" sectionTitle="proposals">
-      <p>Delegated to: {proposalState?.delegationAddress}</p>
-      <button onClick={() => setOpenDelegationModal(true)}>Update delegation</button>
+    <Layout title="Governance" sectionTitle="Governance">
+      <div className="proposals-header">
+        {proposalState?.delegationAddress ? (
+          <p className="secondary-color bold">Delegated to: {proposalState.delegationAddress}</p>
+        ) : (
+          <div>
+            <p className="secondary-color bold">Undelegated</p>
+            <Button className="proposals-link" type="text" onClick={() => setOpenDelegationModal(true)}>
+              Update delegation
+            </Button>
+          </div>
+        )}
+        <Treasury />
+      </div>
+
       <DelegateVotesModal onClose={() => setOpenDelegationModal(false)} open={openDelegationModal} />
 
       {/* TODO: Implement treasury - Burak will maybe create view functions for those dropdowns */}
 
-      <div>
-        <p>PROPOSALS</p>
-        <Button onClick={() => setOpenNewProposalModal(true)}>New proposal</Button>
-        <NewProposalModal
-          onClose={() => setOpenNewProposalModal(false)}
-          onConfirm={(formData) => {
-            onCreateProposal(formData);
-            setOpenNewProposalModal(false);
-          }}
-          open={openNewProposalModal}
-        />
-
-        <ProposalList />
-      </div>
+      <BorderedBox
+        header={
+          <div className="bordered-box-header">
+            <h5>Proposals</h5>
+            <Button onClick={() => setOpenNewProposalModal(true)}>New proposal</Button>
+          </div>
+        }
+        content={<ProposalList />}
+      />
+      <NewProposalModal
+        onClose={() => setOpenNewProposalModal(false)}
+        onConfirm={(formData) => {
+          onCreateProposal(formData);
+          setOpenNewProposalModal(false);
+        }}
+        open={openNewProposalModal}
+      />
     </Layout>
   );
 };
