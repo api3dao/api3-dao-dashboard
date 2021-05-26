@@ -25,10 +25,8 @@ const TokenDepositModal = (props: Props) => {
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
 
-  let [parseErr, inputBigNum] = goSync(() => parseApi3(inputValue));
-  if (parseErr || !inputBigNum) {
-    inputBigNum = BigNumber.from(0);
-  }
+  // The input field should catch any bad inputs, but just in case, try parse and display any errors
+  const [parseErr, inputBigNum] = goSync(() => parseApi3(inputValue));
 
   const handleApprove = async () => {
     if (!api3Pool || !api3Token) return;
@@ -54,10 +52,14 @@ const TokenDepositModal = (props: Props) => {
     if (!api3Pool || !userAccount) return;
 
     if (!inputValue || inputValue === '0') {
-      setError('Please ensure you have entered a non-zero value');
+      setError('Please ensure you have entered a non-zero amount');
       return;
     }
-    if ((inputBigNum as BigNumber).gt(balance)) {
+    if (parseErr || !inputBigNum) {
+      setError('Unable to parse input amount');
+      return;
+    }
+    if (inputBigNum.gt(balance)) {
       setError('Deposit value cannot be higher than the available balance');
       return;
     }
@@ -91,8 +93,8 @@ const TokenDepositModal = (props: Props) => {
     return null;
   }
 
-  const approvalRequired = !!inputBigNum && inputBigNum.gt(allowance);
-  const canDeposit = !approvalRequired && inputBigNum.gt(0);
+  const approvalRequired = !parseErr && !!inputBigNum && inputBigNum.gt(allowance);
+  const canDeposit = !parseErr && !!inputBigNum && !approvalRequired && inputBigNum.gt(0);
 
   return (
     <Modal

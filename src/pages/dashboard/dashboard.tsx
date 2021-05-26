@@ -212,8 +212,8 @@ const Dashboard = () => {
         open={openModal === 'withdraw'}
         onClose={closeModal}
         action="Withdraw"
-        onConfirm={async () => {
-          const tx = await api3Pool?.withdraw(userAccount, parseApi3(inputValue));
+        onConfirm={async (parsedValue: BigNumber) => {
+          const tx = await api3Pool?.withdraw(userAccount, parsedValue);
           if (tx) {
             setChainData({ ...chainData, transactions: [...transactions, tx] });
           }
@@ -227,8 +227,8 @@ const Dashboard = () => {
         open={openModal === 'stake'}
         onClose={closeModal}
         action="Stake"
-        onConfirm={async () => {
-          const tx = await api3Pool?.stake(parseApi3(inputValue));
+        onConfirm={async (parsedValue: BigNumber) => {
+          const tx = await api3Pool?.stake(parsedValue);
           if (tx) {
             setChainData({ ...chainData, transactions: [...transactions, tx] });
           }
@@ -252,8 +252,8 @@ const Dashboard = () => {
         open={openModal === 'confirm-unstake'}
         onClose={closeModal}
         action="Initiate Unstaking"
-        onConfirm={async () => {
-          const tx = await api3Pool?.scheduleUnstake(parseApi3(inputValue));
+        onConfirm={async (parsedValue: BigNumber) => {
+          const tx = await api3Pool?.scheduleUnstake(parsedValue);
           if (tx) {
             setChainData({ ...chainData, transactions: [...transactions, tx] });
           }
