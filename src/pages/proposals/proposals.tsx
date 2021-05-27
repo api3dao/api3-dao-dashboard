@@ -9,10 +9,14 @@ import Treasury from './treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useProposalState } from '../../logic/proposals/use-proposal-state';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
+<<<<<<< HEAD
 import ProposalList from './proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import DelegateVotesForm from './forms/delegate-votes-form';
 import UndelegateForm from './forms/undelegate/undelegate-form';
+=======
+import ProposalList from './proposal-list/proposal-list';
+>>>>>>> e4d7b5c (Proposals - undelegated and deleg)
 import './proposals.scss';
 
 const Proposals = () => {
@@ -39,6 +43,10 @@ const Proposals = () => {
     ];
     const votingApp = new ethers.Contract(api3Voting[formData.type].address, votingAbi, provider?.getSigner());
     await votingApp.newVote(buildEVMScript(formData, api3Agent), buildExtendedMetadata(formData), true, true);
+  };
+
+  const abbrStr = (str: string) => {
+    return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
   };
 
   return (
@@ -78,7 +86,9 @@ const Proposals = () => {
         header={
           <div className="bordered-box-header">
             <h5>Proposals</h5>
-            <Button onClick={() => setOpenNewProposalModal(true)}>New proposal</Button>
+            <Button onClick={() => setOpenNewProposalModal(true)} size="large">
+              + New proposal
+            </Button>
           </div>
         }
         content={<ProposalList />}

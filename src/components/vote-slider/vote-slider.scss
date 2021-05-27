@@ -4,63 +4,81 @@ $border-radius: 100px;
 
 .vote-slider {
   display: flex;
+  align-items: flex-start;
   justify-content: center;
+  flex: 1;
+}
 
-  .bar-wrapper {
+.bar-wrapper {
+  flex: 1;
+  margin-left: $space-sm;
+  margin-right: $space-sm;
+}
+
+.bar-names {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 2 * $space-xl $space-sm;
+}
+
+.bar {
+  position: relative;
+  height: 18px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border: 1px solid $black-line-color;
+  border-radius: $border-radius;
+  padding: 0 2px;
+  box-sizing: border-box;
+
+  .acceptance-quorum {
+    position: absolute;
     display: flex;
-    flex-direction: column;
-    flex: 1;
-    margin-left: $space-sm;
-    margin-right: $space-sm;
+    width: 1px;
+    height: calc(100% - 6px);
+    background-color: $black-line-color;
   }
 
-  .bar {
-    height: 20px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    border: 1px solid $black-line-color;
+  .for {
+    height: calc(100% - 4px);
     border-radius: $border-radius;
-
-    .acceptance-quorum {
-      position: relative;
-      display: flex;
-      width: 2px;
-      height: 80%;
-      border: 0 solid $black-line-color;
-      border-right-width: 2px;
-    }
-
-    .for {
-      height: 80%;
-      border-radius: $border-radius;
-      background: $green-color;
-    }
-
-    .against {
-      height: 80%;
-      border-radius: $border-radius;
-      background: $pink-color;
-      margin: auto;
-      margin-right: 3px;
-    }
+    background: $green-color;
   }
 
-  .vote-info {
-    justify-content: space-between;
-    display: flex;
-    margin-top: $space-xxs;
+  .against {
+    height: calc(100% - 4px);
+    border-radius: $border-radius;
+    background: $pink-color;
+    margin-left: auto;
+  }
+}
+
+.vote-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.status {
+  text-transform: capitalize;
+
+  &.failing {
+    color: $pink-color;
   }
 
-  .status {
-    text-transform: capitalize;
+  &.passing {
+    color: $green-color;
+  }
+}
 
-    &.failing {
-      color: $pink-color;
-    }
+.vote-icon {
+  height: 8px;
+  margin-top: 5px;
 
-    &.passing {
-      color: $green-color;
-    }
+  &._large {
+    height: 16px;
+    margin-top: 1px;
   }
 }
