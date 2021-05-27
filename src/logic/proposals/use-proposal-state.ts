@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from 'react';
-import { Delegation, ProposalType, Treasury, updateImmutably, useChainData, VoterState } from '../../chain-data';
+import { useCallback } from 'react';
+import { ProposalType, Treasury, useChainData, VoterState } from '../../chain-data';
 import { Api3Voting } from '../../generated-contracts';
-import { useApi3Pool, useApi3Voting, useConvenience, useMinedBlockAndMount } from '../../contracts/hooks';
+import { useApi3Voting, useConvenience, useMinedBlockAndMount } from '../../contracts/hooks';
 import { Proposal } from '../../chain-data';
 import { decodeMetadata } from './encoding';
 import zip from 'lodash/zip';
@@ -11,7 +11,6 @@ import {
   blockTimestampToDate,
   go,
   GO_RESULT_INDEX,
-  GoResult,
   assertGoSuccess,
   GO_ERROR_INDEX,
 } from '../../utils/generic';

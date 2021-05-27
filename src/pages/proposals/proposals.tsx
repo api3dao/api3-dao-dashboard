@@ -12,8 +12,6 @@ import DelegateVotesModal from './modals/delegate-votes-modal';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from './proposal-list';
 import './proposals.scss';
-import Modal from '../../components/modal/modal';
-import classNames from 'classnames';
 import UndelegateModal from './modals/undelegate/undelegate';
 
 const Proposals = () => {
