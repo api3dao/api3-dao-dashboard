@@ -242,7 +242,7 @@ const Dashboard = () => {
         open={openModal === 'unstake'}
         onClose={closeModal}
         action="Initiate Unstaking"
-        onConfirm={() => Promise.resolve(setOpenModal('confirm-unstake'))}
+        onConfirm={async () => setOpenModal('confirm-unstake')}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         closeOnConfirm={false}
