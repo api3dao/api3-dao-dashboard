@@ -250,7 +250,7 @@ const Dashboard = () => {
           title="How many tokens would you like to unstake?"
           onClose={closeModal}
           action="Initiate Unstaking"
-          onConfirm={() => Promise.resolve(setOpenModal('confirm-unstake'))}
+          onConfirm={async () => setOpenModal('confirm-unstake')}
           inputValue={inputValue}
           onChange={setInputValue}
           closeOnConfirm={false}

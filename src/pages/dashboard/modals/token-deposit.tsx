@@ -5,7 +5,7 @@ import { useChainData } from '../../../chain-data';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import { go, goSync, isUserRejection, formatApi3, parseApi3 } from '../../../utils';
+import { go, goSync, isUserRejection, formatApi3, parseApi3, messages } from '../../../utils';
 import './modals.scss';
 
 interface Props {
@@ -35,10 +35,11 @@ const TokenDepositModal = (props: Props) => {
     const [err, tx] = await go(api3Token.approve(api3Pool.address, MAX_ALLOWANCE));
     if (err) {
       if (isUserRejection(err)) {
-        setError('API3 token approval transaction rejected');
+        // TODO: rather create a toast/notification
+        setError(messages.TX_APPROVAL_REJECTED);
         return;
       }
-      setError('Failed to approve API3 token allowance. Please try again');
+      setError(messages.TX_APPROVAL_ERROR);
       return;
     }
 
@@ -51,15 +52,15 @@ const TokenDepositModal = (props: Props) => {
     if (!api3Pool || !userAccount) return;
 
     if (!inputValue || inputValue === '0') {
-      setError('Please ensure you have entered a non-zero amount');
+      setError(messages.VALIDATION_INPUT_ZERO);
       return;
     }
     if (parseErr || !inputBigNum) {
-      setError('Unable to parse input amount');
+      setError(messages.VALIDATION_INPUT_PARSE);
       return;
     }
     if (inputBigNum.gt(balance)) {
-      setError('Deposit value cannot be higher than the available balance');
+      setError(messages.VALIDATION_DEPOSIT_TOO_HIGH);
       return;
     }
 
@@ -68,10 +69,11 @@ const TokenDepositModal = (props: Props) => {
     const [err, tx] = await go(api3Pool.deposit(userAccount, parseApi3(inputValue), userAccount));
     if (err) {
       if (isUserRejection(err)) {
-        setError('API3 token deposit transaction rejected');
+        // TODO: rather create a toast/notification
+        setError(messages.TX_DEPOSIT_REJECTED);
         return;
       }
-      setError('Failed to deposit API3 tokens. Please try again');
+      setError(messages.TX_DEPOSIT_ERROR);
       return;
     }
 

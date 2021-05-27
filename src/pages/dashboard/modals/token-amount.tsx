@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import { go, goSync, isUserRejection, parseApi3 } from '../../../utils';
+import { go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
 import './modals.scss';
 
 interface Props {
@@ -39,16 +39,16 @@ const TokenAmount = (props: Props) => {
 
   const handleAction = async () => {
     if (!inputValue || inputValue === '0') {
-      setError('Please ensure you have entered a non-zero amount');
+      setError(messages.VALIDATION_INPUT_ZERO);
       return;
     }
     if (parseErr || !inputBigNum) {
-      setError('Unable to parse input amount');
+      setError(messages.VALIDATION_INPUT_PARSE);
       return;
     }
     if (maxValue) {
       if (inputBigNum.gt(maxValue)) {
-        setError('Input amount cannot be higher than the available balance');
+        setError(messages.VALIDATION_INPUT_TOO_HIGH);
         return;
       }
     }
@@ -57,10 +57,11 @@ const TokenAmount = (props: Props) => {
     const [err] = await go(onConfirm(inputBigNum));
     if (err) {
       if (isUserRejection(err)) {
-        setError('Transaction rejected');
+        // TODO: rather create a toast/notification
+        setError(messages.TX_GENERIC_REJECTED);
         return;
       }
-      setError('Please try again and ensure you confirm the transaction');
+      setError(messages.TX_GENERIC_ERROR);
       return;
     }
 
@@ -89,7 +90,7 @@ const TokenAmount = (props: Props) => {
               Cancel
             </Button>
           )}
-          <Button type="secondary" onClick={handleAction}>
+          <Button type="secondary" onClick={handleAction} disabled={!!parseErr}>
             {action}
           </Button>
         </div>
