@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { ProposalType, Treasury, useChainData, VoterState } from '../../chain-data';
 import { Api3Voting } from '../../generated-contracts';
-import { useApi3Voting, useConvenience, useMinedBlockAndMount } from '../../contracts/hooks';
+import { useApi3Voting, useConvenience, useOnMinedBlockAndMount } from '../../contracts/hooks';
 import { Proposal } from '../../chain-data';
 import { decodeMetadata } from './encoding';
 import zip from 'lodash/zip';
@@ -141,7 +141,7 @@ export const useProposalState = () => {
   }, [api3Voting, convenience, userAccount, setChainData]);
 
   // Ensure that the proposals are up to date with blockchain
-  useMinedBlockAndMount(loadProposalState);
+  useOnMinedBlockAndMount(loadProposalState);
 
   return proposalState;
 };

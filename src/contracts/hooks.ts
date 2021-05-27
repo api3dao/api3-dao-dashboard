@@ -103,7 +103,7 @@ export const useProviderSubscriptions = (provider: ethers.providers.Web3Provider
  * further subscription. This means that the first triggered callback will be called twice (once because of subscription
  * and once because of hook being mounted).
  */
-export const useMinedBlockAndMount = (callback: () => void, shouldTriggerOnMount = true) => {
+export const useOnMinedBlockAndMount = (callback: () => void, shouldTriggerOnMount = true) => {
   const { provider } = useChainData();
   const [didTriggerOnMount, setDidTriggerOnMount] = useState(false);
 

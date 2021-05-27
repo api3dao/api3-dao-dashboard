@@ -13,7 +13,7 @@ import {
   totalStakedPercentage,
   useApi3Pool,
   useApi3Token,
-  useMinedBlockAndMount,
+  useOnMinedBlockAndMount,
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
 import { formatApi3, parseApi3 } from '../../utils/api3-format';
@@ -108,7 +108,7 @@ const Dashboard = () => {
     });
   }, [provider, api3Pool, api3Token, userAccount, setChainData]);
 
-  useMinedBlockAndMount(loadDashboardData);
+  useOnMinedBlockAndMount(loadDashboardData);
 
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');

@@ -18,7 +18,7 @@ const UndelegateModal = (props: Props) => {
       onClose={onClose}
       header="Confirm undelegation"
       footer={
-        <div className="actions">
+        <div className="undelegate actions">
           <Button type="secondary" size="large" onClick={onClose}>
             No
           </Button>
@@ -39,7 +39,7 @@ const UndelegateModal = (props: Props) => {
         </div>
       }
     >
-      <p className="body">Are you sure you want to undelegate voting power?</p>
+      <p className="undelegate body">Are you sure you want to undelegate voting power?</p>
     </Modal>
   );
 };
