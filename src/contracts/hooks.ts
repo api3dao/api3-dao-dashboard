@@ -91,3 +91,21 @@ export const useProviderSubscriptions = (provider: ethers.providers.Web3Provider
     };
   }, [provider, setChainData]);
 };
+
+/**
+ * Hook, which will trigger the callback function passed as an argument after every mined block. The callback is also
+ * triggered immediately after we subscribe to 'block' event. This is ideal place to load chain data that should be kept
+ * in sync with latest blockchain data.
+ */
+export const useMinedBlockAndMount = (callback: () => void) => {
+  const { provider } = useChainData();
+
+  useEffect(() => {
+    if (!provider) return;
+
+    provider.on('block', callback);
+    return () => {
+      provider.removeListener('block', callback);
+    };
+  }, [provider, callback]);
+};

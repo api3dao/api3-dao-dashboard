@@ -41,8 +41,8 @@ const Proposals = () => {
   return (
     <Layout title="Governance" sectionTitle="Governance">
       <div className="proposals-header">
-        {proposalState?.delegationAddress ? (
-          <p className="secondary-color bold">Delegated to: {proposalState.delegationAddress}</p>
+        {proposalState?.delegation.delegate ? (
+          <p className="secondary-color bold">Delegated to: {proposalState.delegation.delegate}</p>
         ) : (
           <div>
             <p className="secondary-color bold">Undelegated</p>
