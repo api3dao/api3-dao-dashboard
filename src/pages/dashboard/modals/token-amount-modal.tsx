@@ -87,7 +87,7 @@ const TokenAmountModal = (props: Props) => {
               Cancel
             </Button>
           )}
-          <Button type="secondary" onClick={handleAction}>
+          <Button type="secondary" onClick={handleAction} disabled={!!parseErr}>
             {action}
           </Button>
         </div>
