@@ -12,6 +12,9 @@ import DelegateVotesModal from './modals/delegate-votes-modal';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from './proposal-list';
 import './proposals.scss';
+import Modal from '../../components/modal/modal';
+import classNames from 'classnames';
+import UndelegateModal from './modals/undelegate/undelegate';
 
 const Proposals = () => {
   const { provider, proposalState } = useChainData();
@@ -20,6 +23,7 @@ const Proposals = () => {
   const api3Agent = useApi3AgentAddresses();
 
   const [openDelegationModal, setOpenDelegationModal] = useState(false);
+  const [openUndelegateModal, setOpenUndelegateModal] = useState(false);
 
   const [openNewProposalModal, setOpenNewProposalModal] = useState(false);
 
@@ -41,8 +45,19 @@ const Proposals = () => {
   return (
     <Layout title="Governance" sectionTitle="Governance">
       <div className="proposals-header">
+        {/* TODO: Should the buttons be disabled according to conditions in https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622114047033800?thread_ts=1622113523.033100&cid=C020RCCC3EJ */}
+        {/* There was another slack discussion where we said we want to avoid disabled buttons */}
         {proposalState?.delegation.delegate ? (
-          <p className="secondary-color bold">Delegated to: {proposalState.delegation.delegate}</p>
+          <div>
+            <p className="secondary-color bold">Delegated to: {proposalState.delegation.delegate}</p>
+            <Button className="proposals-link" type="text" onClick={() => setOpenDelegationModal(true)}>
+              Update delegation
+            </Button>
+            <Button className="proposals-link space-left" type="text" onClick={() => setOpenUndelegateModal(true)}>
+              Undelegate
+            </Button>
+            <UndelegateModal open={openUndelegateModal} onClose={() => setOpenUndelegateModal(false)} />
+          </div>
         ) : (
           <div>
             <p className="secondary-color bold">Undelegated</p>
@@ -51,12 +66,10 @@ const Proposals = () => {
             </Button>
           </div>
         )}
+        <DelegateVotesModal onClose={() => setOpenDelegationModal(false)} open={openDelegationModal} />
+
         <Treasury />
       </div>
-
-      <DelegateVotesModal onClose={() => setOpenDelegationModal(false)} open={openDelegationModal} />
-
-      {/* TODO: Implement treasury - Burak will maybe create view functions for those dropdowns */}
 
       <BorderedBox
         header={

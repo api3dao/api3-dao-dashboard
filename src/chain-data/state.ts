@@ -48,7 +48,7 @@ export interface Proposal {
 }
 
 export interface Delegation {
-  delegate: string;
+  delegate: string | null;
   mostRecentProposalTimestamp: Date;
   mostRecentVoteTimestamp: Date;
   mostRecentDelegationTimestamp: Date;

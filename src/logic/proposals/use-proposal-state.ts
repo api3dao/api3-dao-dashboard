@@ -15,6 +15,7 @@ import {
   assertGoSuccess,
   GO_ERROR_INDEX,
 } from '../../utils/generic';
+import { isZeroAddress } from '../../contracts';
 
 interface StartVoteProposal {
   voteId: BigNumber;
@@ -113,7 +114,7 @@ export const useProposalState = () => {
 
       return {
         delegation: {
-          delegate: data.delegate,
+          delegate: isZeroAddress(data.delegate) ? null : data.delegate,
           mostRecentDelegationTimestamp: blockTimestampToDate(data.mostRecentDelegationTimestamp),
           mostRecentProposalTimestamp: blockTimestampToDate(data.mostRecentProposalTimestamp),
           mostRecentUndelegationTimestam: blockTimestampToDate(data.mostRecentUndelegationTimestamp),

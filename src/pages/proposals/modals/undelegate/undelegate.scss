@@ -1,0 +1,11 @@
+@import '../../../../styles/variables.scss';
+
+.actions {
+  & > * {
+    margin: 0 $space-sm;
+  }
+}
+
+.body {
+  text-align: center;
+}

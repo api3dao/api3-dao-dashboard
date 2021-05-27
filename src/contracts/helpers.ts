@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber, constants } from 'ethers';
 
 export const min = (first: BigNumber, ...others: BigNumber[]) =>
   others.reduce((min, n) => (min.lt(n) ? min : n), first);
@@ -57,3 +57,8 @@ export const computePercentage = (value: BigNumber, hundredPercent: BigNumber, h
   if (humanReadable) return percentage * 100;
   else return percentage;
 };
+
+export const isZeroAddress = (address: string) => address === constants.AddressZero;
+
+// Hardcoded constant defined in https://github.com/api3dao/api3-dao/blob/develop/packages/pool/contracts/StateUtils.sol#L50
+export const EPOCH_LENGTH = 7 * 24 * 60 * 60;
