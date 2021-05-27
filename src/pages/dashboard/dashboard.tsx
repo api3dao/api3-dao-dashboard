@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import last from 'lodash/last';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
 import {
   absoluteStakeTarget,
@@ -13,6 +13,7 @@ import {
   totalStakedPercentage,
   useApi3Pool,
   useApi3Token,
+  useMinedBlockAndMount,
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
 import { formatApi3, parseApi3 } from '../../utils/api3-format';
@@ -107,11 +108,7 @@ const Dashboard = () => {
     });
   }, [provider, api3Pool, api3Token, userAccount, setChainData]);
 
-  // If the user is navigating to the dashboard from another page, and they
-  // are already connected, refresh the data immediately.
-  useEffect(() => {
-    loadDashboardData();
-  }, [loadDashboardData]);
+  useMinedBlockAndMount(loadDashboardData);
 
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
