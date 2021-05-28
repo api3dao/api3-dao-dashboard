@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
-import { useOnAccountOrNetworkChange } from '../../utils';
+import { useOnAccountOrNetworkChange } from '../../contracts';
 import './modal.scss';
 
 interface ModalProps {
