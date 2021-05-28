@@ -26,7 +26,7 @@ const DelegateVotesModal = (props: Props) => {
           type="secondary"
           size="large"
           onClick={async () => {
-            if (!api3Pool) return null;
+            if (!api3Pool) return;
 
             // TODO: handle error
             await api3Pool.delegateVotingPower(delegationAddress);

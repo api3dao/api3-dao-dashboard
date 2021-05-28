@@ -47,8 +47,27 @@ export interface Proposal {
   type: ProposalType;
 }
 
+export interface Delegation {
+  delegate: string | null;
+  mostRecentProposalTimestamp: Date;
+  mostRecentVoteTimestamp: Date;
+  mostRecentDelegationTimestamp: Date;
+  mostRecentUndelegationTimestam: Date;
+}
+
+export interface Treasury {
+  name: string;
+  symbol: string;
+  decimal: number;
+  balanceOfPrimaryAgent: BigNumber;
+  balanceOfSecondaryAgent: BigNumber;
+}
+
 export interface ProposalState {
-  delegationAddress: string;
+  delegation: Delegation;
+  treasury: Treasury[];
+  // TODO: It makes more sense to have the state like this:
+  // "{activeProposals: {primary: Proposal[], secondary: Proposal[]}}"
   primary: {
     proposals: Proposal[];
   };

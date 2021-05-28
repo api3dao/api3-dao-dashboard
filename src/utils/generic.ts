@@ -8,7 +8,11 @@ type ErrorWithCode = Error & { code?: number };
 // See: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#provider-errors
 export const isUserRejection = (err: ErrorWithCode) => err.code === 4001 || err.code === 4100;
 
-type GoResult<T> = [Error, null] | [null, T];
+export type GoResultSuccess<T> = [null, T];
+export type GoResultError = [Error, null];
+export type GoResult<T> = GoResultSuccess<T> | GoResultError;
+export const GO_ERROR_INDEX = 0;
+export const GO_RESULT_INDEX = 1;
 
 const successFn = <T>(value: T): [null, T] => [null, value];
 const errorFn = (err: Error): [Error, null] => [err, null];
@@ -27,6 +31,20 @@ export const go = <T>(fn: Promise<T> | (() => Promise<T>)): Promise<GoResult<T>>
   }
   return fn.then(successFn).catch(errorFn);
 };
+
+export const isGoSuccess = <T>(result: GoResult<T>): result is GoResultSuccess<T> => !result[GO_ERROR_INDEX];
+
+export const rethrowError = (error: Error) => {
+  throw error;
+};
+
+// NOTE: This needs to be written using 'function' syntax (cannot be arrow function)
+// See: https://github.com/microsoft/TypeScript/issues/34523#issuecomment-542978853
+export function assertGoSuccess<T>(result: GoResult<T>, onError = rethrowError): asserts result is GoResultSuccess<T> {
+  if (result[0]) {
+    onError(result[0]);
+  }
+}
 
 const ONE_MINUTE_AS_MS = 1000 * 60;
 const ONE_HOUR_AS_MS = ONE_MINUTE_AS_MS * 60;

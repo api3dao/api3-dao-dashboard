@@ -1,68 +1,44 @@
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../../components/dropdown/dropdown';
+import { FormattedTreasury, useTreasuries } from './hooks';
 import './treasury.scss';
 
-// TODO: this should use real data
-const data = [
-  {
-    item1: 'API3',
-    item2: '27,511,157 API3',
-  },
-  {
-    item1: 'USD COIN',
-    item2: '23,169,880.733974 USDC',
-  },
-  {
-    item1: 'Pinakion',
-    item2: '27,511,157 PNK',
-  },
-  {
-    item1: 'PRIA',
-    item2: '0.98978359 PRIA',
-  },
-  {
-    item1: 'Santa Token',
-    item2: '55 SANTA',
-  },
-];
+interface TreasuryDropdownProps {
+  data: FormattedTreasury[];
+  type: 'Primary' | 'Secondary';
+}
+
+const TreasuryDropdown = (props: TreasuryDropdownProps) => {
+  const { data, type } = props;
+
+  return (
+    <Dropdown
+      menu={
+        <DropdownMenu>
+          {data.map(({ name, amountAndSymbol }) => (
+            <DropdownMenuItem className="treasury-menu-item" key={`${type}${name}`}>
+              <p className="text-small medium">{name}</p>
+              <p className="secondary-color text-small medium">{amountAndSymbol}</p>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenu>
+      }
+    >
+      <div className="treasury-button">
+        <p className="secondary-color text-small medium">{type}</p>
+        <p className="text-xsmall medium underline">{data.length}</p>
+      </div>
+    </Dropdown>
+  );
+};
 
 const Treasury = () => {
+  const { primary, secondary } = useTreasuries();
+
   return (
     <div className="treasury">
       <p className="secondary-color text-small uppercase text-right">Treasury</p>
-      <Dropdown
-        menu={
-          <DropdownMenu>
-            {data.map((item, index) => (
-              <DropdownMenuItem className="treasury-menu-item" key={index}>
-                <p className="text-small medium">{item.item1}</p>
-                <p className="secondary-color text-small medium">{item.item2}</p>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenu>
-        }
-      >
-        <div className="treasury-button">
-          <p className="secondary-color text-small medium">Primary</p>
-          <p className="text-xsmall medium underline">5</p>
-        </div>
-      </Dropdown>
-      <Dropdown
-        menu={
-          <DropdownMenu>
-            {data.map((item, index) => (
-              <DropdownMenuItem className="treasury-menu-item" key={index}>
-                <p className="text-small medium">{item.item1}</p>
-                <p className="secondary-color text-small medium">{item.item2}</p>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenu>
-        }
-      >
-        <div className="treasury-button">
-          <p className="secondary-color text-small medium">Secondary</p>
-          <p className="text-xsmall medium underline">2</p>
-        </div>
-      </Dropdown>
+      <TreasuryDropdown data={primary} type="Primary" />
+      <TreasuryDropdown data={secondary} type="Secondary" />
     </div>
   );
 };
