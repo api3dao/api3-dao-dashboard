@@ -1,0 +1,36 @@
+@import '../../styles/variables.scss';
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  background-color: $dropdown-bgd;
+  color: $primary-color;
+  min-width: 100%;
+  position: absolute;
+  top: 100%;
+  box-shadow: $dropdown-shadow;
+  z-index: 20;
+  border-top: 1px solid $secondary-border;
+}
+
+.dropdown-icon {
+  margin-left: $space-sm;
+  transition: transform 250ms;
+  &._open {
+    transform: rotate(180deg);
+  }
+}
+
+.dropdown-menu-item {
+  padding: $space-xs;
+  border-bottom: 1px solid $dropdown-border-color;
+}

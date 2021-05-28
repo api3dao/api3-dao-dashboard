@@ -1,0 +1,51 @@
+@import '../../../styles/variables.scss';
+
+.delegate-votes-modal-subtitle {
+  margin-bottom: $space-md;
+}
+
+.new-proposal-modal-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: $space-xxxl;
+}
+
+.new-proposal-modal-name {
+  width: 40%;
+  color: $secondary-color;
+  text-transform: uppercase;
+  text-align: right;
+  font-weight: 500;
+  padding-right: $space-xl;
+  margin-top: 6px;
+}
+
+.new-proposal-modal-input {
+  width: 60%;
+}
+
+.new-proposal-modal-radio-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.new-proposal-modal-radio {
+  width: 50%;
+  padding-right: $space-xs;
+
+  input,
+  label {
+    cursor: pointer;
+  }
+
+  label {
+    margin-left: $space-xs;
+    color: $button-color;
+  }
+
+  &._checked {
+    label {
+      color: $tertiary-color;
+    }
+  }
+}

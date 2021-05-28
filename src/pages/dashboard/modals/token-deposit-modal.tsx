@@ -45,7 +45,7 @@ const TokenDepositModal = (props: Props) => {
     }
 
     if (tx) {
-      setChainData({ transactions: [...transactions, tx] });
+      setChainData('Save deposit transaction', { transactions: [...transactions, tx] });
     }
   };
 

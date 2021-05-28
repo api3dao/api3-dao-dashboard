@@ -11,10 +11,11 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   hideCloseButton?: true;
+  size?: 'small' | 'medium' | 'large';
 }
 
 const Modal = (props: ModalProps) => {
-  const { onClose, open, hideCloseButton, children, header, footer } = props;
+  const { onClose, open, hideCloseButton, children, header, footer, size = 'medium' } = props;
 
   // It's possible for the user to have a "permissioned" modal open while on one account,
   // then switch to another account that does not have the same permissions. As a blanket
@@ -27,7 +28,13 @@ const Modal = (props: ModalProps) => {
 
   return ReactDOM.createPortal(
     <div className="modal-wrapper">
-      <div className="modal-body">
+      <div
+        className={classNames('modal-body', {
+          _small: size === 'small',
+          _medium: size === 'medium',
+          _large: size === 'large',
+        })}
+      >
         <div className="modal">
           <img
             className={classNames('close-button', { _hidden: hideCloseButton })}
@@ -35,7 +42,7 @@ const Modal = (props: ModalProps) => {
             src="/close.svg"
             alt="close icon"
           />
-          {header && <h5 className="modal-header">{header}</h5>}
+          {header && <h5 className="modal-header text-center">{header}</h5>}
           {children}
           {footer && <div className="modal-footer">{footer}</div>}
         </div>

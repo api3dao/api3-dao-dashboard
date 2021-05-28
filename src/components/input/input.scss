@@ -7,14 +7,26 @@
     opacity: 0.4;
     pointer-events: none;
   }
+  &._block {
+    width: 100%;
+    .input,
+    input {
+      width: 100%;
+    }
+  }
 }
 
 .input {
+  display: inline-block;
   max-width: 100%;
   overflow: hidden;
+  &._text-center {
+    input {
+      text-align: center;
+    }
+  }
   input {
     min-width: 50px;
-    text-align: center;
     background-color: transparent;
     color: $secondary-color;
     font-weight: 500;
@@ -56,5 +68,18 @@
   height: 1px;
   width: 100%;
   background-color: $secondary-border;
-  margin-top: $space-sm;
+}
+
+// removing input background color/text color for Chrome autocomplete
+.input {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #030303 inset !important;
+  }
+
+  input:-webkit-autofill {
+    -webkit-text-fill-color: #fff !important;
+  }
 }

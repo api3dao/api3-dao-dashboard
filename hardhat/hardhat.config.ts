@@ -1,19 +1,15 @@
-import '@nomiclabs/hardhat-waffle';
-import 'hardhat-deploy';
-import { subtask, task, HardhatUserConfig } from 'hardhat/config';
-import dotenv from 'dotenv';
+import '@nomiclabs/hardhat-ethers';
+import { task, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
-import { TASK_NODE_SERVER_READY } from 'hardhat/builtin-tasks/task-names';
+import dotenv from 'dotenv';
 
 dotenv.config({ path: '../.env' });
 
 // Invalid default values, just to silence hardhat configuration checks.
-// (They throw on invalid network configuration - but not everyone needs to care about ropsten/mainnet)
+// (They throw on invalid network configuration - but not everyone needs to care about these)
 const DEFAULT_VALUES = {
   ROPSTEN_DEPLOYER_PRIVATE_KEY: '3a9dc87d9c854849084cb47aa4f2471b9530e0f09a2b3fb3066b1a242ddef185',
   ROPSTEN_PROVIDER_URL: 'https://www.google.com/',
-  MAINNET_DEPLOYER_PRIVATE_KEY: '3a9dc87d9c854849084cb47aa4f2471b9530e0f09a2b3fb3066b1a242ddef185',
-  MAINNET_PROVIDER_URL: 'https://www.google.com/',
 };
 
 const fromEnvVariables = (key: string) => {
@@ -30,57 +26,36 @@ task('accounts', 'Prints the list of accounts', async (_args, hre) => {
   }
 });
 
-task('send-tokens', 'Sends tokens to a specified account')
+task('send-to-account', 'Sends ether or API3 tokens to a specified account')
   .addParam('address', 'The address where to send the funds to')
-  .addOptionalParam('amount', 'Number of tokens to send. Default is 100', '100')
+  .addOptionalParam('tokens', 'Number of API3 tokens to send. Default is 100', '100')
+  .addOptionalParam('ether', 'Amount of ETH to send. Default is 0', '0')
   .setAction(async (args, hre) => {
     const network = hre.network.name;
-    const deploymentFileName = `./deployments/${network}/Api3Token.json`;
+    const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
 
     if (!existsSync(deploymentFileName)) {
       throw new Error(`Couldn't find deployment file for network: '${network}'.`);
     }
 
+    const receiver: string = args.address;
+    const tokens = hre.ethers.utils.parseEther(args.tokens);
+    const ether = hre.ethers.utils.parseEther(args.ether);
+
     const deploymentFile = require(deploymentFileName);
-    const tokenOwner = (await hre.ethers.getSigners())[0]; // This needs to be in sync with deployer implementation
-    const api3Token = new hre.ethers.Contract(deploymentFile.address, deploymentFile.abi, tokenOwner);
+    // This needs to be in sync with deployer implementation (deployer should have funds and also be token owner)
+    const deployer = (await hre.ethers.getSigners())[0];
+    const api3Token = new hre.ethers.Contract(
+      deploymentFile.api3Token,
+      ['function transfer(address to, uint amount) returns (boolean)'],
+      deployer
+    );
 
-    const receiver: string = args.address;
-    const amount = hre.ethers.utils.parseEther(args.amount);
-
-    await api3Token.transfer(receiver, amount);
-    console.log(`Sent ${hre.ethers.utils.formatEther(amount)} API3 tokens to address ${receiver}`);
+    await api3Token.transfer(receiver, tokens);
+    console.log(`Sent ${hre.ethers.utils.formatEther(tokens)} API3 tokens to address ${receiver}`);
+    await deployer.sendTransaction({ to: receiver, value: ether });
+    console.log(`Sent ${hre.ethers.utils.formatEther(ether)} ETH to address ${receiver}`);
   });
-
-task('fund-account', 'Sends funds to a specified account on localhost network')
-  .addParam('address', 'The address where to send the funds to')
-  .addOptionalParam('amount', 'Number of ETH to send. Default is 1', '1')
-  .setAction(async (args, hre) => {
-    const network = hre.network.name;
-
-    // For testnets use the correspoding chain faucet
-    if (network !== 'localhost') {
-      throw new Error(`This commands only supports localhost network`);
-    }
-
-    const funder = (await hre.ethers.getSigners())[0];
-    const receiver: string = args.address;
-    const amount = hre.ethers.utils.parseEther(args.amount);
-
-    await funder.sendTransaction({ to: receiver, value: amount });
-    console.log(`Sent ${hre.ethers.utils.formatEther(amount)} ETH to address ${receiver}`);
-  });
-
-// Inspired by https://github.com/wighawag/hardhat-deploy/blob/master/src/index.ts#L631
-subtask(TASK_NODE_SERVER_READY).setAction(async (args, hre, runSuper) => {
-  await runSuper(args);
-
-  const exportPath = '../src/contract-deployments/localhost-dao.json';
-  // Unfortunately, calling the deploy task from yarn doesn't work at this stage.
-  // Keep this logic in sync with the deploy:localhost task in package.json.
-  hre.run('export', { export: exportPath });
-  console.info(`Local network deployment data exported to: ${exportPath}`);
-});
 
 // See https://hardhat.org/config/
 const config: HardhatUserConfig = {
@@ -88,30 +63,29 @@ const config: HardhatUserConfig = {
   defaultNetwork: 'localhost',
   networks: {
     hardhat: {},
+    // NOTE: Non local networks are only needed for hardhat tasks
     ropsten: {
       url: fromEnvVariables('ROPSTEN_PROVIDER_URL'),
       accounts: [fromEnvVariables('ROPSTEN_DEPLOYER_PRIVATE_KEY')],
-    },
-    mainnet: {
-      url: fromEnvVariables('MAINNET_PROVIDER_URL'),
-      accounts: [fromEnvVariables('MAINNET_DEPLOYER_PRIVATE_KEY')],
     },
   },
   paths: {
     /**
      * TODO: Fix https://github.com/api3dao/api3-dao-dashboard/issues/8.
      *
-     * For now, we need the code of the contracts to support local development. Unfortunately, there
-     * need to be couple of hacks to support this:
+     * For now, we need the code of the contracts to build TypeChain wrappers for solidity contracts. Unfortunately,
+     * there need to be couple of hacks to support this:
      *  1) Use DAO contracts dependency with github URL
      *  2) We need to manually install contract dependencies (@openzeppelin/contracts)
-     *  3) Hardhat complains when we want to compile source files in `../node_modules` As a
-     *     workaround, I've created a `contracts` directory which contains symbolic links to
-     *     the DAO contracts.
-     *  4) We need to use npx to run hardhat, because if we use hardhat from node_modules it wants
-     *     to initialize new project in the project root (and ignores hardhat directory).
+     *  3) Hardhat complains when we want to compile source files in `../node_modules` As a workaround, I've created a
+     *     `contracts` directory which contains symbolic links to the DAO contracts.
+     *  4) We need to use npx to run hardhat, because if we use hardhat from node_modules it wants to initialize new
+     *     project in the project root (and ignores hardhat directory).
      *
      * I've tried to workaround this using solidity `--allow-paths` but that didn't work.
+     *
+     * NOTE: The deployment of DAO contracts is done using the DAO contracts repository
+     * (https://github.com/api3dao/api3-dao). See README for more information why.
      */
     sources: 'contracts',
   },

@@ -2,19 +2,18 @@
 
 .bordered-box {
   display: flex;
-  max-width: 420px;
   width: 100%;
 
   &.grey {
     .bordered-box-col,
-    .bordered-box-content._borderBottom {
+    .bordered-box-innerWrap._borderBottom {
       border-color: $secondary-border;
     }
   }
 
   &.green {
     .bordered-box-col,
-    .bordered-box-content._borderBottom {
+    .bordered-box-innerWrap._borderBottom {
       border-color: $green-color;
     }
   }

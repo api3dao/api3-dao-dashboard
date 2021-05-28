@@ -13,7 +13,7 @@ import {
   useApi3Token,
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
-import { formatApi3, unusedHookDependency } from '../../utils';
+import { formatApi3 } from '../../utils';
 import TokenAmountModal from './modals/token-amount-modal';
 import TokenDepositModal from './modals/token-deposit-modal';
 import Layout from '../../components/layout/layout';
@@ -67,8 +67,7 @@ const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
 const Dashboard = () => {
-  const chainData = useChainData();
-  const { dashboardState: data, userAccount, provider, latestBlock, transactions, setChainData } = chainData;
+  const { dashboardState: data, userAccount, provider, transactions, setChainData } = useChainData();
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
 
@@ -77,7 +76,6 @@ const Dashboard = () => {
   // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
   const loadDashboardData = useCallback(async () => {
     if (!api3Pool || !api3Token || !provider || !userAccount) return null;
-    unusedHookDependency(latestBlock);
 
     const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
     const currentApr = await api3Pool.currentApr();
@@ -88,7 +86,7 @@ const Dashboard = () => {
     const annualMintedTokens = calculateAnnualMintedTokens(totalStaked, annualApy);
     const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
 
-    setChainData({
+    setChainData('Load dashboard data', {
       dashboardState: {
         allowance: await api3Token.allowance(userAccount, api3Pool.address),
         annualApy,
@@ -103,7 +101,7 @@ const Dashboard = () => {
         withdrawable: tokenBalances.withdrawable,
       },
     });
-  }, [provider, api3Pool, api3Token, latestBlock, userAccount]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [provider, api3Pool, api3Token, userAccount, setChainData]);
 
   // If the user is navigating to the dashboard from another page, and they
   // are already connected, refresh the data immediately.
@@ -215,7 +213,7 @@ const Dashboard = () => {
         onConfirm={async (parsedValue: BigNumber) => {
           const tx = await api3Pool?.withdraw(userAccount, parsedValue);
           if (tx) {
-            setChainData({ ...chainData, transactions: [...transactions, tx] });
+            setChainData('Save withdraw transaction', { transactions: [...transactions, tx] });
           }
         }}
         inputValue={inputValue}
@@ -230,7 +228,7 @@ const Dashboard = () => {
         onConfirm={async (parsedValue: BigNumber) => {
           const tx = await api3Pool?.stake(parsedValue);
           if (tx) {
-            setChainData({ ...chainData, transactions: [...transactions, tx] });
+            setChainData('Save stake transaction', { transactions: [...transactions, tx] });
           }
         }}
         inputValue={inputValue}
@@ -255,7 +253,7 @@ const Dashboard = () => {
         onConfirm={async (parsedValue: BigNumber) => {
           const tx = await api3Pool?.scheduleUnstake(parsedValue);
           if (tx) {
-            setChainData({ ...chainData, transactions: [...transactions, tx] });
+            setChainData('Save unstake transaction', { transactions: [...transactions, tx] });
           }
         }}
         inputValue={inputValue}
