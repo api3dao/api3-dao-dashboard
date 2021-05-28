@@ -10,4 +10,8 @@
   button._normal {
     padding: 0;
   }
+
+  &.space-left {
+    margin-left: $space-xl;
+  }
 }

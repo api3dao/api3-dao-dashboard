@@ -1,12 +1,20 @@
-import { useCallback, useEffect } from 'react';
-import { ProposalType, updateImmutably, useChainData, VoterState } from '../../chain-data';
+import { useCallback } from 'react';
+import { ProposalType, Treasury, useChainData, VoterState } from '../../chain-data';
 import { Api3Voting } from '../../generated-contracts';
-import { useApi3Pool, useApi3Voting } from '../../contracts/hooks';
+import { useApi3Voting, useConvenience, useOnMinedBlockAndMount } from '../../contracts/hooks';
 import { Proposal } from '../../chain-data';
 import { decodeMetadata } from './encoding';
 import zip from 'lodash/zip';
 import { BigNumber } from '@ethersproject/bignumber';
-import { blockTimestampToDate } from '../../utils/generic';
+import {
+  isGoSuccess,
+  blockTimestampToDate,
+  go,
+  GO_RESULT_INDEX,
+  assertGoSuccess,
+  GO_ERROR_INDEX,
+} from '../../utils/generic';
+import { isZeroAddress } from '../../contracts';
 
 interface StartVoteProposal {
   voteId: BigNumber;
@@ -62,108 +70,78 @@ export const useProposalState = () => {
   const { setChainData, userAccount, proposalState } = useChainData();
 
   const api3Voting = useApi3Voting();
-  const api3Pool = useApi3Pool();
+  const convenience = useConvenience();
 
-  const loadData = useCallback(
-    async (reason: string) => {
-      if (!api3Voting || !api3Pool) return;
+  const loadProposalState = useCallback(async () => {
+    if (!api3Voting || !convenience) return;
 
+    // TODO: use convenience contract for this and go error handling similarly to function below
+    const loadProposals = async () => {
       const { primary, secondary } = api3Voting;
       const startVoteFilter = primary.filters.StartVote(null, null, null);
       const primaryStartVotes = (await primary.queryFilter(startVoteFilter)).map((p) => p.args);
       const secondaryStartVotes = (await secondary.queryFilter(startVoteFilter)).map((p) => p.args);
 
-      setChainData(reason, {
+      const primaryProposals = await getProposals(primary, userAccount, primaryStartVotes, 'primary');
+      const secondaryProposals = await getProposals(secondary, userAccount, secondaryStartVotes, 'secondary');
+
+      return {
+        primary: {
+          proposals: primaryProposals,
+        },
+        secondary: {
+          proposals: secondaryProposals,
+        },
+      };
+    };
+
+    const loadTreasuryAndDelegation = async () => {
+      const goResponse = await go(convenience.getTreasuryAndUserDelegationData(userAccount));
+      assertGoSuccess(goResponse);
+      const data = goResponse[GO_RESULT_INDEX];
+
+      const treasury: Treasury[] = [];
+      for (let i = 0; i < data.names.length; i++) {
+        treasury.push({
+          name: data.names[i],
+          symbol: data.symbols[i],
+          decimal: data.decimals[i],
+          balanceOfPrimaryAgent: data.balancesOfPrimaryAgent[i],
+          balanceOfSecondaryAgent: data.balancesOfSecondaryAgent[i],
+        });
+      }
+
+      return {
+        delegation: {
+          delegate: isZeroAddress(data.delegate) ? null : data.delegate,
+          mostRecentDelegationTimestamp: blockTimestampToDate(data.mostRecentDelegationTimestamp),
+          mostRecentProposalTimestamp: blockTimestampToDate(data.mostRecentProposalTimestamp),
+          mostRecentUndelegationTimestam: blockTimestampToDate(data.mostRecentUndelegationTimestamp),
+          mostRecentVoteTimestamp: blockTimestampToDate(data.mostRecentVoteTimestamp),
+        },
+        treasury,
+      };
+    };
+
+    const goResponse = await go(Promise.all([loadProposals(), loadTreasuryAndDelegation()]));
+    if (isGoSuccess(goResponse)) {
+      const proposals = goResponse[GO_RESULT_INDEX][0];
+      const treasuryAndDelegation = goResponse[GO_RESULT_INDEX][1];
+
+      setChainData('Load proposal state (active proposals, delegation, treasury)', {
         proposalState: {
-          delegationAddress: await api3Pool.getUserDelegate(userAccount),
-          primary: {
-            proposals: await getProposals(primary, userAccount, primaryStartVotes, 'primary'),
-          },
-          secondary: {
-            proposals: await getProposals(secondary, userAccount, secondaryStartVotes, 'secondary'),
-          },
+          ...proposals,
+          ...treasuryAndDelegation,
         },
       });
-    },
-    [api3Voting, userAccount, setChainData, api3Pool]
-  );
-
-  useEffect(() => {
-    loadData('Load initial proposals');
-  }, [loadData]);
+    } else {
+      // TODO: error handling
+      console.error('Unable to load proposal state', goResponse[GO_ERROR_INDEX]);
+    }
+  }, [api3Voting, convenience, userAccount, setChainData]);
 
   // Ensure that the proposals are up to date with blockchain
-  useEffect(() => {
-    if (!api3Voting || !proposalState) return;
-
-    // TODO: avoid using filters, subscribe to block update and refetch instead
-    type Api3VotingFilters = typeof api3Voting.primary.filters;
-    type Api3VotingFiltersMap = { [key in keyof Api3VotingFilters]: ReturnType<Api3VotingFilters[key]> };
-    // Let's enforce we list out every Api3Voting event to make it harder to forget process some.
-    // NOTE: We want to load all proposals, not just the ones from current user
-    const votingEvents: Api3VotingFiltersMap = {
-      CastVote: api3Voting.primary.filters.CastVote(null, null, null, null),
-      ChangeMinQuorum: api3Voting.primary.filters.ChangeMinQuorum(null),
-      ChangeSupportRequired: api3Voting.primary.filters.ChangeSupportRequired(null),
-      ExecuteVote: api3Voting.primary.filters.ExecuteVote(null),
-      StartVote: api3Voting.primary.filters.StartVote(null, null, null),
-      // Filters below are not used at the moment.
-      ScriptResult: api3Voting.primary.filters.ScriptResult(null, null, null, null),
-      RecoverToVault: api3Voting.primary.filters.RecoverToVault(null, null, null),
-    };
-    const votingAppTypes = ['primary', 'secondary'] as const;
-
-    const reloadEverything = () => loadData('Proposal event happened');
-    votingAppTypes.forEach((type) => {
-      const votingApp = api3Voting[type];
-
-      votingApp.on(votingEvents.StartVote, reloadEverything);
-      votingApp.on(votingEvents.CastVote, reloadEverything);
-      votingApp.on(votingEvents.ChangeMinQuorum, reloadEverything);
-      votingApp.on(votingEvents.ChangeSupportRequired, reloadEverything);
-      votingApp.on(votingEvents.ExecuteVote, reloadEverything);
-    });
-
-    return () => {
-      votingAppTypes.forEach((type) => {
-        const votingApp = api3Voting[type];
-
-        votingApp.removeListener(votingEvents.StartVote, reloadEverything);
-        votingApp.removeListener(votingEvents.CastVote, reloadEverything);
-        votingApp.removeListener(votingEvents.ChangeMinQuorum, reloadEverything);
-        votingApp.removeListener(votingEvents.ChangeSupportRequired, reloadEverything);
-        votingApp.removeListener(votingEvents.ExecuteVote, reloadEverything);
-      });
-    };
-  }, [userAccount, proposalState, api3Voting, setChainData, loadData]);
-
-  useEffect(() => {
-    if (!api3Pool) return;
-
-    // TODO: avoid using filters, subscribe to block update and refetch instead
-    const delegationEvents = {
-      Delegated: api3Pool.filters.Delegated(userAccount, null),
-      Undelegated: api3Pool.filters.Undelegated(userAccount, null),
-    };
-
-    Object.values(delegationEvents).forEach((filter) => {
-      api3Pool.on(filter, async () => {
-        const newDelegationAddress = await api3Pool.userDelegate(userAccount);
-
-        setChainData('Update delegation after event', (data) =>
-          updateImmutably(data, (data) => {
-            data.proposalState!.delegationAddress = newDelegationAddress;
-          })
-        );
-      });
-    });
-
-    return () => {
-      Object.keys(delegationEvents).forEach((eventName) => {
-        api3Pool.removeAllListeners(eventName);
-      });
-    };
-  }, [api3Pool, userAccount, setChainData]);
+  useOnMinedBlockAndMount(loadProposalState);
 
   return proposalState;
 };
