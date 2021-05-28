@@ -22,13 +22,6 @@ export const Modal = (props: ModalProps) => {
     if (open) onClose();
   });
 
-  // It's possible for the user to have a "permissioned" modal open while on one account,
-  // then switch to another account that does not have the same permissions. As a blanket
-  // fix, close any open modals when the selected account changes.
-  useOnAccountOrNetworkChange(() => {
-    if (open) onClose();
-  });
-
   if (!open) return null;
 
   return ReactDOM.createPortal(
