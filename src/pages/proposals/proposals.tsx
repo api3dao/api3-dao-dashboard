@@ -3,16 +3,17 @@ import { useState } from 'react';
 import { useChainData } from '../../chain-data';
 import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
+import { Modal } from '../../components/modal/modal';
 import BorderedBox from '../../components/bordered-box/bordered-box';
 import Treasury from './treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useProposalState } from '../../logic/proposals/use-proposal-state';
-import NewProposalModal from './modals/new-proposal-modal';
-import DelegateVotesModal from './modals/delegate-votes-modal';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from './proposal-list';
+import NewProposalForm from './forms/new-proposal-form';
+import DelegateVotesForm from './forms/delegate-votes-form';
+import UndelegateForm from './forms/undelegate/undelegate-form';
 import './proposals.scss';
-import UndelegateModal from './modals/undelegate/undelegate';
 
 const Proposals = () => {
   const { provider, proposalState } = useChainData();
@@ -54,7 +55,9 @@ const Proposals = () => {
             <Button className="proposals-link space-left" type="text" onClick={() => setOpenUndelegateModal(true)}>
               Undelegate
             </Button>
-            <UndelegateModal open={openUndelegateModal} onClose={() => setOpenUndelegateModal(false)} />
+            <Modal open={openUndelegateModal} onClose={() => setOpenUndelegateModal(false)}>
+              <UndelegateForm onClose={() => setOpenUndelegateModal(false)} />
+            </Modal>
           </div>
         ) : (
           <div>
@@ -64,7 +67,9 @@ const Proposals = () => {
             </Button>
           </div>
         )}
-        <DelegateVotesModal onClose={() => setOpenDelegationModal(false)} open={openDelegationModal} />
+        <Modal open={openDelegationModal} onClose={() => setOpenDelegationModal(false)}>
+          <DelegateVotesForm onClose={() => setOpenDelegationModal(false)} />
+        </Modal>
 
         <Treasury />
       </div>
@@ -78,14 +83,15 @@ const Proposals = () => {
         }
         content={<ProposalList />}
       />
-      <NewProposalModal
-        onClose={() => setOpenNewProposalModal(false)}
-        onConfirm={(formData) => {
-          onCreateProposal(formData);
-          setOpenNewProposalModal(false);
-        }}
-        open={openNewProposalModal}
-      />
+      <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)} size="large">
+        <NewProposalForm
+          onClose={() => setOpenNewProposalModal(false)}
+          onConfirm={(formData) => {
+            onCreateProposal(formData);
+            setOpenNewProposalModal(false);
+          }}
+        />
+      </Modal>
     </Layout>
   );
 };

@@ -1,26 +1,23 @@
 import classNames from 'classnames';
 import { useState } from 'react';
 import Button from '../../../components/button/button';
-import Modal from '../../../components/modal/modal';
-import './vote-modal.scss';
+import './vote-form.scss';
 
 export type VotingChoice = 'for' | 'against';
 
 interface Props {
-  onClose: () => void;
-  open: boolean;
   onConfirm: (choice: VotingChoice) => void;
   voteId: string;
 }
 
-const VoteModal = (props: Props) => {
-  const { onConfirm, voteId, ...modalProps } = props;
+const VoteForm = (props: Props) => {
+  const { onConfirm, voteId } = props;
   const [checked, setChecked] = useState<VotingChoice>('for');
 
   const isVotingFor = checked === 'for';
 
   return (
-    <Modal {...modalProps}>
+    <>
       <h5>Vote on Proposal {voteId}#</h5>
       <div className="content text-xlarge">
         <div className={classNames('for', { checked: isVotingFor })}>
@@ -35,8 +32,8 @@ const VoteModal = (props: Props) => {
       <Button type="secondary" onClick={() => onConfirm(checked)}>
         Create transaction
       </Button>
-    </Modal>
+    </>
   );
 };
 
-export default VoteModal;
+export default VoteForm;
