@@ -45,7 +45,7 @@ const TokenDepositModal = (props: Props) => {
     }
 
     if (tx) {
-      setChainData('Save deposit transaction', { transactions: [...transactions, tx] });
+      setChainData('Save deposit approval', { transactions: [...transactions, tx] });
     }
   };
 
@@ -79,7 +79,7 @@ const TokenDepositModal = (props: Props) => {
     }
 
     if (tx) {
-      setChainData({ transactions: [...transactions, tx] });
+      setChainData('Save deposit transaction', { transactions: [...transactions, tx] });
     }
 
     props.onClose();
