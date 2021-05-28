@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
+import { usePrevious } from '../utils';
 import { getChainData, useChainData } from '../chain-data';
 import {
   Api3Pool__factory as Api3PoolFactory,
@@ -90,6 +91,22 @@ export const useProviderSubscriptions = (provider: ethers.providers.Web3Provider
       underlyingProvider.removeListener('disconnect', refreshChainData);
     };
   }, [provider, setChainData]);
+};
+
+/**
+ * Use this hook to have a function called when either the network or selected
+ * account is changed
+ */
+export const useOnAccountOrNetworkChange = (callback: () => any) => {
+  const { networkName, userAccount } = useChainData();
+  const prevUserAccount = usePrevious(userAccount);
+  const prevNetworkName = usePrevious(networkName);
+
+  useEffect(() => {
+    if (prevUserAccount !== userAccount || prevNetworkName !== networkName) {
+      callback();
+    }
+  }, [prevUserAccount, userAccount, prevNetworkName, networkName, callback]);
 };
 
 /**
