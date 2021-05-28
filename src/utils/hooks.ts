@@ -26,7 +26,7 @@ export const usePrevious = (value: any) => {
 
 /**
  * Use this hook to have a function called when either the network or selected
- * account changed
+ * account is changed
  */
 export const useOnAccountOrNetworkChange = (callback: () => any) => {
   const { networkName, userAccount } = useChainData();
