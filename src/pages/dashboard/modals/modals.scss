@@ -14,3 +14,12 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.tokenAmountModal-approve {
+  margin-right: $space-lg;
+}
+
+.tokenAmountModal-error {
+  margin-top: $space-xl;
+  color: red;
+}

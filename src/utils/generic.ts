@@ -1,6 +1,12 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 
 export const blockTimestampToDate = (timestamp: BigNumber) => new Date(timestamp.mul(1000).toNumber());
+
+type ErrorWithCode = Error & { code?: number };
+
+// The Error object was extended to add a "code" for Web3 providers
+// See: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#provider-errors
+export const isUserRejection = (err: ErrorWithCode) => err.code === 4001 || err.code === 4100;
 
 export type GoResultSuccess<T> = [null, T];
 export type GoResultError = [Error, null];
@@ -8,13 +14,18 @@ export type GoResult<T> = GoResultSuccess<T> | GoResultError;
 export const GO_ERROR_INDEX = 0;
 export const GO_RESULT_INDEX = 1;
 
+const successFn = <T>(value: T): [null, T] => [null, value];
+const errorFn = (err: Error): [Error, null] => [err, null];
+
+export const goSync = <T>(fn: () => T): GoResult<T> => {
+  try {
+    return successFn(fn());
+  } catch (err) {
+    return errorFn(err);
+  }
+};
+
 export const go = <T>(fn: Promise<T> | (() => Promise<T>)): Promise<GoResult<T>> => {
-  function successFn(value: T): [null, T] {
-    return [null, value];
-  }
-  function errorFn(err: Error): [Error, null] {
-    return [err, null];
-  }
   if (typeof fn === 'function') {
     return fn().then(successFn).catch(errorFn);
   }
@@ -35,26 +46,22 @@ export function assertGoSuccess<T>(result: GoResult<T>, onError = rethrowError):
   }
 }
 
-export const getDays = (distance: number) => {
-  const days = Math.floor(distance / (1000 * 60 * 60 * 24)).toString();
+const ONE_MINUTE_AS_MS = 1000 * 60;
+const ONE_HOUR_AS_MS = ONE_MINUTE_AS_MS * 60;
+const ONE_DAY_AS_MS = ONE_HOUR_AS_MS * 24;
 
-  return days;
+export const getDays = (distance: number) => {
+  return Math.floor(distance / ONE_DAY_AS_MS).toString();
 };
 
 export const getHours = (distance: number) => {
-  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString();
-
-  return hours;
+  return Math.floor((distance % ONE_DAY_AS_MS) / ONE_HOUR_AS_MS).toString();
 };
 
 export const getMinutes = (distance: number) => {
-  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString();
-
-  return minutes;
+  return Math.floor((distance % ONE_HOUR_AS_MS) / ONE_MINUTE_AS_MS).toString();
 };
 
 export const getSeconds = (distance: number) => {
-  const seconds = Math.floor((distance % (1000 * 60)) / 1000).toString();
-
-  return seconds;
+  return Math.floor((distance % ONE_MINUTE_AS_MS) / 1000).toString();
 };

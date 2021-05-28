@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { useCallback } from 'react';
 import { ProposalType, Treasury, useChainData, VoterState } from '../../chain-data';
 import { Api3Voting } from '../../generated-contracts';
@@ -5,15 +6,7 @@ import { useApi3Voting, useConvenience, useOnMinedBlockAndMount } from '../../co
 import { Proposal } from '../../chain-data';
 import { decodeMetadata } from './encoding';
 import zip from 'lodash/zip';
-import { BigNumber } from '@ethersproject/bignumber';
-import {
-  isGoSuccess,
-  blockTimestampToDate,
-  go,
-  GO_RESULT_INDEX,
-  assertGoSuccess,
-  GO_ERROR_INDEX,
-} from '../../utils/generic';
+import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, assertGoSuccess, GO_ERROR_INDEX } from '../../utils';
 import { isZeroAddress } from '../../contracts';
 
 interface StartVoteProposal {

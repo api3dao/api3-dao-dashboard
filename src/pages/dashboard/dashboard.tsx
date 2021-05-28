@@ -4,11 +4,9 @@ import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
 import {
   absoluteStakeTarget,
-  ALLOWANCE_REFILL_TRESHOLD,
   calculateAnnualInflationRate,
   calculateAnnualMintedTokens,
   calculateApy,
-  MAX_ALLOWANCE,
   min,
   totalStakedPercentage,
   useApi3Pool,
@@ -16,8 +14,9 @@ import {
   useOnMinedBlockAndMount,
 } from '../../contracts';
 import { Api3Pool } from '../../generated-contracts';
-import { formatApi3, parseApi3 } from '../../utils/api3-format';
-import TokenAmountModal from './token-amount-modal/token-amount-modal';
+import { formatApi3 } from '../../utils';
+import TokenAmountModal from './modals/token-amount-modal';
+import TokenDepositModal from './modals/token-deposit-modal';
 import Layout from '../../components/layout/layout';
 import Button from '../../components/button/button';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
@@ -66,10 +65,7 @@ const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {
   };
 };
 
-const HelperText = (props: { helperText: string }) => {
-  const { helperText } = props;
-  return <div className="depositModal-balance">Your balance: {helperText}</div>;
-};
+type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
 const Dashboard = () => {
   const { dashboardState: data, userAccount, provider, transactions, setChainData } = useChainData();
@@ -110,11 +106,16 @@ const Dashboard = () => {
 
   useOnMinedBlockAndMount(loadDashboardData);
 
-  const [openModal, setOpenModal] = useState<string | null>(null);
+  const [openModal, setOpenModal] = useState<ModalType | null>(null);
   const [inputValue, setInputValue] = useState('');
   const closeModal = () => setOpenModal(null);
 
   const disconnected = !api3Pool || !api3Token || !data;
+  const canWithdraw = !disconnected && data?.withdrawable.gt(0);
+
+  // TODO: update according to the specifications here:
+  // https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
+  const canInitiateUnstake = !disconnected && data?.userStake.gt(0);
 
   const abbrStr = (str: string) => {
     return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
@@ -131,46 +132,33 @@ const Dashboard = () => {
       <h5 className="green-color">Staking Pool</h5>
       <StakingPool data={data || undefined} />
       <div className="bordered-boxes">
-        <div className="staking-boxes">
-          <BorderedBox
-            header={
-              <div className="bordered-box-header">
-                <h5>Balance</h5>
-                {data?.allowance.lt(ALLOWANCE_REFILL_TRESHOLD) ? (
-                  <Button
-                    onClick={() => {
-                      api3Token?.approve(api3Pool ? api3Pool.address : '', MAX_ALLOWANCE);
-                    }}
-                    disabled={disconnected}
-                  >
-                    Approve
-                  </Button>
-                ) : (
-                  <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
-                    + Deposit
-                  </Button>
-                )}
-              </div>
-            }
-            content={
-              <>
-                <div className="bordered-box-data">
-                  <p className="text-small secondary-color uppercase medium">total</p>
-                  <p className="text-xlarge">{data ? formatApi3(data.balance) : '0.0'}</p>
-                </div>
-                <div className="bordered-box-data">
-                  <p className="text-small secondary-color uppercase medium">withdrawable</p>
-                  <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
-                </div>
-              </>
-            }
-            footer={
-              <Button type="link" onClick={() => setOpenModal('withdraw')} disabled={disconnected}>
-                Withdraw
+        <BorderedBox
+          header={
+            <div className="bordered-box-header">
+              <h5>Balance</h5>
+              <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
+                + Deposit
               </Button>
-            }
-          />
-        </div>
+            </div>
+          }
+          content={
+            <>
+              <div className="bordered-box-data">
+                <p className="text-small secondary-color uppercase medium">total</p>
+                <p className="text-xlarge">{data ? formatApi3(data.balance) : '0.0'}</p>
+              </div>
+              <div className="bordered-box-data">
+                <p className="text-small secondary-color uppercase medium">withdrawable</p>
+                <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
+              </div>
+            </>
+          }
+          footer={
+            <Button type="link" onClick={() => setOpenModal('withdraw')} disabled={!canWithdraw}>
+              Withdraw
+            </Button>
+          }
+        />
         <div className="staking-boxes">
           <BorderedBox
             header={
@@ -194,7 +182,7 @@ const Dashboard = () => {
               </>
             }
             footer={
-              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={disconnected}>
+              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={!canInitiateUnstake}>
                 Initiate Unstake
               </Button>
             }
@@ -208,78 +196,67 @@ const Dashboard = () => {
           )}
         </div>
       </div>
-      <TokenAmountModal
-        title="How many tokens would you like to deposit?"
+      <TokenDepositModal
+        allowance={data?.allowance || BigNumber.from('0')}
+        balance={data?.ownedTokens || BigNumber.from('0')}
         open={openModal === 'deposit'}
         onClose={closeModal}
-        action="Deposit"
-        onConfirm={async () => {
-          // TODO: handle errors
-          const tx = await api3Pool?.deposit(userAccount, parseApi3(inputValue), userAccount);
-          if (tx) {
-            setChainData('Save deposit transaction', { transactions: [...transactions, tx] });
-          }
-          closeModal();
-        }}
-        helperText={<HelperText helperText={data ? formatApi3(data.ownedTokens) : '0.0'} />}
-        inputValue={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
       />
       <TokenAmountModal
         title="How many tokens would you like to withdraw?"
         open={openModal === 'withdraw'}
         onClose={closeModal}
         action="Withdraw"
-        onConfirm={async () => {
-          // TODO: handle errors
-          const tx = await api3Pool?.withdraw(userAccount, parseApi3(inputValue));
+        onConfirm={async (parsedValue: BigNumber) => {
+          const tx = await api3Pool?.withdraw(userAccount, parsedValue);
           if (tx) {
             setChainData('Save withdraw transaction', { transactions: [...transactions, tx] });
           }
-          closeModal();
         }}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        maxValue={data?.withdrawable}
       />
       <TokenAmountModal
         title="How many tokens would you like to stake?"
         open={openModal === 'stake'}
         onClose={closeModal}
         action="Stake"
-        onConfirm={async () => {
-          // TODO: handle errors
-          const tx = await api3Pool?.stake(parseApi3(inputValue));
+        onConfirm={async (parsedValue: BigNumber) => {
+          const tx = await api3Pool?.stake(parsedValue);
           if (tx) {
             setChainData('Save stake transaction', { transactions: [...transactions, tx] });
           }
-          closeModal();
         }}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        maxValue={data?.withdrawable}
       />
       <TokenAmountModal
         title="How many tokens would you like to unstake?"
         open={openModal === 'unstake'}
         onClose={closeModal}
         action="Initiate Unstaking"
-        onConfirm={() => setOpenModal('confirm')}
+        onConfirm={async () => setOpenModal('confirm-unstake')}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        closeOnConfirm={false}
       />
       <TokenAmountModal
         title={`Are you sure you would like to unstake ${inputValue} tokens?`}
-        open={openModal === 'confirm'}
+        open={openModal === 'confirm-unstake'}
         onClose={closeModal}
         action="Initiate Unstaking"
-        onConfirm={async () => {
-          // TODO: handle errors
-          const res = await api3Pool?.scheduleUnstake(parseApi3(inputValue));
-          closeModal();
-          console.log('Unstaking scheduled', res);
+        onConfirm={async (parsedValue: BigNumber) => {
+          const tx = await api3Pool?.scheduleUnstake(parsedValue);
+          if (tx) {
+            setChainData('Save unstake transaction', { transactions: [...transactions, tx] });
+          }
         }}
         inputValue={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         showTokenInput={false}
+        maxValue={data?.userStake}
       />
     </Layout>
   );
