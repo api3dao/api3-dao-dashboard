@@ -53,7 +53,7 @@ interface ModalHeaderProps {
 }
 
 export const ModalHeader = (props: ModalHeaderProps) => {
-  if (props.children) return null;
+  if (!props.children) return null;
   return <h5 className="modal-header text-center">{props.children}</h5>;
 };
 
@@ -62,6 +62,6 @@ interface ModalFooterProps {
 }
 
 export const ModalFooter = (props: ModalFooterProps) => {
-  if (props.children) return null;
+  if (!props.children) return null;
   return <div className="modal-footer">{props.children}</div>;
 };

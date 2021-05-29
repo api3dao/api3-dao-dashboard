@@ -109,7 +109,10 @@ const Dashboard = () => {
 
   const [openModal, setOpenModal] = useState<ModalType | null>(null);
   const [inputValue, setInputValue] = useState('');
-  const closeModal = () => setOpenModal(null);
+  const closeModal = () => {
+    setInputValue('');
+    setOpenModal(null);
+  };
 
   const disconnected = !api3Pool || !api3Token || !data;
   const canWithdraw = !disconnected && data?.withdrawable.gt(0);

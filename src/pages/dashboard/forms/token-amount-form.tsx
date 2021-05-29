@@ -66,13 +66,8 @@ const TokenAmountForm = (props: Props) => {
     }
 
     if (closeOnConfirm) {
-      handleClose();
+      onClose();
     }
-  };
-
-  const handleClose = () => {
-    onChange('');
-    onClose();
   };
 
   return (
@@ -91,7 +86,7 @@ const TokenAmountForm = (props: Props) => {
       <ModalFooter>
         <div className={classNames({ [`tokenAmountForm-actions`]: !showTokenInput })}>
           {!showTokenInput && (
-            <Button type="text" onClick={handleClose}>
+            <Button type="text" onClick={onClose}>
               Cancel
             </Button>
           )}
