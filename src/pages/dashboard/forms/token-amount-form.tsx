@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { ChangeEventHandler, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import classNames from 'classnames';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
@@ -12,7 +12,7 @@ interface Props {
   action: 'Withdraw' | 'Stake' | 'Initiate Unstaking';
   onConfirm: (parsedInput: BigNumber) => Promise<any>;
   onClose: () => void;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  onChange: (input: string) => void;
   inputValue: string;
   helperText?: ReactNode;
   showTokenInput?: boolean;
@@ -25,9 +25,9 @@ const TokenAmountForm = (props: Props) => {
   const {
     action,
     onConfirm,
-    onClose,
     maxValue,
     onChange,
+    onClose,
     inputValue,
     helperText,
     showTokenInput = true,
@@ -66,8 +66,13 @@ const TokenAmountForm = (props: Props) => {
     }
 
     if (closeOnConfirm) {
-      props.onClose();
+      handleClose();
     }
+  };
+
+  const handleClose = () => {
+    onChange('');
+    onClose();
   };
 
   return (
@@ -77,7 +82,7 @@ const TokenAmountForm = (props: Props) => {
       {showTokenInput && (
         <div className="text-center">
           <p className="tokenAmountForm-token medium">TOKEN</p>
-          <Input value={inputValue} onChange={onChange} size="large" />
+          <Input value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
           {error && <p className="tokenAmountForm-error">{error}</p>}
           {helperText}
         </div>
@@ -86,7 +91,7 @@ const TokenAmountForm = (props: Props) => {
       <ModalFooter>
         <div className={classNames({ [`tokenAmountForm-actions`]: !showTokenInput })}>
           {!showTokenInput && (
-            <Button type="text" onClick={onClose}>
+            <Button type="text" onClick={handleClose}>
               Cancel
             </Button>
           )}

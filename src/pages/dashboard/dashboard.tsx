@@ -209,13 +209,12 @@ const Dashboard = () => {
           title="How many tokens would you like to withdraw?"
           action="Withdraw"
           onConfirm={async (parsedValue: BigNumber) => {
-            const tx = await api3Pool?.withdraw(userAccount, parsedValue);
-            if (tx) {
-              setChainData('Save withdraw transaction', { transactions: [...transactions, tx] });
-            }
+            if (!api3Pool) return;
+            const tx = await api3Pool.withdraw(userAccount, parsedValue);
+            setChainData('Save withdraw transaction', { transactions: [...transactions, tx] });
           }}
           inputValue={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={setInputValue}
           onClose={closeModal}
           maxValue={data?.withdrawable}
         />
@@ -225,13 +224,12 @@ const Dashboard = () => {
           title="How many tokens would you like to stake?"
           action="Stake"
           onConfirm={async (parsedValue: BigNumber) => {
-            const tx = await api3Pool?.stake(parsedValue);
-            if (tx) {
-              setChainData('Save stake transaction', { transactions: [...transactions, tx] });
-            }
+            if (!api3Pool) return;
+            const tx = await api3Pool.stake(parsedValue);
+            setChainData('Save stake transaction', { transactions: [...transactions, tx] });
           }}
           inputValue={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={setInputValue}
           onClose={closeModal}
           maxValue={data?.withdrawable}
         />
@@ -242,7 +240,7 @@ const Dashboard = () => {
           action="Initiate Unstaking"
           onConfirm={async () => setOpenModal('confirm-unstake')}
           inputValue={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={setInputValue}
           onClose={closeModal}
           closeOnConfirm={false}
         />
@@ -252,13 +250,12 @@ const Dashboard = () => {
           title={`Are you sure you would like to unstake ${inputValue} tokens?`}
           action="Initiate Unstaking"
           onConfirm={async (parsedValue: BigNumber) => {
-            const tx = await api3Pool?.scheduleUnstake(parsedValue);
-            if (tx) {
-              setChainData('Save unstake transaction', { transactions: [...transactions, tx] });
-            }
+            if (!api3Pool) return;
+            const tx = await api3Pool.scheduleUnstake(parsedValue);
+            setChainData('Save unstake transaction', { transactions: [...transactions, tx] });
           }}
           inputValue={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={setInputValue}
           onClose={closeModal}
           showTokenInput={false}
           maxValue={data?.userStake}
