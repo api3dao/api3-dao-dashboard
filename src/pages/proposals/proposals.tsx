@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { useState } from 'react';
 import { useChainData } from '../../chain-data';
+import { abbrStr } from '../../chain-data/helpers';
 import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
 import { Modal } from '../../components/modal/modal';
@@ -43,10 +44,6 @@ const Proposals = () => {
     ];
     const votingApp = new ethers.Contract(api3Voting[formData.type].address, votingAbi, provider?.getSigner());
     await votingApp.newVote(buildEVMScript(formData, api3Agent), buildExtendedMetadata(formData), true, true);
-  };
-
-  const abbrStr = (str: string) => {
-    return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
   };
 
   return (

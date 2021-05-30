@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import last from 'lodash/last';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
+import { abbrStr } from '../../chain-data/helpers';
 import {
   absoluteStakeTarget,
   calculateAnnualInflationRate,
@@ -18,7 +19,6 @@ import { formatApi3 } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
-import { Modal } from '../../components/modal/modal';
 import Button from '../../components/button/button';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
@@ -120,10 +120,6 @@ const Dashboard = () => {
   // TODO: update according to the specifications here:
   // https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
   const canInitiateUnstake = !disconnected && data?.userStake.gt(0);
-
-  const abbrStr = (str: string) => {
-    return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
-  };
 
   return (
     <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">

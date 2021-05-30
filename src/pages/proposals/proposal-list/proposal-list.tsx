@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { BigNumber } from 'ethers';
 import { useChainData } from '../../../chain-data';
 import { NavLink } from 'react-router-dom';
 import { encodeProposalTypeAndId } from '../../../logic/proposals/encoding';
@@ -10,6 +11,10 @@ import Tag from '../../../components/tag/tag';
 import './proposal-list.scss';
 
 const VOTER_STATES = { 0: 'Unvoted', 1: 'Voted For', 2: 'Voted Against' };
+
+const voteIdFormat = (voteId: BigNumber) => {
+  return voteId.toString();
+};
 
 const ProposalList = () => {
   const { proposalState } = useChainData();
@@ -33,12 +38,12 @@ const ProposalList = () => {
             : 'Secondary proposals need 15% to execute.';
 
         return (
-          <div className="proposal-item" key={`${p.type}-${p.voteId.toString()}`}>
+          <div className="proposal-item" key={`${p.type}-${voteIdFormat(p.voteId)}`}>
             <div className="proposal-item-wrapper medium">
               <p className="proposal-item-title">{p.metadata.description}</p>
               <div className="proposal-item-subtitle text-xsmall">
                 <div className="proposal-item-box _mr-lg">
-                  <p className="proposal-item-voteId tertiary-color">#{p.voteId.toString()}</p>
+                  <p className="proposal-item-voteId tertiary-color">#{voteIdFormat(p.voteId)}</p>
                   <p className="proposal-item-voter-states">{VOTER_STATES[p.voterState]}</p>
                 </div>
                 <div className="proposal-item-box _date">
@@ -56,7 +61,7 @@ const ProposalList = () => {
 
             <div className="proposal-item-voteBar">
               <VoteSlider {...votingSliderData} />
-              <NavLink to={`/proposals/${encodeProposalTypeAndId(p.type, p.voteId.toString())}`}>
+              <NavLink to={`/proposals/${encodeProposalTypeAndId(p.type, voteIdFormat(p.voteId))}`}>
                 <img src="/arrow-right.svg" alt="right arrow" />
               </NavLink>
             </div>
