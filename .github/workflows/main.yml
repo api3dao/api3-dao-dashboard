@@ -9,13 +9,14 @@ on:
       - main
 
 jobs:
-  documentation:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Clone api3-dao-dashboard
-      uses: actions/checkout@master
-    - name: Check hyperlinks
-      uses: gaurav-nelson/github-action-markdown-link-check@v1
+  # TODO: Enable when the repo is public
+  # documentation:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Clone api3-dao-dashboard
+  #     uses: actions/checkout@master
+  #   - name: Check hyperlinks
+  #     uses: gaurav-nelson/github-action-markdown-link-check@v1
 
   lint-test:
     runs-on: ubuntu-latest
@@ -28,7 +29,8 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Lint
         run: yarn lint
-      - name: Test
-        run: yarn test
+        # Needed to ensure the localhost deployment ABI is present
       - name: Build
         run: yarn build
+      - name: Test
+        run: yarn test
