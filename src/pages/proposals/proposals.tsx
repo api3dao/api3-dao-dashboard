@@ -10,14 +10,10 @@ import Treasury from './treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useProposalState } from '../../logic/proposals/use-proposal-state';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
-<<<<<<< HEAD
-import ProposalList from './proposal-list';
+import ProposalList from './proposal-list/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import DelegateVotesForm from './forms/delegate-votes-form';
 import UndelegateForm from './forms/undelegate/undelegate-form';
-=======
-import ProposalList from './proposal-list/proposal-list';
->>>>>>> e4d7b5c (Proposals - undelegated and deleg)
 import './proposals.scss';
 
 const Proposals = () => {
@@ -53,7 +49,7 @@ const Proposals = () => {
         {/* There was another slack discussion where we said we want to avoid disabled buttons */}
         {proposalState?.delegation.delegate ? (
           <div>
-            <p className="secondary-color bold">Delegated to: {proposalState.delegation.delegate}</p>
+            <p className="secondary-color bold">Delegated to: {abbrStr(proposalState.delegation.delegate)}</p>
             <Button className="proposals-link" type="text" onClick={() => setOpenDelegationModal(true)}>
               Update delegation
             </Button>

@@ -19,6 +19,7 @@ import { formatApi3 } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
+import { Modal } from '../../components/modal/modal';
 import Button from '../../components/button/button';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';

@@ -12,12 +12,8 @@ import { useApi3Voting } from '../../contracts';
 import { decodeProposalTypeAndId } from '../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../logic/proposals/selectors';
 import { useProposalState } from '../../logic/proposals/use-proposal-state';
-<<<<<<< HEAD
 import VoteForm from './vote-form/vote-form';
-=======
-import VoteModal from './vote-modal/vote-modal';
 import './proposal-details.scss';
->>>>>>> e4d7b5c (Proposals - undelegated and deleg)
 
 interface RouterParameters {
   typeAndId: string;
