@@ -99,7 +99,7 @@ const TokenDepositForm = (props: Props) => {
         <p className="tokenAmountForm-token medium">TOKEN</p>
         <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
         {error && <p className="tokenAmountForm-error">{error}</p>}
-        <div className="tokenDepositForm-balance">Your balance: {balance ? formatApi3(balance) : '0.0'}</div>
+        <div className="tokenDepositForm-balance">Wallet balance: {balance ? formatApi3(balance) : '0.0'}</div>
       </div>
 
       <ModalFooter>
