@@ -22,7 +22,7 @@ describe('calculateAnnualInflationRate and friends', () => {
     const totalStake = API3_TOKEN_SUPPLY.div(2);
 
     test('calculate APY', () => {
-      expect(calculateApy(currentApr)).toBe(110.5689140647935);
+      expect(calculateApy(currentApr)).toBe(110.5689140647931);
     });
 
     test('calculateAnnualMintedTokens', () => {
