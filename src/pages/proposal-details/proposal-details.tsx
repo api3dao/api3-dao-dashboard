@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useParams } from 'react-router';
 import { Proposal, useChainData } from '../../chain-data';
 import { BaseLayout } from '../../components/layout/layout';
+import { Modal } from '../../components/modal/modal';
 import VoteSlider from '../../components/vote-slider/vote-slider';
 import { useApi3Voting } from '../../contracts';
 import { decodeProposalTypeAndId } from '../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../logic/proposals/selectors';
 import { useProposalState } from '../../logic/proposals/use-proposal-state';
-import VoteModal from './vote-modal/vote-modal';
+import VoteForm from './vote-form/vote-form';
 
 interface RouterParameters {
   typeAndId: string;
@@ -43,15 +44,15 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
     <div>
       <VoteSlider {...voteSliderData} />
       <button onClick={() => setVoteModalOpen(true)}>Vote</button>
-      <VoteModal
-        voteId={proposal.voteId.toString()}
-        open={voteModalOpen}
-        onClose={() => setVoteModalOpen(false)}
-        onConfirm={async (choice) => {
-          setVoteModalOpen(false);
-          await voting[proposal.type].vote(proposal.voteId, choice === 'for', true);
-        }}
-      ></VoteModal>
+      <Modal open={voteModalOpen} onClose={() => setVoteModalOpen(false)}>
+        <VoteForm
+          voteId={proposal.voteId.toString()}
+          onConfirm={async (choice) => {
+            setVoteModalOpen(false);
+            await voting[proposal.type].vote(proposal.voteId, choice === 'for', true);
+          }}
+        />
+      </Modal>
     </div>
   );
 };

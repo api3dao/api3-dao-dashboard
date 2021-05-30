@@ -4,13 +4,13 @@
   margin-bottom: $space-md;
 }
 
-.new-proposal-modal-item {
+.new-proposal-form-item {
   display: flex;
   align-items: flex-start;
   margin-bottom: $space-xxxl;
 }
 
-.new-proposal-modal-name {
+.new-proposal-form-name {
   width: 40%;
   color: $secondary-color;
   text-transform: uppercase;
@@ -20,16 +20,16 @@
   margin-top: 6px;
 }
 
-.new-proposal-modal-input {
+.new-proposal-form-input {
   width: 60%;
 }
 
-.new-proposal-modal-radio-buttons {
+.new-proposal-form-radio-buttons {
   display: flex;
   align-items: center;
 }
 
-.new-proposal-modal-radio {
+.new-proposal-form-radio {
   width: 50%;
   padding-right: $space-xs;
 
