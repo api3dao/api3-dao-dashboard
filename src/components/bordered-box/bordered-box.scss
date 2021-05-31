@@ -23,6 +23,7 @@
   width: 32px;
   border-width: 1px;
   border-style: solid;
+  flex-shrink: 0;
 
   &._right {
     border-left-width: 0;
@@ -55,6 +56,10 @@
 
   &._alignCenter {
     justify-content: center;
+  }
+
+  &._ml-lg {
+    margin-left: $space-lg;
   }
 }
 

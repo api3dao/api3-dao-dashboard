@@ -1,27 +1,17 @@
 import classNames from 'classnames';
 import './vote-slider.scss';
 
-const NegativeVoteIcon = () => {
-  return (
-    <svg width="16" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M16 1.61143L14.3886 0L8 6.38857L1.61143 0L0 1.61143L6.38857 8L0 14.3886L1.61143 16L8 9.61143L14.3886 16L16 14.3886L9.61143 8L16 1.61143Z"
-        fill="#D233F2"
-      />
-    </svg>
-  );
-};
+interface IconProp {
+  large: boolean;
+}
 
-const PositiveVoteIcon = () => {
-  return (
-    <svg width="20" height="20" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M6.9875 13.225L1.775 8.0125L0 9.775L6.9875 16.7625L21.9875 1.7625L20.225 0L6.9875 13.225Z"
-        fill="#7CE3CB"
-      />
-    </svg>
-  );
-};
+const NegativeVoteIcon = ({ large }: IconProp) => (
+  <img className={classNames('vote-icon', { [`_large`]: large })} src="/close-pink.svg" alt="rejected icon" />
+);
+
+const PositiveVoteIcon = ({ large }: IconProp) => (
+  <img className={classNames('vote-icon', { [`_large`]: large })} src="/check-green.svg" alt="passed icon" />
+);
 
 const formatPercentage = (percentage: number) => `${percentage}%`;
 
@@ -30,28 +20,42 @@ interface Props {
   status: string;
   forPercentage: number;
   againstPercentage: number;
+  size?: 'normal' | 'large';
 }
 
 const VoteSlider = (props: Props) => {
-  const { minAcceptanceQuorum, status, forPercentage, againstPercentage } = props;
+  const { minAcceptanceQuorum, status, forPercentage, againstPercentage, size = 'normal' } = props;
 
   return (
-    <div className="vote-slider">
-      <PositiveVoteIcon />
-      <div className="bar-wrapper">
-        <div className="bar">
-          <div className="acceptance-quorum" style={{ left: `${minAcceptanceQuorum}%` }}></div>
-          <div className="for" style={{ width: formatPercentage(forPercentage) }}></div>
-          <div className="against" style={{ width: formatPercentage(againstPercentage) }}></div>
+    <>
+      {size === 'large' && (
+        <div className="bar-names">
+          <p className="bold">For</p>
+          <p className="bold">Against</p>
         </div>
-        <div className="vote-info">
-          <span>{formatPercentage(forPercentage)}</span>
-          <span className={classNames('status', status)}>{status}</span>
-          <span>{formatPercentage(againstPercentage)}</span>
+      )}
+      <div className="vote-slider">
+        <PositiveVoteIcon large={size === 'large'} />
+        <div className="bar-wrapper">
+          <div className="bar">
+            <div className="acceptance-quorum" style={{ left: `${minAcceptanceQuorum}%` }}></div>
+            <div className="for" style={{ width: formatPercentage(forPercentage) }}></div>
+            <div className="against" style={{ width: formatPercentage(againstPercentage) }}></div>
+          </div>
+          <div
+            className={classNames('vote-info medium', {
+              [`text-xsmall`]: size === 'normal',
+              [`text-normal`]: size === 'large',
+            })}
+          >
+            <span className="secondary-color">{formatPercentage(forPercentage)}</span>
+            {size !== 'large' && <span className={classNames('status', status)}>{status}</span>}
+            <span className="secondary-color">{formatPercentage(againstPercentage)}</span>
+          </div>
         </div>
+        <NegativeVoteIcon large={size === 'large'} />
       </div>
-      <NegativeVoteIcon />
-    </div>
+    </>
   );
 };
 

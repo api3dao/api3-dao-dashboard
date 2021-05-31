@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { useState } from 'react';
 import { useChainData } from '../../chain-data';
+import { abbrStr } from '../../chain-data/helpers';
 import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
 import { Modal } from '../../components/modal/modal';
@@ -9,7 +10,7 @@ import Treasury from './treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useProposalState } from '../../logic/proposals/use-proposal-state';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
-import ProposalList from './proposal-list';
+import ProposalList from './proposal-list/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import DelegateVotesForm from './forms/delegate-votes-form';
 import UndelegateForm from './forms/undelegate/undelegate-form';
@@ -48,7 +49,7 @@ const Proposals = () => {
         {/* There was another slack discussion where we said we want to avoid disabled buttons */}
         {proposalState?.delegation.delegate ? (
           <div>
-            <p className="secondary-color bold">Delegated to: {proposalState.delegation.delegate}</p>
+            <p className="secondary-color bold">Delegated to: {abbrStr(proposalState.delegation.delegate)}</p>
             <Button className="proposals-link" type="text" onClick={() => setOpenDelegationModal(true)}>
               Update delegation
             </Button>
@@ -78,7 +79,9 @@ const Proposals = () => {
         header={
           <div className="bordered-box-header">
             <h5>Proposals</h5>
-            <Button onClick={() => setOpenNewProposalModal(true)}>New proposal</Button>
+            <Button onClick={() => setOpenNewProposalModal(true)} size="large">
+              + New proposal
+            </Button>
           </div>
         }
         content={<ProposalList />}

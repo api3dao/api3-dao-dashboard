@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
+import { abbrStr } from '../../chain-data/helpers';
 import {
   absoluteStakeTarget,
   calculateAnnualInflationRate,
@@ -78,10 +79,6 @@ const Dashboard = () => {
   // TODO: update according to the specifications here:
   // https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
   const canInitiateUnstake = !disconnected && data?.userStake.gt(0);
-
-  const abbrStr = (str: string) => {
-    return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
-  };
 
   return (
     <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">

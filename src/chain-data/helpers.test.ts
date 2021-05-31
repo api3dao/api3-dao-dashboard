@@ -1,4 +1,4 @@
-import { updateImmutably } from './helpers';
+import { updateImmutably, abbrStr } from './helpers';
 
 test('updateImmutably', () => {
   const value = { a: 123, b: 'hi' };
@@ -8,4 +8,10 @@ test('updateImmutably', () => {
 
   expect(value).toEqual({ a: 123, b: 'hi' });
   expect(newValue).toEqual({ a: 789, b: 'hi' });
+});
+
+test('abbrStr', () => {
+  const string = 'dffd4543xggdfgdter5452442zsdfs31214';
+
+  expect(abbrStr(string)).toBe('dffd4543x...1214');
 });
