@@ -1,5 +1,4 @@
 import { useState, ReactNode } from 'react';
-import classNames from 'classnames';
 import { ProposalType } from '../../../chain-data';
 import Button from '../../../components/button/button';
 import RadioButton from '../../../components/radio-button/radio-button';
