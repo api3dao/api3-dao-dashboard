@@ -2,6 +2,7 @@ import { useState, ReactNode } from 'react';
 import classNames from 'classnames';
 import { ProposalType } from '../../../chain-data';
 import Button from '../../../components/button/button';
+import RadioButton from '../../../components/radio-button/radio-button';
 import Input from '../../../components/input/input';
 import Textarea from '../../../components/textarea/textarea';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
@@ -41,7 +42,21 @@ const NewProposalForm = (props: Props) => {
 
       <ProposalFormItem name="proposal type">
         <div className="new-proposal-form-radio-buttons">
-          <div className={classNames('new-proposal-form-radio', { [`_checked`]: type === 'primary' })}>
+          <RadioButton
+            label="Primary"
+            name="type"
+            onChange={() => setType('primary')}
+            checked={type === 'primary'}
+            color="white"
+          />
+          <RadioButton
+            label="Secondary"
+            name="type"
+            onChange={() => setType('secondary')}
+            checked={type === 'secondary'}
+            color="white"
+          />
+          {/* <div className={classNames('new-proposal-form-radio', { [`_checked`]: type === 'primary' })}>
             <input
               type="radio"
               id="primary"
@@ -61,7 +76,7 @@ const NewProposalForm = (props: Props) => {
               checked={type === 'secondary'}
             />
             <label htmlFor="secondary">Secondary</label>
-          </div>
+          </div> */}
         </div>
       </ProposalFormItem>
 

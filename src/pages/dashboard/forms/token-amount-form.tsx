@@ -77,7 +77,7 @@ const TokenAmountForm = (props: Props) => {
       {showTokenInput && (
         <div className="text-center">
           <p className="tokenAmountForm-token medium">TOKEN</p>
-          <Input value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
+          <Input type="autosize-text" value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
           {error && <p className="tokenAmountForm-error">{error}</p>}
           {helperText}
         </div>

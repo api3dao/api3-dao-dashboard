@@ -5,6 +5,8 @@ import './dropdown.scss';
 interface DropwdownProps {
   children: ReactNode;
   menu: ReactNode;
+  icon?: ReactNode;
+  alignIcon?: 'start' | 'center' | 'end';
 }
 
 interface DropdownMenuProps {
@@ -14,15 +16,18 @@ interface DropdownMenuProps {
 interface DropdownMenuItemProps {
   children: ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
 export const DropdownMenu = ({ children }: DropdownMenuProps) => <div className="dropdown-menu">{children}</div>;
 
-export const DropdownMenuItem = ({ children, className }: DropdownMenuItemProps) => (
-  <div className={classNames('dropdown-menu-item', className)}>{children}</div>
+export const DropdownMenuItem = ({ children, className, onClick }: DropdownMenuItemProps) => (
+  <div onClick={onClick} className={classNames('dropdown-menu-item', className, { [`_clickable`]: onClick })}>
+    {children}
+  </div>
 );
 
-const Dropdown = ({ children, menu }: DropwdownProps) => {
+const Dropdown = ({ children, menu, icon, alignIcon = 'center' }: DropwdownProps) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -41,9 +46,11 @@ const Dropdown = ({ children, menu }: DropwdownProps) => {
 
   return (
     <div className="dropdown" ref={dropdownRef}>
-      <div className="dropdown-button" onClick={() => setOpen(!open)}>
+      <div className={classNames('dropdown-button', alignIcon)} onClick={() => setOpen(!open)}>
         {children}
-        <img src="/dropdown.svg" className={classNames('dropdown-icon', { [`_open`]: open })} alt="dropdown icon" />
+        <div className={classNames('dropdown-icon', { [`_open`]: open })}>
+          {icon || <img src="/dropdown.svg" alt="dropdown icon" />}
+        </div>
       </div>
       {open && menu}
     </div>

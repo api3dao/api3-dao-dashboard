@@ -6,9 +6,20 @@
 
 .dropdown-button {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   cursor: pointer;
+
+  &.start {
+    align-items: flex-start;
+  }
+
+  &.center {
+    align-items: center;
+  }
+
+  &.end {
+    align-items: flex-end;
+  }
 }
 
 .dropdown-menu {
@@ -24,13 +35,23 @@
 
 .dropdown-icon {
   margin-left: $space-sm;
-  transition: transform 250ms;
+
+  & > img {
+    transition: transform 250ms;
+  }
+
   &._open {
-    transform: rotate(180deg);
+    & > img {
+      transform: rotate(180deg);
+    }
   }
 }
 
 .dropdown-menu-item {
   padding: $space-xs;
   border-bottom: 1px solid $dropdown-border-color;
+
+  &._clickable {
+    cursor: pointer;
+  }
 }

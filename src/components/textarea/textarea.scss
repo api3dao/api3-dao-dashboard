@@ -12,6 +12,7 @@
   padding: $space-xs 0;
   box-sizing: border-box;
   outline: none;
+  resize: vertical;
   &::placeholder {
     color: $tertiary-color;
   }

@@ -27,6 +27,10 @@
 .new-proposal-form-radio-buttons {
   display: flex;
   align-items: center;
+
+  & > * {
+    width: 50%;
+  }
 }
 
 .new-proposal-form-radio {
