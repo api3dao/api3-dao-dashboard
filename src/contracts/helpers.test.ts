@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { formatApi3 } from '../utils/api3-format';
 import {
   calculateApy,

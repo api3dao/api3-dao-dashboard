@@ -1,25 +1,25 @@
 @import '../../../styles/variables.scss';
 
-.tokenAmountModal-token {
+.tokenAmountForm-token {
   margin-bottom: $space-lg;
   text-transform: uppercase;
 }
 
-.depositModal-balance {
+.tokenDepositForm-balance {
   margin-top: $space-lg;
 }
 
-.tokenAmountModal-actions {
+.tokenAmountForm-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.tokenAmountModal-approve {
+.tokenAmountForm-approve {
   margin-right: $space-lg;
 }
 
-.tokenAmountModal-error {
+.tokenAmountForm-error {
   margin-top: $space-xl;
   color: red;
 }

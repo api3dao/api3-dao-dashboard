@@ -1,19 +1,18 @@
 import { BigNumber } from 'ethers';
-import { ChangeEventHandler, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import classNames from 'classnames';
-import Modal from '../../../components/modal/modal';
+import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
 import { go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
-import './modals.scss';
+import './forms.scss';
 
 interface Props {
   title: string;
   action: 'Withdraw' | 'Stake' | 'Initiate Unstaking';
   onConfirm: (parsedInput: BigNumber) => Promise<any>;
   onClose: () => void;
-  open: boolean;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  onChange: (input: string) => void;
   inputValue: string;
   helperText?: ReactNode;
   showTokenInput?: boolean;
@@ -21,14 +20,14 @@ interface Props {
   closeOnConfirm?: boolean;
 }
 
-const TokenAmountModal = (props: Props) => {
+const TokenAmountForm = (props: Props) => {
   const [error, setError] = useState('');
   const {
     action,
     onConfirm,
-    onClose,
     maxValue,
     onChange,
+    onClose,
     inputValue,
     helperText,
     showTokenInput = true,
@@ -67,21 +66,25 @@ const TokenAmountModal = (props: Props) => {
     }
 
     if (closeOnConfirm) {
-      props.onClose();
+      onClose();
     }
   };
 
-  const handleClose = () => {
-    setError('');
-    onClose();
-  };
-
   return (
-    <Modal
-      open={props.open}
-      header={props.title}
-      footer={
-        <div className={classNames({ [`tokenAmountModal-actions`]: !showTokenInput })}>
+    <>
+      <ModalHeader>{props.title}</ModalHeader>
+
+      {showTokenInput && (
+        <div className="text-center">
+          <p className="tokenAmountForm-token medium">TOKEN</p>
+          <Input value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
+          {error && <p className="tokenAmountForm-error">{error}</p>}
+          {helperText}
+        </div>
+      )}
+
+      <ModalFooter>
+        <div className={classNames({ [`tokenAmountForm-actions`]: !showTokenInput })}>
           {!showTokenInput && (
             <Button type="text" onClick={onClose}>
               Cancel
@@ -91,19 +94,9 @@ const TokenAmountModal = (props: Props) => {
             {action}
           </Button>
         </div>
-      }
-      onClose={handleClose}
-    >
-      {showTokenInput && (
-        <>
-          <p className="tokenAmountModal-token medium">TOKEN</p>
-          <Input value={inputValue} onChange={onChange} size="large" />
-          {error && <p className="tokenAmountModal-error">{error}</p>}
-          {helperText}
-        </>
-      )}
-    </Modal>
+      </ModalFooter>
+    </>
   );
 };
 
-export default TokenAmountModal;
+export default TokenAmountForm;

@@ -4,7 +4,7 @@ import Web3Modal from 'web3modal';
 import { initialChainData, getChainData, useChainData } from '../../chain-data';
 import { go } from '../../utils/generic';
 import Button from '../../components/button/button';
-import GenericModal from '../../components/modal/modal';
+import { Modal as GenericModal } from '../../components/modal/modal';
 import './sign-in.scss';
 import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscriptions } from '../../contracts';
 

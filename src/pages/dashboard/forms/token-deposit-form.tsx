@@ -2,21 +2,20 @@ import { BigNumber } from 'ethers';
 import { useState } from 'react';
 import { MAX_ALLOWANCE, useApi3Pool, useApi3Token } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
-import Modal from '../../../components/modal/modal';
+import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
 import { go, goSync, isUserRejection, formatApi3, parseApi3, messages } from '../../../utils';
-import './modals.scss';
+import './forms.scss';
 
 interface Props {
   allowance: BigNumber;
   balance: BigNumber;
   onClose: () => void;
-  open: boolean;
 }
 
-const TokenDepositModal = (props: Props) => {
-  const { allowance, balance, onClose } = props;
+const TokenDepositForm = (props: Props) => {
+  const { allowance, balance } = props;
 
   const { setChainData, transactions, userAccount } = useChainData();
   const api3Token = useApi3Token();
@@ -85,12 +84,6 @@ const TokenDepositModal = (props: Props) => {
     props.onClose();
   };
 
-  const handleClose = () => {
-    setInputValue('');
-    setError('');
-    onClose();
-  };
-
   if (!api3Pool || !api3Token) {
     return null;
   }
@@ -99,16 +92,23 @@ const TokenDepositModal = (props: Props) => {
   const canDeposit = !parseErr && !!inputBigNum && !approvalRequired && inputBigNum.gt(0);
 
   return (
-    <Modal
-      open={props.open}
-      header="How many tokens would you like to deposit?"
-      footer={
+    <>
+      <ModalHeader>How many tokens would you like to deposit?</ModalHeader>
+
+      <div className="text-center">
+        <p className="tokenAmountForm-token medium">TOKEN</p>
+        <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
+        {error && <p className="tokenAmountForm-error">{error}</p>}
+        <div className="tokenDepositForm-balance">Wallet balance: {balance ? formatApi3(balance) : '0.0'}</div>
+      </div>
+
+      <ModalFooter>
         <div>
           <Button
             type={approvalRequired ? 'primary' : 'secondary'}
             onClick={handleApprove}
             disabled={!approvalRequired}
-            className="tokenAmountModal-approve"
+            className="tokenAmountForm-approve"
           >
             Approve
           </Button>
@@ -117,15 +117,9 @@ const TokenDepositModal = (props: Props) => {
             Deposit
           </Button>
         </div>
-      }
-      onClose={handleClose}
-    >
-      <p className="tokenAmountModal-token medium">TOKEN</p>
-      <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
-      {error && <p className="tokenAmountModal-error">{error}</p>}
-      <div className="depositModal-balance">Your balance: {balance ? formatApi3(balance) : '0.0'}</div>
-    </Modal>
+      </ModalFooter>
+    </>
   );
 };
 
-export default TokenDepositModal;
+export default TokenDepositForm;

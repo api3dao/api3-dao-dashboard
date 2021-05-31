@@ -1,23 +1,23 @@
 import Button from '../../../../components/button/button';
-import Modal from '../../../../components/modal/modal';
+import { ModalFooter, ModalHeader } from '../../../../components/modal/modal';
 import { useApi3Pool } from '../../../../contracts';
 import './undelegate.scss';
 
 interface Props {
-  open: boolean;
   onClose: () => void;
 }
 
-const UndelegateModal = (props: Props) => {
-  const { open, onClose } = props;
+const UndelegateForm = (props: Props) => {
+  const { onClose } = props;
   const api3Pool = useApi3Pool();
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      header="Confirm undelegation"
-      footer={
+    <>
+      <ModalHeader>Confirm undelegation</ModalHeader>
+
+      <p className="undelegate body">Are you sure you want to undelegate voting power?</p>
+
+      <ModalFooter>
         <div className="undelegate actions">
           <Button type="secondary" size="large" onClick={onClose}>
             No
@@ -37,11 +37,9 @@ const UndelegateModal = (props: Props) => {
             Yes
           </Button>
         </div>
-      }
-    >
-      <p className="undelegate body">Are you sure you want to undelegate voting power?</p>
-    </Modal>
+      </ModalFooter>
+    </>
   );
 };
 
-export default UndelegateModal;
+export default UndelegateForm;
