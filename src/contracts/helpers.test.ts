@@ -1,4 +1,5 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
+import round from 'lodash/round';
 import { formatApi3 } from '../utils/api3-format';
 import {
   calculateApy,
@@ -22,7 +23,8 @@ describe('calculateAnnualInflationRate and friends', () => {
     const totalStake = API3_TOKEN_SUPPLY.div(2);
 
     test('calculate APY', () => {
-      expect(calculateApy(currentApr)).toBe(110.5689140647931);
+      // Precision is not important here
+      expect(round(calculateApy(currentApr), 6)).toBe(110.568914);
     });
 
     test('calculateAnnualMintedTokens', () => {
