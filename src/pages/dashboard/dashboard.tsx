@@ -1,5 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber';
-import last from 'lodash/last';
+import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
 import {
@@ -7,13 +6,12 @@ import {
   calculateAnnualInflationRate,
   calculateAnnualMintedTokens,
   calculateApy,
-  min,
   totalStakedPercentage,
   useApi3Pool,
   useApi3Token,
   useOnMinedBlockAndMount,
 } from '../../contracts';
-import { Api3Pool } from '../../generated-contracts';
+import { computeTokenBalances, getScheduledUnstake } from '../../logic/dashboard/amounts';
 import { formatApi3 } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
@@ -25,46 +23,6 @@ import StakingPool from './staking/staking-pool';
 import Slider from '../../components/slider/slider';
 import BorderedBox from '../../components/bordered-box/bordered-box';
 import './dashboard.scss';
-
-const computeTokenBalances = async (api3Pool: Api3Pool, userAccount: string) => {
-  const user = await api3Pool.users(userAccount);
-  const staked = await api3Pool.userStake(userAccount);
-  const unstaked = user.unstaked;
-  const balance = staked.add(unstaked);
-
-  const userLocked = await api3Pool.getUserLocked(userAccount);
-  const lockedAndVesting = userLocked.add(user.vesting);
-  const withdrawable = min(unstaked, balance.sub(lockedAndVesting));
-
-  return {
-    balance,
-    withdrawable,
-  };
-};
-
-const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {
-  const scheduledUnstakeFilter = api3Pool.filters.ScheduledUnstake(userAccount, null, null, null);
-
-  const lastUnstake = last(await api3Pool.queryFilter(scheduledUnstakeFilter));
-  if (!lastUnstake) return null;
-
-  const unstakedFilter = api3Pool.filters.Unstaked(userAccount, null);
-  const unstakedEvents = await api3Pool.queryFilter(unstakedFilter, lastUnstake.blockNumber);
-  if (unstakedEvents.length > 0) {
-    return null;
-  }
-
-  const epochLength = await api3Pool.EPOCH_LENGTH();
-  const scheduledFor = lastUnstake.args.scheduledFor;
-
-  const toDate = (timestamp: BigNumber) => new Date(timestamp.toNumber());
-
-  return {
-    amount: formatApi3(lastUnstake.args.amount),
-    scheduledFor: toDate(scheduledFor.mul(1000)),
-    deadline: toDate(scheduledFor.add(epochLength).mul(1000)),
-  };
-};
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
