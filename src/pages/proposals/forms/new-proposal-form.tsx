@@ -55,27 +55,6 @@ const NewProposalForm = (props: Props) => {
             checked={type === 'secondary'}
             color="white"
           />
-          {/* <div className={classNames('new-proposal-form-radio', { [`_checked`]: type === 'primary' })}>
-            <input
-              type="radio"
-              id="primary"
-              name="type"
-              onChange={() => setType('primary')}
-              checked={type === 'primary'}
-            />
-            <label htmlFor="primary">Primary</label>
-          </div>
-
-          <div className={classNames('new-proposal-form-radio', { [`_checked`]: type === 'secondary' })}>
-            <input
-              type="radio"
-              id="secondary"
-              name="type"
-              onChange={() => setType('secondary')}
-              checked={type === 'secondary'}
-            />
-            <label htmlFor="secondary">Secondary</label>
-          </div> */}
         </div>
       </ProposalFormItem>
 
