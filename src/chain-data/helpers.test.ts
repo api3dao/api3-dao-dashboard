@@ -11,7 +11,7 @@ test('updateImmutably', () => {
 });
 
 test('abbrStr', () => {
-  const string = '000000000000000000000000000000000000000000';
+  const string = 'dffd4543xggdfgdter5452442zsdfs31214';
 
-  expect(abbrStr(string)).toBe('000000000...0000');
+  expect(abbrStr(string)).toBe('dffd4543x...1214');
 });
