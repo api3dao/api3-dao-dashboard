@@ -29,8 +29,9 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Lint
         run: yarn lint
-        # Building also ensuring the localhost deployment ABI is present
-      - name: Build
-        run: yarn build
+      - name: Prepare config
+        run: yarn copy-localhost-deployment
+      - name: Compile
+        run: yarn tsc
       - name: Test
         run: yarn test
