@@ -1,4 +1,4 @@
-import { Proposal, ProposalState, ProposalType } from '../../chain-data';
+import { Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage } from '../../contracts';
 
 export const voteSliderSelector = (proposal: Proposal) => {
@@ -16,9 +16,9 @@ export const voteSliderSelector = (proposal: Proposal) => {
   };
 };
 
-export const proposalDetailsSelector = (proposalState: ProposalState | null, type: ProposalType, id: string) => {
-  if (!proposalState) return null;
+export const proposalDetailsSelector = (proposals: Proposals | null, type: ProposalType, id: string) => {
+  if (!proposals) return null;
 
-  const proposal = proposalState[type].proposals.find((p) => p.voteId.toString() === id);
+  const proposal = proposals[type].find((p) => p.voteId.toString() === id);
   return proposal ?? null;
 };

@@ -1,13 +1,12 @@
 import { BigNumber } from 'ethers';
 import { useCallback } from 'react';
-import { ProposalType, Treasury, useChainData, VoterState } from '../../chain-data';
+import { ProposalType, useChainData, VoterState } from '../../chain-data';
 import { Api3Voting } from '../../generated-contracts';
 import { useApi3Voting, useConvenience, useOnMinedBlockAndMount } from '../../contracts/hooks';
 import { Proposal } from '../../chain-data';
 import { decodeMetadata } from './encoding';
 import zip from 'lodash/zip';
-import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, assertGoSuccess, GO_ERROR_INDEX } from '../../utils';
-import { isZeroAddress } from '../../contracts';
+import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, GO_ERROR_INDEX } from '../../utils';
 
 interface StartVoteProposal {
   voteId: BigNumber;
@@ -59,8 +58,8 @@ const getProposals = async (
 };
 
 // TODO: error handling
-export const useProposalState = () => {
-  const { setChainData, userAccount, proposalState } = useChainData();
+export const useLoadAllProposals = () => {
+  const { setChainData, userAccount, proposals } = useChainData();
 
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
@@ -79,52 +78,18 @@ export const useProposalState = () => {
       const secondaryProposals = await getProposals(secondary, userAccount, secondaryStartVotes, 'secondary');
 
       return {
-        primary: {
-          proposals: primaryProposals,
-        },
-        secondary: {
-          proposals: secondaryProposals,
-        },
+        primary: primaryProposals,
+        secondary: secondaryProposals,
       };
     };
 
-    const loadTreasuryAndDelegation = async () => {
-      const goResponse = await go(convenience.getTreasuryAndUserDelegationData(userAccount));
-      assertGoSuccess(goResponse);
-      const data = goResponse[GO_RESULT_INDEX];
-
-      const treasury: Treasury[] = [];
-      for (let i = 0; i < data.names.length; i++) {
-        treasury.push({
-          name: data.names[i],
-          symbol: data.symbols[i],
-          decimal: data.decimals[i],
-          balanceOfPrimaryAgent: data.balancesOfPrimaryAgent[i],
-          balanceOfSecondaryAgent: data.balancesOfSecondaryAgent[i],
-        });
-      }
-
-      return {
-        delegation: {
-          delegate: isZeroAddress(data.delegate) ? null : data.delegate,
-          mostRecentDelegationTimestamp: blockTimestampToDate(data.mostRecentDelegationTimestamp),
-          mostRecentProposalTimestamp: blockTimestampToDate(data.mostRecentProposalTimestamp),
-          mostRecentUndelegationTimestam: blockTimestampToDate(data.mostRecentUndelegationTimestamp),
-          mostRecentVoteTimestamp: blockTimestampToDate(data.mostRecentVoteTimestamp),
-        },
-        treasury,
-      };
-    };
-
-    const goResponse = await go(Promise.all([loadProposals(), loadTreasuryAndDelegation()]));
+    const goResponse = await go(loadProposals());
     if (isGoSuccess(goResponse)) {
-      const proposals = goResponse[GO_RESULT_INDEX][0];
-      const treasuryAndDelegation = goResponse[GO_RESULT_INDEX][1];
+      const proposals = goResponse[GO_RESULT_INDEX];
 
       setChainData('Load proposal state (active proposals, delegation, treasury)', {
-        proposalState: {
+        proposals: {
           ...proposals,
-          ...treasuryAndDelegation,
         },
       });
     } else {
@@ -136,5 +101,5 @@ export const useProposalState = () => {
   // Ensure that the proposals are up to date with blockchain
   useOnMinedBlockAndMount(loadProposalState);
 
-  return proposalState;
+  return proposals;
 };

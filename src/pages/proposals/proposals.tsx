@@ -8,16 +8,17 @@ import { Modal } from '../../components/modal/modal';
 import BorderedBox from '../../components/bordered-box/bordered-box';
 import Treasury from './treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
-import { useProposalState } from '../../logic/proposals/use-proposal-state';
+import { useLoadAllProposals } from '../../logic/proposals/use-proposal-state';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from './proposal-list/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import DelegateVotesForm from './forms/delegate-votes-form';
 import UndelegateForm from './forms/undelegate/undelegate-form';
 import './proposals.scss';
+import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 
 const Proposals = () => {
-  const { provider, proposalState } = useChainData();
+  const { provider, delegation } = useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
   const api3Agent = useApi3AgentAddresses();
@@ -27,7 +28,8 @@ const Proposals = () => {
 
   const [openNewProposalModal, setOpenNewProposalModal] = useState(false);
 
-  useProposalState();
+  useLoadAllProposals();
+  useTreasuryAndDelegation();
 
   const onCreateProposal = async (formData: NewProposalFormData) => {
     if (!api3Token || !api3Voting || !api3Agent) return null;
@@ -47,9 +49,9 @@ const Proposals = () => {
       <div className="proposals-header">
         {/* TODO: Should the buttons be disabled according to conditions in https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622114047033800?thread_ts=1622113523.033100&cid=C020RCCC3EJ */}
         {/* There was another slack discussion where we said we want to avoid disabled buttons */}
-        {proposalState?.delegation.delegate ? (
+        {delegation?.delegate ? (
           <div>
-            <p className="secondary-color bold">Delegated to: {abbrStr(proposalState.delegation.delegate)}</p>
+            <p className="secondary-color bold">Delegated to: {abbrStr(delegation.delegate)}</p>
             <Button className="proposals-link" type="text" onClick={() => setOpenDelegationModal(true)}>
               Update delegation
             </Button>
