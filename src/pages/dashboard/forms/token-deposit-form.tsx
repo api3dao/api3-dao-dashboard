@@ -5,6 +5,7 @@ import { useChainData } from '../../../chain-data';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
+import { useNotifications } from '../../../components/notifications/notifications';
 import { go, goSync, isUserRejection, formatApi3, parseApi3, messages } from '../../../utils';
 import './forms.scss';
 
@@ -20,6 +21,7 @@ const TokenDepositForm = (props: Props) => {
   const { setChainData, transactions, userAccount } = useChainData();
   const api3Token = useApi3Token();
   const api3Pool = useApi3Pool();
+  const notifications = useNotifications();
 
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
@@ -35,8 +37,7 @@ const TokenDepositForm = (props: Props) => {
     const [err, tx] = await go(api3Token.approve(api3Pool.address, MAX_ALLOWANCE));
     if (err) {
       if (isUserRejection(err)) {
-        // TODO: rather create a toast/notification
-        setError(messages.TX_APPROVAL_REJECTED);
+        notifications.info(messages.TX_APPROVAL_REJECTED);
         return;
       }
       setError(messages.TX_APPROVAL_ERROR);
@@ -69,8 +70,7 @@ const TokenDepositForm = (props: Props) => {
     const [err, tx] = await go(api3Pool.deposit(userAccount, parseApi3(inputValue), userAccount));
     if (err) {
       if (isUserRejection(err)) {
-        // TODO: rather create a toast/notification
-        setError(messages.TX_DEPOSIT_REJECTED);
+        notifications.info(messages.TX_DEPOSIT_REJECTED);
         return;
       }
       setError(messages.TX_DEPOSIT_ERROR);

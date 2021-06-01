@@ -18,6 +18,7 @@ import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
 import { Modal } from '../../components/modal/modal';
 import Button from '../../components/button/button';
+import { useNotifications } from '../../components/notifications/notifications';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
 import Slider from '../../components/slider/slider';
@@ -30,6 +31,8 @@ const Dashboard = () => {
   const { dashboardState: data, userAccount, provider, transactions, setChainData } = useChainData();
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
+  const { info } = useNotifications();
+  info('Connected to the blockchain');
 
   // Load the data again on every block (10 - 20 seconds on average). This will also run
   // immediately if the user is already on the dashboard and they have just connected.
