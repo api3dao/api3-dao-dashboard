@@ -1,41 +1,61 @@
 import { toast, Slide, ToastOptions } from 'react-toastify';
-import styles from './notifications.module.scss';
 import 'react-toastify/dist/ReactToastify.css';
+import './react-toastify-overrides.scss';
+import styles from './notifications.module.scss';
 
+// https://fkhadra.github.io/react-toastify/api/toast
 const BASE_OPTIONS: ToastOptions = {
   transition: Slide,
   hideProgressBar: true,
 };
 
-export const useNotifications = () => {
-  const info = (message: string, overrides?: ToastOptions) =>
-    toast.info(<Info message={message} />, { ...BASE_OPTIONS, ...overrides });
-  const success = (message: string, overrides?: ToastOptions) =>
-    toast.success(message, { ...BASE_OPTIONS, ...overrides });
-  const warning = (message: string, overrides?: ToastOptions) =>
-    toast.warning(message, { ...BASE_OPTIONS, ...overrides });
-  const error = (message: string, overrides?: ToastOptions) => toast.error(message, { ...BASE_OPTIONS, ...overrides });
-
-  const close = (id: string) => toast.dismiss(id);
-  const closeAll = () => toast.dismiss();
-
-  return { info, success, warning, error, close, closeAll };
+export const info = (message: string, overrides?: ToastOptions) => {
+  return toast.info(<InfoToast message={message} />, { ...BASE_OPTIONS, ...overrides });
 };
 
+export const success = (message: string, overrides?: ToastOptions) => {
+  return toast.success(<SuccessToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+};
+
+export const warning = (message: string, overrides?: ToastOptions) => {
+  return toast.warning(<WarningToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+};
+
+export const error = (message: string, overrides?: ToastOptions) => {
+  return toast.error(<ErrorToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+};
+
+export const close = (id: string) => toast.dismiss(id);
+
+export const closeAll = () => toast.dismiss();
+
+// TODO: add styling for various components
 interface CloseButtonProps {
   closeToast: () => void;
 }
 
 export const CloseButton = ({ closeToast }: CloseButtonProps) => (
-  <i className={styles.closeButton} onClick={() => closeToast()}>
+  <div className={styles.closeButton} onClick={() => closeToast()}>
     X
-  </i>
+  </div>
 );
 
 interface ToastProps {
   message: string;
 }
 
-const Info = ({ message }: ToastProps) => {
-  return <p style={{ fontSize: 12 }}>{message}</p>;
+const InfoToast = ({ message }: ToastProps) => {
+  return <p>{message}</p>;
+};
+
+const SuccessToast = ({ message }: ToastProps) => {
+  return <p>{message}</p>;
+};
+
+const WarningToast = ({ message }: ToastProps) => {
+  return <p>{message}</p>;
+};
+
+const ErrorToast = ({ message }: ToastProps) => {
+  return <p>{message}</p>;
 };

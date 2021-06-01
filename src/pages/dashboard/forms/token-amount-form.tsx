@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
+import * as notifications from '../../../components/notifications/notifications';
 import { go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
 import './forms.scss';
 
@@ -57,8 +58,7 @@ const TokenAmountForm = (props: Props) => {
     const [err] = await go(onConfirm(inputBigNum));
     if (err) {
       if (isUserRejection(err)) {
-        // TODO: rather create a toast/notification
-        setError(messages.TX_GENERIC_REJECTED);
+        notifications.info(messages.TX_GENERIC_REJECTED);
         return;
       }
       setError(messages.TX_GENERIC_ERROR);

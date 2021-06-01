@@ -5,7 +5,7 @@ import { useChainData } from '../../../chain-data';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import { useNotifications } from '../../../components/notifications/notifications';
+import * as notifications from '../../../components/notifications/notifications';
 import { go, goSync, isUserRejection, formatApi3, parseApi3, messages } from '../../../utils';
 import './forms.scss';
 
@@ -21,7 +21,6 @@ const TokenDepositForm = (props: Props) => {
   const { setChainData, transactions, userAccount } = useChainData();
   const api3Token = useApi3Token();
   const api3Pool = useApi3Pool();
-  const notifications = useNotifications();
 
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
