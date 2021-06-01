@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
-import { initialChainData, getChainData, useChainData } from '../../chain-data';
+import { initialChainData, getNetworkData, useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import { go } from '../../utils/generic';
 import Button from '../../components/button/button';
@@ -78,7 +78,7 @@ const SignIn = () => {
     // NOTE: You can access the underlying 'web3ModalProvider' using 'provider' property
     const provider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
     // User has chosen a provider and has signed in
-    setChainData('User connected', { ...(await getChainData(provider)) });
+    setChainData('User connected', { ...(await getNetworkData(provider)) });
   };
 
   const isSignedIn = !!provider && contracts !== null;
