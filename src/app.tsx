@@ -2,7 +2,6 @@ import './styles/main.scss';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import ChainDataContextProvider from './chain-data';
-import { CloseButton } from './components/notifications/notifications';
 import Dashboard from './pages/dashboard';
 import Proposals from './pages/proposals';
 import ProposalDetails from './pages/proposal-details';
@@ -10,7 +9,7 @@ import ProposalDetails from './pages/proposal-details';
 function App() {
   return (
     <ChainDataContextProvider>
-      <ToastContainer closeButton={CloseButton} />
+      <ToastContainer />
       <Router>
         {/* NOTE: The first matching root is used. This imples that `/` must be last */}
         <Switch>

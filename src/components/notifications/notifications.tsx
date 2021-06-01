@@ -3,32 +3,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import './react-toastify-overrides.scss';
 import styles from './notifications.module.scss';
 
-// https://fkhadra.github.io/react-toastify/api/toast
-const BASE_OPTIONS: ToastOptions = {
-  transition: Slide,
-  hideProgressBar: true,
-};
-
-export const info = (message: string, overrides?: ToastOptions) => {
-  return toast.info(<InfoToast message={message} />, { ...BASE_OPTIONS, ...overrides });
-};
-
-export const success = (message: string, overrides?: ToastOptions) => {
-  return toast.success(<SuccessToast message={message} />, { ...BASE_OPTIONS, ...overrides });
-};
-
-export const warning = (message: string, overrides?: ToastOptions) => {
-  return toast.warning(<WarningToast message={message} />, { ...BASE_OPTIONS, ...overrides });
-};
-
-export const error = (message: string, overrides?: ToastOptions) => {
-  return toast.error(<ErrorToast message={message} />, { ...BASE_OPTIONS, ...overrides });
-};
-
-export const close = (id: string) => toast.dismiss(id);
-
-export const closeAll = () => toast.dismiss();
-
 // TODO: add styling for various components
 interface CloseButtonProps {
   closeToast: () => void;
@@ -59,3 +33,30 @@ const WarningToast = ({ message }: ToastProps) => {
 const ErrorToast = ({ message }: ToastProps) => {
   return <p>{message}</p>;
 };
+
+// https://fkhadra.github.io/react-toastify/api/toast
+const BASE_OPTIONS: ToastOptions = {
+  transition: Slide,
+  closeButton: CloseButton,
+  hideProgressBar: true,
+};
+
+export const info = (message: string, overrides?: ToastOptions) => {
+  return toast.info(<InfoToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+};
+
+export const success = (message: string, overrides?: ToastOptions) => {
+  return toast.success(<SuccessToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+};
+
+export const warning = (message: string, overrides?: ToastOptions) => {
+  return toast.warning(<WarningToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+};
+
+export const error = (message: string, overrides?: ToastOptions) => {
+  return toast.error(<ErrorToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+};
+
+export const close = (id: string) => toast.dismiss(id);
+
+export const closeAll = () => toast.dismiss();
