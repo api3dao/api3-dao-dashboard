@@ -10,9 +10,7 @@ To install dependencies, run `yarn`. This will also compile the DAO contracts an
 1. To run the hardhat _(local blockchain simulator)_ use: `yarn eth:node`.
 2. To deploy the DAO contracts see [contract deployments instructions](#contract-deployments)
 3. In a separate terminal, start a development server with `yarn start`.
-4. Run `yarn fund-account <address>` _(and optionally pass `amount` parameter)_ to send some ETH to your account.
-5. You can use `yarn send-tokens:<network> <address>` _(and optionally pass `amount` parameter)_ to transfer some API3
-   tokens.
+4. Run `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account.
 
 MetaMask doesn't handle localhost development, particularly that the chain is reset after on every `yarn eth:node`. If
 that happens, you can [reset the
