@@ -1,4 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber';
 import { Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage } from '../../contracts';
 
@@ -20,9 +19,17 @@ export const voteSliderSelector = (proposal: Proposal) => {
 export const proposalDetailsSelector = (proposals: Proposals | null, type: ProposalType, id: string) => {
   if (!proposals) return null;
 
-  const proposal = proposals[type].find((p) => p.voteId.toString() === id);
+  const proposal = proposals[type][id];
   return proposal ?? null;
 };
 
-export const getProposalByTypeAndIdSelector = (proposals: Proposals, type: ProposalType, id: BigNumber) =>
-  proposals[type].find((p) => p.voteId === id);
+export const openProposalIdsSelector = (proposals: Proposals | null) => {
+  if (!proposals) return { primary: [], secondary: [] };
+
+  const filterActiveProposalIds = (type: ProposalType) =>
+    Object.values(proposals[type])
+      .filter((p) => p.open)
+      .map((p) => p.voteId);
+
+  return { primary: filterActiveProposalIds('primary'), secondary: filterActiveProposalIds('secondary') };
+};

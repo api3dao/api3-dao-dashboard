@@ -8,7 +8,7 @@ import { Modal } from '../../components/modal/modal';
 import BorderedBox from '../../components/bordered-box/bordered-box';
 import Treasury from './treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
-import { useLoadAllProposals } from '../../logic/proposals/hooks';
+import { useLoadAllProposals, useReloadActiveProposalsOnMinedBlock } from '../../logic/proposals/hooks';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from './proposal-list/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
@@ -29,6 +29,7 @@ const Proposals = () => {
   const [openNewProposalModal, setOpenNewProposalModal] = useState(false);
 
   useLoadAllProposals();
+  useReloadActiveProposalsOnMinedBlock();
   useTreasuryAndDelegation();
 
   const onCreateProposal = async (formData: NewProposalFormData) => {

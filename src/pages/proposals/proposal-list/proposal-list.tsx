@@ -20,8 +20,8 @@ const ProposalList = () => {
   const { proposals } = useChainData();
 
   const allProposals = useMemo(() => {
-    const primaryProposals = proposals?.primary || [];
-    const secondaryProposals = proposals?.secondary || [];
+    const primaryProposals = Object.values(proposals?.primary || {});
+    const secondaryProposals = Object.values(proposals?.secondary || {});
 
     return [...primaryProposals, ...secondaryProposals].sort((p1, p2) =>
       p1.startDateRaw.lt(p2.startDateRaw) ? -1 : 1

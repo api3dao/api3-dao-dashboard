@@ -63,15 +63,11 @@ export interface Treasury {
   balanceOfSecondaryAgent: BigNumber;
 }
 
-export interface Proposals {
-  primary: Proposal[];
-  secondary: Proposal[];
-}
+export type ProposalDictionary = { [voteId: string]: Proposal };
 
-// TODO: This shouldn't be a state property probably, we should just derive this from proposal state
-export interface OpenProposalIds {
-  primary: BigNumber[];
-  secondary: BigNumber[];
+export interface Proposals {
+  primary: ProposalDictionary;
+  secondary: ProposalDictionary;
 }
 
 export interface ChainData {
@@ -81,7 +77,6 @@ export interface ChainData {
   contracts: typeof ContractsAddresses | null;
   dashboardState: DashboardState | null;
   proposals: Proposals | null;
-  openProposalIds: OpenProposalIds | null;
   treasuries: Treasury[];
   delegation: Delegation | null;
   transactions: ethers.ContractTransaction[];
@@ -101,7 +96,6 @@ export const initialChainData: ChainData = {
   contracts: null,
   dashboardState: null,
   proposals: null,
-  openProposalIds: null,
   treasuries: [],
   delegation: null,
   transactions: [],

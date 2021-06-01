@@ -12,3 +12,8 @@ export const usePrevious = (value: any) => {
   // Return previous value (happens before update in useEffect above)
   return ref.current;
 };
+
+export const useOnMountEffect = (fn: () => void) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(fn, []);
+};

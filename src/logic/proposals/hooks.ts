@@ -1,14 +1,14 @@
 import { BigNumber } from 'ethers';
-import { useCallback } from 'react';
-import { OpenProposalIds, Proposals, ProposalType, useChainData, VoterState } from '../../chain-data';
+import { useCallback, useEffect } from 'react';
+import { Proposals, ProposalType, updateImmutably, useChainData, VoterState } from '../../chain-data';
 import { Api3Voting, Convenience } from '../../generated-contracts';
 import { useApi3Voting, useConvenience, useOnMinedBlockAndMount } from '../../contracts/hooks';
 import { Proposal } from '../../chain-data';
 import { decodeMetadata } from './encoding';
 import zip from 'lodash/zip';
 import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, GO_ERROR_INDEX } from '../../utils';
-import { chunk, difference } from 'lodash';
-import { getProposalByTypeAndIdSelector } from './selectors';
+import { chunk, difference, keyBy } from 'lodash';
+import { openProposalIdsSelector, proposalDetailsSelector } from './selectors';
 
 interface StartVoteProposal {
   voteId: BigNumber;
@@ -63,7 +63,7 @@ const reloadActiveProposalsAsChunks = async (
   api3Voting: ReturnType<typeof useApi3Voting>,
   convenience: Convenience,
   userAccount: string,
-  previousOpenVoteIds: OpenProposalIds | null,
+  previousOpenVoteIds: ReturnType<typeof openProposalIdsSelector>,
   proposals: Proposals | null,
   onChunkLoaded: (proposals: Proposal[]) => void
 ) => {
@@ -72,7 +72,7 @@ const reloadActiveProposalsAsChunks = async (
   const types = ['primary', 'secondary'] as const;
 
   for (const type of types) {
-    const previousVoteIds = previousOpenVoteIds?.[type] ?? [];
+    const previousVoteIds = previousOpenVoteIds[type] ?? [];
     const currentVoteIds = await convenience.getOpenVoteIds(VOTING_APP_IDS[type]);
 
     // All of the new vote ids are new proposals created in the latest block and we need to fetch metadata for them
@@ -100,7 +100,7 @@ const reloadActiveProposalsAsChunks = async (
         const updatedProposals: Proposal[] = chunkIds.map((id, index) => {
           return {
             // TODO: We assume the proposal with the given id exists (and theoretically it might not)
-            ...getProposalByTypeAndIdSelector(proposals, type, id)!,
+            ...proposalDetailsSelector(proposals, type, id.toString())!,
             // NOTE: these are the the only fields that could have changed for active proposal
             yea: generalData.yea[index],
             nay: generalData.nay[index],
@@ -123,7 +123,7 @@ const VOTING_APP_IDS = {
 };
 
 export const useLoadAllProposals = () => {
-  const { setChainData, userAccount, proposals } = useChainData();
+  const { setChainData, userAccount } = useChainData();
 
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
@@ -131,7 +131,7 @@ export const useLoadAllProposals = () => {
   const loadProposals = useCallback(async () => {
     if (!api3Voting || !convenience) return;
 
-    // TODO: use convenience contract
+    // TODO: use convenience contract and refactor this to load proposals by chunks
     const loadProposals = async () => {
       const { primary, secondary } = api3Voting;
       const startVoteFilter = primary.filters.StartVote(null, null, null);
@@ -142,8 +142,8 @@ export const useLoadAllProposals = () => {
       const secondaryProposals = await getProposals(secondary, userAccount, secondaryStartVotes, 'secondary');
 
       return {
-        primary: primaryProposals,
-        secondary: secondaryProposals,
+        primary: keyBy(primaryProposals, 'voteId'),
+        secondary: keyBy(secondaryProposals, 'voteId'),
       };
     };
 
@@ -151,25 +151,24 @@ export const useLoadAllProposals = () => {
     if (isGoSuccess(goResponse)) {
       const proposals = goResponse[GO_RESULT_INDEX];
 
-      setChainData('Load proposal state (active proposals, delegation, treasury)', {
+      setChainData('Load proposals', {
         proposals: {
           ...proposals,
         },
       });
     } else {
       // TODO: error handling
-      console.error('Unable to load proposal state', goResponse[GO_ERROR_INDEX]);
+      console.error('Unable to load proposals', goResponse[GO_ERROR_INDEX]);
     }
   }, [api3Voting, convenience, userAccount, setChainData]);
 
-  // Ensure that the proposals are up to date with blockchain
-  useOnMinedBlockAndMount(loadProposals);
-
-  return proposals;
+  useEffect(() => {
+    loadProposals();
+  }, [loadProposals]);
 };
 
 export const useReloadActiveProposalsOnMinedBlock = () => {
-  const { setChainData, userAccount, proposals, openProposalIds } = useChainData();
+  const { setChainData, userAccount, proposals } = useChainData();
 
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
@@ -178,14 +177,19 @@ export const useReloadActiveProposalsOnMinedBlock = () => {
     if (!api3Voting || !convenience) return;
 
     const loadProposals = async () => {
-      const oldActiveProposalIds = openProposalIds;
+      const oldActiveProposalIds = openProposalIdsSelector(proposals);
 
       const updateState = (loadedChunk: Proposal[]) =>
-        setChainData('(Re)load active proposals after loaded chunk', (s) => {
-          console.log(loadedChunk);
-          // TODO: update state
-          return s;
-        });
+        setChainData('(Re)load active proposals after loaded chunk', (state) =>
+          updateImmutably(state, (immutableState) => {
+            const proposals = immutableState.proposals;
+            if (!proposals) return immutableState; // NOTE: This shouldn't happen
+
+            loadedChunk.forEach((proposal) => {
+              proposals.primary[proposal.voteId.toString()] = proposal;
+            });
+          })
+        );
 
       // TODO: maybe just inline this function?
       return reloadActiveProposalsAsChunks(
@@ -201,12 +205,10 @@ export const useReloadActiveProposalsOnMinedBlock = () => {
     const goResponse = await go(loadProposals());
     if (!isGoSuccess(goResponse)) {
       // TODO: error handling
-      console.error('Unable to load proposal state', goResponse[GO_ERROR_INDEX]);
+      console.error('Unable to reload active proposals', goResponse[GO_ERROR_INDEX]);
     }
-  }, [api3Voting, convenience, userAccount, setChainData, openProposalIds, proposals]);
+  }, [api3Voting, convenience, userAccount, setChainData, proposals]);
 
   // Ensure that the proposals are up to date with blockchain
   useOnMinedBlockAndMount(reloadActiveProposals);
-
-  return proposals;
 };
