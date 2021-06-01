@@ -17,16 +17,16 @@ const voteIdFormat = (voteId: BigNumber) => {
 };
 
 const ProposalList = () => {
-  const { proposalState } = useChainData();
+  const { proposals } = useChainData();
 
   const allProposals = useMemo(() => {
-    const primaryProposals = proposalState?.primary.proposals || [];
-    const secondaryProposals = proposalState?.secondary.proposals || [];
+    const primaryProposals = Object.values(proposals?.primary || {});
+    const secondaryProposals = Object.values(proposals?.secondary || {});
 
     return [...primaryProposals, ...secondaryProposals].sort((p1, p2) =>
       p1.startDateRaw.lt(p2.startDateRaw) ? -1 : 1
     );
-  }, [proposalState?.primary.proposals, proposalState?.secondary.proposals]);
+  }, [proposals?.primary, proposals?.secondary]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { Proposal, ProposalState, ProposalType } from '../../chain-data';
+import { Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage } from '../../contracts';
 
 export const voteSliderSelector = (proposal: Proposal) => {
@@ -16,9 +16,20 @@ export const voteSliderSelector = (proposal: Proposal) => {
   };
 };
 
-export const proposalDetailsSelector = (proposalState: ProposalState | null, type: ProposalType, id: string) => {
-  if (!proposalState) return null;
+export const proposalDetailsSelector = (proposals: Proposals | null, type: ProposalType, id: string) => {
+  if (!proposals) return null;
 
-  const proposal = proposalState[type].proposals.find((p) => p.voteId.toString() === id);
+  const proposal = proposals[type][id];
   return proposal ?? null;
+};
+
+export const openProposalIdsSelector = (proposals: Proposals | null) => {
+  if (!proposals) return { primary: [], secondary: [] };
+
+  const filterActiveProposalIds = (type: ProposalType) =>
+    Object.values(proposals[type])
+      .filter((p) => p.open)
+      .map((p) => p.voteId);
+
+  return { primary: filterActiveProposalIds('primary'), secondary: filterActiveProposalIds('secondary') };
 };
