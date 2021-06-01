@@ -1,6 +1,6 @@
-import classNames from 'classnames';
 import { useState } from 'react';
 import Button from '../../../components/button/button';
+import RadioButton from '../../../components/radio-button/radio-button';
 import './vote-form.scss';
 
 export type VotingChoice = 'for' | 'against';
@@ -17,22 +17,30 @@ const VoteForm = (props: Props) => {
   const isVotingFor = checked === 'for';
 
   return (
-    <>
-      <h5>Vote on Proposal {voteId}#</h5>
-      <div className="content text-xlarge">
-        <div className={classNames('for', { checked: isVotingFor })}>
-          <input type="radio" name="vote" id="for" checked={isVotingFor} onChange={() => setChecked('for')} />
-          <label htmlFor="for">For</label>
-        </div>
-        <div className={classNames('against', { checked: !isVotingFor })}>
-          <input type="radio" name="vote" id="against" checked={!isVotingFor} onChange={() => setChecked('against')} />
-          <label htmlFor="against">Against</label>
+    <div className="vote-form">
+      <h5>Vote on Proposal #{voteId}</h5>
+      <div className="vote-form-content">
+        <div>
+          <RadioButton
+            label={<h4>For</h4>}
+            onChange={() => setChecked('for')}
+            checked={isVotingFor}
+            name="vote"
+            color="green"
+          />
+          <RadioButton
+            label={<h4>Against</h4>}
+            onChange={() => setChecked('against')}
+            checked={!isVotingFor}
+            name="vote"
+            color="pink"
+          />
         </div>
       </div>
-      <Button type="secondary" onClick={() => onConfirm(checked)}>
-        Create transaction
+      <Button type="secondary" size="large" onClick={() => onConfirm(checked)}>
+        Create Transaction
       </Button>
-    </>
+    </div>
   );
 };
 

@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
+import { abbrStr } from '../../chain-data/helpers';
 import {
   absoluteStakeTarget,
   calculateAnnualInflationRate,
@@ -23,6 +24,7 @@ import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
 import Slider from '../../components/slider/slider';
 import BorderedBox from '../../components/bordered-box/bordered-box';
+import UnstakeBanner from './unstake-banner/unstake-banner';
 import './dashboard.scss';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
@@ -77,18 +79,18 @@ const Dashboard = () => {
 
   const disconnected = !api3Pool || !api3Token || !data;
   const canWithdraw = !disconnected && data?.withdrawable.gt(0);
+  const startDate = data?.pendingUnstake ? data?.pendingUnstake.scheduledFor.getTime() : 0;
+  const now = new Date().getTime();
+  const isDeadline = now > startDate;
 
   // TODO: update according to the specifications here:
   // https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
   const canInitiateUnstake = !disconnected && data?.userStake.gt(0);
 
-  const abbrStr = (str: string) => {
-    return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
-  };
-
   return (
     <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">
-      {disconnected && (
+      {isDeadline && data?.pendingUnstake && <UnstakeBanner />}
+      {!data?.pendingUnstake && (
         <>
           <h5 className="green-color">How This Works</h5>
           <Slider />
@@ -96,35 +98,37 @@ const Dashboard = () => {
       )}
       <h5 className="green-color">Staking Pool</h5>
       <StakingPool data={data || undefined} />
-      <div className="bordered-boxes">
-        <BorderedBox
-          header={
-            <div className="bordered-box-header">
-              <h5>Balance</h5>
-              <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
-                + Deposit
+      <div className="bordered-boxes-wrap">
+        <div className="staking-box-wrap">
+          <BorderedBox
+            header={
+              <div className="bordered-box-header">
+                <h5>Balance</h5>
+                <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
+                  + Deposit
+                </Button>
+              </div>
+            }
+            content={
+              <>
+                <div className="bordered-box-data">
+                  <p className="text-small secondary-color uppercase medium">total</p>
+                  <p className="text-xlarge">{data ? formatApi3(data.balance) : '0.0'}</p>
+                </div>
+                <div className="bordered-box-data">
+                  <p className="text-small secondary-color uppercase medium">withdrawable</p>
+                  <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
+                </div>
+              </>
+            }
+            footer={
+              <Button type="link" onClick={() => setOpenModal('withdraw')} disabled={!canWithdraw}>
+                Withdraw
               </Button>
-            </div>
-          }
-          content={
-            <>
-              <div className="bordered-box-data">
-                <p className="text-small secondary-color uppercase medium">total</p>
-                <p className="text-xlarge">{data ? formatApi3(data.balance) : '0.0'}</p>
-              </div>
-              <div className="bordered-box-data">
-                <p className="text-small secondary-color uppercase medium">withdrawable</p>
-                <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
-              </div>
-            </>
-          }
-          footer={
-            <Button type="link" onClick={() => setOpenModal('withdraw')} disabled={!canWithdraw}>
-              Withdraw
-            </Button>
-          }
-        />
-        <div className="staking-boxes">
+            }
+          />
+        </div>
+        <div className="staking-box-wrap">
           <BorderedBox
             header={
               <div className="bordered-box-header">

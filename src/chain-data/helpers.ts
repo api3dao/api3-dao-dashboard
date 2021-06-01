@@ -25,3 +25,7 @@ export const getChainData = async (provider: ethers.providers.Web3Provider | nul
 
   return { ...newData, provider };
 };
+
+export const abbrStr = (str: string) => {
+  return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
+};

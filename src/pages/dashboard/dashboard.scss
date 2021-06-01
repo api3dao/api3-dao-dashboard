@@ -1,6 +1,6 @@
 @import '../../styles/variables.scss';
 
-.bordered-boxes {
+.bordered-boxes-wrap {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -12,7 +12,7 @@
   }
 }
 
-.staking-boxes {
+.staking-box-wrap {
   width: 100%;
   max-width: 420px;
   & > * {

@@ -3,3 +3,12 @@
 .marginTop {
   margin-top: $space-xl;
 }
+
+.connected-status {
+  display: flex;
+  align-items: flex-start;
+}
+
+.connected-status-info {
+  margin: 0 $space-md;
+}

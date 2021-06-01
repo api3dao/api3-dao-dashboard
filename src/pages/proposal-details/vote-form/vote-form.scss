@@ -1,17 +1,12 @@
 @import '../../../styles/variables.scss';
 
-.content {
-  margin: 60px;
+.vote-form {
+  text-align: center;
+}
+
+.vote-form-content {
+  margin-top: $space-xxxl;
+  margin-bottom: 2 * $space-xxl;
   display: flex;
-  flex-direction: column;
-
-  .checked {
-    &.for {
-      color: $green-color;
-    }
-
-    &.against {
-      color: $pink-color;
-    }
-  }
+  justify-content: center;
 }

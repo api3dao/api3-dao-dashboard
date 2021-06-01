@@ -1,0 +1,54 @@
+@import '../../styles/variables.scss';
+
+.proposal-details-subheader {
+  display: flex;
+  align-items: center;
+  margin-bottom: $space-xs;
+  & > * {
+    margin-right: $space-md;
+  }
+  & > *:last-child {
+    margin-right: 0;
+  }
+}
+
+.proposal-details-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: $space-lg;
+  & > * {
+    margin-right: $space-xl;
+  }
+  & > *:last-child {
+    margin-right: 0;
+  }
+}
+
+.proposal-details-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.proposal-details-vote-section {
+  text-align: center;
+  margin: $space-lg 2 * $space-xxl 2 * $space-xl;
+
+  & > *:last-child {
+    margin-top: $space-xl;
+  }
+}
+
+.proposal-details-summary {
+  margin: 0 2 * $space-xl 2 * $space-xl;
+}
+
+.proposal-details-item {
+  margin-top: $space-xl;
+  & > * {
+    margin-bottom: $space-xxs;
+  }
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+}
