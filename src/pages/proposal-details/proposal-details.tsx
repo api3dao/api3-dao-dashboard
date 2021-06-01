@@ -11,7 +11,7 @@ import BorderedBox from '../../components/bordered-box/bordered-box';
 import { useApi3Voting } from '../../contracts';
 import { decodeProposalTypeAndId } from '../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../logic/proposals/selectors';
-import { useLoadAllProposals } from '../../logic/proposals/use-proposal-state';
+import { useLoadAllProposals } from '../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
 import './proposal-details.scss';
 

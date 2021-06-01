@@ -68,6 +68,12 @@ export interface Proposals {
   secondary: Proposal[];
 }
 
+// TODO: This shouldn't be a state property probably, we should just derive this from proposal state
+export interface OpenProposalIds {
+  primary: BigNumber[];
+  secondary: BigNumber[];
+}
+
 export interface ChainData {
   provider: ethers.providers.Web3Provider | null;
   userAccount: string;
@@ -75,6 +81,7 @@ export interface ChainData {
   contracts: typeof ContractsAddresses | null;
   dashboardState: DashboardState | null;
   proposals: Proposals | null;
+  openProposalIds: OpenProposalIds | null;
   treasuries: Treasury[];
   delegation: Delegation | null;
   transactions: ethers.ContractTransaction[];
@@ -94,6 +101,7 @@ export const initialChainData: ChainData = {
   contracts: null,
   dashboardState: null,
   proposals: null,
+  openProposalIds: null,
   treasuries: [],
   delegation: null,
   transactions: [],

@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage } from '../../contracts';
 
@@ -22,3 +23,6 @@ export const proposalDetailsSelector = (proposals: Proposals | null, type: Propo
   const proposal = proposals[type].find((p) => p.voteId.toString() === id);
   return proposal ?? null;
 };
+
+export const getProposalByTypeAndIdSelector = (proposals: Proposals, type: ProposalType, id: BigNumber) =>
+  proposals[type].find((p) => p.voteId === id);
