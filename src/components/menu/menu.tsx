@@ -12,7 +12,7 @@ const Menu = () => {
       <NavLink
         activeClassName="menu-active-item"
         to="/dashboard"
-        isActive={() => ['/', '/dashboard'].includes(pathname)}
+        isActive={() => ['/', '/dashboard', '/dashboard/'].includes(pathname)}
       >
         <div className="menu-item">
           <div className="menu-active-line" />
