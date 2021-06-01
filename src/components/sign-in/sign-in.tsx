@@ -27,7 +27,7 @@ const ConnectedStatus = () => {
     <Dropdown
       menu={
         <DropdownMenu>
-          <DropdownMenuItem onClick={onDisconnect}>Disconnected</DropdownMenuItem>
+          <DropdownMenuItem onClick={onDisconnect}>Disconnect</DropdownMenuItem>
         </DropdownMenu>
       }
       icon={<img src="/arrow-dropdown.svg" alt="dropdown icon" />}
