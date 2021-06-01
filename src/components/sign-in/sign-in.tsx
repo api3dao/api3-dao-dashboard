@@ -2,15 +2,16 @@ import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
 import { initialChainData, getChainData, useChainData } from '../../chain-data';
+import { abbrStr } from '../../chain-data/helpers';
 import { go } from '../../utils/generic';
 import Button from '../../components/button/button';
 import { Modal as GenericModal } from '../../components/modal/modal';
+import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown/dropdown';
 import './sign-in.scss';
 import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscriptions } from '../../contracts';
 
-const SignIn = () => {
-  const { setChainData, provider, contracts, networkName } = useChainData();
-  useProviderSubscriptions(provider);
+const ConnectedStatus = () => {
+  const { provider, setChainData, networkName, userAccount } = useChainData();
 
   const onDisconnect = () => {
     if (provider) {
@@ -21,6 +22,31 @@ const SignIn = () => {
     }
     setChainData('User disconnected', initialChainData);
   };
+
+  return (
+    <Dropdown
+      menu={
+        <DropdownMenu>
+          <DropdownMenuItem onClick={onDisconnect}>Disconnect</DropdownMenuItem>
+        </DropdownMenu>
+      }
+      icon={<img src="/arrow-dropdown.svg" alt="dropdown icon" />}
+      alignIcon="start"
+    >
+      <div className="connected-status">
+        <img src="/connected.svg" alt="connected icon" />
+        <div className="connected-status-info">
+          <p>{abbrStr(userAccount)}</p>
+          <p className="text-xsmall">Connected to {networkName}</p>
+        </div>
+      </div>
+    </Dropdown>
+  );
+};
+
+const SignIn = () => {
+  const { setChainData, provider, contracts, networkName } = useChainData();
+  useProviderSubscriptions(provider);
 
   const onWalletConnect = async () => {
     const web3Modal = new Web3Modal({
@@ -65,7 +91,7 @@ const SignIn = () => {
   return (
     <>
       {!provider && <Button onClick={onWalletConnect}>Connect Wallet</Button>}
-      {provider && <Button onClick={onDisconnect}>Disconnect</Button>}
+      {provider && <ConnectedStatus />}
       <GenericModal open={isSupportedNetwork} onClose={() => {}} hideCloseButton>
         <div className="text-center">
           <h5>Unsupported chain!</h5>
