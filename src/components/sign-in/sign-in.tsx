@@ -81,25 +81,28 @@ const SignIn = () => {
     setChainData('User connected', { ...(await getChainData(provider)) });
   };
 
-  const isSupportedNetwork = !!provider && contracts === null;
+  const isSignedIn = !!provider && contracts !== null;
   const supportedNetworks = SUPPORTED_NETWORKS.filter((name) => {
     // Disable localhost network on non-development environment
     if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
     else return true;
   }).join(', ');
+  const isSupportedNetwork = !!isSignedIn || supportedNetworks.includes(networkName);
 
   return (
     <>
       {!provider && <Button onClick={onWalletConnect}>Connect Wallet</Button>}
       {provider && <ConnectedStatus />}
-      <GenericModal open={isSupportedNetwork} onClose={() => {}} hideCloseButton>
+      <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
         <div className="text-center">
           <h5>Unsupported chain!</h5>
 
-          <span className="marginTop">Supported networks are: {supportedNetworks}</span>
-          <span>Current network: {networkName}</span>
+          <p className="marginTop">Supported networks are: {supportedNetworks}</p>
+          <p className="marginTop">
+            Current network: <b>{networkName}</b>
+          </p>
 
-          <p>Please use your wallet and connect to one of the supported networks</p>
+          <p className="marginTop">Please use your wallet and connect to one of the supported networks!</p>
         </div>
       </GenericModal>
     </>
