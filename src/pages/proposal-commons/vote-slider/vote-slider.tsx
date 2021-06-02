@@ -40,16 +40,18 @@ const VoteSlider = (props: Props) => {
     proposalStatus,
   } = props;
 
+  const isLarge = size === 'large';
+
   return (
     <>
-      {size === 'large' && (
+      {isLarge && (
         <div className={styles.barNames}>
           <p className={globalStyles.bold}>For</p>
           <p className={globalStyles.bold}>Against</p>
         </div>
       )}
       <div className={styles.voteSlider}>
-        <PositiveVoteIcon large={size === 'large'} />
+        <PositiveVoteIcon large={isLarge} />
         <div className={styles.barWrapper}>
           <div className={styles.bar}>
             <div className={styles.acceptanceQuorum} style={{ left: `${minAcceptanceQuorum}%` }}></div>
@@ -66,12 +68,12 @@ const VoteSlider = (props: Props) => {
           </div>
           <div
             className={classNames(styles.voteInfo, {
-              [globalStyles.textXSmall]: size === 'normal',
-              [globalStyles.textNormal]: size === 'large',
+              [globalStyles.textXSmall]: !isLarge,
+              [globalStyles.textNormal]: isLarge,
             })}
           >
             <span className={globalStyles.secondaryColor}>{formatPercentage(forPercentage)}</span>
-            {size !== 'large' && (
+            {!isLarge && (
               <span
                 className={classNames(styles.voterState, {
                   [styles.against]: VOTER_STATES[voterState] === 'Voted Against',
@@ -84,7 +86,7 @@ const VoteSlider = (props: Props) => {
             <span className={globalStyles.secondaryColor}>{formatPercentage(againstPercentage)}</span>
           </div>
         </div>
-        <NegativeVoteIcon large={size === 'large'} />
+        <NegativeVoteIcon large={isLarge} />
       </div>
     </>
   );

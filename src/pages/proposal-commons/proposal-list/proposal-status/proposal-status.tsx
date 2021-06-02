@@ -7,24 +7,32 @@ import Button from '../../../../components/button/button';
 
 interface Props {
   proposal: Proposal;
+  large?: true;
 }
 
 const ProposalStatus = (props: Props): JSX.Element => {
-  const { proposal } = props;
-  const proposalStatus = voteSliderSelector(proposal).proposalStatus;
+  const { proposal, large } = props;
+  let proposalStatus = voteSliderSelector(proposal).proposalStatus;
+
+  proposalStatus = 'Execute' as any;
 
   if (proposal.open) {
     // Open proposal status can be either 'Failing' or 'Passing'
     return <p className={classNames('proposal-status', proposalStatus.toLowerCase())}>{proposalStatus}</p>;
   } else {
+    const showIcon = proposalStatus === 'Executed' || proposalStatus === 'Rejected';
+
     return (
-      <div>
-        <span className="proposal-status-icon">
-          {proposalStatus === 'Rejected' && <NegativeVoteIcon />}
-          {proposalStatus === 'Executed' && <PositiveVoteIcon />}
-        </span>
+      <div className="text-large">
+        {showIcon && (
+          <span className="proposal-status-icon">
+            {proposalStatus === 'Rejected' && <NegativeVoteIcon large={large} />}
+            {proposalStatus === 'Executed' && <PositiveVoteIcon large={large} />}
+          </span>
+        )}
         {proposalStatus === 'Execute' ? (
-          <Button type="text" className="proposal-status-executed" buttonClassName="text-xsmall">
+          // TODO: implement onClick action
+          <Button type="text" className="proposal-status-execute" buttonClassName={large ? 'text-large-override' : ''}>
             {proposalStatus}
           </Button>
         ) : (

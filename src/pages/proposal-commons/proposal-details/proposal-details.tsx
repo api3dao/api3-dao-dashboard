@@ -13,6 +13,7 @@ import { decodeProposalTypeAndId } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useLoadAllProposals } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
+import ProposalStatus from '../proposal-list/proposal-status';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import classNames from 'classnames';
@@ -43,6 +44,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
   const voting = useApi3Voting();
 
   const voteSliderData = voteSliderSelector(proposal);
+  const timerLabel = `${proposal.open ? 'Ends' : 'Ended'} on ${proposal.deadline.toDateString()}`;
 
   // NOTE: This should never happen, loading component in proposal details page should
   // make sure we are connected to valid chain and have valid proposal loaded
@@ -59,14 +61,13 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
       <div className={styles.proposalDetailsHeader}>
         <h4>{proposal.metadata.description}</h4>
         <div className={styles.proposalDetailsTimer}>
-          <p className={`${globalStyles.textXSmall} ${globalStyles.medium}`}>
-            Ends on {proposal.deadline.toDateString()}
-          </p>
+          <p className={`${globalStyles.textXSmall} ${globalStyles.medium}`}>{timerLabel}</p>
           <Timer size="large" deadline={proposal.deadline} />
         </div>
       </div>
       <h5 className={`${globalStyles.capitalize} ${globalStyles.pinkColor}`}>{voteSliderData.voterState}</h5>
       <div className={styles.proposalDetailsVoteSection}>
+        <ProposalStatus proposal={proposal} large />
         <VoteSlider {...voteSliderData} size="large" />
         <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)}>
           Vote

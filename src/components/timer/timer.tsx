@@ -11,17 +11,23 @@ interface Props {
 
 const Timer = (props: Props) => {
   const { deadline, size = 'normal' } = props;
-  const [timerDays, setTimerDays] = useState('0');
+  const [timerDays, setTimerDays] = useState('00');
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
   const [timerSeconds, setTimerSeconds] = useState('00');
+  const [dateDiff, setDateDiff] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date().getTime();
       const deadlineDate = deadline.getTime();
 
-      const distance = deadlineDate - now;
+      let distance = deadlineDate - now;
+
+      if (distance < 0) {
+        clearInterval(timer);
+        distance = 0;
+      }
 
       const days = getDays(distance);
       const hours = getHours(distance);
@@ -32,10 +38,7 @@ const Timer = (props: Props) => {
       setTimerHours(hours);
       setTimerMinutes(minutes);
       setTimerSeconds(seconds);
-
-      if (deadlineDate < now) {
-        clearInterval(timer);
-      }
+      setDateDiff(distance);
     }, 1000);
 
     return () => {
@@ -72,7 +75,7 @@ const Timer = (props: Props) => {
           </>
         )}
       </div>
-      <div className={globalStyles.primaryColor}>remaining</div>
+      {dateDiff > 0 && <div>remaining</div>}
     </div>
   );
 };

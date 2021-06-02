@@ -48,6 +48,7 @@ const ProposalList = (props: Props) => {
                   <ProposalStatus proposal={p} />
                 </div>
                 <div className={classNames(styles.proposalItemBox, styles.date)}>
+                  {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
                   {p.open ? <Timer deadline={p.deadline} /> : format(p.startDate, 'do MMMM yyyy')}
                 </div>
                 <div className={styles.proposalItemBox}>

@@ -68,13 +68,25 @@ $border-radius: 100px;
 
 .voterState {
   text-transform: capitalize;
+  display: flex;
 
-  &.failing {
+  &.failing,
+  .voted-against {
     color: $pink-color;
   }
 
-  &.passing {
+  &.passing,
+  .voted-for {
     color: $green-color;
+  }
+
+  &.large {
+    margin-top: 40px;
+  }
+
+  &.icon {
+    margin: 0 $space-sm;
+    height: 25px;
   }
 }
 

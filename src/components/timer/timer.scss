@@ -1,0 +1,69 @@
+@import '../../styles/variables.scss';
+
+.timer {
+  display: inline-flex;
+  align-items: center;
+  font-size: $text-xsmall;
+
+  &._large {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  &.grayOut {
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.timer-container {
+  display: flex;
+  align-items: center;
+  margin-right: $space-xxs;
+
+  .timer._large & {
+    border-top: 1px solid $secondary-black-color;
+    border-bottom: 1px solid $secondary-black-color;
+    padding-top: $space-xs;
+    padding-bottom: 2px;
+    margin-top: $space-xxs;
+    margin-right: 0;
+  }
+}
+
+.timer-wrap {
+  display: flex;
+  align-items: center;
+
+  & > * {
+    margin-right: $space-xxs;
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+
+  .timer._large & {
+    min-width: 35px;
+    flex-direction: column;
+    margin: 0;
+
+    & > * {
+      margin-right: 0;
+    }
+  }
+}
+
+.timer-number {
+  .timer._large & {
+    font-size: $text-large;
+  }
+}
+
+.timer-colon {
+  margin: 0 $space-xxs;
+
+  .timer._large & {
+    font-size: $text-large;
+    margin: 0 $space-xs;
+  }
+}

@@ -24,7 +24,7 @@ const Button = ({
   return (
     <div className={classNames(styles.buttonWrapper, { [styles.disabled]: disabled }, className)}>
       <button
-        className={classNames(styles.button, {
+        className={classNames(buttonClassName, styles.button, {
           [styles.primary]: type === 'primary',
           [styles.secondary]: type === 'secondary',
           [styles.link]: type === 'link',
@@ -38,7 +38,7 @@ const Button = ({
       </button>
       {['primary', 'secondary'].includes(type) && (
         <div
-          className={classNames(buttonClassName, styles.buttonUnderline, {
+          className={classNames(styles.buttonUnderline, {
             [styles.primary]: type === 'primary',
             [styles.secondary]: type === 'secondary',
           })}
