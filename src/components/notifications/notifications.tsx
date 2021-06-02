@@ -1,6 +1,8 @@
 import { toast, Slide, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// Use these static classes to style react-toastify defaults
 import './react-toastify-overrides.scss';
+// Use these classes to style content
 import styles from './notifications.module.scss';
 
 // TODO: add styling for various components

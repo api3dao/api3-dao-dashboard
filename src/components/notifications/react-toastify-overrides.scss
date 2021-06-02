@@ -1,8 +1,12 @@
 /*
- * NOTE: Uncomment and use these classes to override the default react-toastify styling
- * Additional custom styles should be added to the CSS module (notifications.module.scss) instead.
+ * NOTE: react-toastify uses static classes so these cannot be placed in CSS modules, as the
+ * class names get generated on build.
  *
  * See: https://fkhadra.github.io/react-toastify/how-to-style/
+ *
+ * Use the classes here to style the react-toastify defaults like backgrounds and
+ * containers. Styling of content should be done in the info/success/warning/error
+ * components using the notifications.module.scss
  */
 
 /** Used to define container behavior: width, position: fixed etc... **/
