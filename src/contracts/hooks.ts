@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { useEffect, useMemo } from 'react';
-import { useIsMount, useOnMountEffect, usePrevious } from '../utils';
-import { getChainData, useChainData } from '../chain-data';
+import { usePrevious, useIsMount, useOnMountEffect } from '../utils';
+import { getNetworkData, useChainData } from '../chain-data';
 import {
   Api3Pool__factory as Api3PoolFactory,
   Api3Token__factory as Api3TokenFactory,
@@ -76,7 +76,7 @@ export const useProviderSubscriptions = (provider: ethers.providers.Web3Provider
     if (!provider) return;
 
     const refreshChainData = async () => {
-      setChainData('EIP-1193 event triggered', { ...(await getChainData(provider)) });
+      setChainData('EIP-1193 event triggered', { ...(await getNetworkData(provider)) });
     };
 
     const underlyingProvider = provider.provider as ethers.providers.Provider;
