@@ -31,7 +31,9 @@ const History = () => {
   useTreasuryAndDelegation();
 
   const applyHistoryFilter = (type: ProposalType) => {
-    history.replace(`/history?type=${type}`);
+    // TODO: I find these tab logic confusing, maybe reiterate? See https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622624192006000
+    if (!proposalType || proposalType === type) history.replace(`/history?type=${type}`);
+    else history.replace(`/history`);
   };
 
   return (
