@@ -7,17 +7,33 @@ export interface PendingUnstake {
   scheduledFor: Date;
 }
 
-export interface DashboardState {
-  allowance: BigNumber;
-  annualApy: number;
-  annualInflationRate: number;
-  balance: BigNumber;
-  ownedTokens: BigNumber;
-  pendingUnstake: PendingUnstake | null;
+// TODO: is there a way to get this from the Convenience.getUserStakingData function?
+export interface UserStakingData {
+  api3Supply: BigNumber;
+  apr: BigNumber;
   stakeTarget: BigNumber;
-  totalStaked: BigNumber;
-  totalStakedPercentage: number;
-  userStake: BigNumber;
+  totalShares: BigNumber;
+  totalStake: BigNumber;
+  userLocked: BigNumber;
+  userStaked: BigNumber;
+  userUnstaked: BigNumber;
+  userUnstakeAmount: BigNumber;
+  userUnstakeScheduledFor: BigNumber;
+  userUnstakeShares: BigNumber;
+  userVesting: BigNumber;
+}
+
+export interface DashboardState extends UserStakingData {
+  // allowance: BigNumber;
+  // annualApy: number;
+  // annualInflationRate: number;
+  // ownedTokens: BigNumber;
+  // pendingUnstake: PendingUnstake | null;
+  // stakeTarget: BigNumber;
+  // totalStaked: BigNumber;
+  // totalStakedPercentage: number;
+  // userStake: BigNumber;
+  userTotal: BigNumber;
   withdrawable: BigNumber;
 }
 

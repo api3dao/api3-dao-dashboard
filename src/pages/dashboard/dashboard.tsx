@@ -2,18 +2,9 @@ import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
-import {
-  absoluteStakeTarget,
-  calculateAnnualInflationRate,
-  calculateAnnualMintedTokens,
-  calculateApy,
-  totalStakedPercentage,
-  useApi3Pool,
-  useApi3Token,
-  useOnMinedBlockAndMount,
-} from '../../contracts';
-import { computeTokenBalances, getScheduledUnstake } from '../../logic/dashboard/amounts';
-import { formatApi3 } from '../../utils';
+import { useApi3Pool, useApi3Token, useConvenience, useOnMinedBlockAndMount } from '../../contracts';
+import { computeStakingPool, computeTokenBalances } from '../../logic/dashboard/amounts';
+import { formatApi3, go } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
@@ -32,38 +23,51 @@ const Dashboard = () => {
   const { dashboardState: data, userAccount, provider, transactions, setChainData } = useChainData();
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
+  const convenience = useConvenience();
 
   // Load the data again on every block (10 - 20 seconds on average). This will also run
   // immediately if the user is already on the dashboard and they have just connected.
   // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
   const loadDashboardData = useCallback(async () => {
-    if (!api3Pool || !api3Token || !provider || !userAccount) return null;
+    if (!provider || !convenience || !userAccount) return null;
 
-    const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
-    const currentApr = await api3Pool.currentApr();
-    const annualApy = calculateApy(currentApr);
-    const totalStaked = await api3Pool.totalStake();
-    const totalSupply = await api3Token.totalSupply();
-    const stakeTarget = absoluteStakeTarget(await api3Pool.stakeTarget(), totalSupply);
-    const annualMintedTokens = calculateAnnualMintedTokens(totalStaked, annualApy);
-    const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
+    const [err, stakingData] = await go(convenience.getUserStakingData(userAccount));
+    if (err || !stakingData) {
+      // TODO: display a toast?
+      return;
+    }
+
+    const { userTotal, withdrawable } = computeTokenBalances(stakingData);
+    const { currentApy, annualInflationRate, stakedPercentage } = computeStakingPool(stakingData);
+
+    // const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
+    // const currentApr = await api3Pool.currentApr();
+    // const annualApy = calculateApy(currentApr);
+    // const totalStaked = await api3Pool.totalStake();
+    // const totalSupply = await api3Token.totalSupply();
+    // const stakeTarget = absoluteStakeTarget(await api3Pool.stakeTarget(), totalSupply);
+    // const annualMintedTokens = calculateAnnualMintedTokens(totalStaked, annualApy);
+    // const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
 
     setChainData('Load dashboard data', {
       dashboardState: {
-        allowance: await api3Token.allowance(userAccount, api3Pool.address),
-        annualApy,
-        annualInflationRate,
-        balance: tokenBalances.balance,
-        ownedTokens: await api3Token.balanceOf(userAccount),
-        pendingUnstake: await getScheduledUnstake(api3Pool, userAccount),
-        stakeTarget,
-        totalStaked,
-        totalStakedPercentage: totalStakedPercentage(totalStaked, stakeTarget),
-        userStake: await api3Pool.userStake(userAccount),
-        withdrawable: tokenBalances.withdrawable,
+        api3Supply: stakingData.api3Supply,
+        apr: stakingData.api3Supply,
+        stakeTarget: stakingData.api3Supply,
+        totalShares: stakingData.api3Supply,
+        totalStake: stakingData.api3Supply,
+        userLocked: stakingData.api3Supply,
+        userStaked: stakingData.api3Supply,
+        userTotal,
+        userUnstaked: stakingData.api3Supply,
+        userUnstakeAmount: stakingData.api3Supply,
+        userUnstakeScheduledFor: stakingData.api3Supply,
+        userUnstakeShares: stakingData.api3Supply,
+        userVesting: stakingData.api3Supply,
+        withdrawable,
       },
     });
-  }, [provider, api3Pool, api3Token, userAccount, setChainData]);
+  }, [provider, convenience, userAccount, setChainData]);
 
   useOnMinedBlockAndMount(loadDashboardData);
 
@@ -83,6 +87,7 @@ const Dashboard = () => {
   // TODO: update according to the specifications here:
   // https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
   const canInitiateUnstake = !disconnected && data?.userStake.gt(0);
+  const displayUnstakeCard = data?.pendingUnstake ? data?.scheduledFor === new Date(0)
 
   return (
     <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">
