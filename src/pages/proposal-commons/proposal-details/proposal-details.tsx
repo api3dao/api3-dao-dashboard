@@ -10,7 +10,11 @@ import Tag from '../../../components/tag/tag';
 import BorderedBox from '../../../components/bordered-box/bordered-box';
 import { useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndId } from '../../../logic/proposals/encoding';
-import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
+import {
+  proposalDetailsSelector,
+  proposalStatusSelector,
+  voteSliderSelector,
+} from '../../../logic/proposals/selectors';
 import { useLoadAllProposals } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
 import globalStyles from '../../styles/global-styles.module.scss';
@@ -43,6 +47,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
   const voting = useApi3Voting();
 
   const voteSliderData = voteSliderSelector(proposal);
+  const proposalStatus = proposalStatusSelector(proposal);
 
   // NOTE: This should never happen, loading component in proposal details page should
   // make sure we are connected to valid chain and have valid proposal loaded
@@ -65,7 +70,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
           <Timer size="large" start={proposal.startDate} deadline={proposal.deadline} />
         </div>
       </div>
-      <h5 className={`${globalStyles.capitalize} ${globalStyles.pinkColor}`}>{voteSliderData.status}</h5>
+      <h5 className={`${globalStyles.capitalize} ${globalStyles.pinkColor}`}>{voteSliderData.voterState}</h5>
       <div className={styles.proposalDetailsVoteSection}>
         <VoteSlider {...voteSliderData} size="large" />
         <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)}>

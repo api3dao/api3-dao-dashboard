@@ -3,8 +3,10 @@ import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './vote-slider.module.scss';
 
 interface IconProp {
-  large: boolean;
+  large?: boolean;
 }
+
+const VOTER_STATES = { 0: 'Unvoted', 1: 'Voted For', 2: 'Voted Against' } as const;
 
 const NegativeVoteIcon = ({ large }: IconProp) => (
   <img className={classNames(styles.voteIcon, { [styles.large]: large })} src="/close-pink.svg" alt="rejected icon" />
@@ -18,14 +20,14 @@ const formatPercentage = (percentage: number) => `${percentage}%`;
 
 interface Props {
   minAcceptanceQuorum: number;
-  status: string;
+  voterState: keyof typeof VOTER_STATES;
   forPercentage: number;
   againstPercentage: number;
   size?: 'normal' | 'large';
 }
 
 const VoteSlider = (props: Props) => {
-  const { minAcceptanceQuorum, status, forPercentage, againstPercentage, size = 'normal' } = props;
+  const { minAcceptanceQuorum, voterState, forPercentage, againstPercentage, size = 'normal' } = props;
 
   return (
     <>
@@ -52,12 +54,12 @@ const VoteSlider = (props: Props) => {
             <span className={globalStyles.secondaryColor}>{formatPercentage(forPercentage)}</span>
             {size !== 'large' && (
               <span
-                className={classNames(styles.status, {
-                  [styles.failing]: status === 'failing',
-                  [styles.passing]: status === 'passing',
+                className={classNames(styles.voterState, {
+                  [styles.against]: VOTER_STATES[voterState] === 'Voted Against',
+                  [styles.for]: VOTER_STATES[voterState] === 'Voted For',
                 })}
               >
-                {status}
+                {VOTER_STATES[voterState]}
               </span>
             )}
             <span className={globalStyles.secondaryColor}>{formatPercentage(againstPercentage)}</span>

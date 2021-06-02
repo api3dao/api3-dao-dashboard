@@ -10,8 +10,7 @@ import Tag from '../../../components/tag/tag';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
 import classNames from 'classnames';
-
-const VOTER_STATES = { 0: 'Unvoted', 1: 'Voted For', 2: 'Voted Against' };
+import ProposalStatus from './proposal-status/proposal-status';
 
 const voteIdFormat = (voteId: BigNumber) => {
   return voteId.toString();
@@ -45,7 +44,7 @@ const ProposalList = (props: Props) => {
               <div className={styles.proposalItemSubtitle}>
                 <div className={classNames(styles.proposalItemBox, styles.mr)}>
                   <p className={styles.proposalItemVoteId}>#{voteIdFormat(p.voteId)}</p>
-                  <p className={styles.proposalItemVoterStates}>{VOTER_STATES[p.voterState]}</p>
+                  <ProposalStatus proposal={p} />
                 </div>
                 <div className={classNames(styles.proposalItemBox, styles.date)}>
                   <Timer start={p.startDate} deadline={p.deadline} />

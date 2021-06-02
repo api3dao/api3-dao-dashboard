@@ -1,8 +1,6 @@
 import { Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage } from '../../contracts';
 
-// TODO: make all of the selectors memoized
-
 export const voteSliderSelector = (proposal: Proposal) => {
   const minAcceptanceQuorum = proposal.minAcceptQuorum.toNumber();
   const forPercentage = computePercentage(proposal.yea, proposal.votingPower);
@@ -12,10 +10,27 @@ export const voteSliderSelector = (proposal: Proposal) => {
     minAcceptanceQuorum,
     forPercentage,
     againstPercentage,
-    // NOTE: We rely on proposal.supportRequired to be 50% because we don't expect it to change
-    // See: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1621103766015200
-    status: forPercentage > againstPercentage && forPercentage > minAcceptanceQuorum ? 'passing' : 'failing',
+    voterState: proposal.voterState,
   };
+};
+
+export const proposalStatusSelector = (proposal: Proposal) => {
+  const { forPercentage, againstPercentage, minAcceptanceQuorum } = voteSliderSelector(proposal);
+
+  // NOTE: We rely on proposal.supportRequired to be 50% because we don't expect it to change
+  // See: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1621103766015200
+  const isPassing = forPercentage > againstPercentage && forPercentage > minAcceptanceQuorum;
+
+  if (proposal.open) {
+    return isPassing ? 'Passing' : 'Failing';
+  } else {
+    if (isPassing) {
+      if (proposal.executed) return 'Executed';
+      else return 'Execute';
+    } else {
+      return 'Rejected';
+    }
+  }
 };
 
 export const proposalDetailsSelector = (proposals: Proposals | null, type: ProposalType, id: string) => {
@@ -43,4 +58,21 @@ export const openProposalsSelector = (proposals: Proposals | null) => {
   return [...primaryProposals, ...secondaryProposals]
     .filter((p) => p.open)
     .sort((p1, p2) => (p1.startDateRaw.lt(p2.startDateRaw) ? -1 : 1));
+};
+
+export type OptionalProposalType = ProposalType | null;
+export const historyProposalsSelector = (proposals: Proposals | null, type: OptionalProposalType) => {
+  const primaryProposals = Object.values(proposals?.primary || {});
+  const secondaryProposals = Object.values(proposals?.secondary || {});
+
+  let allProposals: Proposal[];
+  if (type === 'primary') {
+    allProposals = primaryProposals;
+  } else if (type === 'secondary') {
+    allProposals = secondaryProposals;
+  } else {
+    allProposals = [...primaryProposals, ...secondaryProposals];
+  }
+
+  return allProposals.filter((p) => !p.open).sort((p1, p2) => (p1.startDateRaw.lt(p2.startDateRaw) ? -1 : 1));
 };

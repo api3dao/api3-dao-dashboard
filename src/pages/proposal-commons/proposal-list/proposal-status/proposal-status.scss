@@ -1,0 +1,33 @@
+@import '../../../../styles/variables.scss';
+
+.proposal-status {
+  &.failing {
+    color: $pink-color;
+  }
+
+  &.passing {
+    color: $green-color;
+  }
+
+  &.rejected {
+    color: $pink-color;
+  }
+
+  &.rejected {
+    color: $pink-color;
+  }
+
+  &.executed {
+    color: $green-color;
+  }
+}
+
+.proposal-status-icon {
+  margin: 0 $space-sm;
+}
+
+.proposal-status-executed {
+  .button {
+    padding: 0;
+  }
+}
