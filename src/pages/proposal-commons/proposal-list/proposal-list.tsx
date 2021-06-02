@@ -1,6 +1,5 @@
-import { useMemo } from 'react';
 import { BigNumber } from 'ethers';
-import { useChainData } from '../../../chain-data';
+import { Proposal } from '../../../chain-data';
 import { NavLink } from 'react-router-dom';
 import { encodeProposalTypeAndId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../../../components/vote-slider/vote-slider';
@@ -18,27 +17,26 @@ const voteIdFormat = (voteId: BigNumber) => {
   return voteId.toString();
 };
 
-// TODO: make this component dumb
-const ProposalList = () => {
-  const { proposals } = useChainData();
+interface Props {
+  // Proposals should be sorted by priority (the topmost proposal in the list has index 0)
+  proposals: Proposal[];
+}
 
-  const allProposals = useMemo(() => {
-    const primaryProposals = Object.values(proposals?.primary || {});
-    const secondaryProposals = Object.values(proposals?.secondary || {});
-
-    return [...primaryProposals, ...secondaryProposals].sort((p1, p2) =>
-      p1.startDateRaw.lt(p2.startDateRaw) ? -1 : 1
-    );
-  }, [proposals?.primary, proposals?.secondary]);
+const ProposalList = (props: Props) => {
+  const { proposals } = props;
 
   return (
     <>
-      {allProposals.map((p) => {
+      {proposals.map((p) => {
         const votingSliderData = voteSliderSelector(p);
         const tooltipContent =
           p.type === 'primary'
             ? 'Primary proposals require an absolute majority to execute.'
             : 'Secondary proposals need 15% to execute.';
+        const navlink = {
+          base: p.open ? 'proposals' : 'history',
+          typeAndId: encodeProposalTypeAndId(p.type, voteIdFormat(p.voteId)),
+        };
 
         return (
           <div className={styles.proposalItem} key={`${p.type}-${voteIdFormat(p.voteId)}`}>
@@ -64,7 +62,7 @@ const ProposalList = () => {
 
             <div className={styles.proposalVoteBar}>
               <VoteSlider {...votingSliderData} />
-              <NavLink to={`/proposals/${encodeProposalTypeAndId(p.type, voteIdFormat(p.voteId))}`}>
+              <NavLink to={`/${navlink.base}/${navlink.typeAndId}`}>
                 <img src="/arrow-right.svg" alt="right arrow" />
               </NavLink>
             </div>

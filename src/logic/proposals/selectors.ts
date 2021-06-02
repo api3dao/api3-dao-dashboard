@@ -1,6 +1,8 @@
 import { Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage } from '../../contracts';
 
+// TODO: make all of the selectors memoized
+
 export const voteSliderSelector = (proposal: Proposal) => {
   const minAcceptanceQuorum = proposal.minAcceptQuorum.toNumber();
   const forPercentage = computePercentage(proposal.yea, proposal.votingPower);
@@ -32,4 +34,13 @@ export const openProposalIdsSelector = (proposals: Proposals | null) => {
       .map((p) => p.voteId);
 
   return { primary: filterActiveProposalIds('primary'), secondary: filterActiveProposalIds('secondary') };
+};
+
+export const openProposalsSelector = (proposals: Proposals | null) => {
+  const primaryProposals = Object.values(proposals?.primary || {});
+  const secondaryProposals = Object.values(proposals?.secondary || {});
+
+  return [...primaryProposals, ...secondaryProposals]
+    .filter((p) => p.open)
+    .sort((p1, p2) => (p1.startDateRaw.lt(p2.startDateRaw) ? -1 : 1));
 };
