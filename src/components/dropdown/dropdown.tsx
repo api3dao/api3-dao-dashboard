@@ -2,7 +2,7 @@ import { ReactNode, useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import './dropdown.scss';
 
-interface DropwdownProps {
+interface DropdownProps {
   children: ReactNode;
   menu: ReactNode;
   icon?: ReactNode;
@@ -27,7 +27,7 @@ export const DropdownMenuItem = ({ children, className, onClick }: DropdownMenuI
   </div>
 );
 
-const Dropdown = ({ children, menu, icon, alignIcon = 'center' }: DropwdownProps) => {
+const Dropdown = ({ children, menu, icon, alignIcon = 'center' }: DropdownProps) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
