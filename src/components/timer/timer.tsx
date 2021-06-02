@@ -5,13 +5,12 @@ import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './timer.module.scss';
 
 interface Props {
-  start: Date;
   deadline: Date;
   size?: 'normal' | 'large';
 }
 
 const Timer = (props: Props) => {
-  const { start, deadline, size = 'normal' } = props;
+  const { deadline, size = 'normal' } = props;
   const [timerDays, setTimerDays] = useState('0');
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
@@ -21,7 +20,6 @@ const Timer = (props: Props) => {
     const timer = setInterval(() => {
       const now = new Date().getTime();
       const deadlineDate = deadline.getTime();
-      const startDate = start.getTime();
 
       const distance = deadlineDate - now;
 
@@ -35,14 +33,15 @@ const Timer = (props: Props) => {
       setTimerMinutes(minutes);
       setTimerSeconds(seconds);
 
-      if (deadlineDate < now || startDate > now) {
+      if (deadlineDate < now) {
         clearInterval(timer);
       }
     }, 1000);
+
     return () => {
       clearInterval(timer);
     };
-  }, [deadline, start]);
+  }, [deadline]);
 
   const largeSize = size === 'large' ? `${styles.large}` : '';
 

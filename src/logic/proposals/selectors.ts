@@ -1,36 +1,37 @@
 import { Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage } from '../../contracts';
 
+export type ProposalStatus = 'Passing' | 'Failing' | 'Executed' | 'Execute' | 'Rejected';
 export const voteSliderSelector = (proposal: Proposal) => {
   const minAcceptanceQuorum = proposal.minAcceptQuorum.toNumber();
   const forPercentage = computePercentage(proposal.yea, proposal.votingPower);
   const againstPercentage = computePercentage(proposal.nay, proposal.votingPower);
+
+  const computeProposalStatus = (): ProposalStatus => {
+    // NOTE: We rely on proposal.supportRequired to be 50% because we don't expect it to change
+    // See: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1621103766015200
+    const isPassing = forPercentage > againstPercentage && forPercentage > minAcceptanceQuorum;
+
+    if (proposal.open) {
+      return isPassing ? 'Passing' : 'Failing';
+    } else {
+      if (isPassing) {
+        if (proposal.executed) return 'Executed';
+        else return 'Execute';
+      } else {
+        return 'Rejected';
+      }
+    }
+  };
 
   return {
     minAcceptanceQuorum,
     forPercentage,
     againstPercentage,
     voterState: proposal.voterState,
+    proposalStatus: computeProposalStatus(),
+    open: proposal.open,
   };
-};
-
-export const proposalStatusSelector = (proposal: Proposal) => {
-  const { forPercentage, againstPercentage, minAcceptanceQuorum } = voteSliderSelector(proposal);
-
-  // NOTE: We rely on proposal.supportRequired to be 50% because we don't expect it to change
-  // See: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1621103766015200
-  const isPassing = forPercentage > againstPercentage && forPercentage > minAcceptanceQuorum;
-
-  if (proposal.open) {
-    return isPassing ? 'Passing' : 'Failing';
-  } else {
-    if (isPassing) {
-      if (proposal.executed) return 'Executed';
-      else return 'Execute';
-    } else {
-      return 'Rejected';
-    }
-  }
 };
 
 export const proposalDetailsSelector = (proposals: Proposals | null, type: ProposalType, id: string) => {

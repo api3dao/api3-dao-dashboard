@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 import { Proposal } from '../../../chain-data';
 import { NavLink } from 'react-router-dom';
 import { encodeProposalTypeAndId } from '../../../logic/proposals/encoding';
-import VoteSlider from '../../../components/vote-slider/vote-slider';
+import VoteSlider from '../vote-slider/vote-slider';
 import Timer from '../../../components/timer/timer';
 import Tooltip from '../../../components/tooltip/tooltip';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
@@ -11,6 +11,7 @@ import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
 import classNames from 'classnames';
 import ProposalStatus from './proposal-status/proposal-status';
+import { format } from 'date-fns';
 
 const voteIdFormat = (voteId: BigNumber) => {
   return voteId.toString();
@@ -47,7 +48,7 @@ const ProposalList = (props: Props) => {
                   <ProposalStatus proposal={p} />
                 </div>
                 <div className={classNames(styles.proposalItemBox, styles.date)}>
-                  <Timer start={p.startDate} deadline={p.deadline} />
+                  {p.open ? <Timer deadline={p.deadline} /> : format(p.startDate, 'do MMMM yyyy')}
                 </div>
                 <div className={styles.proposalItemBox}>
                   <Tooltip content={tooltipContent}>

@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { ProposalStatus } from '../../../logic/proposals/selectors';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './vote-slider.module.scss';
 
@@ -23,11 +24,21 @@ interface Props {
   voterState: keyof typeof VOTER_STATES;
   forPercentage: number;
   againstPercentage: number;
+  open: boolean;
+  proposalStatus: ProposalStatus;
   size?: 'normal' | 'large';
 }
 
 const VoteSlider = (props: Props) => {
-  const { minAcceptanceQuorum, voterState, forPercentage, againstPercentage, size = 'normal' } = props;
+  const {
+    minAcceptanceQuorum,
+    voterState,
+    forPercentage,
+    againstPercentage,
+    size = 'normal',
+    open,
+    proposalStatus,
+  } = props;
 
   return (
     <>
@@ -42,8 +53,16 @@ const VoteSlider = (props: Props) => {
         <div className={styles.barWrapper}>
           <div className={styles.bar}>
             <div className={styles.acceptanceQuorum} style={{ left: `${minAcceptanceQuorum}%` }}></div>
-            <div className={styles.for} style={{ width: formatPercentage(forPercentage) }}></div>
-            <div className={styles.against} style={{ width: formatPercentage(againstPercentage) }}></div>
+            <div
+              className={classNames(styles.for, { grayOut: !open && proposalStatus === 'Rejected' })}
+              style={{ width: formatPercentage(forPercentage) }}
+            ></div>
+            <div
+              className={classNames(styles.against, {
+                grayOut: !open && (proposalStatus === 'Execute' || proposalStatus === 'Executed'),
+              })}
+              style={{ width: formatPercentage(againstPercentage) }}
+            ></div>
           </div>
           <div
             className={classNames(styles.voteInfo, {

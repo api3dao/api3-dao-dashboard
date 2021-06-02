@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { Proposal } from '../../../../chain-data';
-import { proposalStatusSelector } from '../../../../logic/proposals/selectors';
-import { NegativeVoteIcon, PositiveVoteIcon } from '../../../../components/vote-slider/vote-slider';
+import { voteSliderSelector } from '../../../../logic/proposals/selectors';
+import { NegativeVoteIcon, PositiveVoteIcon } from '../../vote-slider/vote-slider';
 import './proposal-status.scss';
 import Button from '../../../../components/button/button';
 
@@ -11,7 +11,7 @@ interface Props {
 
 const ProposalStatus = (props: Props): JSX.Element => {
   const { proposal } = props;
-  const proposalStatus = proposalStatusSelector(proposal);
+  const proposalStatus = voteSliderSelector(proposal).proposalStatus;
 
   if (proposal.open) {
     // Open proposal status can be either 'Failing' or 'Passing'
