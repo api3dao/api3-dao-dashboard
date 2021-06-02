@@ -12,9 +12,7 @@ interface Props {
 
 const ProposalStatus = (props: Props): JSX.Element => {
   const { proposal, large } = props;
-  let proposalStatus = voteSliderSelector(proposal).proposalStatus;
-
-  proposalStatus = 'Execute' as any;
+  const proposalStatus = voteSliderSelector(proposal).proposalStatus;
 
   if (proposal.open) {
     // Open proposal status can be either 'Failing' or 'Passing'
