@@ -17,3 +17,11 @@ export const useOnMountEffect = (fn: () => void) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(fn, []);
 };
+
+export const useIsMount = () => {
+  const isMountRef = useRef(true);
+  useEffect(() => {
+    isMountRef.current = false;
+  }, []);
+  return isMountRef.current;
+};

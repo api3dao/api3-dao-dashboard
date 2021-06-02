@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 import { useCallback, useEffect } from 'react';
 import { Proposals, ProposalType, updateImmutably, useChainData, VoterState } from '../../chain-data';
 import { Api3Voting, Convenience } from '../../generated-contracts';
-import { useApi3Voting, useConvenience, useOnMinedBlockAndMount } from '../../contracts/hooks';
+import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../contracts/hooks';
 import { Proposal } from '../../chain-data';
 import { decodeMetadata } from './encoding';
 import zip from 'lodash/zip';
@@ -210,5 +210,5 @@ export const useReloadActiveProposalsOnMinedBlock = () => {
   }, [api3Voting, convenience, userAccount, setChainData, proposals]);
 
   // Ensure that the proposals are up to date with blockchain
-  useOnMinedBlockAndMount(reloadActiveProposals);
+  usePossibleChainDataUpdate(reloadActiveProposals);
 };
