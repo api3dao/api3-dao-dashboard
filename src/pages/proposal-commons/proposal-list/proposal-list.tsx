@@ -18,6 +18,7 @@ const voteIdFormat = (voteId: BigNumber) => {
   return voteId.toString();
 };
 
+// TODO: make this component dumb
 const ProposalList = () => {
   const { proposals } = useChainData();
 
