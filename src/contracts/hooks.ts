@@ -115,10 +115,10 @@ export const useOnAccountOrNetworkChange = (callback: () => void) => {
  *  2) when the component is mounted
  *  3) when network or account is changed
  *
- * The callback of this function is ideal place to load chain data that should be kept in sync with latest blockchain
- * data.
+ * The callback of this function is the ideal place to load chain data that should be kept in sync with latest
+ * blockchain data.
  *
- * You can use the second argument of this function to only trigger the callback on some of the conditions.
+ * You can use the second argument of this function to trigger the callback only on certain conditions.
  *
  * NOTE: The 'block' event will also fire on the first subscription to this event. However, it will not be called for
  * further subscription. This means that the first triggered callback will be called twice (once because of subscription
