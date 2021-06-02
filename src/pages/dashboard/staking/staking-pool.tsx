@@ -1,7 +1,8 @@
 import { BigNumber } from 'ethers';
 import { formatApi3 } from '../../../utils/api3-format';
 import RadialChart from './radial-chart';
-import './staking-pool.scss';
+import globalStyles from '../../../styles/global-styles.module.scss';
+import styles from './staking-pool.module.scss';
 
 type Props = {
   data?: {
@@ -21,36 +22,36 @@ const StakingPool = ({ data }: Props) => {
   const totalStakedPercentage = parseFloat((data?.totalStakedPercentage || 0).toFixed(2));
 
   return (
-    <div className="staking-pool">
-      <div className="staking-table _twoCells">
-        <div className="staking-table-row">
-          <div className="staking-table-cell _rightAlign">
+    <div className={styles.stakingPool}>
+      <div className={`${styles.stakingTable} ${styles.twoCells}`}>
+        <div className={styles.stakingTableRow}>
+          <div className={`${styles.stakingTableCell} ${styles.rightAlign}`}>
             <h3>{annualApy}%</h3>
           </div>
-          <div className="staking-table-cell">
-            <p className="secondary-color">Annual rewards (APY)</p>
+          <div className={styles.stakingTableCell}>
+            <p className={globalStyles.secondaryColor}>Annual rewards (APY)</p>
           </div>
         </div>
-        <div className="staking-table-row">
-          <div className="staking-table-cell _rightAlign">
+        <div className={styles.stakingTableRow}>
+          <div className={`${styles.stakingTableCell} ${styles.rightAlign}`}>
             <h5>{annualInflationRate}%</h5>
           </div>
-          <div className="staking-table-cell">
-            <p className="secondary-color">Annual Inflation Rate</p>
+          <div className={styles.stakingTableCell}>
+            <p className={globalStyles.secondaryColor}>Annual Inflation Rate</p>
           </div>
         </div>
       </div>
-      <div className="staking-table">
-        <div className="staking-table-row">
-          <div className="staking-table-cell _rightAlign">
-            <p className="text-xsmall secondary-color uppercase medium">total staked</p>
-            <p className="medium">{totalStaked}</p>
+      <div className={styles.stakingTable}>
+        <div className={styles.stakingTableRow}>
+          <div className={`${styles.stakingTableCell} ${styles.oneCell} ${styles.rightAlign}`}>
+            <p className={styles.stakingTableCellTitle}>total staked</p>
+            <p className={globalStyles.medium}>{totalStaked}</p>
           </div>
         </div>
-        <div className="staking-table-row">
-          <div className="staking-table-cell _rightAlign">
-            <p className="text-xsmall secondary-color uppercase medium">staking target</p>
-            <p className="medium">{stakeTarget}</p>
+        <div className={styles.stakingTableRow}>
+          <div className={`${styles.stakingTableCell} ${styles.oneCell} ${styles.rightAlign}`}>
+            <p className={styles.stakingTableCellTitle}>staking target</p>
+            <p className={globalStyles.medium}>{stakeTarget}</p>
           </div>
         </div>
       </div>

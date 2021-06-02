@@ -1,11 +1,11 @@
 import SignIn from '../sign-in/sign-in';
 import Menu from '../menu/menu';
-import './navigation.scss';
+import styles from './navigation.module.scss';
 
 const Navigation = () => {
   return (
-    <div className="navigation">
-      <div className="navigation-menu">
+    <div className={styles.navigation}>
+      <div className={styles.navigationMenu}>
         <img src="/api3-logo-white.svg" alt="logo" />
         <Menu />
       </div>

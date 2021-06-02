@@ -1,6 +1,6 @@
 @import '../../styles/variables.scss';
 
-.modal-wrapper {
+.modalWrapper {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -17,7 +17,7 @@
   padding: $space-xxl;
 }
 
-.modal-body {
+.modalBody {
   position: relative;
   width: 100%;
   min-height: 100%;
@@ -26,15 +26,15 @@
   margin: 0 auto;
   box-sizing: border-box;
 
-  &._small {
+  &.small {
     max-width: 380px;
   }
 
-  &._medium {
+  &.medium {
     max-width: 550px;
   }
 
-  &._large {
+  &.large {
     max-width: 920px;
   }
 }
@@ -53,7 +53,7 @@
   box-sizing: border-box;
 }
 
-.close-button {
+.closeButton {
   position: absolute;
   top: $space-xxl;
   right: $space-xxl;
@@ -64,18 +64,19 @@
     transform: scale(1.2);
   }
 
-  ._hidden {
+  .hidden {
     display: none;
   }
 }
 
-.modal-footer {
+.modalFooter {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 2 * $space-xxl;
 }
 
-.modal-header {
+.modalHeader {
   margin-bottom: $space-xxxl;
+  text-align: center;
 }

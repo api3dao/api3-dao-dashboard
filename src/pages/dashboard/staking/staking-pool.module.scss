@@ -1,27 +1,24 @@
 @import '../../../styles/variables.scss';
 
-.staking-pool {
+.stakingPool {
   display: flex;
   align-items: center;
   margin-top: $space-xxxl;
   margin-bottom: 100px;
 }
 
-.staking-table {
+.stakingTable {
   max-width: 200px;
   width: 100%;
   margin-right: 2 * $space-xxxl;
 
-  &._twoCells {
+  &.twoCells {
     max-width: 400px;
     margin-right: $space-xxxl;
-    .staking-table-cell {
-      width: 50%;
-    }
   }
 }
 
-.staking-table-row {
+.stakingTableRow {
   height: 96px;
   display: flex;
   align-items: center;
@@ -30,11 +27,22 @@
   box-sizing: border-box;
 }
 
-.staking-table-cell {
-  width: 100%;
+.stakingTableCell {
+  width: 50%;
   padding: 0 $space-md;
   box-sizing: border-box;
-  &._rightAlign {
+  &.rightAlign {
     text-align: right;
   }
+  &.oneCell {
+    width: 100%;
+  }
+}
+
+.stakingTableCellTitle {
+  font-size: $text-xsmall;
+  line-height: 18px;
+  color: $secondary-color;
+  font-weight: 500;
+  text-transform: uppercase;
 }

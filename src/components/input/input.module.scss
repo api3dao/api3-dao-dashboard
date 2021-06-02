@@ -1,13 +1,13 @@
 @import '../../styles/variables.scss';
 
-.input-wrapper {
+.inputWrapper {
   display: inline-block;
   max-width: 100%;
-  &._disabled {
+  &.disabled {
     opacity: 0.4;
     pointer-events: none;
   }
-  &._block {
+  &.block {
     width: 100%;
     .input,
     input {
@@ -20,7 +20,7 @@
   display: inline-block;
   max-width: 100%;
   overflow: hidden;
-  &._text-center {
+  &.textCenter {
     input {
       text-align: center;
     }
@@ -43,7 +43,7 @@
     }
   }
 
-  &._normal {
+  &.normal {
     input {
       font-size: $text-small;
       line-height: 24px;
@@ -53,7 +53,7 @@
     }
   }
 
-  &._large {
+  &.large {
     input {
       font-size: $text-xlarge;
       line-height: 44px;
@@ -64,7 +64,7 @@
   }
 }
 
-.input-underline {
+.inputUnderline {
   height: 1px;
   width: 100%;
   background-color: $secondary-border;

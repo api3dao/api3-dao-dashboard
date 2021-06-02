@@ -1,16 +1,17 @@
 import classNames from 'classnames';
-import './vote-slider.scss';
+import globalStyles from '../../styles/global-styles.module.scss';
+import styles from './vote-slider.module.scss';
 
 interface IconProp {
   large: boolean;
 }
 
 const NegativeVoteIcon = ({ large }: IconProp) => (
-  <img className={classNames('vote-icon', { [`_large`]: large })} src="/close-pink.svg" alt="rejected icon" />
+  <img className={classNames(styles.voteIcon, { [styles.large]: large })} src="/close-pink.svg" alt="rejected icon" />
 );
 
 const PositiveVoteIcon = ({ large }: IconProp) => (
-  <img className={classNames('vote-icon', { [`_large`]: large })} src="/check-green.svg" alt="passed icon" />
+  <img className={classNames(styles.voteIcon, { [styles.large]: large })} src="/check-green.svg" alt="passed icon" />
 );
 
 const formatPercentage = (percentage: number) => `${percentage}%`;
@@ -29,28 +30,37 @@ const VoteSlider = (props: Props) => {
   return (
     <>
       {size === 'large' && (
-        <div className="bar-names">
-          <p className="bold">For</p>
-          <p className="bold">Against</p>
+        <div className={styles.barNames}>
+          <p className={globalStyles.bold}>For</p>
+          <p className={globalStyles.bold}>Against</p>
         </div>
       )}
-      <div className="vote-slider">
+      <div className={styles.voteSlider}>
         <PositiveVoteIcon large={size === 'large'} />
-        <div className="bar-wrapper">
-          <div className="bar">
-            <div className="acceptance-quorum" style={{ left: `${minAcceptanceQuorum}%` }}></div>
-            <div className="for" style={{ width: formatPercentage(forPercentage) }}></div>
-            <div className="against" style={{ width: formatPercentage(againstPercentage) }}></div>
+        <div className={styles.barWrapper}>
+          <div className={styles.bar}>
+            <div className={styles.acceptanceQuorum} style={{ left: `${minAcceptanceQuorum}%` }}></div>
+            <div className={styles.for} style={{ width: formatPercentage(forPercentage) }}></div>
+            <div className={styles.against} style={{ width: formatPercentage(againstPercentage) }}></div>
           </div>
           <div
-            className={classNames('vote-info medium', {
-              [`text-xsmall`]: size === 'normal',
-              [`text-normal`]: size === 'large',
+            className={classNames(styles.voteInfo, {
+              [globalStyles.textXSmall]: size === 'normal',
+              [globalStyles.textNormal]: size === 'large',
             })}
           >
-            <span className="secondary-color">{formatPercentage(forPercentage)}</span>
-            {size !== 'large' && <span className={classNames('status', status)}>{status}</span>}
-            <span className="secondary-color">{formatPercentage(againstPercentage)}</span>
+            <span className={globalStyles.secondaryColor}>{formatPercentage(forPercentage)}</span>
+            {size !== 'large' && (
+              <span
+                className={classNames(styles.status, {
+                  [styles.failing]: status === 'failing',
+                  [styles.passing]: status === 'passing',
+                })}
+              >
+                {status}
+              </span>
+            )}
+            <span className={globalStyles.secondaryColor}>{formatPercentage(againstPercentage)}</span>
           </div>
         </div>
         <NegativeVoteIcon large={size === 'large'} />

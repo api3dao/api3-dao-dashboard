@@ -1,6 +1,6 @@
 @import '../../../styles/variables.scss';
 
-.proposal-item {
+.proposalItem {
   display: flex;
   align-items: center;
   border-top: 1px solid $black-line-color;
@@ -8,13 +8,14 @@
   padding-bottom: $space-lg;
 }
 
-.proposal-item-wrapper {
+.proposalItemWrapper {
   max-width: calc(100% - 330px);
   width: 60%;
+  font-weight: 500;
   padding-right: $space-xxxl;
 }
 
-.proposal-item-title {
+.proposalItemTitle {
   color: $primary-color;
   margin-bottom: $space-xxs;
   text-overflow: ellipsis;
@@ -22,33 +23,37 @@
   white-space: nowrap;
 }
 
-.proposal-item-voteId {
+.proposalItemVoteId {
+  color: $tertiary-color;
   margin-right: $space-xs;
 }
 
-.proposal-item-voter-states {
+.proposalItemVoterStates {
   color: $primary-color;
 }
 
-.proposal-item-subtitle {
+.proposalItemSubtitle {
   display: flex;
   align-items: center;
+  font-size: 12px;
+  line-height: 18px;
 }
 
-.proposal-item-box {
+.proposalItemBox {
   display: flex;
   align-items: center;
 
-  &._mr-lg {
+  &.mr {
     margin-right: 2 * $space-xl;
   }
-  &._date {
+
+  &.date {
     min-width: 200px;
     margin-right: $space-lg;
   }
 }
 
-.proposal-item-voteBar {
+.proposalVoteBar {
   max-width: 330px;
   width: 100%;
   display: flex;

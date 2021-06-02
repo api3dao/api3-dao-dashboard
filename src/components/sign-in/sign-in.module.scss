@@ -1,14 +1,10 @@
 @import '../../styles/variables.scss';
 
-.marginTop {
-  margin-top: $space-xl;
-}
-
-.connected-status {
+.connectedStatus {
   display: flex;
   align-items: flex-start;
 }
 
-.connected-status-info {
+.connectedStatusInfo {
   margin: 0 $space-md;
 }

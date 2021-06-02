@@ -1,16 +1,20 @@
 @import '../../../styles/variables.scss';
 
-.delegate-votes-modal-subtitle {
+.delegateVotesModalSubtitle {
+  color: $secondary-color;
+  font-weight: 500;
   margin-bottom: $space-md;
 }
 
-.new-proposal-form-item {
+.newProposalFormItem {
   display: flex;
   align-items: flex-start;
   margin-bottom: $space-xxxl;
 }
 
-.new-proposal-form-name {
+.newProposalFormName {
+  font-size: $text-small;
+  line-height: 17px;
   width: 40%;
   color: $secondary-color;
   text-transform: uppercase;
@@ -20,36 +24,15 @@
   margin-top: 6px;
 }
 
-.new-proposal-form-input {
+.newProposalFormInput {
   width: 60%;
 }
 
-.new-proposal-form-radio-buttons {
+.newProposalFormRadioButtons {
   display: flex;
   align-items: center;
 
   & > * {
     width: 50%;
-  }
-}
-
-.new-proposal-form-radio {
-  width: 50%;
-  padding-right: $space-xs;
-
-  input,
-  label {
-    cursor: pointer;
-  }
-
-  label {
-    margin-left: $space-xs;
-    color: $primary-color;
-  }
-
-  &._checked {
-    label {
-      color: $tertiary-color;
-    }
   }
 }

@@ -13,4 +13,8 @@
   &.primary {
     background-color: $secondary-black-color;
   }
+
+  &.secondary {
+    background-color: transparent;
+  }
 }

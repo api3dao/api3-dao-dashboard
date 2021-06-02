@@ -1,8 +1,8 @@
 @import '../../styles/variables.scss';
 
-.button-wrapper {
+.buttonWrapper {
   display: inline-block;
-  &._disabled {
+  &.disabled {
     opacity: 0.4;
     pointer-events: none;
   }
@@ -21,38 +21,40 @@
   transition: border-width 0.35s;
   cursor: pointer;
 
-  &._primary {
+  &.primary {
     border-image-source: $primary-border;
     border-image-slice: 1;
   }
 
-  &._secondary {
+  &.secondary {
     border-color: $secondary-border;
   }
 
-  &._link {
-    color: $link-color;
-    border: 0;
-    text-decoration: underline;
-  }
-
-  &._text {
-    border: 0;
-    text-decoration: underline;
-  }
-
-  &._normal {
+  &.normal {
     height: 51px;
     font-size: $text-small;
     line-height: 17px;
     padding: 17px $space-lg;
   }
 
-  &._large {
+  &.large {
     height: 62px;
     font-size: $text-normal;
     line-height: 22px;
     padding: 20px 44px;
+  }
+
+  &.link {
+    color: $link-color;
+    border: 0;
+    text-decoration: underline;
+    padding: 0;
+  }
+
+  &.text {
+    border: 0;
+    text-decoration: underline;
+    padding: 0;
   }
 
   &:hover {
@@ -60,14 +62,14 @@
   }
 }
 
-.button-underline {
+.buttonUnderline {
   margin-top: $space-xxs;
   height: 1px;
   width: 100%;
-  &._primary {
+  &.primary {
     background: linear-gradient(to left, $green-color, $violet-color);
   }
-  &._secondary {
+  &.secondary {
     background-color: $secondary-border;
   }
 }

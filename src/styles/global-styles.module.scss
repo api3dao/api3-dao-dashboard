@@ -37,48 +37,48 @@ h5 {
   font-weight: 300;
 }
 
-.text-normal {
+.textNormal {
   font-size: 18px;
   line-height: 28px;
 }
 
-.text-large {
+.textLarge {
   font-size: 27px;
   line-height: 40px;
 }
 
-.text-xlarge {
+.textXLarge {
   font-size: 40px;
   line-height: 52px;
 }
 
-.text-small {
+.textSmall {
   font-size: 14px;
   line-height: 17px;
 }
 
-.text-xsmall {
+.textXSmall {
   font-size: 12px;
   line-height: 18px;
 }
 
-.primary-color {
+.primaryColor {
   color: #fff;
 }
 
-.secondary-color {
+.secondaryColor {
   color: #c3c4c3;
 }
 
-.tertiary-color {
+.tertiaryColor {
   color: #878888;
 }
 
-.green-color {
+.greenColor {
   color: #7ce3cb;
 }
 
-.pink-color {
+.pinkColor {
   color: #d233f2;
 }
 
@@ -94,11 +94,11 @@ h5 {
   text-decoration: underline;
 }
 
-.text-center {
+.textCenter {
   text-align: center;
 }
 
-.text-right {
+.textRight {
   text-align: right;
 }
 
@@ -108,4 +108,16 @@ h5 {
 
 .medium {
   font-weight: 500;
+}
+
+.mtXl {
+  margin-top: 32px;
+}
+
+.mbLg {
+  margin-bottom: 24px;
+}
+
+.mlXl {
+  margin-left: 32px;
 }

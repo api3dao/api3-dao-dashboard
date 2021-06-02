@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import Navigation from '../navigation/navigation';
 import Header from '../header/header';
-import './layout.scss';
+import styles from './layout.module.scss';
 
 type Props = {
   children: ReactNode;
@@ -21,10 +21,10 @@ const Layout = ({ children, title, sectionTitle, subtitle }: Props) => {
 
 export const BaseLayout: React.FC = ({ children }) => {
   return (
-    <div className="layout">
+    <div className={styles.layout}>
       <Navigation />
-      <div className="container">{children}</div>
-      <img className="layout-texture" src="/texture.png" alt="texture background" />
+      <div className={styles.container}>{children}</div>
+      <img className={styles.layoutTexture} src="/texture.png" alt="texture background" />
     </div>
   );
 };

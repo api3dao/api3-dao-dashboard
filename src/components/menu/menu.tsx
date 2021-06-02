@@ -2,36 +2,37 @@ import { NavLink, useLocation } from 'react-router-dom';
 import DashboardIcon from './dashboard-icon';
 import ProposalsIcon from './proposals-icon';
 import HistoryIcon from './history-icon';
-import './menu.scss';
+import styles from './menu.module.scss';
+import globalStyles from '../../styles/global-styles.module.scss';
 
 const Menu = () => {
   const { pathname } = useLocation();
 
   return (
-    <div className="menu">
+    <div className={styles.menu}>
       <NavLink
-        activeClassName="menu-active-item"
+        activeClassName={styles.menuActiveItem}
         to="/dashboard"
         isActive={() => ['/', '/dashboard', '/dashboard/'].includes(pathname)}
       >
-        <div className="menu-item">
-          <div className="menu-active-line" />
+        <div className={styles.menuItem}>
+          <div className={styles.menuActiveLine} />
           <DashboardIcon />
-          <p className="menu-item-text text-small">Staking</p>
+          <p className={`${styles.menuItemText} ${globalStyles.textSmall}`}>Staking</p>
         </div>
       </NavLink>
-      <NavLink activeClassName="menu-active-item" to="/proposals">
-        <div className="menu-item">
-          <div className="menu-active-line" />
+      <NavLink activeClassName={styles.menuActiveItem} to="/proposals">
+        <div className={styles.menuItem}>
+          <div className={styles.menuActiveLine} />
           <ProposalsIcon />
-          <p className="menu-item-text text-small">Governance</p>
+          <p className={`${styles.menuItemText} ${globalStyles.textSmall}`}>Governance</p>
         </div>
       </NavLink>
-      <NavLink activeClassName="menu-active-item" to="/history">
-        <div className="menu-item">
-          <div className="menu-active-line" />
+      <NavLink activeClassName={styles.menuActiveItem} to="/history">
+        <div className={styles.menuItem}>
+          <div className={styles.menuActiveLine} />
           <HistoryIcon />
-          <p className="menu-item-text text-small">History</p>
+          <p className={`${styles.menuItemText} ${globalStyles.textSmall}`}>History</p>
         </div>
       </NavLink>
     </div>

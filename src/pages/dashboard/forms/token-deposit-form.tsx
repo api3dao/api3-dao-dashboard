@@ -16,7 +16,8 @@ import {
   GO_RESULT_INDEX,
   GO_ERROR_INDEX,
 } from '../../../utils';
-import './forms.scss';
+import globalStyles from '../../../styles/global-styles.module.scss';
+import styles from './forms.module.scss';
 
 interface Props {
   allowance: BigNumber;
@@ -101,11 +102,11 @@ const TokenDepositForm = (props: Props) => {
     <>
       <ModalHeader>How many tokens would you like to deposit?</ModalHeader>
 
-      <div className="text-center">
-        <p className="tokenAmountForm-token medium">TOKEN</p>
+      <div className={globalStyles.textCenter}>
+        <p className={styles.tokenAmountFormToken}>TOKEN</p>
         <Input type="number" value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
-        {error && <p className="tokenAmountForm-error">{error}</p>}
-        <div className="tokenDepositForm-balance">Wallet balance: {balance ? formatApi3(balance) : '0.0'}</div>
+        {error && <p className={styles.tokenAmountFormError}>{error}</p>}
+        <div className={styles.tokenDepositFormBalance}>Wallet balance: {balance ? formatApi3(balance) : '0.0'}</div>
       </div>
 
       <ModalFooter>
@@ -114,7 +115,7 @@ const TokenDepositForm = (props: Props) => {
             type={approvalRequired ? 'primary' : 'secondary'}
             onClick={handleApprove}
             disabled={!approvalRequired}
-            className="tokenAmountForm-approve"
+            className={styles.tokenAmountFormApprove}
           >
             Approve
           </Button>

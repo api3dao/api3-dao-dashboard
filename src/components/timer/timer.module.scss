@@ -4,19 +4,20 @@
   display: inline-flex;
   align-items: center;
   font-size: $text-xsmall;
+  font-weight: 500;
 
-  &._large {
+  &.large {
     flex-direction: column;
     align-items: flex-end;
   }
 }
 
-.timer-container {
+.timerContainer {
   display: flex;
   align-items: center;
   margin-right: $space-xxs;
 
-  .timer._large & {
+  &.large {
     border-top: 1px solid $secondary-black-color;
     border-bottom: 1px solid $secondary-black-color;
     padding-top: $space-xs;
@@ -26,7 +27,15 @@
   }
 }
 
-.timer-wrap {
+.timerNumber {
+  color: $primary-color;
+
+  &.large {
+    font-size: $text-large;
+  }
+}
+
+.timerWrap {
   display: flex;
   align-items: center;
 
@@ -38,7 +47,7 @@
     margin-right: 0;
   }
 
-  .timer._large & {
+  &.large {
     min-width: 35px;
     flex-direction: column;
     margin: 0;
@@ -49,16 +58,11 @@
   }
 }
 
-.timer-number {
-  .timer._large & {
-    font-size: $text-large;
-  }
-}
-
-.timer-colon {
+.timerColon {
+  color: $primary-color;
   margin: 0 $space-xxs;
 
-  .timer._large & {
+  &.large {
     font-size: $text-large;
     margin: 0 $space-xs;
   }

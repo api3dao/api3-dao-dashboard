@@ -1,6 +1,6 @@
 @import '../../styles/variables.scss';
 
-.bordered-boxes-wrap {
+.borderedBoxesWrap {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -12,7 +12,7 @@
   }
 }
 
-.staking-box-wrap {
+.stakingBoxWrap {
   width: 100%;
   max-width: 420px;
   & > * {
@@ -21,4 +21,12 @@
   & > *:last-child {
     margin-bottom: 0;
   }
+}
+
+.borderedBoxContentTitle {
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 500;
+  color: $secondary-color;
+  text-transform: uppercase;
 }

@@ -1,69 +1,64 @@
 @import '../../styles/variables.scss';
 
-.bordered-box {
+.borderedBox {
   display: flex;
   width: 100%;
+}
 
-  &.grey {
-    .bordered-box-col,
-    .bordered-box-innerWrap._borderBottom {
-      border-color: $secondary-border;
-    }
-  }
-
-  &.green {
-    .bordered-box-col,
-    .bordered-box-innerWrap._borderBottom {
-      border-color: $green-color;
-    }
+.borderGrey {
+  .borderedBoxCol,
+  .borderedBoxContent.borderBottom {
+    border-color: $secondary-border;
   }
 }
 
-.bordered-box-col {
+.borderGreen {
+  .borderedBoxCol,
+  .borderedBoxContent.borderBottom {
+    border-color: $green-color;
+  }
+}
+
+.borderedBoxCol {
   width: 32px;
   border-width: 1px;
   border-style: solid;
   flex-shrink: 0;
 
-  &._right {
+  &.right {
     border-left-width: 0;
   }
 
-  &._left {
+  &.left {
     border-right-width: 0;
   }
 }
 
-.bordered-box-innerWrap {
+.borderedBoxContent {
   width: 100%;
   padding: 0 $space-xs;
-  &._borderBottom {
+  &.borderBottom {
     border-bottom-width: 1px;
     border-bottom-style: solid;
   }
 }
 
-.bordered-box-data {
-  margin-bottom: $space-lg;
-  text-align: center;
-}
-
-.bordered-box-header {
+.borderedBoxHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   transform: translateY(-50%);
 
-  &._alignCenter {
+  &.textCenter {
     justify-content: center;
   }
 
-  &._ml-lg {
-    margin-left: $space-lg;
+  &.largeSpaces {
+    margin: 0 $space-lg;
   }
 }
 
-.bordered-box-footer {
+.borderedBoxFooter {
   margin-top: $space-lg;
   text-align: center;
   transform: translateY(50%);

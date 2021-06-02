@@ -1,35 +1,42 @@
 @import '../../../styles/variables.scss';
 
-.pending-unstake-content {
+.pendingUnstakeContent {
   display: flex;
   flex-direction: column;
 }
 
-.pending-unstake-row {
+.pendingUnstakeRow {
   width: 100%;
   display: flex;
   margin-top: $space-lg;
-  &._amount {
+  &.amount {
     align-items: center;
   }
-  &._deadline {
+  &.deadline {
     margin-top: $space-md;
     margin-bottom: $space-sm;
   }
 }
 
-.pending-unstake-title {
+.pendingUnstakeTitle {
+  font-size: $text-small;
+  line-height: 17px;
   color: $green-color;
   margin-top: $space-lg;
+  font-weight: 500;
+  text-align: center;
 }
 
-.pending-unstake-name {
+.pendingUnstakeName {
   flex: 0 0 40%;
+  font-size: $text-small;
+  line-height: 17px;
+  font-weight: 500;
   text-align: right;
   margin-right: $space-md;
 }
 
-.pending-unstake-actions {
+.pendingUnstakeActions {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -37,11 +44,11 @@
   margin-bottom: $space-xs;
 }
 
-.pending-unstake-countdown {
+.pendingUnstakeCountdown {
   display: flex;
 }
 
-.pending-unstake-countdown-item {
+.pendingUnstakeCountdownItem {
   text-align: center;
   & > * {
     margin-bottom: $space-xxs;
@@ -51,6 +58,16 @@
   }
 }
 
+.shortcut {
+  font-size: $text-xsmall;
+  line-height: 18px;
+  font-weight: 500;
+  color: $tertiary-color;
+}
+
 .colon {
+  font-size: $text-small;
+  line-height: 17px;
+  font-weight: 500;
   margin: 0 $space-xxs;
 }
