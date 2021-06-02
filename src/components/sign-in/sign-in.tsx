@@ -102,7 +102,7 @@ const SignIn = () => {
             Current network: <b>{networkName}</b>
           </p>
 
-          <p className="marginTop">Please use your wallet and connect to one of the supported networks!</p>
+          <p className="marginTop">Please use your wallet and connect to one of the supported networks</p>
         </div>
       </GenericModal>
     </>
