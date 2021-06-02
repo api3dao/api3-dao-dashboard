@@ -10,6 +10,7 @@ interface CloseButtonProps {
   closeToast: () => void;
 }
 
+// TODO: this should have the same styling as the modal close button
 export const CloseButton = ({ closeToast }: CloseButtonProps) => (
   <div className={styles.closeButton} onClick={() => closeToast()}>
     X
