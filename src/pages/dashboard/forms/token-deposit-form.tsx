@@ -6,7 +6,17 @@ import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
 import * as notifications from '../../../components/notifications/notifications';
-import { go, goSync, isUserRejection, formatApi3, parseApi3, messages } from '../../../utils';
+import {
+  go,
+  goSync,
+  isUserRejection,
+  formatApi3,
+  parseApi3,
+  messages,
+  isGoSuccess,
+  GO_RESULT_INDEX,
+  GO_ERROR_INDEX,
+} from '../../../utils';
 import './forms.scss';
 
 interface Props {
@@ -33,18 +43,16 @@ const TokenDepositForm = (props: Props) => {
 
     setError('');
 
-    const [err, tx] = await go(api3Token.approve(api3Pool.address, MAX_ALLOWANCE));
-    if (err) {
-      if (isUserRejection(err)) {
+    const goResponse = await go(api3Token.approve(api3Pool.address, MAX_ALLOWANCE));
+    if (isGoSuccess(goResponse)) {
+      setChainData('Save deposit approval', { transactions: [...transactions, goResponse[GO_RESULT_INDEX]] });
+    } else {
+      if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
         notifications.info(messages.TX_APPROVAL_REJECTED);
         return;
       }
       setError(messages.TX_APPROVAL_ERROR);
       return;
-    }
-
-    if (tx) {
-      setChainData('Save deposit approval', { transactions: [...transactions, tx] });
     }
   };
 
@@ -66,18 +74,16 @@ const TokenDepositForm = (props: Props) => {
 
     setError('');
 
-    const [err, tx] = await go(api3Pool.deposit(userAccount, parseApi3(inputValue), userAccount));
-    if (err) {
-      if (isUserRejection(err)) {
+    const goResponse = await go(api3Pool.deposit(userAccount, parseApi3(inputValue), userAccount));
+    if (isGoSuccess(goResponse)) {
+      setChainData('Save deposit transaction', { transactions: [...transactions, goResponse[GO_RESULT_INDEX]] });
+    } else {
+      if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
         notifications.info(messages.TX_DEPOSIT_REJECTED);
         return;
       }
       setError(messages.TX_DEPOSIT_ERROR);
       return;
-    }
-
-    if (tx) {
-      setChainData('Save deposit transaction', { transactions: [...transactions, tx] });
     }
 
     props.onClose();

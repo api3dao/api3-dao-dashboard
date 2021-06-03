@@ -15,15 +15,15 @@ const formatTreasuryAmount = (amount: BigNumberish, decimals: number, symbol: st
   `${utils.formatUnits(amount, decimals)} ${symbol}`;
 
 export const useTreasuries = (): Treasuries => {
-  const { proposalState } = useChainData();
-  if (!proposalState) return { primary: [], secondary: [] };
+  const { treasuries } = useChainData();
+  if (!treasuries) return { primary: [], secondary: [] };
 
   return {
-    primary: proposalState.treasury.map(({ name, balanceOfPrimaryAgent, symbol, decimal }) => ({
+    primary: treasuries.map(({ name, balanceOfPrimaryAgent, symbol, decimal }) => ({
       name: name,
       amountAndSymbol: formatTreasuryAmount(balanceOfPrimaryAgent, decimal, symbol),
     })),
-    secondary: proposalState.treasury.map(({ name, balanceOfSecondaryAgent, symbol, decimal }) => ({
+    secondary: treasuries.map(({ name, balanceOfSecondaryAgent, symbol, decimal }) => ({
       name: name,
       amountAndSymbol: formatTreasuryAmount(balanceOfSecondaryAgent, decimal, symbol),
     })),

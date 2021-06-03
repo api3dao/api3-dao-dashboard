@@ -63,17 +63,11 @@ export interface Treasury {
   balanceOfSecondaryAgent: BigNumber;
 }
 
-export interface ProposalState {
-  delegation: Delegation;
-  treasury: Treasury[];
-  // TODO: It makes more sense to have the state like this:
-  // "{activeProposals: {primary: Proposal[], secondary: Proposal[]}}"
-  primary: {
-    proposals: Proposal[];
-  };
-  secondary: {
-    proposals: Proposal[];
-  };
+export type ProposalDictionary = { [voteId: string]: Proposal };
+
+export interface Proposals {
+  primary: ProposalDictionary;
+  secondary: ProposalDictionary;
 }
 
 export interface ChainData {
@@ -82,7 +76,9 @@ export interface ChainData {
   networkName: string;
   contracts: typeof ContractsAddresses | null;
   dashboardState: DashboardState | null;
-  proposalState: ProposalState | null;
+  proposals: Proposals | null;
+  treasuries: Treasury[];
+  delegation: Delegation | null;
   transactions: ethers.ContractTransaction[];
 }
 
@@ -99,7 +95,9 @@ export const initialChainData: ChainData = {
   networkName: '',
   contracts: null,
   dashboardState: null,
-  proposalState: null,
+  proposals: null,
+  treasuries: [],
+  delegation: null,
   transactions: [],
 };
 

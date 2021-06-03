@@ -11,7 +11,7 @@ import BorderedBox from '../../components/bordered-box/bordered-box';
 import { useApi3Voting } from '../../contracts';
 import { decodeProposalTypeAndId } from '../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../logic/proposals/selectors';
-import { useProposalState } from '../../logic/proposals/use-proposal-state';
+import { useLoadAllProposals } from '../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
 import './proposal-details.scss';
 
@@ -23,10 +23,10 @@ const ProposalDetailsPage = () => {
   const { typeAndId } = useParams<RouterParameters>();
   // TODO: Validate id and type - a proposal might not exist (e.g. user tries invalid voteId)
   const { id, type } = decodeProposalTypeAndId(typeAndId);
-  const { proposalState } = useChainData();
-  useProposalState();
+  const { proposals } = useChainData();
+  useLoadAllProposals();
 
-  const proposal = proposalDetailsSelector(proposalState, type, id);
+  const proposal = proposalDetailsSelector(proposals, type, id);
   // TODO: Loading component
   return <BaseLayout>{!proposal ? <p>Loading...</p> : <ProposalDetails proposal={proposal} />}</BaseLayout>;
 };

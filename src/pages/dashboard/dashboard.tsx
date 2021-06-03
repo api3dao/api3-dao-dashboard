@@ -10,7 +10,7 @@ import {
   totalStakedPercentage,
   useApi3Pool,
   useApi3Token,
-  useOnMinedBlockAndMount,
+  usePossibleChainDataUpdate,
 } from '../../contracts';
 import { computeTokenBalances, getScheduledUnstake } from '../../logic/dashboard/amounts';
 import { formatApi3 } from '../../utils';
@@ -65,7 +65,7 @@ const Dashboard = () => {
     });
   }, [provider, api3Pool, api3Token, userAccount, setChainData]);
 
-  useOnMinedBlockAndMount(loadDashboardData);
+  usePossibleChainDataUpdate(loadDashboardData);
 
   const [openModal, setOpenModal] = useState<ModalType | null>(null);
   const [inputValue, setInputValue] = useState('');
