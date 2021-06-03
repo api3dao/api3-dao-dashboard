@@ -44,28 +44,30 @@ const Timer = (props: Props) => {
     };
   }, [deadline, start]);
 
+  const largeSize = size === 'large' ? `${styles.large}` : '';
+
   return (
-    <div className={classNames(styles.timer, { [styles.large]: size === 'large' })}>
-      <div className={classNames(styles.timerContainer, { [styles.large]: size === 'large' })}>
-        <div className={classNames(styles.timerWrap, { [styles.large]: size === 'large' })}>
-          <div className={classNames(styles.timerNumber, { [styles.large]: size === 'large' })}>{timerDays}</div>
+    <div className={classNames(styles.timer, largeSize)}>
+      <div className={styles.timerContainer}>
+        <div className={styles.timerWrap}>
+          <div className={styles.timerNumber}>{timerDays}</div>
           <div className={globalStyles.tertiaryColor}>D</div>
         </div>
-        <div className={classNames(styles.timerColon, { [styles.large]: size === 'large' })}>:</div>
-        <div className={classNames(styles.timerWrap, { [styles.large]: size === 'large' })}>
-          <div className={classNames(styles.timerNumber, { [styles.large]: size === 'large' })}>{timerHours}</div>
+        <div className={styles.timerColon}>:</div>
+        <div className={styles.timerWrap}>
+          <div className={styles.timerNumber}>{timerHours}</div>
           <div className={globalStyles.tertiaryColor}>HR</div>
         </div>
-        <div className={classNames(styles.timerColon, { [styles.large]: size === 'large' })}>:</div>
-        <div className={classNames(styles.timerWrap, { [styles.large]: size === 'large' })}>
-          <div className={classNames(styles.timerNumber, { [styles.large]: size === 'large' })}>{timerMinutes}</div>
+        <div className={styles.timerColon}>:</div>
+        <div className={styles.timerWrap}>
+          <div className={styles.timerNumber}>{timerMinutes}</div>
           <div className={globalStyles.tertiaryColor}>MIN</div>
         </div>
         {size === 'large' && (
           <>
-            <div className={classNames(styles.timerColon, { [styles.large]: size === 'large' })}>:</div>
-            <div className={classNames(styles.timerWrap, { [styles.large]: size === 'large' })}>
-              <div className={classNames(styles.timerNumber, { [styles.large]: size === 'large' })}>{timerSeconds}</div>
+            <div className={styles.timerColon}>:</div>
+            <div className={styles.timerWrap}>
+              <div className={styles.timerNumber}>{timerSeconds}</div>
               <div className={globalStyles.tertiaryColor}>SEC</div>
             </div>
           </>

@@ -15,6 +15,7 @@ import { useLoadAllProposals } from '../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
+import classNames from 'classnames';
 
 interface RouterParameters {
   typeAndId: string;
@@ -88,7 +89,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
         }
         content={
           <div className={styles.proposalDetailsSummary}>
-            <p className={`${styles.proposalDetailsItem} ${globalStyles.secondaryColor}`}>
+            <p className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor)}>
               {proposal.metadata.description}
             </p>
             <div className={styles.proposalDetailsItem}>

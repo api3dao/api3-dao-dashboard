@@ -17,6 +17,7 @@ import UndelegateForm from './forms/undelegate/undelegate-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposals.module.scss';
+import classNames from 'classnames';
 
 const Proposals = () => {
   const { provider, delegation } = useChainData();
@@ -60,7 +61,7 @@ const Proposals = () => {
               Update delegation
             </Button>
             <Button
-              className={`${styles.proposalsLink} ${globalStyles.mlXl}`}
+              className={classNames(styles.proposalsLink, globalStyles.mlXl)}
               type="text"
               onClick={() => setOpenUndelegateModal(true)}
             >

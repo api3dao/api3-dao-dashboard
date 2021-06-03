@@ -37,13 +37,13 @@ const BorderedBox = ({ header, content, footer, borderColor = 'grey', borderBott
         [styles.borderGreen]: borderColor === 'green',
       })}
     >
-      <div className={`${styles.borderedBoxCol} ${styles.left}`} />
+      <div className={classNames(styles.borderedBoxCol, styles.left)} />
       <div className={classNames(styles.borderedBoxContent, { [styles.borderBottom]: borderBottom })}>
         {header}
         {content}
         {footer && <div className={styles.borderedBoxFooter}>{footer}</div>}
       </div>
-      <div className={`${styles.borderedBoxCol} ${styles.right}`} />
+      <div className={classNames(styles.borderedBoxCol, styles.right)} />
     </div>
   );
 };

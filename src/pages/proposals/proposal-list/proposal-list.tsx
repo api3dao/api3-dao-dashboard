@@ -10,6 +10,7 @@ import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag/tag';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
+import classNames from 'classnames';
 
 const VOTER_STATES = { 0: 'Unvoted', 1: 'Voted For', 2: 'Voted Against' };
 
@@ -43,11 +44,11 @@ const ProposalList = () => {
             <div className={styles.proposalItemWrapper}>
               <p className={styles.proposalTitle}>{p.metadata.description}</p>
               <div className={styles.proposalItemSubtitle}>
-                <div className={`${styles.proposalItemBox} ${styles.mr}`}>
+                <div className={classNames(styles.proposalItemBox, styles.mr)}>
                   <p className={styles.proposalItemVoteId}>#{voteIdFormat(p.voteId)}</p>
                   <p className={styles.proposalItemVoterStates}>{VOTER_STATES[p.voterState]}</p>
                 </div>
-                <div className={`${styles.proposalItemBox} ${styles.date}`}>
+                <div className={classNames(styles.proposalItemBox, styles.date)}>
                   <Timer start={p.startDate} deadline={p.deadline} />
                 </div>
                 <div className={styles.proposalItemBox}>

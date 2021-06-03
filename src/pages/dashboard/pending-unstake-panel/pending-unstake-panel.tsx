@@ -74,7 +74,7 @@ const PendingUnstakePanel = (props: Props) => {
       content={
         <div className={styles.pendingUnstakeContent}>
           <p className={styles.pendingUnstakeTitle}>Pending API3 tokens unstaking</p>
-          <div className={`${styles.pendingUnstakeRow} ${styles.amount}`}>
+          <div className={classNames(styles.pendingUnstakeRow, styles.amount)}>
             <p className={styles.pendingUnstakeName}>Amount</p>
             <h5>{amount}</h5>
           </div>
@@ -103,7 +103,7 @@ const PendingUnstakePanel = (props: Props) => {
             </div>
           </div>
           {isDeadline && (
-            <div className={`${styles.pendingUnstakeRow} ${styles.deadline}`}>
+            <div className={classNames(styles.pendingUnstakeRow, styles.deadline)}>
               <p className={styles.pendingUnstakeName} />
               <p className={globalStyles.textXSmall}>{timerDeadline}</p>
             </div>

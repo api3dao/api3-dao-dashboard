@@ -3,6 +3,7 @@ import { formatApi3 } from '../../../utils/api3-format';
 import RadialChart from './radial-chart';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './staking-pool.module.scss';
+import classNames from 'classnames';
 
 type Props = {
   data?: {
@@ -23,9 +24,9 @@ const StakingPool = ({ data }: Props) => {
 
   return (
     <div className={styles.stakingPool}>
-      <div className={`${styles.stakingTable} ${styles.twoCells}`}>
+      <div className={classNames(styles.stakingTable, styles.twoCells)}>
         <div className={styles.stakingTableRow}>
-          <div className={`${styles.stakingTableCell} ${styles.rightAlign}`}>
+          <div className={classNames(styles.stakingTableCell, styles.rightAlign)}>
             <h3>{annualApy}%</h3>
           </div>
           <div className={styles.stakingTableCell}>
@@ -33,7 +34,7 @@ const StakingPool = ({ data }: Props) => {
           </div>
         </div>
         <div className={styles.stakingTableRow}>
-          <div className={`${styles.stakingTableCell} ${styles.rightAlign}`}>
+          <div className={classNames(styles.stakingTableCell, styles.rightAlign)}>
             <h5>{annualInflationRate}%</h5>
           </div>
           <div className={styles.stakingTableCell}>
@@ -43,13 +44,13 @@ const StakingPool = ({ data }: Props) => {
       </div>
       <div className={styles.stakingTable}>
         <div className={styles.stakingTableRow}>
-          <div className={`${styles.stakingTableCell} ${styles.oneCell} ${styles.rightAlign}`}>
+          <div className={classNames(styles.stakingTableCell, styles.oneCell, styles.rightAlign)}>
             <p className={styles.stakingTableCellTitle}>total staked</p>
             <p className={globalStyles.medium}>{totalStaked}</p>
           </div>
         </div>
         <div className={styles.stakingTableRow}>
-          <div className={`${styles.stakingTableCell} ${styles.oneCell} ${styles.rightAlign}`}>
+          <div className={classNames(styles.stakingTableCell, styles.oneCell, styles.rightAlign)}>
             <p className={styles.stakingTableCellTitle}>staking target</p>
             <p className={globalStyles.medium}>{stakeTarget}</p>
           </div>
