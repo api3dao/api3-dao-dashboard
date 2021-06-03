@@ -12,15 +12,15 @@ type Props = {
 
 type HeaderProps = {
   children: ReactNode | ReactNode[];
-  textCenter?: boolean;
+  alignCenter?: boolean;
   largeSpaces?: boolean;
 };
 
-export const Header = ({ children, textCenter, largeSpaces }: HeaderProps) => {
+export const Header = ({ children, alignCenter, largeSpaces }: HeaderProps) => {
   return (
     <div
       className={classNames(styles.borderedBoxHeader, {
-        [styles.textCenter]: textCenter,
+        [styles.alignCenter]: alignCenter,
         [styles.largeSpaces]: largeSpaces,
       })}
     >

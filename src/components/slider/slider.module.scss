@@ -3,6 +3,7 @@
 .sliderWrapper {
   margin-top: $space-xl;
   margin-bottom: 2 * $space-xl;
+  // it styles slider-wrapper so that it does not pass through the arrows
   & > div > div > div {
     width: calc(100% - 100px) !important;
     padding: 0 50px;
@@ -11,10 +12,11 @@
 
 .sliderContent {
   height: 156px;
+  max-width: 627px;
   display: flex;
   align-items: center;
   text-align: left;
-  padding: 50px 2 * $space-xl;
+  margin: 0 auto;
 }
 
 .sliderNumberWrap {
