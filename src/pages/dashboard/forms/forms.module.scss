@@ -1,25 +1,26 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/variables.module.scss';
 
-.tokenAmountForm-token {
+.tokenAmountFormToken {
+  font-weight: 500;
   margin-bottom: $space-lg;
   text-transform: uppercase;
 }
 
-.tokenDepositForm-balance {
+.tokenDepositFormBalance {
   margin-top: $space-lg;
 }
 
-.tokenAmountForm-actions {
+.tokenAmountFormActions {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.tokenAmountForm-approve {
+.tokenAmountFormApprove {
   margin-right: $space-lg;
 }
 
-.tokenAmountForm-error {
+.tokenAmountFormError {
   margin-top: $space-xl;
   color: red;
 }

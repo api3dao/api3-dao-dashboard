@@ -1,4 +1,4 @@
-import './header.scss';
+import styles from './header.module.scss';
 
 type Props = {
   sectionTitle: string;
@@ -8,10 +8,10 @@ type Props = {
 
 const Header = ({ sectionTitle, title, subtitle }: Props) => {
   return (
-    <div className="header">
-      {subtitle && <div className="header-subtitle">{subtitle}</div>}
+    <div className={styles.header}>
+      {subtitle && <div className={styles.headerSubtitle}>{subtitle}</div>}
       <h4>{title}</h4>
-      <h1 className="header-title">{sectionTitle}</h1>
+      <h1 className={styles.headerTitle}>{sectionTitle}</h1>
     </div>
   );
 };

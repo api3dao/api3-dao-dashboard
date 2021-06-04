@@ -1,10 +1,10 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/variables.module.scss';
 
-.vote-form {
+.voteForm {
   text-align: center;
 }
 
-.vote-form-content {
+.voteFormContent {
   margin-top: $space-xxxl;
   margin-bottom: 2 * $space-xxl;
   display: flex;

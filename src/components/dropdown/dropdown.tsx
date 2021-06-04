@@ -1,6 +1,6 @@
 import { ReactNode, useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
-import './dropdown.scss';
+import styles from './dropdown.module.scss';
 
 interface DropdownProps {
   children: ReactNode;
@@ -19,10 +19,10 @@ interface DropdownMenuItemProps {
   onClick?: () => void;
 }
 
-export const DropdownMenu = ({ children }: DropdownMenuProps) => <div className="dropdown-menu">{children}</div>;
+export const DropdownMenu = ({ children }: DropdownMenuProps) => <div className={styles.dropdownMenu}>{children}</div>;
 
 export const DropdownMenuItem = ({ children, className, onClick }: DropdownMenuItemProps) => (
-  <div onClick={onClick} className={classNames('dropdown-menu-item', className, { [`_clickable`]: onClick })}>
+  <div onClick={onClick} className={classNames(styles.dropdownMenuItem, className, { [styles.clickable]: onClick })}>
     {children}
   </div>
 );
@@ -45,10 +45,17 @@ const Dropdown = ({ children, menu, icon, alignIcon = 'center' }: DropdownProps)
   }, []);
 
   return (
-    <div className="dropdown" ref={dropdownRef}>
-      <div className={classNames('dropdown-button', alignIcon)} onClick={() => setOpen(!open)}>
+    <div className={styles.dropdown} ref={dropdownRef}>
+      <div
+        className={classNames(styles.dropdownButton, {
+          [styles.alignStart]: alignIcon === 'start',
+          [styles.alignCenter]: alignIcon === 'center',
+          [styles.alignEnd]: alignIcon === 'end',
+        })}
+        onClick={() => setOpen(!open)}
+      >
         {children}
-        <div className={classNames('dropdown-icon', { [`_open`]: open })}>
+        <div className={classNames(styles.dropdownIcon, { [styles.open]: open })}>
           {icon || <img src="/dropdown.svg" alt="dropdown icon" />}
         </div>
       </div>

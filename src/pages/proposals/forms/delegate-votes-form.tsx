@@ -3,7 +3,8 @@ import Button from '../../../components/button/button';
 import Input from '../../../components/input/input';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import { useApi3Pool } from '../../../contracts';
-import './forms.scss';
+import globalStyles from '../../../styles/global-styles.module.scss';
+import styles from './forms.module.scss';
 
 interface Props {
   onClose: () => void;
@@ -19,8 +20,8 @@ const DelegateVotesForm = (props: Props) => {
     <>
       <ModalHeader>Delegate my votes to:</ModalHeader>
 
-      <div className="text-center">
-        <p className="delegate-votes-modal-subtitle secondary-color medium">ADDRESS</p>
+      <div className={globalStyles.textCenter}>
+        <p className={styles.delegateVotesModalSubtitle}>ADDRESS</p>
         <Input
           type="autosize-text"
           placeholder="Enter address here"

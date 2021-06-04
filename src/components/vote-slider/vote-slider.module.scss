@@ -1,21 +1,21 @@
-@import '../../styles/variables.scss';
+@import '../../styles/variables.module.scss';
 
 $border-radius: 100px;
 
-.vote-slider {
+.voteSlider {
   display: flex;
   align-items: flex-start;
   justify-content: center;
   flex: 1;
 }
 
-.bar-wrapper {
+.barWrapper {
   flex: 1;
   margin-left: $space-sm;
   margin-right: $space-sm;
 }
 
-.bar-names {
+.barNames {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -32,33 +32,34 @@ $border-radius: 100px;
   border-radius: $border-radius;
   padding: 0 2px;
   box-sizing: border-box;
-
-  .acceptance-quorum {
-    position: absolute;
-    display: flex;
-    width: 1px;
-    height: calc(100% - 6px);
-    background-color: $black-line-color;
-  }
-
-  .for {
-    height: calc(100% - 4px);
-    border-radius: $border-radius;
-    background: $green-color;
-  }
-
-  .against {
-    height: calc(100% - 4px);
-    border-radius: $border-radius;
-    background: $pink-color;
-    margin-left: auto;
-  }
 }
 
-.vote-info {
+.acceptanceQuorum {
+  position: absolute;
+  display: flex;
+  width: 1px;
+  height: calc(100% - 6px);
+  background-color: $black-line-color;
+}
+
+.for {
+  height: calc(100% - 4px);
+  border-radius: $border-radius;
+  background: $green-color;
+}
+
+.against {
+  height: calc(100% - 4px);
+  border-radius: $border-radius;
+  background: $pink-color;
+  margin-left: auto;
+}
+
+.voteInfo {
   display: flex;
   justify-content: space-between;
   margin-top: 6px;
+  font-weight: 500;
 }
 
 .status {
@@ -73,11 +74,11 @@ $border-radius: 100px;
   }
 }
 
-.vote-icon {
+.voteIcon {
   height: 8px;
   margin-top: 5px;
 
-  &._large {
+  &.large {
     height: 16px;
     margin-top: 1px;
   }

@@ -5,7 +5,7 @@ import { abbrStr } from '../../chain-data/helpers';
 import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
 import { Modal } from '../../components/modal/modal';
-import BorderedBox from '../../components/bordered-box/bordered-box';
+import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import Treasury from './treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useLoadAllProposals, useReloadActiveProposalsOnMinedBlock } from '../../logic/proposals/hooks';
@@ -14,8 +14,10 @@ import ProposalList from './proposal-list/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import DelegateVotesForm from './forms/delegate-votes-form';
 import UndelegateForm from './forms/undelegate/undelegate-form';
-import './proposals.scss';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
+import globalStyles from '../../styles/global-styles.module.scss';
+import styles from './proposals.module.scss';
+import classNames from 'classnames';
 
 const Proposals = () => {
   const { provider, delegation } = useChainData();
@@ -47,16 +49,22 @@ const Proposals = () => {
 
   return (
     <Layout title="Governance" sectionTitle="Governance">
-      <div className="proposals-header">
+      <div className={styles.proposalsHeader}>
         {/* TODO: Should the buttons be disabled according to conditions in https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622114047033800?thread_ts=1622113523.033100&cid=C020RCCC3EJ */}
         {/* There was another slack discussion where we said we want to avoid disabled buttons */}
         {delegation?.delegate ? (
           <div>
-            <p className="secondary-color bold">Delegated to: {abbrStr(delegation.delegate)}</p>
-            <Button className="proposals-link" type="text" onClick={() => setOpenDelegationModal(true)}>
+            <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`}>
+              Delegated to: {abbrStr(delegation.delegate)}
+            </p>
+            <Button className={styles.proposalsLink} type="text" onClick={() => setOpenDelegationModal(true)}>
               Update delegation
             </Button>
-            <Button className="proposals-link space-left" type="text" onClick={() => setOpenUndelegateModal(true)}>
+            <Button
+              className={classNames(styles.proposalsLink, globalStyles.mlXl)}
+              type="text"
+              onClick={() => setOpenUndelegateModal(true)}
+            >
               Undelegate
             </Button>
             <Modal open={openUndelegateModal} onClose={() => setOpenUndelegateModal(false)}>
@@ -65,8 +73,8 @@ const Proposals = () => {
           </div>
         ) : (
           <div>
-            <p className="secondary-color bold">Undelegated</p>
-            <Button className="proposals-link" type="text" onClick={() => setOpenDelegationModal(true)}>
+            <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`}>Undelegated</p>
+            <Button className={styles.proposalsLink} type="text" onClick={() => setOpenDelegationModal(true)}>
               Update delegation
             </Button>
           </div>
@@ -80,12 +88,12 @@ const Proposals = () => {
 
       <BorderedBox
         header={
-          <div className="bordered-box-header">
+          <Header>
             <h5>Proposals</h5>
             <Button onClick={() => setOpenNewProposalModal(true)} size="large">
               + New proposal
             </Button>
-          </div>
+          </Header>
         }
         content={<ProposalList />}
       />

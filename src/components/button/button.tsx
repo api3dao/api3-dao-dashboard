@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import classNames from 'classnames';
-import './button.scss';
+import styles from './button.module.scss';
 
 type Props = {
   children: ReactNode;
@@ -13,15 +13,15 @@ type Props = {
 
 const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick, className }: Props) => {
   return (
-    <div className={classNames('button-wrapper', { [`_disabled`]: disabled }, className)}>
+    <div className={classNames(styles.buttonWrapper, { [styles.disabled]: disabled }, className)}>
       <button
-        className={classNames('button', {
-          [`_primary`]: type === 'primary',
-          [`_secondary`]: type === 'secondary',
-          [`_link`]: type === 'link',
-          [`_text`]: type === 'text',
-          [`_normal`]: size === 'normal' && type !== 'link',
-          [`_large`]: size === 'large' && type !== 'link',
+        className={classNames(styles.button, {
+          [styles.primary]: type === 'primary',
+          [styles.secondary]: type === 'secondary',
+          [styles.link]: type === 'link',
+          [styles.text]: type === 'text',
+          [styles.normal]: size === 'normal' && type !== 'link',
+          [styles.large]: size === 'large' && type !== 'link',
         })}
         onClick={onClick}
       >
@@ -29,9 +29,9 @@ const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick
       </button>
       {type !== 'link' && (
         <div
-          className={classNames('button-underline', {
-            [`_primary`]: type === 'primary',
-            [`_secondary`]: type === 'secondary',
+          className={classNames(styles.buttonUnderline, {
+            [styles.primary]: type === 'primary',
+            [styles.secondary]: type === 'secondary',
           })}
         />
       )}

@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import '../../styles/variables.module.scss';
 
 .layout {
   background: $background-gradient;
@@ -17,7 +17,7 @@
   padding-bottom: 2 * $space-xxl;
 }
 
-.layout-texture {
+.layoutTexture {
   position: absolute;
   bottom: 0;
   right: 0;

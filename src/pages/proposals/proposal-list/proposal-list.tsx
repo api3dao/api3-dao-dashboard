@@ -8,7 +8,9 @@ import Timer from '../../../components/timer/timer';
 import Tooltip from '../../../components/tooltip/tooltip';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag/tag';
-import './proposal-list.scss';
+import globalStyles from '../../../styles/global-styles.module.scss';
+import styles from './proposal-list.module.scss';
+import classNames from 'classnames';
 
 const VOTER_STATES = { 0: 'Unvoted', 1: 'Voted For', 2: 'Voted Against' };
 
@@ -38,28 +40,28 @@ const ProposalList = () => {
             : 'Secondary proposals need 15% to execute.';
 
         return (
-          <div className="proposal-item" key={`${p.type}-${voteIdFormat(p.voteId)}`}>
-            <div className="proposal-item-wrapper medium">
-              <p className="proposal-item-title">{p.metadata.description}</p>
-              <div className="proposal-item-subtitle text-xsmall">
-                <div className="proposal-item-box _mr-lg">
-                  <p className="proposal-item-voteId tertiary-color">#{voteIdFormat(p.voteId)}</p>
-                  <p className="proposal-item-voter-states">{VOTER_STATES[p.voterState]}</p>
+          <div className={styles.proposalItem} key={`${p.type}-${voteIdFormat(p.voteId)}`}>
+            <div className={styles.proposalItemWrapper}>
+              <p className={styles.proposalTitle}>{p.metadata.description}</p>
+              <div className={styles.proposalItemSubtitle}>
+                <div className={classNames(styles.proposalItemBox, styles.mr)}>
+                  <p className={styles.proposalItemVoteId}>#{voteIdFormat(p.voteId)}</p>
+                  <p className={styles.proposalItemVoterStates}>{VOTER_STATES[p.voterState]}</p>
                 </div>
-                <div className="proposal-item-box _date">
+                <div className={classNames(styles.proposalItemBox, styles.date)}>
                   <Timer start={p.startDate} deadline={p.deadline} />
                 </div>
-                <div className="proposal-item-box">
+                <div className={styles.proposalItemBox}>
                   <Tooltip content={tooltipContent}>
                     <Tag type={p.type}>
-                      <span className="capitalize">{p.type}</span>
+                      <span className={globalStyles.capitalize}>{p.type}</span>
                     </Tag>
                   </Tooltip>
                 </div>
               </div>
             </div>
 
-            <div className="proposal-item-voteBar">
+            <div className={styles.proposalVoteBar}>
               <VoteSlider {...votingSliderData} />
               <NavLink to={`/proposals/${encodeProposalTypeAndId(p.type, voteIdFormat(p.voteId))}`}>
                 <img src="/arrow-right.svg" alt="right arrow" />

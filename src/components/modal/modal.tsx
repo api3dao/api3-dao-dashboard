@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { useOnAccountOrNetworkChange } from '../../contracts';
-import './modal.scss';
+import styles from './modal.module.scss';
 
 interface ModalProps {
   children?: React.ReactNode;
@@ -25,17 +25,17 @@ export const Modal = (props: ModalProps) => {
   if (!open) return null;
 
   return ReactDOM.createPortal(
-    <div className="modal-wrapper">
+    <div className={styles.modalWrapper}>
       <div
-        className={classNames('modal-body', {
-          _small: size === 'small',
-          _medium: size === 'medium',
-          _large: size === 'large',
+        className={classNames(styles.modalBody, {
+          [styles.small]: size === 'small',
+          [styles.medium]: size === 'medium',
+          [styles.large]: size === 'large',
         })}
       >
-        <div className="modal">
+        <div className={styles.modal}>
           <img
-            className={classNames('close-button', { _hidden: hideCloseButton })}
+            className={classNames(styles.closeButton, { [styles.hidden]: hideCloseButton })}
             onClick={onClose}
             src="/close.svg"
             alt="close icon"
@@ -54,7 +54,7 @@ interface ModalHeaderProps {
 
 export const ModalHeader = (props: ModalHeaderProps) => {
   if (!props.children) return null;
-  return <h5 className="modal-header text-center">{props.children}</h5>;
+  return <h5 className={styles.modalHeader}>{props.children}</h5>;
 };
 
 interface ModalFooterProps {
@@ -63,5 +63,5 @@ interface ModalFooterProps {
 
 export const ModalFooter = (props: ModalFooterProps) => {
   if (!props.children) return null;
-  return <div className="modal-footer">{props.children}</div>;
+  return <div className={styles.modalFooter}>{props.children}</div>;
 };

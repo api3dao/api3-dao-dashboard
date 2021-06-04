@@ -1,6 +1,6 @@
-@import '../../styles/variables.scss';
+@import '../../styles/variables.module.scss';
 
-.proposal-details-subheader {
+.proposalDetailsSubheader {
   display: flex;
   align-items: center;
   margin-bottom: $space-xs;
@@ -12,7 +12,7 @@
   }
 }
 
-.proposal-details-header {
+.proposalDetailsHeader {
   display: flex;
   justify-content: space-between;
   margin-bottom: $space-lg;
@@ -24,13 +24,13 @@
   }
 }
 
-.proposal-details-timer {
+.proposalDetailsTimer {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
 
-.proposal-details-vote-section {
+.proposalDetailsVoteSection {
   text-align: center;
   margin: $space-lg 2 * $space-xxl 2 * $space-xl;
 
@@ -39,11 +39,11 @@
   }
 }
 
-.proposal-details-summary {
+.proposalDetailsSummary {
   margin: 0 2 * $space-xl 2 * $space-xl;
 }
 
-.proposal-details-item {
+.proposalDetailsItem {
   margin-top: $space-xl;
   & > * {
     margin-bottom: $space-xxs;

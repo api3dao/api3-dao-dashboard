@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { getDays, getHours, getMinutes, getSeconds } from '../../utils/generic';
-import './timer.scss';
+import globalStyles from '../../styles/global-styles.module.scss';
+import styles from './timer.module.scss';
 
 interface Props {
   start: Date;
@@ -43,34 +44,36 @@ const Timer = (props: Props) => {
     };
   }, [deadline, start]);
 
+  const largeSize = size === 'large' ? `${styles.large}` : '';
+
   return (
-    <div className={classNames('timer medium', { [`_large`]: size === 'large' })}>
-      <div className="timer-container">
-        <div className="timer-wrap">
-          <div className="timer-number primary-color">{timerDays}</div>
-          <div className="tertiary-color">D</div>
+    <div className={classNames(styles.timer, largeSize)}>
+      <div className={styles.timerContainer}>
+        <div className={styles.timerWrap}>
+          <div className={styles.timerNumber}>{timerDays}</div>
+          <div className={globalStyles.tertiaryColor}>D</div>
         </div>
-        <div className="timer-colon primary-color">:</div>
-        <div className="timer-wrap">
-          <div className="timer-number primary-color">{timerHours}</div>
-          <div className="tertiary-color">HR</div>
+        <div className={styles.timerColon}>:</div>
+        <div className={styles.timerWrap}>
+          <div className={styles.timerNumber}>{timerHours}</div>
+          <div className={globalStyles.tertiaryColor}>HR</div>
         </div>
-        <div className="timer-colon primary-color">:</div>
-        <div className="timer-wrap">
-          <div className="timer-number primary-color">{timerMinutes}</div>
-          <div className="tertiary-color">MIN</div>
+        <div className={styles.timerColon}>:</div>
+        <div className={styles.timerWrap}>
+          <div className={styles.timerNumber}>{timerMinutes}</div>
+          <div className={globalStyles.tertiaryColor}>MIN</div>
         </div>
         {size === 'large' && (
           <>
-            <div className="timer-colon primary-color">:</div>
-            <div className="timer-wrap">
-              <div className="timer-number primary-color">{timerSeconds}</div>
-              <div className="tertiary-color">SEC</div>
+            <div className={styles.timerColon}>:</div>
+            <div className={styles.timerWrap}>
+              <div className={styles.timerNumber}>{timerSeconds}</div>
+              <div className={globalStyles.tertiaryColor}>SEC</div>
             </div>
           </>
         )}
       </div>
-      <div className="primary-color">remaining</div>
+      <div className={globalStyles.primaryColor}>remaining</div>
     </div>
   );
 };
