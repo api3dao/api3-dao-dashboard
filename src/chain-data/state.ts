@@ -24,8 +24,10 @@ export interface UserStakingData {
 }
 
 export interface DashboardState extends UserStakingData {
+  allowance: BigNumber;
   annualInflationRate: number;
   currentApy: number;
+  ownedTokens: BigNumber;
   stakedPercentage: number;
   userTotal: BigNumber;
   withdrawable: BigNumber;

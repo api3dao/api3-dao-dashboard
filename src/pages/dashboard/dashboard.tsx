@@ -2,17 +2,7 @@ import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
-import {
-  absoluteStakeTarget,
-  calculateAnnualInflationRate,
-  calculateAnnualMintedTokens,
-  calculateApy,
-  totalStakedPercentage,
-  useApi3Pool,
-  useApi3Token,
-  useConvenience,
-  usePossibleChainDataUpdate,
-} from '../../contracts';
+import { useApi3Pool, useApi3Token, useConvenience, usePossibleChainDataUpdate } from '../../contracts';
 import { computeTokenBalances, computeStakingPool } from '../../logic/dashboard/amounts';
 import { formatApi3, go } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
@@ -39,32 +29,37 @@ const Dashboard = () => {
   // immediately if the user is already on the dashboard and they have just connected.
   // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
   const loadDashboardData = useCallback(async () => {
-    if (!provider || !convenience || !userAccount) return null;
+    if (!provider || !api3Pool || !api3Token || !convenience || !userAccount) return null;
 
-    const [err, stakingData] = await go(convenience.getUserStakingData(userAccount));
-    if (err || !stakingData) {
-      // TODO: display a toast?
+    const [stakingDataErr, stakingData] = await go(convenience.getUserStakingData(userAccount));
+    if (stakingDataErr || !stakingData) {
+      // TODO: notifications.error('Failed to load dashboard data');
+      return;
+    }
+
+    const [allowanceErr, allowance] = await go(api3Token.allowance(userAccount, api3Pool.address));
+    if (allowanceErr || !allowance) {
+      // TODO: notifications.error('Failed to load dashboard data');
+      return;
+    }
+
+    const [ownedTokensErr, ownedTokens] = await go(api3Token.balanceOf(userAccount));
+    if (ownedTokensErr || !ownedTokens) {
+      // TODO: notifications.error('Failed to load dashboard data');
       return;
     }
 
     const { userTotal, withdrawable } = computeTokenBalances(stakingData);
     const { currentApy, annualInflationRate, stakedPercentage } = computeStakingPool(stakingData);
 
-    // const tokenBalances = await computeTokenBalances(api3Pool, userAccount);
-    // const currentApr = await api3Pool.currentApr();
-    // const annualApy = calculateApy(currentApr);
-    // const totalStaked = await api3Pool.totalStake();
-    // const totalSupply = await api3Token.totalSupply();
-    // const stakeTarget = absoluteStakeTarget(await api3Pool.stakeTarget(), totalSupply);
-    // const annualMintedTokens = calculateAnnualMintedTokens(totalStaked, annualApy);
-    // const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, totalSupply);
-
     setChainData('Load dashboard data', {
       dashboardState: {
+        allowance,
         annualInflationRate,
         api3Supply: stakingData.api3Supply,
         apr: stakingData.apr,
         currentApy,
+        ownedTokens,
         stakedPercentage,
         stakeTarget: stakingData.stakeTarget,
         totalShares: stakingData.totalShares,
@@ -80,7 +75,7 @@ const Dashboard = () => {
         withdrawable,
       },
     });
-  }, [provider, convenience, userAccount, setChainData]);
+  }, [provider, api3Pool, api3Token, convenience, userAccount, setChainData]);
 
   usePossibleChainDataUpdate(loadDashboardData);
 
@@ -93,19 +88,19 @@ const Dashboard = () => {
 
   const disconnected = !api3Pool || !api3Token || !data;
   const canWithdraw = !disconnected && data?.withdrawable.gt(0);
-  const startDate = data?.pendingUnstake ? data?.pendingUnstake.scheduledFor.getTime() : 0;
-  const now = new Date().getTime();
-  const isDeadline = now > startDate;
 
-  // TODO: update according to the specifications here:
-  // https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
-  const canInitiateUnstake = !disconnected && data?.userStake.gt(0);
-  const displayUnstakeCard = data?.pendingUnstake ? data?.scheduledFor === new Date(0)
+  // userUnstakeScheduledFor === 0 is a special case indicating that the user has not yet initiated an unstake
+  const isUnstakePending = data?.userUnstakeScheduledFor.gt(BigNumber.from(0));
+
+  const unstakeDate = new Date(data?.userUnstakeScheduledFor.mul(1000).toNumber() || 0);
+  const now = new Date().getTime();
+  const hasUnstakeDelayPassed = now > unstakeDate.getTime();
+  const isUnstakeReady = isUnstakePending && hasUnstakeDelayPassed;
 
   return (
     <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">
-      {isDeadline && data?.pendingUnstake && <UnstakeBanner />}
-      {!data?.pendingUnstake && (
+      {isUnstakeReady && <UnstakeBanner />}
+      {!isUnstakeReady && (
         <>
           <h5 className="green-color">How This Works</h5>
           <Slider />
@@ -128,7 +123,7 @@ const Dashboard = () => {
               <>
                 <div className="bordered-box-data">
                   <p className="text-small secondary-color uppercase medium">total</p>
-                  <p className="text-xlarge">{data ? formatApi3(data.balance) : '0.0'}</p>
+                  <p className="text-xlarge">{data ? formatApi3(data.userTotal) : '0.0'}</p>
                 </div>
                 <div className="bordered-box-data">
                   <p className="text-small secondary-color uppercase medium">withdrawable</p>
@@ -157,7 +152,7 @@ const Dashboard = () => {
               <>
                 <div className="bordered-box-data">
                   <p className="text-small secondary-color uppercase medium">staked</p>
-                  <p className="text-xlarge">{data ? formatApi3(data.userStake) : '0.0'}</p>
+                  <p className="text-xlarge">{data ? formatApi3(data.userStaked) : '0.0'}</p>
                 </div>
                 <div className="bordered-box-data">
                   <p className="text-small secondary-color uppercase medium">unstaked</p>
@@ -166,17 +161,13 @@ const Dashboard = () => {
               </>
             }
             footer={
-              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={!canInitiateUnstake}>
+              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={!isUnstakePending}>
                 Initiate Unstake
               </Button>
             }
           />
-          {data?.pendingUnstake && (
-            <PendingUnstakePanel
-              amount={data.pendingUnstake.amount.toString()}
-              scheduledFor={data.pendingUnstake.scheduledFor}
-              deadline={data.pendingUnstake.deadline}
-            />
+          {data && isUnstakePending && (
+            <PendingUnstakePanel amount={data.userUnstakeAmount} scheduledFor={data.userUnstakeScheduledFor} />
           )}
         </div>
       </div>
@@ -241,7 +232,7 @@ const Dashboard = () => {
           onChange={setInputValue}
           onClose={closeModal}
           showTokenInput={false}
-          maxValue={data?.userStake}
+          maxValue={data?.userStaked}
         />
       </Modal>
     </Layout>

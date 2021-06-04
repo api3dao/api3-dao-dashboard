@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import BorderedBox from '../../../components/bordered-box/bordered-box';
@@ -6,14 +7,13 @@ import { getDays, getHours, getMinutes, getSeconds } from '../../../utils/generi
 import './pending-unstake-panel.scss';
 
 interface Props {
-  amount: string;
-  scheduledFor: Date;
-  deadline: Date;
+  amount: BigNumber;
+  scheduledFor: BigNumber;
 }
 
 const PendingUnstakePanel = (props: Props) => {
-  const { amount, scheduledFor, deadline } = props;
-  const [isDeadline, setDeadline] = useState(false);
+  const { amount, scheduledFor } = props;
+  const [isUnstakeReady, setUnstakeReady] = useState(false);
   const [timerDays, setTimerDays] = useState('0');
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
@@ -21,18 +21,11 @@ const PendingUnstakePanel = (props: Props) => {
   const [timerDeadline, setTimerDeadline] = useState('You have 0 days 0 hours 0 min 0 sec remaining to unstake.');
 
   useEffect(() => {
-    const deadlineDate = deadline.getTime();
     const timer = setInterval(() => {
       const now = new Date().getTime();
-      const scheduledDate = scheduledFor.getTime();
-      let distance;
+      const scheduledDate = new Date(scheduledFor.mul(1000).toNumber()).getTime();
 
-      if (scheduledDate > now) {
-        distance = scheduledDate - now;
-      } else {
-        distance = deadlineDate - now;
-      }
-
+      const distance = scheduledDate - now;
       const days = getDays(distance);
       const hours = getHours(distance);
       const minutes = getMinutes(distance);
@@ -48,20 +41,18 @@ const PendingUnstakePanel = (props: Props) => {
         setTimerHours('00');
         setTimerMinutes('00');
         setTimerSeconds('00');
-        setTimerDeadline(`You have ${days} days ${hours} hours ${minutes} min ${seconds} sec remaining to unstake.`);
-        setDeadline(true);
-      }
-
-      if (deadlineDate < now) {
-        clearInterval(timer);
         // TODO: This will be incorrect for singular, e.g. 1 days
-        setTimerDeadline(`You have 0 days 0 hours 0 min 0 sec remaining to unstake.`);
+        setTimerDeadline(`You have ${days} days ${hours} hours ${minutes} min ${seconds} sec remaining to unstake.`);
+        setUnstakeReady(true);
+
+        clearInterval(timer);
       }
     }, 1000);
+
     return () => {
       clearInterval(timer);
     };
-  }, [deadline, scheduledFor]);
+  }, [scheduledFor]);
 
   return (
     <BorderedBox
@@ -79,7 +70,7 @@ const PendingUnstakePanel = (props: Props) => {
             <p className="pending-unstake-name text-small medium">Amount</p>
             <h5>{amount}</h5>
           </div>
-          <div className={classNames('pending-unstake-row', { [`tertiary-color`]: isDeadline })}>
+          <div className={classNames('pending-unstake-row', { [`tertiary-color`]: isUnstakeReady })}>
             <p className="pending-unstake-name text-small medium">Cooldown</p>
             <div className="pending-unstake-countdown">
               <div className="pending-unstake-countdown-item">
@@ -103,17 +94,17 @@ const PendingUnstakePanel = (props: Props) => {
               </div>
             </div>
           </div>
-          {isDeadline && (
+          {isUnstakeReady && (
             <div className="pending-unstake-row _deadline">
               <p className="pending-unstake-name" />
               <p className="text-xsmall">{timerDeadline}</p>
             </div>
           )}
           <div className="pending-unstake-actions">
-            <Button type="link" disabled={!isDeadline}>
+            <Button type="link" disabled={!isUnstakeReady}>
               Unstake & Withdraw
             </Button>
-            <Button disabled={!isDeadline}>Unstake</Button>
+            <Button disabled={!isUnstakeReady}>Unstake</Button>
           </div>
         </div>
       }

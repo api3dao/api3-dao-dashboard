@@ -5,27 +5,27 @@ import './staking-pool.scss';
 
 type Props = {
   data?: {
-    annualApy: number;
     annualInflationRate: number;
-    totalStaked: BigNumber;
+    currentApy: number;
+    totalStake: BigNumber;
     stakeTarget: BigNumber;
-    totalStakedPercentage: number;
+    stakedPercentage: number;
   };
 };
 
 const StakingPool = ({ data }: Props) => {
-  const annualApy = parseFloat(data?.annualApy.toString() || '0').toFixed(1);
+  const currentApy = parseFloat(data?.currentApy.toString() || '0').toFixed(1);
   const annualInflationRate = parseFloat(data ? data.annualInflationRate.toString() : '0').toFixed(2);
-  const totalStaked = parseFloat(data ? formatApi3(data.totalStaked) : '0').toLocaleString();
+  const totalStaked = parseFloat(data ? formatApi3(data.totalStake) : '0').toLocaleString();
   const stakeTarget = parseFloat(data ? formatApi3(data.stakeTarget) : '0').toLocaleString();
-  const totalStakedPercentage = parseFloat((data?.totalStakedPercentage || 0).toFixed(2));
+  const stakedPercentage = parseFloat((data?.stakedPercentage || 0).toFixed(2));
 
   return (
     <div className="staking-pool">
       <div className="staking-table _twoCells">
         <div className="staking-table-row">
           <div className="staking-table-cell _rightAlign">
-            <h3>{annualApy}%</h3>
+            <h3>{currentApy}%</h3>
           </div>
           <div className="staking-table-cell">
             <p className="secondary-color">Annual rewards (APY)</p>
@@ -54,7 +54,7 @@ const StakingPool = ({ data }: Props) => {
           </div>
         </div>
       </div>
-      <RadialChart completionPercent={totalStakedPercentage} />
+      <RadialChart completionPercent={stakedPercentage} />
     </div>
   );
 };
