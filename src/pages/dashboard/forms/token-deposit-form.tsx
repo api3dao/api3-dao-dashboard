@@ -5,6 +5,7 @@ import { useChainData } from '../../../chain-data';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
+import * as notifications from '../../../components/notifications/notifications';
 import {
   go,
   goSync,
@@ -48,8 +49,7 @@ const TokenDepositForm = (props: Props) => {
       setChainData('Save deposit approval', { transactions: [...transactions, goResponse[GO_RESULT_INDEX]] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
-        // TODO: rather create a toast/notification
-        setError(messages.TX_APPROVAL_REJECTED);
+        notifications.info(messages.TX_APPROVAL_REJECTED);
         return;
       }
       setError(messages.TX_APPROVAL_ERROR);
@@ -80,8 +80,7 @@ const TokenDepositForm = (props: Props) => {
       setChainData('Save deposit transaction', { transactions: [...transactions, goResponse[GO_RESULT_INDEX]] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
-        // TODO: rather create a toast/notification
-        setError(messages.TX_DEPOSIT_REJECTED);
+        notifications.info(messages.TX_DEPOSIT_REJECTED);
         return;
       }
       setError(messages.TX_DEPOSIT_ERROR);
