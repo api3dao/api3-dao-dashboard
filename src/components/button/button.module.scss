@@ -1,0 +1,75 @@
+@import '../../styles/variables.module.scss';
+
+.buttonWrapper {
+  display: inline-block;
+  &.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+.button {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $button-color;
+  font-weight: 500;
+  border-width: 1px;
+  border-style: solid;
+  outline: none;
+  transition: border-width 0.35s;
+  cursor: pointer;
+
+  &.primary {
+    border-image-source: $primary-border;
+    border-image-slice: 1;
+  }
+
+  &.secondary {
+    border-color: $secondary-border;
+  }
+
+  &.normal {
+    height: 51px;
+    font-size: $text-small;
+    line-height: 17px;
+    padding: 17px $space-lg;
+  }
+
+  &.large {
+    height: 62px;
+    font-size: $text-normal;
+    line-height: 22px;
+    padding: 20px 44px;
+  }
+
+  &.link {
+    color: $link-color;
+    border: 0;
+    text-decoration: underline;
+    padding: 0;
+  }
+
+  &.text {
+    border: 0;
+    text-decoration: underline;
+    padding: 0;
+  }
+
+  &:hover {
+    border-width: 2px;
+  }
+}
+
+.buttonUnderline {
+  margin-top: $space-xxs;
+  height: 1px;
+  width: 100%;
+  &.primary {
+    background: linear-gradient(to left, $green-color, $violet-color);
+  }
+  &.secondary {
+    background-color: $secondary-border;
+  }
+}

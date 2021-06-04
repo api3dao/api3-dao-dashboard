@@ -1,0 +1,67 @@
+@import '../../styles/variables.module.scss';
+
+.radioButtonWrapper {
+  display: flex;
+}
+
+.radioButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: $secondary-color;
+  padding-left: 43px;
+  margin-bottom: $space-lg;
+  cursor: pointer;
+  user-select: none;
+
+  &.checked {
+    &.pink {
+      color: $pink-color;
+      .radioButtonCheckmark:after {
+        background-color: $pink-color;
+      }
+    }
+
+    &.green {
+      color: $green-color;
+      .radioButtonCheckmark:after {
+        background-color: $green-color;
+      }
+    }
+
+    &.white {
+      color: $tertiary-color;
+      .radioButtonCheckmark:after {
+        background-color: $button-color;
+      }
+    }
+  }
+}
+
+.radioButtonInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  &:checked ~ .radioButtonCheckmark:after {
+    display: block;
+  }
+}
+
+.radioButtonCheckmark {
+  position: absolute;
+  left: 0;
+  height: 27px;
+  width: 27px;
+  border: 1px solid $black-line-color;
+  border-radius: 50%;
+  &:after {
+    content: '';
+    position: absolute;
+    display: none;
+    top: 6px;
+    left: 6px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+  }
+}

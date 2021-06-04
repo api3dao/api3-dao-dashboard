@@ -1,0 +1,20 @@
+@import '../../styles/variables.module.scss';
+
+.header {
+  position: relative;
+  margin-bottom: 2.5 * $space-xxl;
+}
+
+.headerTitle {
+  position: absolute;
+  bottom: -20px;
+  background-image: linear-gradient(76.31deg, #c3c4c3 2.01%, #f3f3f3 99.02%);
+  background-clip: text;
+  opacity: 0.1;
+}
+
+.headerSubtitle {
+  color: $tertiary-color;
+  line-height: 21px;
+  text-transform: uppercase;
+}

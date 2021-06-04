@@ -1,0 +1,38 @@
+@import '../../../styles/variables.module.scss';
+
+.delegateVotesModalSubtitle {
+  color: $secondary-color;
+  font-weight: 500;
+  margin-bottom: $space-md;
+}
+
+.newProposalFormItem {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: $space-xxxl;
+}
+
+.newProposalFormName {
+  font-size: $text-small;
+  line-height: 17px;
+  width: 40%;
+  color: $secondary-color;
+  text-transform: uppercase;
+  text-align: right;
+  font-weight: 500;
+  padding-right: $space-xl;
+  margin-top: 6px;
+}
+
+.newProposalFormInput {
+  width: 60%;
+}
+
+.newProposalFormRadioButtons {
+  display: flex;
+  align-items: center;
+
+  & > * {
+    width: 50%;
+  }
+}

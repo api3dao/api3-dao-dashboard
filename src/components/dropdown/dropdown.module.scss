@@ -1,0 +1,57 @@
+@import '../../styles/variables.module.scss';
+
+.dropdown {
+  position: relative;
+}
+
+.dropdownButton {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+
+  &.alignStart {
+    align-items: flex-start;
+  }
+
+  &.alignCenter {
+    align-items: center;
+  }
+
+  &.alignEnd {
+    align-items: flex-end;
+  }
+}
+
+.dropdownMenu {
+  background-color: $dropdown-bgd;
+  color: $primary-color;
+  min-width: 100%;
+  position: absolute;
+  top: 100%;
+  box-shadow: $dropdown-shadow;
+  z-index: 20;
+  border-top: 1px solid $secondary-border;
+}
+
+.dropdownIcon {
+  margin-left: $space-sm;
+
+  & > img {
+    transition: transform 250ms;
+  }
+
+  &.open {
+    & > img {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.dropdownMenuItem {
+  padding: $space-xs;
+  border-bottom: 1px solid $dropdown-border-color;
+
+  &.clickable {
+    cursor: pointer;
+  }
+}

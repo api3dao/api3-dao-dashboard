@@ -7,7 +7,8 @@ import { go } from '../../utils/generic';
 import Button from '../../components/button/button';
 import { Modal as GenericModal } from '../../components/modal/modal';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown/dropdown';
-import './sign-in.scss';
+import styles from './sign-in.module.scss';
+import globalStyles from '../../styles/global-styles.module.scss';
 import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscriptions } from '../../contracts';
 
 const ConnectedStatus = () => {
@@ -33,11 +34,11 @@ const ConnectedStatus = () => {
       icon={<img src="/arrow-dropdown.svg" alt="dropdown icon" />}
       alignIcon="start"
     >
-      <div className="connected-status">
+      <div className={styles.connectedStatus}>
         <img src="/connected.svg" alt="connected icon" />
-        <div className="connected-status-info">
+        <div className={styles.connectedStatusInfo}>
           <p>{abbrStr(userAccount)}</p>
-          <p className="text-xsmall">Connected to {networkName}</p>
+          <p className={globalStyles.textXSmall}>Connected to {networkName}</p>
         </div>
       </div>
     </Dropdown>
@@ -94,15 +95,15 @@ const SignIn = () => {
       {!provider && <Button onClick={onWalletConnect}>Connect Wallet</Button>}
       {provider && <ConnectedStatus />}
       <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
-        <div className="text-center">
+        <div className={globalStyles.textCenter}>
           <h5>Unsupported chain!</h5>
 
-          <p className="marginTop">Supported networks are: {supportedNetworks}</p>
-          <p className="marginTop">
-            Current network: <b>{networkName}</b>
-          </p>
+          <p className={globalStyles.mtXl}>Supported networks are: {supportedNetworks}</p>
+          <p className={globalStyles.mtXl}>Current network: <b>{networkName}</b></p>
 
-          <p className="marginTop">Please use your wallet and connect to one of the supported networks</p>
+          <p className={globalStyles.mtXl}>
+            Please use your wallet and connect to one of the supported networks
+          </p>
         </div>
       </GenericModal>
     </>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Button from '../../../components/button/button';
 import RadioButton from '../../../components/radio-button/radio-button';
-import './vote-form.scss';
+import styles from './vote-form.module.scss';
 
 export type VotingChoice = 'for' | 'against';
 
@@ -17,9 +17,9 @@ const VoteForm = (props: Props) => {
   const isVotingFor = checked === 'for';
 
   return (
-    <div className="vote-form">
+    <div className={styles.voteForm}>
       <h5>Vote on Proposal #{voteId}</h5>
-      <div className="vote-form-content">
+      <div className={styles.voteFormContent}>
         <div>
           <RadioButton
             label={<h4>For</h4>}

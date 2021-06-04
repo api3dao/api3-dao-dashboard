@@ -1,0 +1,69 @@
+@import '../../styles/variables.module.scss';
+
+.timer {
+  display: inline-flex;
+  align-items: center;
+  font-size: $text-xsmall;
+  font-weight: 500;
+
+  &.large {
+    flex-direction: column;
+    align-items: flex-end;
+
+    .timerContainer {
+      border-top: 1px solid $secondary-black-color;
+      border-bottom: 1px solid $secondary-black-color;
+      padding-top: $space-xs;
+      padding-bottom: 2px;
+      margin-top: $space-xxs;
+      margin-right: 0;
+    }
+
+    .timerNumber {
+      font-size: $text-large;
+    }
+
+    .timerWrap {
+      min-width: 35px;
+      flex-direction: column;
+      margin: 0;
+
+      & > * {
+        margin-right: 0;
+      }
+    }
+
+    .timerColon {
+      font-size: $text-large;
+      margin: 0 $space-xs;
+    }
+  }
+}
+
+.timerContainer {
+  display: flex;
+  align-items: center;
+  margin-right: $space-xxs;
+}
+
+.timerNumber {
+  color: $primary-color;
+}
+
+.timerWrap {
+  display: flex;
+  align-items: center;
+
+  & > * {
+    margin-right: $space-xxs;
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+}
+
+.timerColon {
+  color: $primary-color;
+  margin: 0 $space-xxs;
+}

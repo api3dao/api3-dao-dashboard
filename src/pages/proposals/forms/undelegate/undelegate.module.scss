@@ -1,0 +1,7 @@
+@import '../../../../styles/variables.module.scss';
+
+.actions {
+  & > * {
+    margin: 0 $space-sm;
+  }
+}

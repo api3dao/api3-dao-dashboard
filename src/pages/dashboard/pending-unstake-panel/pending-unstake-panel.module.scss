@@ -1,0 +1,73 @@
+@import '../../../styles/variables.module.scss';
+
+.pendingUnstakeContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.pendingUnstakeRow {
+  width: 100%;
+  display: flex;
+  margin-top: $space-lg;
+  &.amount {
+    align-items: center;
+  }
+  &.deadline {
+    margin-top: $space-md;
+    margin-bottom: $space-sm;
+  }
+}
+
+.pendingUnstakeTitle {
+  font-size: $text-small;
+  line-height: 17px;
+  color: $green-color;
+  margin-top: $space-lg;
+  font-weight: 500;
+  text-align: center;
+}
+
+.pendingUnstakeName {
+  flex: 0 0 40%;
+  font-size: $text-small;
+  line-height: 17px;
+  font-weight: 500;
+  text-align: right;
+  margin-right: $space-md;
+}
+
+.pendingUnstakeActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: $space-md;
+  margin-bottom: $space-xs;
+}
+
+.pendingUnstakeCountdown {
+  display: flex;
+}
+
+.pendingUnstakeCountdownItem {
+  text-align: center;
+  & > * {
+    margin-bottom: $space-xxs;
+  }
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.shortcut {
+  font-size: $text-xsmall;
+  line-height: 18px;
+  font-weight: 500;
+  color: $tertiary-color;
+}
+
+.colon {
+  font-size: $text-small;
+  line-height: 17px;
+  font-weight: 500;
+  margin: 0 $space-xxs;
+}

@@ -1,0 +1,19 @@
+@import '../../styles/variables.module.scss';
+
+.textarea {
+  min-height: 170px;
+  width: 100%;
+  background-color: transparent;
+  font-family: 'Roboto', sans-serif;
+  color: $primary-color;
+  font-size: $text-small;
+  border: 0;
+  border-bottom: 1px solid $secondary-border;
+  padding: $space-xs 0;
+  box-sizing: border-box;
+  outline: none;
+  resize: vertical;
+  &::placeholder {
+    color: $tertiary-color;
+  }
+}

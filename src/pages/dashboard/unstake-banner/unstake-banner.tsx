@@ -1,5 +1,6 @@
 import Button from '../../../components/button/button';
-import './unstake-banner.scss';
+import globalStyles from '../../../styles/global-styles.module.scss';
+import styles from './unstake-banner.module.scss';
 
 type Props = {
   onClick?: () => void;
@@ -7,11 +8,11 @@ type Props = {
 
 const UnstakeBanner = ({ onClick }: Props) => {
   return (
-    <div className="unstake-banner">
-      <div className="unstake-banner-wrap">
+    <div className={styles.unstakeBanner}>
+      <div className={styles.unstakeBannerWrap}>
         <img src="/api-icon.svg" alt="api icon" />
-        <div className="unstake-banner-text">
-          <p className="bold">Your tokens are ready to be unstaked.</p>
+        <div>
+          <p className={globalStyles.bold}>Your tokens are ready to be unstaked.</p>
           <p>Unstake within 5 days 15 hours.</p>
         </div>
       </div>

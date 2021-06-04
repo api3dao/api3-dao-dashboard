@@ -13,9 +13,10 @@ import Button from '../../components/button/button';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
 import Slider from '../../components/slider/slider';
-import BorderedBox from '../../components/bordered-box/bordered-box';
+import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import UnstakeBanner from './unstake-banner/unstake-banner';
-import './dashboard.scss';
+import globalStyles from '../../styles/global-styles.module.scss';
+import styles from './dashboard.module.scss';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
@@ -102,32 +103,32 @@ const Dashboard = () => {
       {isUnstakeReady && <UnstakeBanner />}
       {!isUnstakeReady && (
         <>
-          <h5 className="green-color">How This Works</h5>
+          <h5 className={globalStyles.greenColor}>How This Works</h5>
           <Slider />
         </>
       )}
-      <h5 className="green-color">Staking Pool</h5>
+      <h5 className={globalStyles.greenColor}>Staking Pool</h5>
       <StakingPool data={data || undefined} />
-      <div className="bordered-boxes-wrap">
-        <div className="staking-box-wrap">
+      <div className={styles.borderedBoxesWrap}>
+        <div className={styles.stakingBoxWrap}>
           <BorderedBox
             header={
-              <div className="bordered-box-header">
+              <Header>
                 <h5>Balance</h5>
                 <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
                   + Deposit
                 </Button>
-              </div>
+              </Header>
             }
             content={
               <>
-                <div className="bordered-box-data">
-                  <p className="text-small secondary-color uppercase medium">total</p>
-                  <p className="text-xlarge">{data ? formatApi3(data.userTotal) : '0.0'}</p>
+                <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
+                  <p className={styles.borderedBoxContentTitle}>total</p>
+                  <p className={globalStyles.textXLarge}>{data ? formatApi3(data.userTotal) : '0.0'}</p>
                 </div>
-                <div className="bordered-box-data">
-                  <p className="text-small secondary-color uppercase medium">withdrawable</p>
-                  <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
+                <div className={globalStyles.textCenter}>
+                  <p className={styles.borderedBoxContentTitle}>withdrawable</p>
+                  <p className={globalStyles.textXLarge}>{data ? formatApi3(data.withdrawable) : '0.0'}</p>
                 </div>
               </>
             }
@@ -138,25 +139,25 @@ const Dashboard = () => {
             }
           />
         </div>
-        <div className="staking-box-wrap">
+        <div className={styles.stakingBoxWrap}>
           <BorderedBox
             header={
-              <div className="bordered-box-header">
+              <Header>
                 <h5>Staking</h5>
                 <Button onClick={() => setOpenModal('stake')} disabled={disconnected}>
                   + Stake
                 </Button>
-              </div>
+              </Header>
             }
             content={
               <>
-                <div className="bordered-box-data">
-                  <p className="text-small secondary-color uppercase medium">staked</p>
-                  <p className="text-xlarge">{data ? formatApi3(data.userStaked) : '0.0'}</p>
+                <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
+                  <p className={styles.borderedBoxContentTitle}>staked</p>
+                  <p className={globalStyles.textXLarge}>{data ? formatApi3(data.userStaked) : '0.0'}</p>
                 </div>
-                <div className="bordered-box-data">
-                  <p className="text-small secondary-color uppercase medium">unstaked</p>
-                  <p className="text-xlarge">{data ? formatApi3(data.withdrawable) : '0.0'}</p>
+                <div className={globalStyles.textCenter}>
+                  <p className={styles.borderedBoxContentTitle}>unstaked</p>
+                  <p className={globalStyles.textXLarge}>{data ? formatApi3(data.withdrawable) : '0.0'}</p>
                 </div>
               </>
             }

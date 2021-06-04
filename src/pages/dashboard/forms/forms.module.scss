@@ -1,0 +1,26 @@
+@import '../../../styles/variables.module.scss';
+
+.tokenAmountFormToken {
+  font-weight: 500;
+  margin-bottom: $space-lg;
+  text-transform: uppercase;
+}
+
+.tokenDepositFormBalance {
+  margin-top: $space-lg;
+}
+
+.tokenAmountFormActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tokenAmountFormApprove {
+  margin-right: $space-lg;
+}
+
+.tokenAmountFormError {
+  margin-top: $space-xl;
+  color: red;
+}

@@ -2,7 +2,7 @@ import { ChangeEventHandler } from 'react';
 import classNames from 'classnames';
 import AutosizeInput from 'react-input-autosize';
 import NumberFormat from 'react-number-format';
-import './input.scss';
+import styles from './input.module.scss';
 
 type Props = {
   onChange: ChangeEventHandler<HTMLInputElement>;
@@ -17,16 +17,16 @@ type Props = {
 
 const Input = ({ onChange, value, disabled, size = 'normal', type = 'text', placeholder, id, block }: Props) => (
   <div
-    className={classNames('input-wrapper', {
-      [`_disabled`]: disabled,
-      [`_block`]: block,
+    className={classNames(styles.inputWrapper, {
+      [styles.disabled]: disabled,
+      [styles.block]: block,
     })}
   >
     {type === 'text' && (
       <div
-        className={classNames('input', {
-          [`_large`]: size === 'large',
-          [`_normal`]: size === 'normal',
+        className={classNames(styles.input, {
+          [styles.large]: size === 'large',
+          [styles.normal]: size === 'normal',
         })}
       >
         <input id={id} value={value} onChange={onChange} placeholder={placeholder} autoFocus />
@@ -34,9 +34,9 @@ const Input = ({ onChange, value, disabled, size = 'normal', type = 'text', plac
     )}
     {type === 'autosize-text' && (
       <AutosizeInput
-        className={classNames('input _text-center', {
-          [`_large`]: size === 'large',
-          [`_normal`]: size === 'normal',
+        className={classNames(styles.input, styles.textCenter, {
+          [styles.large]: size === 'large',
+          [styles.normal]: size === 'normal',
         })}
         value={value}
         onChange={onChange}
@@ -47,9 +47,9 @@ const Input = ({ onChange, value, disabled, size = 'normal', type = 'text', plac
     )}
     {type === 'number' && (
       <NumberFormat
-        className={classNames('input _text-center', {
-          [`_large`]: size === 'large',
-          [`_normal`]: size === 'normal',
+        className={classNames(styles.input, styles.textCenter, {
+          [styles.large]: size === 'large',
+          [styles.normal]: size === 'normal',
         })}
         value={value}
         onChange={onChange}
@@ -58,7 +58,7 @@ const Input = ({ onChange, value, disabled, size = 'normal', type = 'text', plac
         autoFocus
       />
     )}
-    <div className="input-underline" />
+    <div className={styles.inputUnderline} />
   </div>
 );
 

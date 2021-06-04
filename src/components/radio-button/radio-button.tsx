@@ -1,6 +1,6 @@
 import { ChangeEventHandler, ReactNode } from 'react';
 import classNames from 'classnames';
-import './radio-button.scss';
+import styles from './radio-button.module.scss';
 
 type Props = {
   label: ReactNode | string;
@@ -12,11 +12,18 @@ type Props = {
 
 const RadioButton = ({ label, onChange, checked, name, color }: Props) => {
   return (
-    <div className="radio-button-wrapper">
-      <label className={classNames('radio-button', color, { [`checked`]: checked })}>
+    <div className={styles.radioButtonWrapper}>
+      <label
+        className={classNames(styles.radioButton, {
+          [styles.checked]: checked,
+          [styles.white]: color === 'white',
+          [styles.pink]: color === 'pink',
+          [styles.green]: color === 'green',
+        })}
+      >
         {label}
-        <input className="radio-button-input" type="radio" onChange={onChange} checked={checked} name={name} />
-        <span className="radio-button-checkmark" />
+        <input className={styles.radioButtonInput} type="radio" onChange={onChange} checked={checked} name={name} />
+        <span className={styles.radioButtonCheckmark} />
       </label>
     </div>
   );

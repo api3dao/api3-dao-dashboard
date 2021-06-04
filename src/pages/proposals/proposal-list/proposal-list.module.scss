@@ -1,0 +1,69 @@
+@import '../../../styles/variables.module.scss';
+
+.proposalItem {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid $black-line-color;
+  padding-top: $space-md;
+  padding-bottom: $space-lg;
+}
+
+.proposalItemWrapper {
+  max-width: calc(100% - 330px);
+  width: 60%;
+  font-weight: 500;
+  padding-right: $space-xxxl;
+}
+
+.proposalItemTitle {
+  color: $primary-color;
+  margin-bottom: $space-xxs;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.proposalItemVoteId {
+  color: $tertiary-color;
+  margin-right: $space-xs;
+}
+
+.proposalItemVoterStates {
+  color: $primary-color;
+}
+
+.proposalItemSubtitle {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.proposalItemBox {
+  display: flex;
+  align-items: center;
+
+  &.mr {
+    margin-right: 2 * $space-xl;
+  }
+
+  &.date {
+    min-width: 200px;
+    margin-right: $space-lg;
+  }
+}
+
+.proposalVoteBar {
+  max-width: 330px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  & > * {
+    margin-right: $space-lg;
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+}

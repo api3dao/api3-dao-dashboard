@@ -1,7 +1,8 @@
 import Button from '../../../../components/button/button';
 import { ModalFooter, ModalHeader } from '../../../../components/modal/modal';
 import { useApi3Pool } from '../../../../contracts';
-import './undelegate.scss';
+import globalStyles from '../../../../styles/global-styles.module.scss';
+import styles from './undelegate.module.scss';
 
 interface Props {
   onClose: () => void;
@@ -15,10 +16,10 @@ const UndelegateForm = (props: Props) => {
     <>
       <ModalHeader>Confirm undelegation</ModalHeader>
 
-      <p className="undelegate body">Are you sure you want to undelegate voting power?</p>
+      <p className={globalStyles.textCenter}>Are you sure you want to undelegate voting power?</p>
 
       <ModalFooter>
-        <div className="undelegate actions">
+        <div className={styles.actions}>
           <Button type="secondary" size="large" onClick={onClose}>
             No
           </Button>

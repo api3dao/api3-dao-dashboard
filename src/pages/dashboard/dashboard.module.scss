@@ -1,0 +1,32 @@
+@import '../../styles/variables.module.scss';
+
+.borderedBoxesWrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  & > * {
+    margin-right: $space-xxl;
+  }
+  & > *:last-child {
+    margin-right: 0;
+  }
+}
+
+.stakingBoxWrap {
+  width: 100%;
+  max-width: 420px;
+  & > * {
+    margin-bottom: $space-xl;
+  }
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.borderedBoxContentTitle {
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 500;
+  color: $secondary-color;
+  text-transform: uppercase;
+}

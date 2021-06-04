@@ -1,0 +1,26 @@
+@import '../../../styles/variables.module.scss';
+
+.treasury {
+  max-width: 300px;
+  width: 100%;
+  & > *:first-child {
+    padding-bottom: $space-xs;
+  }
+  & > * {
+    border-bottom: 1px solid $black-line-color;
+  }
+}
+
+.treasuryButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-xs 0;
+}
+
+.treasuryMenuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -6,7 +6,7 @@ import Input from '../../../components/input/input';
 import Textarea from '../../../components/textarea/textarea';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import { NewProposalFormData } from '../../../logic/proposals/encoding';
-import './forms.scss';
+import styles from './forms.module.scss';
 
 interface Props {
   onClose: () => void;
@@ -19,9 +19,9 @@ interface ProposalFormItemProps {
 }
 
 const ProposalFormItem = ({ children, name }: ProposalFormItemProps) => (
-  <div className="new-proposal-form-item">
-    <div className="new-proposal-form-name text-small">{name}</div>
-    <div className="new-proposal-form-input">{children}</div>
+  <div className={styles.newProposalFormItem}>
+    <div className={styles.newProposalFormName}>{name}</div>
+    <div className={styles.newProposalFormInput}>{children}</div>
   </div>
 );
 
@@ -40,7 +40,7 @@ const NewProposalForm = (props: Props) => {
       <ModalHeader>New proposal</ModalHeader>
 
       <ProposalFormItem name="proposal type">
-        <div className="new-proposal-form-radio-buttons">
+        <div className={styles.newProposalFormRadioButtons}>
           <RadioButton
             label="Primary"
             name="type"

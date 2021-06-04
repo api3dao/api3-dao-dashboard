@@ -1,0 +1,10 @@
+@import '../../styles/variables.module.scss';
+
+.connectedStatus {
+  display: flex;
+  align-items: flex-start;
+}
+
+.connectedStatusInfo {
+  margin: 0 $space-md;
+}

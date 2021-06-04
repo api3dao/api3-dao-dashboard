@@ -4,8 +4,10 @@ import classNames from 'classnames';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
+import * as notifications from '../../../components/notifications/notifications';
 import { go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
-import './forms.scss';
+import globalStyles from '../../../styles/global-styles.module.scss';
+import styles from './forms.module.scss';
 
 interface Props {
   title: string;
@@ -57,8 +59,7 @@ const TokenAmountForm = (props: Props) => {
     const [err] = await go(onConfirm(inputBigNum));
     if (err) {
       if (isUserRejection(err)) {
-        // TODO: rather create a toast/notification
-        setError(messages.TX_GENERIC_REJECTED);
+        notifications.info(messages.TX_GENERIC_REJECTED);
         return;
       }
       setError(messages.TX_GENERIC_ERROR);
@@ -75,16 +76,16 @@ const TokenAmountForm = (props: Props) => {
       <ModalHeader>{props.title}</ModalHeader>
 
       {showTokenInput && (
-        <div className="text-center">
-          <p className="tokenAmountForm-token medium">TOKEN</p>
+        <div className={globalStyles.textCenter}>
+          <p className={styles.tokenAmountFormToken}>TOKEN</p>
           <Input type="number" value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
-          {error && <p className="tokenAmountForm-error">{error}</p>}
+          {error && <p className={styles.tokenAmountFormError}>{error}</p>}
           {helperText}
         </div>
       )}
 
       <ModalFooter>
-        <div className={classNames({ [`tokenAmountForm-actions`]: !showTokenInput })}>
+        <div className={classNames({ [styles.tokenAmountFormActions]: !showTokenInput })}>
           {!showTokenInput && (
             <Button type="text" onClick={onClose}>
               Cancel
