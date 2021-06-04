@@ -2,8 +2,18 @@ import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
-import { useApi3Pool, useApi3Token, useConvenience, useOnMinedBlockAndMount } from '../../contracts';
-import { computeStakingPool, computeTokenBalances } from '../../logic/dashboard/amounts';
+import {
+  absoluteStakeTarget,
+  calculateAnnualInflationRate,
+  calculateAnnualMintedTokens,
+  calculateApy,
+  totalStakedPercentage,
+  useApi3Pool,
+  useApi3Token,
+  useConvenience,
+  usePossibleChainDataUpdate,
+} from '../../contracts';
+import { computeTokenBalances, computeStakingPool } from '../../logic/dashboard/amounts';
 import { formatApi3, go } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
@@ -51,25 +61,28 @@ const Dashboard = () => {
 
     setChainData('Load dashboard data', {
       dashboardState: {
+        annualInflationRate,
         api3Supply: stakingData.api3Supply,
-        apr: stakingData.api3Supply,
-        stakeTarget: stakingData.api3Supply,
-        totalShares: stakingData.api3Supply,
-        totalStake: stakingData.api3Supply,
-        userLocked: stakingData.api3Supply,
-        userStaked: stakingData.api3Supply,
+        apr: stakingData.apr,
+        currentApy,
+        stakedPercentage,
+        stakeTarget: stakingData.stakeTarget,
+        totalShares: stakingData.totalShares,
+        totalStake: stakingData.totalStake,
+        userLocked: stakingData.userLocked,
+        userStaked: stakingData.userStaked,
         userTotal,
-        userUnstaked: stakingData.api3Supply,
-        userUnstakeAmount: stakingData.api3Supply,
-        userUnstakeScheduledFor: stakingData.api3Supply,
-        userUnstakeShares: stakingData.api3Supply,
-        userVesting: stakingData.api3Supply,
+        userUnstaked: stakingData.userUnstaked,
+        userUnstakeAmount: stakingData.userUnstakeAmount,
+        userUnstakeScheduledFor: stakingData.userUnstakeScheduledFor,
+        userUnstakeShares: stakingData.userUnstakeShares,
+        userVesting: stakingData.userVesting,
         withdrawable,
       },
     });
   }, [provider, convenience, userAccount, setChainData]);
 
-  useOnMinedBlockAndMount(loadDashboardData);
+  usePossibleChainDataUpdate(loadDashboardData);
 
   const [openModal, setOpenModal] = useState<ModalType | null>(null);
   const [inputValue, setInputValue] = useState('');

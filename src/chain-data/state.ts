@@ -24,15 +24,9 @@ export interface UserStakingData {
 }
 
 export interface DashboardState extends UserStakingData {
-  // allowance: BigNumber;
-  // annualApy: number;
-  // annualInflationRate: number;
-  // ownedTokens: BigNumber;
-  // pendingUnstake: PendingUnstake | null;
-  // stakeTarget: BigNumber;
-  // totalStaked: BigNumber;
-  // totalStakedPercentage: number;
-  // userStake: BigNumber;
+  annualInflationRate: number;
+  currentApy: number;
+  stakedPercentage: number;
   userTotal: BigNumber;
   withdrawable: BigNumber;
 }

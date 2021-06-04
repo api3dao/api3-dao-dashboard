@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Treasury, useChainData } from '../../chain-data';
-import { useApi3Voting, useConvenience, useOnMinedBlockAndMount } from '../../contracts/hooks';
+import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../contracts/hooks';
 import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, assertGoSuccess, GO_ERROR_INDEX } from '../../utils';
 import { isZeroAddress } from '../../contracts';
 
@@ -56,7 +56,7 @@ export const useTreasuryAndDelegation = () => {
   }, [api3Voting, convenience, userAccount, setChainData]);
 
   // Ensure that the proposals are up to date with blockchain
-  useOnMinedBlockAndMount(reloadTreasuryAndDelegation);
+  usePossibleChainDataUpdate(reloadTreasuryAndDelegation);
 
   return proposals;
 };

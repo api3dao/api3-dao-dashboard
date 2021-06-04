@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
-import { usePrevious } from '../utils';
-import { getChainData, useChainData } from '../chain-data';
+import { useEffect, useMemo } from 'react';
+import { usePrevious, useIsMount, useOnMountEffect } from '../utils';
+import { getNetworkData, useChainData } from '../chain-data';
 import {
   Api3Pool__factory as Api3PoolFactory,
   Api3Token__factory as Api3TokenFactory,
@@ -76,7 +76,7 @@ export const useProviderSubscriptions = (provider: ethers.providers.Web3Provider
     if (!provider) return;
 
     const refreshChainData = async () => {
-      setChainData('EIP-1193 event triggered', { ...(await getChainData(provider)) });
+      setChainData('EIP-1193 event triggered', { ...(await getNetworkData(provider)) });
     };
 
     const underlyingProvider = provider.provider as ethers.providers.Provider;
@@ -97,7 +97,7 @@ export const useProviderSubscriptions = (provider: ethers.providers.Web3Provider
  * Use this hook to have a function called when either the network or selected
  * account is changed
  */
-export const useOnAccountOrNetworkChange = (callback: () => any) => {
+export const useOnAccountOrNetworkChange = (callback: () => void) => {
   const { networkName, userAccount } = useChainData();
   const prevUserAccount = usePrevious(userAccount);
   const prevNetworkName = usePrevious(networkName);
@@ -110,36 +110,50 @@ export const useOnAccountOrNetworkChange = (callback: () => any) => {
 };
 
 /**
- * Hook, which will trigger the callback function passed as an argument after every mined block or when the component is
- * mounted. If provider is null, the user is probably signed out. In that case the callback will be triggered once the
- * user signs in. This is ideal place to load chain data that should be kept in sync with latest blockchain data.
+ * Hook, which will trigger the callback function passed as an argument after one of the following conditions
+ *  1) after a new block is mined
+ *  2) when the component is mounted
+ *  3) when network or account is changed
  *
- * If you want to disable the callback trigger on mount, pass false as second argument.
+ * The callback of this function is the ideal place to load chain data that should be kept in sync with latest
+ * blockchain data.
+ *
+ * You can use the second argument of this function to trigger the callback only on certain conditions.
  *
  * NOTE: The 'block' event will also fire on the first subscription to this event. However, it will not be called for
  * further subscription. This means that the first triggered callback will be called twice (once because of subscription
- * and once because of hook being mounted).
+ * and once because of hook being mounted). It might even be called three times when the user is first signed in.
  */
-export const useOnMinedBlockAndMount = (callback: () => void, shouldTriggerOnMount = true) => {
+export const usePossibleChainDataUpdate = (
+  callback: () => void,
+  { triggerOnMinedBlock = true, triggerOnMount = true, triggerOnAccountOrNetworkChange = true } = {}
+) => {
   const { provider } = useChainData();
-  const [didTriggerOnMount, setDidTriggerOnMount] = useState(false);
+  const isMount = useIsMount();
 
   useEffect(() => {
     if (!provider) return;
 
-    provider.on('block', callback);
-    return () => {
-      provider.removeListener('block', callback);
+    const callbackWrapper = () => {
+      if (triggerOnMinedBlock) callback();
     };
-  }, [provider, callback]);
 
-  useEffect(() => {
-    // NOTE: We need to wait until provider becomes defined
-    if (!provider) return;
+    provider.on('block', callbackWrapper);
+    return () => {
+      provider.removeListener('block', callbackWrapper);
+    };
+  }, [provider, triggerOnMinedBlock, callback]);
 
-    if (shouldTriggerOnMount && !didTriggerOnMount) {
-      setDidTriggerOnMount(true);
+  useOnMountEffect(() => {
+    if (triggerOnMount) {
       callback();
     }
-  }, [provider, callback, shouldTriggerOnMount, didTriggerOnMount, setDidTriggerOnMount]);
+  });
+
+  useOnAccountOrNetworkChange(() => {
+    // NOTE: We want to avoid triggering the callback on mount, because that is handled in a separate effect
+    if (!isMount && triggerOnAccountOrNetworkChange) {
+      callback();
+    }
+  });
 };

@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
-import { initialChainData, getChainData, useChainData } from '../../chain-data';
+import { initialChainData, getNetworkData, useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import { go } from '../../utils/generic';
 import Button from '../../components/button/button';
@@ -78,28 +78,31 @@ const SignIn = () => {
     // NOTE: You can access the underlying 'web3ModalProvider' using 'provider' property
     const provider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
     // User has chosen a provider and has signed in
-    setChainData('User connected', { ...(await getChainData(provider)) });
+    setChainData('User connected', { ...(await getNetworkData(provider)) });
   };
 
-  const isSupportedNetwork = !!provider && contracts === null;
+  const isSignedIn = !!provider && contracts !== null;
   const supportedNetworks = SUPPORTED_NETWORKS.filter((name) => {
     // Disable localhost network on non-development environment
     if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
     else return true;
   }).join(', ');
+  const isSupportedNetwork = !!isSignedIn || supportedNetworks.includes(networkName);
 
   return (
     <>
       {!provider && <Button onClick={onWalletConnect}>Connect Wallet</Button>}
       {provider && <ConnectedStatus />}
-      <GenericModal open={isSupportedNetwork} onClose={() => {}} hideCloseButton>
+      <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
         <div className="text-center">
           <h5>Unsupported chain!</h5>
 
-          <span className="marginTop">Supported networks are: {supportedNetworks}</span>
-          <span>Current network: {networkName}</span>
+          <p className="marginTop">Supported networks are: {supportedNetworks}</p>
+          <p className="marginTop">
+            Current network: <b>{networkName}</b>
+          </p>
 
-          <p>Please use your wallet and connect to one of the supported networks</p>
+          <p className="marginTop">Please use your wallet and connect to one of the supported networks</p>
         </div>
       </GenericModal>
     </>
