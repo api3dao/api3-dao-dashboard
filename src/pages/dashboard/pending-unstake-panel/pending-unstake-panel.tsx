@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import Button from '../../../components/button/button';
-import { getDays, getHours, getMinutes, getSeconds } from '../../../utils/generic';
+import { formatApi3, getDays, getHours, getMinutes, getSeconds } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './pending-unstake-panel.module.scss';
 
@@ -67,9 +67,9 @@ const PendingUnstakePanel = (props: Props) => {
           <p className={styles.pendingUnstakeTitle}>Pending API3 tokens unstaking</p>
           <div className={classNames(styles.pendingUnstakeRow, styles.amount)}>
             <p className={styles.pendingUnstakeName}>Amount</p>
-            <h5>{amount}</h5>
+            <h5>{formatApi3(amount)}</h5>
           </div>
-          <div className={classNames(styles.pendingUnstakeRow, { [globalStyles.tertiaryColor]: isDeadline })}>
+          <div className={classNames(styles.pendingUnstakeRow, { [globalStyles.tertiaryColor]: isUnstakeReady })}>
             <p className={styles.pendingUnstakeName}>Cooldown</p>
             <div className={styles.pendingUnstakeCountdown}>
               <div className={styles.pendingUnstakeCountdownItem}>
@@ -93,14 +93,14 @@ const PendingUnstakePanel = (props: Props) => {
               </div>
             </div>
           </div>
-          {isDeadline && (
+          {isUnstakeReady && (
             <div className={classNames(styles.pendingUnstakeRow, styles.deadline)}>
               <p className={styles.pendingUnstakeName} />
               <p className={globalStyles.textXSmall}>{timerDeadline}</p>
             </div>
           )}
           <div className={styles.pendingUnstakeActions}>
-            <Button type="link" disabled={!isDeadline}>
+            <Button type="link" disabled={!isUnstakeReady}>
               Unstake & Withdraw
             </Button>
             <Button disabled={!isUnstakeReady}>Unstake</Button>

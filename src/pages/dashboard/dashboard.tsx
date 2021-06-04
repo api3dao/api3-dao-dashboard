@@ -4,7 +4,7 @@ import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import { useApi3Pool, useApi3Token, useConvenience, usePossibleChainDataUpdate } from '../../contracts';
 import { computeTokenBalances, computeStakingPool } from '../../logic/dashboard/amounts';
-import { formatApi3, go } from '../../utils';
+import { formatApi3, go, messages } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
@@ -12,6 +12,7 @@ import { Modal } from '../../components/modal/modal';
 import Button from '../../components/button/button';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
+import * as notifications from '../../components/notifications/notifications';
 import Slider from '../../components/slider/slider';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import UnstakeBanner from './unstake-banner/unstake-banner';
@@ -34,19 +35,19 @@ const Dashboard = () => {
 
     const [stakingDataErr, stakingData] = await go(convenience.getUserStakingData(userAccount));
     if (stakingDataErr || !stakingData) {
-      // TODO: notifications.error('Failed to load dashboard data');
+      notifications.error(messages.LOAD_DASHBOARD_ERROR);
       return;
     }
 
     const [allowanceErr, allowance] = await go(api3Token.allowance(userAccount, api3Pool.address));
     if (allowanceErr || !allowance) {
-      // TODO: notifications.error('Failed to load dashboard data');
+      notifications.error(messages.LOAD_DASHBOARD_ERROR);
       return;
     }
 
     const [ownedTokensErr, ownedTokens] = await go(api3Token.balanceOf(userAccount));
     if (ownedTokensErr || !ownedTokens) {
-      // TODO: notifications.error('Failed to load dashboard data');
+      notifications.error(messages.LOAD_DASHBOARD_ERROR);
       return;
     }
 
@@ -91,7 +92,7 @@ const Dashboard = () => {
   const canWithdraw = !disconnected && data?.withdrawable.gt(0);
 
   // userUnstakeScheduledFor === 0 is a special case indicating that the user has not yet initiated an unstake
-  const isUnstakePending = data?.userUnstakeScheduledFor.gt(BigNumber.from(0));
+  const isUnstakePending = data?.userUnstakeScheduledFor.gt(0);
 
   const unstakeDate = new Date(data?.userUnstakeScheduledFor.mul(1000).toNumber() || 0);
   const now = new Date().getTime();
@@ -162,7 +163,7 @@ const Dashboard = () => {
               </>
             }
             footer={
-              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={!isUnstakePending}>
+              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={isUnstakePending}>
                 Initiate Unstake
               </Button>
             }

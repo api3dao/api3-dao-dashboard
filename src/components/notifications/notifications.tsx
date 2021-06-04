@@ -1,3 +1,4 @@
+import throttle from 'lodash/throttle';
 import { toast, Slide, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // Use these static classes to style react-toastify defaults
@@ -44,21 +45,39 @@ const BASE_OPTIONS: ToastOptions = {
   hideProgressBar: true,
 };
 
-export const info = (message: string, overrides?: ToastOptions) => {
-  return toast.info(<InfoToast message={message} />, { ...BASE_OPTIONS, ...overrides });
-};
+// NOTE: toasts are throttled to prevent duplicate notifications being displayed.
+// This can occur due to callbacks being fired multiple times in quick succession
+export const info = throttle(
+  (message: string, overrides?: ToastOptions) => {
+    return toast.info(<InfoToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+  },
+  500,
+  { trailing: false }
+);
 
-export const success = (message: string, overrides?: ToastOptions) => {
-  return toast.success(<SuccessToast message={message} />, { ...BASE_OPTIONS, ...overrides });
-};
+export const success = throttle(
+  (message: string, overrides?: ToastOptions) => {
+    return toast.success(<SuccessToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+  },
+  500,
+  { trailing: false }
+);
 
-export const warning = (message: string, overrides?: ToastOptions) => {
-  return toast.warning(<WarningToast message={message} />, { ...BASE_OPTIONS, ...overrides });
-};
+export const warning = throttle(
+  (message: string, overrides?: ToastOptions) => {
+    return toast.warning(<WarningToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+  },
+  500,
+  { trailing: false }
+);
 
-export const error = (message: string, overrides?: ToastOptions) => {
-  return toast.error(<ErrorToast message={message} />, { ...BASE_OPTIONS, ...overrides });
-};
+export const error = throttle(
+  (message: string, overrides?: ToastOptions) => {
+    return toast.error(<ErrorToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+  },
+  500,
+  { trailing: false }
+);
 
 export const close = (id: string) => toast.dismiss(id);
 
