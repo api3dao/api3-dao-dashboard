@@ -35,19 +35,17 @@ const Dashboard = () => {
   };
 
   const disconnected = !api3Pool || !api3Token || !data;
-  const canWithdraw = !disconnected && data?.withdrawable.gt(0);
+  const canWithdraw = (!disconnected && data?.withdrawable.gt(0)) ?? false;
 
   // userUnstakeScheduledFor === 0 is a special case indicating that the user has not yet initiated an unstake
-  const isUnstakePending = data?.userUnstakeScheduledFor.gt(0);
+  const isUnstakePending = data?.userUnstakeScheduledFor.gt(0) ?? false;
 
   const unstakeDate = new Date(data?.userUnstakeScheduledFor.mul(1000).toNumber() || 0);
   const now = new Date().getTime();
   const hasUnstakeDelayPassed = now > unstakeDate.getTime();
   const isUnstakeReady = isUnstakePending && hasUnstakeDelayPassed;
 
-  const unstakePercentage = data
-    ? data.userUnstakeShares.mul(data.totalStake).div(data.totalShares)
-    : BigNumber.from(0);
+  const unstakePercentage = data?.userUnstakeShares.mul(data.totalStake).div(data.totalShares) ?? BigNumber.from(0);
   const minimumUnstakeAmount = data ? min(data.userUnstakeAmount, unstakePercentage) : BigNumber.from(0);
 
   return (

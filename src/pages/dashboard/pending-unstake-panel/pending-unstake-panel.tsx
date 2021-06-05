@@ -19,7 +19,6 @@ const PendingUnstakePanel = (props: Props) => {
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
   const [timerSeconds, setTimerSeconds] = useState('00');
-  const [timerDeadline, setTimerDeadline] = useState('You have 0 days 0 hours 0 min 0 sec remaining to unstake.');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -42,8 +41,6 @@ const PendingUnstakePanel = (props: Props) => {
         setTimerHours('00');
         setTimerMinutes('00');
         setTimerSeconds('00');
-        // TODO: This will be incorrect for singular, e.g. 1 days
-        setTimerDeadline(`You have ${days} days ${hours} hours ${minutes} min ${seconds} sec remaining to unstake.`);
         setUnstakeReady(true);
 
         clearInterval(timer);
@@ -93,12 +90,6 @@ const PendingUnstakePanel = (props: Props) => {
               </div>
             </div>
           </div>
-          {isUnstakeReady && (
-            <div className={classNames(styles.pendingUnstakeRow, styles.deadline)}>
-              <p className={styles.pendingUnstakeName} />
-              <p className={globalStyles.textXSmall}>{timerDeadline}</p>
-            </div>
-          )}
           <div className={styles.pendingUnstakeActions}>
             <Button type="link" disabled={!isUnstakeReady}>
               Unstake & Withdraw
