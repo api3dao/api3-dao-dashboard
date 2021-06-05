@@ -9,12 +9,12 @@ import styles from './pending-unstake-panel.module.scss';
 
 interface Props {
   amount: BigNumber;
-  scheduledFor: BigNumber;
+  canUnstake: boolean;
+  unstakeDate: Date;
 }
 
 const PendingUnstakePanel = (props: Props) => {
-  const { amount, scheduledFor } = props;
-  const [isUnstakeReady, setUnstakeReady] = useState(false);
+  const { amount, canUnstake, unstakeDate } = props;
   const [timerDays, setTimerDays] = useState('0');
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
@@ -23,9 +23,9 @@ const PendingUnstakePanel = (props: Props) => {
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date().getTime();
-      const scheduledDate = new Date(scheduledFor.mul(1000).toNumber()).getTime();
+      const unstakeTime = unstakeDate.getTime();
 
-      const distance = scheduledDate - now;
+      const distance = unstakeTime - now;
       const days = getDays(distance);
       const hours = getHours(distance);
       const minutes = getMinutes(distance);
@@ -36,12 +36,11 @@ const PendingUnstakePanel = (props: Props) => {
       setTimerMinutes(minutes);
       setTimerSeconds(seconds);
 
-      if (scheduledDate < now) {
+      if (unstakeTime < now) {
         setTimerDays('0');
         setTimerHours('00');
         setTimerMinutes('00');
         setTimerSeconds('00');
-        setUnstakeReady(true);
 
         clearInterval(timer);
       }
@@ -50,7 +49,7 @@ const PendingUnstakePanel = (props: Props) => {
     return () => {
       clearInterval(timer);
     };
-  }, [scheduledFor]);
+  }, [unstakeDate]);
 
   return (
     <BorderedBox
@@ -66,7 +65,7 @@ const PendingUnstakePanel = (props: Props) => {
             <p className={styles.pendingUnstakeName}>Amount</p>
             <h5>{formatApi3(amount)}</h5>
           </div>
-          <div className={classNames(styles.pendingUnstakeRow, { [globalStyles.tertiaryColor]: isUnstakeReady })}>
+          <div className={classNames(styles.pendingUnstakeRow, { [globalStyles.tertiaryColor]: canUnstake })}>
             <p className={styles.pendingUnstakeName}>Cooldown</p>
             <div className={styles.pendingUnstakeCountdown}>
               <div className={styles.pendingUnstakeCountdownItem}>
@@ -91,10 +90,10 @@ const PendingUnstakePanel = (props: Props) => {
             </div>
           </div>
           <div className={styles.pendingUnstakeActions}>
-            <Button type="link" disabled={!isUnstakeReady}>
+            <Button type="link" disabled={!canUnstake}>
               Unstake & Withdraw
             </Button>
-            <Button disabled={!isUnstakeReady}>Unstake</Button>
+            <Button disabled={!canUnstake}>Unstake</Button>
           </div>
         </div>
       }

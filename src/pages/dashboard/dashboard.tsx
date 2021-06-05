@@ -2,8 +2,8 @@ import { BigNumber } from 'ethers';
 import { useState } from 'react';
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
-import { min, useApi3Pool, useApi3Token } from '../../contracts';
-import { useLoadDashboardData } from '../../logic/dashboard';
+import { useApi3Pool, useApi3Token } from '../../contracts';
+import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
 import { formatApi3 } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
@@ -35,30 +35,23 @@ const Dashboard = () => {
   };
 
   const disconnected = !api3Pool || !api3Token || !data;
-  const canWithdraw = (!disconnected && data?.withdrawable.gt(0)) ?? false;
 
-  // userUnstakeScheduledFor === 0 is a special case indicating that the user has not yet initiated an unstake
-  const isUnstakePending = data?.userUnstakeScheduledFor.gt(0) ?? false;
+  const tokenBalances = tokenBalancesSelector(data);
+  const pendingUnstake = pendingUnstakeSelector(data);
 
-  const unstakeDate = new Date(data?.userUnstakeScheduledFor.mul(1000).toNumber() || 0);
-  const now = new Date().getTime();
-  const hasUnstakeDelayPassed = now > unstakeDate.getTime();
-  const isUnstakeReady = isUnstakePending && hasUnstakeDelayPassed;
-
-  const unstakePercentage = data?.userUnstakeShares.mul(data.totalStake).div(data.totalShares) ?? BigNumber.from(0);
-  const minimumUnstakeAmount = data ? min(data.userUnstakeAmount, unstakePercentage) : BigNumber.from(0);
+  const canWithdraw = tokenBalances?.withdrawable.gt(0) ?? false;
 
   return (
     <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">
-      {isUnstakeReady && <UnstakeBanner />}
-      {!isUnstakeReady && (
+      {pendingUnstake?.canUnstake && <UnstakeBanner />}
+      {!pendingUnstake?.canUnstake && (
         <>
           <h5 className={globalStyles.greenColor}>How This Works</h5>
           <Slider />
         </>
       )}
       <h5 className={globalStyles.greenColor}>Staking Pool</h5>
-      <StakingPool data={data || undefined} />
+      <StakingPool />
       <div className={styles.borderedBoxesWrap}>
         <div className={styles.stakingBoxWrap}>
           <BorderedBox
@@ -74,11 +67,15 @@ const Dashboard = () => {
               <>
                 <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
                   <p className={styles.borderedBoxContentTitle}>total</p>
-                  <p className={globalStyles.textXLarge}>{data ? formatApi3(data.userTotal) : '0.0'}</p>
+                  <p className={globalStyles.textXLarge}>
+                    {tokenBalances ? formatApi3(tokenBalances.userTotal) : '0.0'}
+                  </p>
                 </div>
                 <div className={globalStyles.textCenter}>
                   <p className={styles.borderedBoxContentTitle}>withdrawable</p>
-                  <p className={globalStyles.textXLarge}>{data ? formatApi3(data.withdrawable) : '0.0'}</p>
+                  <p className={globalStyles.textXLarge}>
+                    {tokenBalances ? formatApi3(tokenBalances.withdrawable) : '0.0'}
+                  </p>
                 </div>
               </>
             }
@@ -107,18 +104,28 @@ const Dashboard = () => {
                 </div>
                 <div className={globalStyles.textCenter}>
                   <p className={styles.borderedBoxContentTitle}>unstaked</p>
-                  <p className={globalStyles.textXLarge}>{data ? formatApi3(data.withdrawable) : '0.0'}</p>
+                  <p className={globalStyles.textXLarge}>
+                    {tokenBalances ? formatApi3(tokenBalances.withdrawable) : '0.0'}
+                  </p>
                 </div>
               </>
             }
             footer={
-              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={isUnstakePending}>
+              <Button
+                type="link"
+                onClick={() => setOpenModal('unstake')}
+                disabled={pendingUnstake?.hasInitiatedUnstake ?? true}
+              >
                 Initiate Unstake
               </Button>
             }
           />
-          {data && isUnstakePending && (
-            <PendingUnstakePanel amount={minimumUnstakeAmount} scheduledFor={data.userUnstakeScheduledFor} />
+          {pendingUnstake?.hasInitiatedUnstake && (
+            <PendingUnstakePanel
+              amount={pendingUnstake.minimumUnstakeAmount}
+              canUnstake={pendingUnstake.canUnstake}
+              unstakeDate={pendingUnstake.unstakeDate}
+            />
           )}
         </div>
       </div>
@@ -141,7 +148,7 @@ const Dashboard = () => {
           inputValue={inputValue}
           onChange={setInputValue}
           onClose={closeModal}
-          maxValue={data?.withdrawable}
+          maxValue={tokenBalances?.withdrawable}
         />
       </Modal>
       <Modal open={openModal === 'stake'} onClose={closeModal}>
@@ -156,7 +163,7 @@ const Dashboard = () => {
           inputValue={inputValue}
           onChange={setInputValue}
           onClose={closeModal}
-          maxValue={data?.withdrawable}
+          maxValue={tokenBalances?.withdrawable}
         />
       </Modal>
       <Modal open={openModal === 'unstake'} onClose={closeModal}>

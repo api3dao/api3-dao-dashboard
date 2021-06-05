@@ -6,10 +6,11 @@ import {
   min,
   totalStakedPercentage,
 } from '../../contracts';
-// import { formatApi3 } from '../../utils';
 import { UserStakingData } from '../../chain-data';
 
-export const tokenBalancesSelector = (stakingData: UserStakingData) => {
+export const tokenBalancesSelector = (stakingData: UserStakingData | null) => {
+  if (!stakingData) return null;
+
   const { userLocked, userStaked, userUnstaked, userVesting } = stakingData;
   const userTotal = userStaked.add(userUnstaked);
 
@@ -19,7 +20,9 @@ export const tokenBalancesSelector = (stakingData: UserStakingData) => {
   return { userTotal, withdrawable };
 };
 
-export const stakingPoolSelector = (stakingData: UserStakingData) => {
+export const stakingPoolSelector = (stakingData: UserStakingData | null) => {
+  if (!stakingData) return null;
+
   const { api3Supply, apr, stakeTarget, totalStake } = stakingData;
   const currentApy = calculateApy(apr);
 
@@ -30,6 +33,32 @@ export const stakingPoolSelector = (stakingData: UserStakingData) => {
   const stakedPercentage = totalStakedPercentage(totalStake, stakingTarget);
 
   return { currentApy, annualInflationRate, stakedPercentage };
+};
+
+export const pendingUnstakeSelector = (stakingData: UserStakingData | null) => {
+  if (!stakingData) return null;
+
+  const { totalStake, totalShares, userUnstakeAmount, userUnstakeScheduledFor, userUnstakeShares } = stakingData;
+
+  // userUnstakeScheduledFor === 0 is a special case indicating that the user has not yet initiated an unstake
+  const hasInitiatedUnstake = userUnstakeScheduledFor.gt(0) ?? false;
+
+  const unstakeDate = new Date(userUnstakeScheduledFor.mul(1000).toNumber());
+  const now = new Date().getTime();
+  const hasUnstakeDelayPassed = now > unstakeDate.getTime();
+  const unstakeDelayComplete = hasInitiatedUnstake && hasUnstakeDelayPassed;
+
+  const unstakePercentage = userUnstakeShares.mul(totalStake).div(totalShares);
+  const minimumUnstakeAmount = min(userUnstakeAmount, unstakePercentage);
+  const canUnstake = unstakeDelayComplete && minimumUnstakeAmount.gte(userUnstakeShares);
+
+  return {
+    hasInitiatedUnstake,
+    unstakeDate,
+    unstakeDelayComplete,
+    minimumUnstakeAmount,
+    canUnstake,
+  };
 };
 
 // export const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {

@@ -1,26 +1,21 @@
-import { BigNumber } from 'ethers';
+import { useChainData } from '../../../chain-data';
 import { formatApi3 } from '../../../utils/api3-format';
+import { stakingPoolSelector } from '../../../logic/dashboard';
 import RadialChart from './radial-chart';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './staking-pool.module.scss';
 import classNames from 'classnames';
 
-type Props = {
-  data?: {
-    annualInflationRate: number;
-    currentApy: number;
-    totalStake: BigNumber;
-    stakeTarget: BigNumber;
-    stakedPercentage: number;
-  };
-};
+const StakingPool = () => {
+  const { dashboardState: data } = useChainData();
+  const stakingPool = stakingPoolSelector(data);
 
-const StakingPool = ({ data }: Props) => {
-  const currentApy = parseFloat(data?.currentApy.toString() || '0').toFixed(1);
-  const annualInflationRate = parseFloat(data ? data.annualInflationRate.toString() : '0').toFixed(2);
+  const currentApy = parseFloat(stakingPool?.currentApy.toString() || '0').toFixed(1);
+  const annualInflationRate = parseFloat(stakingPool ? stakingPool.annualInflationRate.toString() : '0').toFixed(2);
+  const stakedPercentage = parseFloat((stakingPool?.stakedPercentage || 0).toFixed(2));
+
   const totalStaked = parseFloat(data ? formatApi3(data.totalStake) : '0').toLocaleString();
   const stakeTarget = parseFloat(data ? formatApi3(data.stakeTarget) : '0').toLocaleString();
-  const stakedPercentage = parseFloat((data?.stakedPercentage || 0).toFixed(2));
 
   return (
     <div className={styles.stakingPool}>

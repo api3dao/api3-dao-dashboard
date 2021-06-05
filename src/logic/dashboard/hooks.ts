@@ -3,7 +3,6 @@ import { useChainData } from '../../chain-data';
 import { useApi3Pool, useApi3Token, useConvenience, usePossibleChainDataUpdate } from '../../contracts';
 import * as notifications from '../../components/notifications/notifications';
 import { go, messages } from '../../utils';
-import { tokenBalancesSelector, stakingPoolSelector } from './selectors';
 
 export const useLoadDashboardData = () => {
   const api3Pool = useApi3Pool();
@@ -33,31 +32,22 @@ export const useLoadDashboardData = () => {
       return;
     }
 
-    // TODO: is it worth storing these selector in the state?
-    const { userTotal, withdrawable } = tokenBalancesSelector(stakingData);
-    const { currentApy, annualInflationRate, stakedPercentage } = stakingPoolSelector(stakingData);
-
     setChainData('Load dashboard data', {
       dashboardState: {
         allowance,
-        annualInflationRate,
+        ownedTokens,
         api3Supply: stakingData.api3Supply,
         apr: stakingData.apr,
-        currentApy,
-        ownedTokens,
-        stakedPercentage,
         stakeTarget: stakingData.stakeTarget,
         totalShares: stakingData.totalShares,
         totalStake: stakingData.totalStake,
         userLocked: stakingData.userLocked,
         userStaked: stakingData.userStaked,
-        userTotal,
         userUnstaked: stakingData.userUnstaked,
         userUnstakeAmount: stakingData.userUnstakeAmount,
         userUnstakeScheduledFor: stakingData.userUnstakeScheduledFor,
         userUnstakeShares: stakingData.userUnstakeShares,
         userVesting: stakingData.userVesting,
-        withdrawable,
       },
     });
   }, [provider, api3Pool, api3Token, convenience, userAccount, setChainData]);
