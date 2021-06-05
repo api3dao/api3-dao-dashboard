@@ -40,7 +40,9 @@ export const pendingUnstakeSelector = (stakingData: UserStakingData | null) => {
 
   const { totalStake, totalShares, userUnstakeAmount, userUnstakeScheduledFor, userUnstakeShares } = stakingData;
 
-  // userUnstakeScheduledFor === 0 is a special case indicating that the user has not yet initiated an unstake
+  // NOTE: userUnstakeScheduledFor === 0 is a special case indicating that the
+  // user has not yet initiated an unstake. Full implementation details described here:
+  // https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
   const hasInitiatedUnstake = userUnstakeScheduledFor.gt(0) ?? false;
 
   const unstakeDate = new Date(userUnstakeScheduledFor.mul(1000).toNumber());
@@ -50,7 +52,7 @@ export const pendingUnstakeSelector = (stakingData: UserStakingData | null) => {
 
   const unstakePercentage = userUnstakeShares.mul(totalStake).div(totalShares);
   const minimumUnstakeAmount = min(userUnstakeAmount, unstakePercentage);
-  const canUnstake = unstakeDelayComplete && minimumUnstakeAmount.gte(userUnstakeShares);
+  const canUnstake = hasInitiatedUnstake && unstakeDelayComplete && minimumUnstakeAmount.gte(userUnstakeShares);
 
   return {
     hasInitiatedUnstake,
@@ -60,27 +62,3 @@ export const pendingUnstakeSelector = (stakingData: UserStakingData | null) => {
     canUnstake,
   };
 };
-
-// export const getScheduledUnstake = async (api3Pool: Api3Pool, userAccount: string) => {
-//   const scheduledUnstakeFilter = api3Pool.filters.ScheduledUnstake(userAccount, null, null, null);
-//
-//   const lastUnstake = last(await api3Pool.queryFilter(scheduledUnstakeFilter));
-//   if (!lastUnstake) return null;
-//
-//   const unstakedFilter = api3Pool.filters.Unstaked(userAccount, null);
-//   const unstakedEvents = await api3Pool.queryFilter(unstakedFilter, lastUnstake.blockNumber);
-//   if (unstakedEvents.length > 0) {
-//     return null;
-//   }
-//
-//   const epochLength = await api3Pool.EPOCH_LENGTH();
-//   const scheduledFor = lastUnstake.args.scheduledFor;
-//
-//   const toDate = (timestamp: BigNumber) => new Date(timestamp.toNumber());
-//
-//   return {
-//     amount: formatApi3(lastUnstake.args.amount),
-//     scheduledFor: toDate(scheduledFor.mul(1000)),
-//     deadline: toDate(scheduledFor.add(epochLength).mul(1000)),
-//   };
-// };
