@@ -1,10 +1,10 @@
 import { BigNumber } from 'ethers';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
-import { useApi3Pool, useApi3Token, useConvenience, usePossibleChainDataUpdate } from '../../contracts';
-import { computeTokenBalances, computeStakingPool } from '../../logic/dashboard/amounts';
-import { formatApi3, go, messages } from '../../utils';
+import { min, useApi3Pool, useApi3Token } from '../../contracts';
+import { useLoadDashboardData } from '../../logic/dashboard';
+import { formatApi3 } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
@@ -12,7 +12,6 @@ import { Modal } from '../../components/modal/modal';
 import Button from '../../components/button/button';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
-import * as notifications from '../../components/notifications/notifications';
 import Slider from '../../components/slider/slider';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import UnstakeBanner from './unstake-banner/unstake-banner';
@@ -22,64 +21,11 @@ import styles from './dashboard.module.scss';
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
 const Dashboard = () => {
-  const { dashboardState: data, userAccount, provider, transactions, setChainData } = useChainData();
+  const { dashboardState: data, userAccount, transactions, setChainData } = useChainData();
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
-  const convenience = useConvenience();
 
-  // Load the data again on every block (10 - 20 seconds on average). This will also run
-  // immediately if the user is already on the dashboard and they have just connected.
-  // The implementation follows https://api3workspace.slack.com/archives/C020RCCC3EJ/p1620563619008200
-  const loadDashboardData = useCallback(async () => {
-    if (!provider || !api3Pool || !api3Token || !convenience || !userAccount) return null;
-
-    const [stakingDataErr, stakingData] = await go(convenience.getUserStakingData(userAccount));
-    if (stakingDataErr || !stakingData) {
-      notifications.error(messages.LOAD_DASHBOARD_ERROR);
-      return;
-    }
-
-    const [allowanceErr, allowance] = await go(api3Token.allowance(userAccount, api3Pool.address));
-    if (allowanceErr || !allowance) {
-      notifications.error(messages.LOAD_DASHBOARD_ERROR);
-      return;
-    }
-
-    const [ownedTokensErr, ownedTokens] = await go(api3Token.balanceOf(userAccount));
-    if (ownedTokensErr || !ownedTokens) {
-      notifications.error(messages.LOAD_DASHBOARD_ERROR);
-      return;
-    }
-
-    const { userTotal, withdrawable } = computeTokenBalances(stakingData);
-    const { currentApy, annualInflationRate, stakedPercentage } = computeStakingPool(stakingData);
-
-    setChainData('Load dashboard data', {
-      dashboardState: {
-        allowance,
-        annualInflationRate,
-        api3Supply: stakingData.api3Supply,
-        apr: stakingData.apr,
-        currentApy,
-        ownedTokens,
-        stakedPercentage,
-        stakeTarget: stakingData.stakeTarget,
-        totalShares: stakingData.totalShares,
-        totalStake: stakingData.totalStake,
-        userLocked: stakingData.userLocked,
-        userStaked: stakingData.userStaked,
-        userTotal,
-        userUnstaked: stakingData.userUnstaked,
-        userUnstakeAmount: stakingData.userUnstakeAmount,
-        userUnstakeScheduledFor: stakingData.userUnstakeScheduledFor,
-        userUnstakeShares: stakingData.userUnstakeShares,
-        userVesting: stakingData.userVesting,
-        withdrawable,
-      },
-    });
-  }, [provider, api3Pool, api3Token, convenience, userAccount, setChainData]);
-
-  usePossibleChainDataUpdate(loadDashboardData);
+  useLoadDashboardData();
 
   const [openModal, setOpenModal] = useState<ModalType | null>(null);
   const [inputValue, setInputValue] = useState('');
@@ -98,6 +44,11 @@ const Dashboard = () => {
   const now = new Date().getTime();
   const hasUnstakeDelayPassed = now > unstakeDate.getTime();
   const isUnstakeReady = isUnstakePending && hasUnstakeDelayPassed;
+
+  const unstakePercentage = data
+    ? data.userUnstakeShares.mul(data.totalStake).div(data.totalShares)
+    : BigNumber.from(0);
+  const minimumUnstakeAmount = data ? min(data.userUnstakeAmount, unstakePercentage) : BigNumber.from(0);
 
   return (
     <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">
@@ -169,7 +120,7 @@ const Dashboard = () => {
             }
           />
           {data && isUnstakePending && (
-            <PendingUnstakePanel amount={data.userUnstakeAmount} scheduledFor={data.userUnstakeScheduledFor} />
+            <PendingUnstakePanel amount={minimumUnstakeAmount} scheduledFor={data.userUnstakeScheduledFor} />
           )}
         </div>
       </div>

@@ -1,5 +1,3 @@
-// import { BigNumber } from 'ethers';
-// import last from 'lodash/last';
 import {
   absoluteStakeTarget,
   calculateAnnualInflationRate,
@@ -11,7 +9,7 @@ import {
 // import { formatApi3 } from '../../utils';
 import { UserStakingData } from '../../chain-data';
 
-export const computeTokenBalances = (stakingData: UserStakingData) => {
+export const tokenBalancesSelector = (stakingData: UserStakingData) => {
   const { userLocked, userStaked, userUnstaked, userVesting } = stakingData;
   const userTotal = userStaked.add(userUnstaked);
 
@@ -21,7 +19,7 @@ export const computeTokenBalances = (stakingData: UserStakingData) => {
   return { userTotal, withdrawable };
 };
 
-export const computeStakingPool = (stakingData: UserStakingData) => {
+export const stakingPoolSelector = (stakingData: UserStakingData) => {
   const { api3Supply, apr, stakeTarget, totalStake } = stakingData;
   const currentApy = calculateApy(apr);
 
