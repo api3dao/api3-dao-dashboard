@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import { useState } from 'react';
 import { MAX_ALLOWANCE, useApi3Pool, useApi3Token } from '../../../contracts';
-import { useChainData } from '../../../chain-data';
+import { displayPendingTransaction, useChainData } from '../../../chain-data';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
@@ -46,10 +46,16 @@ const TokenDepositForm = (props: Props) => {
 
     const goResponse = await go(api3Token.approve(api3Pool.address, MAX_ALLOWANCE));
     if (isGoSuccess(goResponse)) {
-      setChainData('Save deposit approval', { transactions: [...transactions, goResponse[GO_RESULT_INDEX]] });
+      const tx = goResponse[GO_RESULT_INDEX];
+      displayPendingTransaction(tx, {
+        info: 'Initiating API3 token unstake...',
+        success: 'API3 token unstake initiated successfully!',
+        error: 'Failed to initiate API3 token unstake',
+      });
+      setChainData('Save deposit approval', { transactions: [...transactions, tx] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
-        notifications.info(messages.TX_APPROVAL_REJECTED);
+        notifications.info({ message: messages.TX_APPROVAL_REJECTED });
         return;
       }
       setError(messages.TX_APPROVAL_ERROR);
@@ -77,10 +83,11 @@ const TokenDepositForm = (props: Props) => {
 
     const goResponse = await go(api3Pool.deposit(userAccount, parseApi3(inputValue), userAccount));
     if (isGoSuccess(goResponse)) {
+      displayPendingTransaction(goResponse[GO_RESULT_INDEX]);
       setChainData('Save deposit transaction', { transactions: [...transactions, goResponse[GO_RESULT_INDEX]] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
-        notifications.info(messages.TX_DEPOSIT_REJECTED);
+        notifications.info({ message: messages.TX_DEPOSIT_REJECTED });
         return;
       }
       setError(messages.TX_DEPOSIT_ERROR);

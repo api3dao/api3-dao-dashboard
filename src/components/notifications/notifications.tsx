@@ -19,22 +19,67 @@ export const CloseButton = ({ closeToast }: CloseButtonProps) => (
 
 interface ToastProps {
   message: string;
+  url?: string;
 }
 
-const InfoToast = ({ message }: ToastProps) => {
-  return <p>{message}</p>;
+const InfoToast = ({ message, url }: ToastProps) => {
+  return (
+    <>
+      <div>
+        <p>{message}</p>
+      </div>
+      {url && (
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          {url}
+        </a>
+      )}
+    </>
+  );
 };
 
-const SuccessToast = ({ message }: ToastProps) => {
-  return <p>{message}</p>;
+const SuccessToast = ({ message, url }: ToastProps) => {
+  return (
+    <>
+      <div>
+        <p>{message}</p>
+      </div>
+      {url && (
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          {url}
+        </a>
+      )}
+    </>
+  );
 };
 
-const WarningToast = ({ message }: ToastProps) => {
-  return <p>{message}</p>;
+const WarningToast = ({ message, url }: ToastProps) => {
+  return (
+    <>
+      <div>
+        <p>{message}</p>
+      </div>
+      {url && (
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          {url}
+        </a>
+      )}
+    </>
+  );
 };
 
-const ErrorToast = ({ message }: ToastProps) => {
-  return <p>{message}</p>;
+const ErrorToast = ({ message, url }: ToastProps) => {
+  return (
+    <>
+      <div>
+        <p>{message}</p>
+      </div>
+      {url && (
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          {url}
+        </a>
+      )}
+    </>
+  );
 };
 
 // https://fkhadra.github.io/react-toastify/api/toast
@@ -44,22 +89,22 @@ const BASE_OPTIONS: ToastOptions = {
   hideProgressBar: true,
 };
 
-export const info = (message: string, overrides?: ToastOptions) => {
-  return toast.info(<InfoToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+export const info = (props: ToastProps, overrides?: ToastOptions) => {
+  return toast.info(<InfoToast {...props} />, { ...BASE_OPTIONS, ...overrides });
 };
 
-export const success = (message: string, overrides?: ToastOptions) => {
-  return toast.success(<SuccessToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+export const success = (props: ToastProps, overrides?: ToastOptions) => {
+  return toast.success(<SuccessToast {...props} />, { ...BASE_OPTIONS, ...overrides });
 };
 
-export const warning = (message: string, overrides?: ToastOptions) => {
-  return toast.warning(<WarningToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+export const warning = (props: ToastProps, overrides?: ToastOptions) => {
+  return toast.warning(<WarningToast {...props} />, { ...BASE_OPTIONS, ...overrides });
 };
 
-export const error = (message: string, overrides?: ToastOptions) => {
-  return toast.error(<ErrorToast message={message} />, { ...BASE_OPTIONS, ...overrides });
+export const error = (props: ToastProps, overrides?: ToastOptions) => {
+  return toast.error(<ErrorToast {...props} />, { ...BASE_OPTIONS, ...overrides });
 };
 
-export const close = (id: string) => toast.dismiss(id);
+export const close = (id: React.ReactText) => toast.dismiss(id);
 
 export const closeAll = () => toast.dismiss();

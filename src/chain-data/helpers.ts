@@ -1,7 +1,8 @@
 import produce from 'immer';
 import { ethers } from 'ethers';
+import * as notifications from '../components/notifications/notifications';
 import { getDaoAddresses, getNetworkName } from '../contracts';
-import { initialChainData } from './state';
+import { ChainData, initialChainData } from './state';
 import { go, GO_RESULT_INDEX, isGoSuccess } from '../utils';
 
 export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => void) => {
@@ -32,4 +33,40 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
 
 export const abbrStr = (str: string) => {
   return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
+};
+
+interface PendingTransactionMessages {
+  info: string;
+  success: string;
+  error: string;
+}
+
+export const displayPendingTransaction = async (
+  transaction: ethers.ContractTransaction,
+  messages: PendingTransactionMessages
+) => {
+  const url = `https://etherscan.io/tx/${transaction.hash}`;
+
+  const infoToastId = notifications.info({ url, message: messages.success }, { autoClose: false });
+
+  // NOTE: ethers.js adds various additional fields to Error, so it's easier to type as 'any'
+  // https://docs.ethers.io/v5/api/providers/types/#providers-TransactionRequest
+  const [err] = (await go(transaction.wait())) as any;
+  notifications.close(infoToastId);
+
+  if (err) {
+    // A receipt with status 0 means the transaction failed
+    if (err.receipt?.status.toString() === '0') {
+      notifications.error({ url, message: messages.error });
+      return;
+    }
+
+    // If the user resends a transaction with the same nonce and higher gas price
+    if (err.reason === 'replaced' && err.replacement) {
+      await displayPendingTransaction(err.replacement, messages);
+      return;
+    }
+  }
+
+  notifications.success({ url, message: messages.success });
 };

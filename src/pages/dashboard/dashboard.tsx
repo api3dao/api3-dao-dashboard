@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
-import { abbrStr } from '../../chain-data/helpers';
+import { abbrStr, displayPendingTransaction } from '../../chain-data/helpers';
 import {
   absoluteStakeTarget,
   calculateAnnualInflationRate,
@@ -218,6 +218,11 @@ const Dashboard = () => {
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
             const tx = await api3Pool.scheduleUnstake(parsedValue);
+            displayPendingTransaction(tx, {
+              info: 'Initiating API3 token unstake...',
+              success: 'API3 token unstake initiated successfully!',
+              error: 'Failed to initiate API3 token unstake',
+            });
             setChainData('Save unstake transaction', { transactions: [...transactions, tx] });
           }}
           inputValue={inputValue}
