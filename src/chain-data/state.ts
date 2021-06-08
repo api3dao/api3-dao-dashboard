@@ -7,8 +7,7 @@ export interface PendingUnstake {
   scheduledFor: Date;
 }
 
-// TODO: is there a way to get this from the Convenience.getUserStakingData function?
-export interface UserStakingData {
+export interface ConvenienceDashboardData {
   api3Supply: BigNumber;
   apr: BigNumber;
   stakeTarget: BigNumber;
@@ -23,7 +22,7 @@ export interface UserStakingData {
   userVesting: BigNumber;
 }
 
-export interface DashboardState extends UserStakingData {
+export interface DashboardState extends ConvenienceDashboardData {
   allowance: BigNumber;
   ownedTokens: BigNumber;
 }

@@ -37,6 +37,8 @@ export const useLoadDashboardData = () => {
       dashboardState: {
         allowance,
         ownedTokens,
+        // NOTE: normally we could just spread the stakingData object here, but ethers.js
+        // also returns the values in an array.
         api3Supply: stakingData.api3Supply,
         apr: stakingData.apr,
         stakeTarget: stakingData.stakeTarget,
