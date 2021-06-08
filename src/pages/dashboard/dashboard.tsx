@@ -40,6 +40,7 @@ const Dashboard = () => {
   const pendingUnstake = pendingUnstakeSelector(data);
 
   const canWithdraw = tokenBalances?.withdrawable.gt(0) ?? false;
+  const canStake = (data?.userUnstaked.gt(0) && !pendingUnstake?.hasInitiatedUnstake) ?? false;
 
   return (
     <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">
@@ -91,7 +92,7 @@ const Dashboard = () => {
             header={
               <Header>
                 <h5>Staking</h5>
-                <Button onClick={() => setOpenModal('stake')} disabled={disconnected}>
+                <Button onClick={() => setOpenModal('stake')} disabled={disconnected || !canStake}>
                   + Stake
                 </Button>
               </Header>
