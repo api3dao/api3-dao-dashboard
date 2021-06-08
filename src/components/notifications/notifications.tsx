@@ -6,6 +6,8 @@ import './react-toastify-overrides.scss';
 // Use these classes to style content
 import styles from './notifications.module.scss';
 
+const THROTTLE_MS = 500;
+
 // TODO: add styling for various components
 interface CloseButtonProps {
   closeToast: () => void;
@@ -51,7 +53,7 @@ export const info = throttle(
   (message: string, overrides?: ToastOptions) => {
     return toast.info(<InfoToast message={message} />, { ...BASE_OPTIONS, ...overrides });
   },
-  500,
+  THROTTLE_MS,
   { trailing: false }
 );
 
@@ -59,7 +61,7 @@ export const success = throttle(
   (message: string, overrides?: ToastOptions) => {
     return toast.success(<SuccessToast message={message} />, { ...BASE_OPTIONS, ...overrides });
   },
-  500,
+  THROTTLE_MS,
   { trailing: false }
 );
 
@@ -67,7 +69,7 @@ export const warning = throttle(
   (message: string, overrides?: ToastOptions) => {
     return toast.warning(<WarningToast message={message} />, { ...BASE_OPTIONS, ...overrides });
   },
-  500,
+  THROTTLE_MS,
   { trailing: false }
 );
 
@@ -75,7 +77,7 @@ export const error = throttle(
   (message: string, overrides?: ToastOptions) => {
     return toast.error(<ErrorToast message={message} />, { ...BASE_OPTIONS, ...overrides });
   },
-  500,
+  THROTTLE_MS,
   { trailing: false }
 );
 
