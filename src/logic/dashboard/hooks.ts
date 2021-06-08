@@ -26,6 +26,7 @@ export const useLoadDashboardData = () => {
       return;
     }
 
+    // TODO: get this from stakingData.userApi3Balance when available
     const [ownedTokensErr, ownedTokens] = await go(api3Token.balanceOf(userAccount));
     if (ownedTokensErr || !ownedTokens) {
       notifications.error(messages.LOAD_DASHBOARD_ERROR);
