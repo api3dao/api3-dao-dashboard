@@ -22,12 +22,12 @@ import styles from './forms.module.scss';
 
 interface Props {
   allowance: BigNumber;
-  balance: BigNumber;
+  balanceInWallet: BigNumber;
   onClose: () => void;
 }
 
 const TokenDepositForm = (props: Props) => {
-  const { allowance, balance } = props;
+  const { allowance, balanceInWallet: balance } = props;
 
   const { setChainData, transactions, userAccount } = useChainData();
   const api3Token = useApi3Token();
