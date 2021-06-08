@@ -7,7 +7,7 @@ import { useChainData } from '../../chain-data';
 import BorderedBox from '../../components/bordered-box/bordered-box';
 import Button from '../../components/button/button';
 import ProposalList from '../proposal-commons/proposal-list';
-import './history.scss';
+import styles from './history.module.scss';
 import classNames from 'classnames';
 import { useHistory } from 'react-router';
 import Treasury from '../proposal-commons/treasury/treasury';
@@ -38,27 +38,31 @@ const History = () => {
 
   return (
     <BaseLayout>
-      <div className="history-header">
+      <div className={styles.header}>
         <Header title="History" sectionTitle="History"></Header>
-        <Treasury className="history-treasury" />
+        <Treasury className={styles.treasury} />
       </div>
 
       <BorderedBox
         header={
-          <div className="bordered-box-header">
+          <div className={styles.borderBoxHeader}>
             <h5>Proposals</h5>
             <div>
               <Button
                 onClick={() => applyHistoryFilter('primary')}
                 type="text"
-                className={classNames('proposal-filter-tab', { active: !proposalType || proposalType === 'primary' })}
+                className={classNames({ [styles.active]: !proposalType || proposalType === 'primary' })}
+                buttonClassName={styles.button}
               >
                 Primary
               </Button>
               <Button
                 onClick={() => applyHistoryFilter('secondary')}
                 type="text"
-                className={classNames('proposal-filter-tab', { active: !proposalType || proposalType === 'secondary' })}
+                className={classNames({
+                  [styles.active]: !proposalType || proposalType === 'secondary',
+                })}
+                buttonClassName={styles.button}
               >
                 Secondary
               </Button>

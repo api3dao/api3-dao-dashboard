@@ -2,7 +2,8 @@ import classNames from 'classnames';
 import { Proposal } from '../../../../chain-data';
 import { voteSliderSelector } from '../../../../logic/proposals/selectors';
 import { NegativeVoteIcon, PositiveVoteIcon } from '../../vote-slider/vote-slider';
-import './proposal-status.scss';
+import styles from './proposal-status.module.scss';
+
 import Button from '../../../../components/button/button';
 
 interface Props {
@@ -15,26 +16,42 @@ const ProposalStatus = (props: Props): JSX.Element => {
   const proposalStatus = voteSliderSelector(proposal).proposalStatus;
 
   if (proposal.open) {
-    // Open proposal status can be either 'Failing' or 'Passing'
-    return <p className={classNames('proposal-status', proposalStatus.toLowerCase())}>{proposalStatus}</p>;
+    return (
+      <p
+        // Open proposal status can be either 'Failing' or 'Passing'
+        className={classNames({
+          [styles.failing]: proposalStatus === 'Failing',
+          [styles.passing]: proposalStatus === 'Passing',
+        })}
+      >
+        {proposalStatus}
+      </p>
+    );
   } else {
     const showIcon = proposalStatus === 'Executed' || proposalStatus === 'Rejected';
 
     return (
-      <div className="text-large">
+      <div className={styles.flex}>
         {showIcon && (
-          <span className="proposal-status-icon">
+          <span className={styles.icon}>
             {proposalStatus === 'Rejected' && <NegativeVoteIcon large={large} />}
             {proposalStatus === 'Executed' && <PositiveVoteIcon large={large} />}
           </span>
         )}
         {proposalStatus === 'Execute' ? (
           // TODO: implement onClick action
-          <Button type="text" className="proposal-status-execute" buttonClassName={large ? 'text-large-override' : ''}>
+          <Button type="text" className={styles.execute} buttonClassName={large ? styles.override : ''}>
             {proposalStatus}
           </Button>
         ) : (
-          <span className={classNames('proposal-status', proposalStatus.toLowerCase())}>{proposalStatus}</span>
+          <span
+            className={classNames({
+              [styles.executed]: proposalStatus === 'Executed',
+              [styles.rejected]: proposalStatus === 'Rejected',
+            })}
+          >
+            {proposalStatus}
+          </span>
         )}
       </div>
     );

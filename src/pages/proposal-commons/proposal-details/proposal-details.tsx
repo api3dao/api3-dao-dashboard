@@ -7,14 +7,14 @@ import VoteSlider from '../vote-slider/vote-slider';
 import Timer from '../../../components/timer/timer';
 import Button from '../../../components/button/button';
 import Tag from '../../../components/tag/tag';
-import BorderedBox from '../../../components/bordered-box/bordered-box';
+import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import { useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndId } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useLoadAllProposals } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
 import ProposalStatus from '../proposal-list/proposal-status';
-import globalStyles from '../../styles/global-styles.module.scss';
+import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import classNames from 'classnames';
 
@@ -65,9 +65,8 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
           <Timer size="large" deadline={proposal.deadline} />
         </div>
       </div>
-      <h5 className={`${globalStyles.capitalize} ${globalStyles.pinkColor}`}>{voteSliderData.voterState}</h5>
+      <ProposalStatus proposal={proposal} large />
       <div className={styles.proposalDetailsVoteSection}>
-        <ProposalStatus proposal={proposal} large />
         <VoteSlider {...voteSliderData} size="large" />
         <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)}>
           Vote
@@ -77,6 +76,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
             voteId={proposal.voteId.toString()}
             onConfirm={async (choice) => {
               setVoteModalOpen(false);
+              // TODO: handle error
               await voting[proposal.type].vote(proposal.voteId, choice === 'for', true);
             }}
           />

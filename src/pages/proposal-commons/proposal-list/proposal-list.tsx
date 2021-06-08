@@ -41,7 +41,7 @@ const ProposalList = (props: Props) => {
         return (
           <div className={styles.proposalItem} key={`${p.type}-${voteIdFormat(p.voteId)}`}>
             <div className={styles.proposalItemWrapper}>
-              <p className={styles.proposalTitle}>{p.metadata.description}</p>
+              <p className={styles.proposalItemTitle}>{p.metadata.description}</p>
               <div className={styles.proposalItemSubtitle}>
                 <div className={classNames(styles.proposalItemBox, styles.mr)}>
                   <p className={styles.proposalItemVoteId}>#{voteIdFormat(p.voteId)}</p>

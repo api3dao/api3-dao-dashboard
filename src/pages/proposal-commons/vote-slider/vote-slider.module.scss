@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@import '../../../styles/variables.module.scss';
 
 $border-radius: 100px;
 
@@ -68,13 +68,25 @@ $border-radius: 100px;
 
 .voterState {
   text-transform: capitalize;
+  display: flex;
 
-  &.failing {
+  &.failing,
+  .votedAgainst {
     color: $pink-color;
   }
 
-  &.passing {
+  &.passing,
+  .votedFor {
     color: $green-color;
+  }
+
+  &.large {
+    margin-top: 40px;
+  }
+
+  &.icon {
+    margin: 0 $space-sm;
+    height: 25px;
   }
 }
 
