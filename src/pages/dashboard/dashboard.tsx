@@ -130,8 +130,8 @@ const Dashboard = () => {
       <Modal open={openModal === 'deposit'} onClose={closeModal}>
         <TokenDepositForm
           allowance={data?.allowance ?? BigNumber.from('0')}
-          balanceInWallet={data?.ownedTokens ?? BigNumber.from('0')}
           onClose={closeModal}
+          walletBalance={data?.ownedTokens ?? BigNumber.from('0')}
         />
       </Modal>
       <Modal open={openModal === 'withdraw'} onClose={closeModal}>
