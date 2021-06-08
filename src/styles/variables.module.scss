@@ -30,6 +30,18 @@ $text-normal: 18px;
 $text-small: 14px;
 $text-xsmall: 12px;
 
+// LINE HEIGHTS
+$lh-heading-1: 164px;
+$lh-heading-2: 104px;
+$lh-heading-3: 60px;
+$lh-heading-4: 52px;
+$lh-heading-5: 35px;
+$lh-xlarge: 52px;
+$lh-large: 40px;
+$lh-normal: 28px;
+$lh-small: 17px;
+$lh-xsmall: 18px;
+
 // SPACINGS
 $space-xxxl: 48px;
 $space-xxl: 40px;
@@ -39,3 +51,15 @@ $space-md: 16px;
 $space-sm: 12px;
 $space-xs: 8px;
 $space-xxs: 4px;
+
+// BREAKPOINTS
+$min-xs: 360px;
+$max-xs: 359px;
+$min-sm: 576px;
+$max-sm: 575px;
+$min-md: 768px;
+$max-md: 767px;
+$min-lg: 992px;
+$max-lg: 991px;
+$min-xl: 1200px;
+$max-xl: 1199px;

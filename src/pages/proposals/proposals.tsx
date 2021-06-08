@@ -48,7 +48,7 @@ const Proposals = () => {
   };
 
   return (
-    <Layout title="Governance" sectionTitle="Governance">
+    <Layout title="Governance">
       <div className={styles.proposalsHeader}>
         {/* TODO: Should the buttons be disabled according to conditions in https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622114047033800?thread_ts=1622113523.033100&cid=C020RCCC3EJ */}
         {/* There was another slack discussion where we said we want to avoid disabled buttons */}

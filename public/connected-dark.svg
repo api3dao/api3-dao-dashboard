@@ -1,10 +1,10 @@
 <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g filter="url(#filter0_d)">
-<circle cx="12" cy="12.7744" r="8" fill="#030303"/>
+<circle cx="12" cy="12.7754" r="8" fill="white"/>
 </g>
-<circle cx="12" cy="12.7744" r="6" fill="#7CE3CB"/>
+<circle cx="12" cy="12.7754" r="6" fill="#7CE3CB"/>
 <defs>
-<filter id="filter0_d" x="0" y="0.774414" width="24" height="24" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter0_d" x="0" y="0.775391" width="24" height="24" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
 <feOffset/>

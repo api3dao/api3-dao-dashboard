@@ -5,8 +5,25 @@
   align-items: center;
   justify-content: space-between;
   padding: $space-xl $space-xxl;
+
+  @media (max-width: $max-md) {
+    padding: $space-lg;
+  }
+
+  @media (max-width: $max-sm) {
+    flex-direction: column;
+  }
 }
 
 .navigationMenu {
   position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+
+  @media (max-width: $max-sm) {
+    width: 100%;
+    justify-content: space-between;
+    padding-bottom: $space-lg;
+  }
 }

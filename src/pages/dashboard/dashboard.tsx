@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
-import { abbrStr } from '../../chain-data/helpers';
 import {
   absoluteStakeTarget,
   calculateAnnualInflationRate,
@@ -86,7 +85,7 @@ const Dashboard = () => {
   const canInitiateUnstake = !disconnected && data?.userStake.gt(0);
 
   return (
-    <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">
+    <Layout title="Staking">
       {isDeadline && data?.pendingUnstake && <UnstakeBanner />}
       {!data?.pendingUnstake && (
         <>
