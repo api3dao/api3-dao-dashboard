@@ -180,8 +180,9 @@ const Dashboard = () => {
           title={`Are you sure you would like to unstake ${inputValue} tokens?`}
           action="Initiate Unstaking"
           onConfirm={async (parsedValue: BigNumber) => {
-            if (!api3Pool) return;
-            const tx = await api3Pool.scheduleUnstake(parsedValue);
+            if (!api3Pool || !data) return;
+            const userShares = parsedValue.mul(data.totalShares).div(data.totalStake);
+            const tx = await api3Pool.scheduleUnstake(userShares);
             setChainData('Save unstake transaction', { transactions: [...transactions, tx] });
           }}
           inputValue={inputValue}
