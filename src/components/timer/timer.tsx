@@ -3,11 +3,16 @@ import classNames from 'classnames';
 import { getDays, getHours, getMinutes, getSeconds } from '../../utils/generic';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './timer.module.scss';
+import { format } from 'date-fns';
 
 interface Props {
   deadline: Date;
   size?: 'normal' | 'large';
 }
+
+export const DATE_FORMAT = 'do MMMM yyyy';
+
+export const formatDeadline = (deadline: Date) => format(deadline, DATE_FORMAT);
 
 const Timer = (props: Props) => {
   const { deadline, size = 'normal' } = props;
@@ -47,9 +52,16 @@ const Timer = (props: Props) => {
   }, [deadline]);
 
   const largeSize = size === 'large' ? `${styles.large}` : '';
+  const status = `${dateDiff > 0 ? 'Remaining' : 'Ended'}`;
+  const formattedDeadline = `${dateDiff > 0 ? 'Ends on' : 'Ended on'} ${formatDeadline(deadline)}`;
 
   return (
-    <div className={classNames(styles.timer, largeSize)}>
+    <div
+      className={classNames(styles.timer, largeSize, dateDiff === 0 ? styles.grayOut : globalStyles.primaryColor, {
+        [`_large`]: size === 'large',
+      })}
+    >
+      <div className={globalStyles.tertiaryColor}>{status}</div>
       <div className={styles.timerContainer}>
         <div className={styles.timerWrap}>
           <div className={styles.timerNumber}>{timerDays}</div>
@@ -75,7 +87,7 @@ const Timer = (props: Props) => {
           </>
         )}
       </div>
-      {dateDiff > 0 && <div>remaining</div>}
+      <div className={globalStyles.secondaryColor}>{formattedDeadline}</div>
     </div>
   );
 };

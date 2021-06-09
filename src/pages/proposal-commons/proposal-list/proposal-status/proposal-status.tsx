@@ -11,7 +11,7 @@ interface Props {
   large?: true;
 }
 
-const ProposalStatus = (props: Props): JSX.Element => {
+const ProposalStatus = (props: Props) => {
   const { proposal, large } = props;
   const proposalStatus = voteSliderSelector(proposal).proposalStatus;
 
@@ -27,35 +27,35 @@ const ProposalStatus = (props: Props): JSX.Element => {
         {proposalStatus}
       </p>
     );
-  } else {
-    const showIcon = proposalStatus === 'Executed' || proposalStatus === 'Rejected';
-
-    return (
-      <div className={styles.flex}>
-        {showIcon && (
-          <span className={styles.icon}>
-            {proposalStatus === 'Rejected' && <NegativeVoteIcon large={large} />}
-            {proposalStatus === 'Executed' && <PositiveVoteIcon large={large} />}
-          </span>
-        )}
-        {proposalStatus === 'Execute' ? (
-          // TODO: implement onClick action
-          <Button type="text" className={styles.execute} buttonClassName={large ? styles.override : ''}>
-            {proposalStatus}
-          </Button>
-        ) : (
-          <span
-            className={classNames({
-              [styles.executed]: proposalStatus === 'Executed',
-              [styles.rejected]: proposalStatus === 'Rejected',
-            })}
-          >
-            {proposalStatus}
-          </span>
-        )}
-      </div>
-    );
   }
+
+  const showIcon = proposalStatus === 'Executed' || proposalStatus === 'Rejected';
+
+  return (
+    <div className={styles.flex}>
+      {showIcon && (
+        <span className={styles.icon}>
+          {proposalStatus === 'Rejected' && <NegativeVoteIcon large={large} />}
+          {proposalStatus === 'Executed' && <PositiveVoteIcon large={large} />}
+        </span>
+      )}
+      {proposalStatus === 'Execute' ? (
+        // TODO: implement onClick action
+        <Button type="text" className={styles.execute} buttonClassName={large ? styles.override : ''}>
+          {proposalStatus}
+        </Button>
+      ) : (
+        <span
+          className={classNames({
+            [styles.executed]: proposalStatus === 'Executed',
+            [styles.rejected]: proposalStatus === 'Rejected',
+          })}
+        >
+          {proposalStatus}
+        </span>
+      )}
+    </div>
+  );
 };
 
 export default ProposalStatus;

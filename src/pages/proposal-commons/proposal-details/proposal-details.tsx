@@ -44,7 +44,6 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
   const voting = useApi3Voting();
 
   const voteSliderData = voteSliderSelector(proposal);
-  const timerLabel = `${proposal.open ? 'Ends' : 'Ended'} on ${proposal.deadline.toDateString()}`;
 
   // NOTE: This should never happen, loading component in proposal details page should
   // make sure we are connected to valid chain and have valid proposal loaded
@@ -61,7 +60,6 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
       <div className={styles.proposalDetailsHeader}>
         <h4>{proposal.metadata.description}</h4>
         <div className={styles.proposalDetailsTimer}>
-          <p className={`${globalStyles.textXSmall} ${globalStyles.medium}`}>{timerLabel}</p>
           <Timer size="large" deadline={proposal.deadline} />
         </div>
       </div>

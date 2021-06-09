@@ -73,7 +73,7 @@ const VoteSlider = (props: Props) => {
             })}
           >
             <span className={globalStyles.secondaryColor}>{formatPercentage(forPercentage)}</span>
-            <div className={classNames(styles.voterState, { [styles.large]: isLarge })}>
+            <div className={classNames({ [styles.large]: isLarge })}>
               {isLarge && voterState !== 0 && (
                 <img
                   className={styles.icon}
@@ -82,7 +82,7 @@ const VoteSlider = (props: Props) => {
                 />
               )}
               <span
-                className={classNames(styles.voterState, {
+                className={classNames({
                   [styles.votedAgainst]: VOTER_STATES[voterState] === 'Voted Against',
                   [styles.votedFor]: VOTER_STATES[voterState] === 'Voted For',
                 })}

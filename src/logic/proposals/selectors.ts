@@ -14,13 +14,13 @@ export const voteSliderSelector = (proposal: Proposal) => {
 
     if (proposal.open) {
       return isPassing ? 'Passing' : 'Failing';
+    }
+
+    if (isPassing) {
+      if (proposal.executed) return 'Executed';
+      else return 'Execute';
     } else {
-      if (isPassing) {
-        if (proposal.executed) return 'Executed';
-        else return 'Execute';
-      } else {
-        return 'Rejected';
-      }
+      return 'Rejected';
     }
   };
 
