@@ -9,7 +9,7 @@ const Navigation = () => {
         <img src="/api3-logo-white.svg" alt="logo" />
         <Menu />
       </div>
-      <SignIn hiddenOnMobile />
+      <SignIn hideSignInStatus />
     </div>
   );
 };

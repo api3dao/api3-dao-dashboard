@@ -14,10 +14,10 @@ import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscripti
 
 type Props = {
   dark?: boolean;
-  hiddenOnMobile?: boolean;
+  hideSignInStatus?: boolean;
 };
 
-const ConnectedStatus = ({ dark, hiddenOnMobile }: Props) => {
+const ConnectedStatus = ({ dark, hideSignInStatus }: Props) => {
   const { provider, setChainData, networkName, userAccount } = useChainData();
 
   const onDisconnect = () => {
@@ -31,14 +31,14 @@ const ConnectedStatus = ({ dark, hiddenOnMobile }: Props) => {
   };
 
   return (
-    <div className={classNames({ [styles.hiddenOnMobile]: hiddenOnMobile })}>
+    <div className={classNames({ [styles.hideSignInStatus]: hideSignInStatus })}>
       <Dropdown
         menu={
           <DropdownMenu position={dark ? 'top' : 'bottom'}>
             <DropdownMenuItem onClick={onDisconnect}>Disconnect</DropdownMenuItem>
           </DropdownMenu>
         }
-        icon={<img src={`/arrow-dropdown${dark ? '-dark' : ''}.svg`} alt="dropdown icon" />}
+        icon={<img src={dark ? '/arrow-dropdown-dark.svg' : '/arrow-dropdown.svg'} alt="dropdown icon" />}
         alignIcon="start"
       >
         <div className={styles.connectedStatus}>
@@ -53,7 +53,7 @@ const ConnectedStatus = ({ dark, hiddenOnMobile }: Props) => {
   );
 };
 
-const SignIn = ({ dark, hiddenOnMobile }: Props) => {
+const SignIn = ({ dark, hideSignInStatus }: Props) => {
   const { setChainData, provider, contracts, networkName } = useChainData();
   useProviderSubscriptions(provider);
 
@@ -101,7 +101,7 @@ const SignIn = ({ dark, hiddenOnMobile }: Props) => {
   return (
     <>
       {!provider && <Button onClick={onWalletConnect}>Connect Wallet</Button>}
-      {provider && <ConnectedStatus dark={dark} hiddenOnMobile={hiddenOnMobile} />}
+      {provider && <ConnectedStatus dark={dark} hideSignInStatus={hideSignInStatus} />}
       <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
         <div className={globalStyles.textCenter}>
           <h5>Unsupported chain!</h5>
