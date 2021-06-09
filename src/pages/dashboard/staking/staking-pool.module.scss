@@ -5,16 +5,48 @@
   align-items: center;
   margin-top: $space-xxxl;
   margin-bottom: 100px;
+
+  @media (max-width: $max-md) {
+    flex-direction: column;
+  }
 }
 
 .stakingTable {
-  max-width: 200px;
-  width: 100%;
-  margin-right: 2 * $space-xxxl;
+  min-width: 120px;
 
-  &.twoCells {
-    max-width: 400px;
-    margin-right: $space-xxxl;
+  @media (min-width: $min-xl) {
+    &.oneCell {
+      width: 200px;
+    }
+
+    &.twoCells {
+      width: 400px;
+    }
+  }
+
+  @media (min-width: $min-lg) {
+    &.oneCell {
+      margin-right: 2 * $space-xxxl;
+    }
+
+    &.twoCells {
+      margin-right: $space-xxxl;
+    }
+  }
+
+  @media (min-width: $min-md) {
+    margin-right: $space-xxl;
+  }
+
+  @media (max-width: $max-md) {
+    border-bottom: 1px solid $black-line-color;
+    &.oneCell {
+      display: flex;
+      .stakingTableRow {
+        border-top: 0;
+        height: auto;
+      }
+    }
   }
 }
 
@@ -25,17 +57,42 @@
   padding: $space-md 0;
   border-top: 1px solid $black-line-color;
   box-sizing: border-box;
+
+  @media (max-width: $max-md) {
+    padding: $space-sm 0;
+  }
+}
+
+.stakingTableWrap {
+  display: flex;
+  align-items: center;
+
+  @media (max-width: $max-md) {
+    flex-direction: column-reverse;
+  }
 }
 
 .stakingTableCell {
   width: 50%;
   padding: 0 $space-md;
   box-sizing: border-box;
+
   &.rightAlign {
     text-align: right;
   }
   &.oneCell {
     width: 100%;
+  }
+
+  @media (max-width: $max-xl) {
+    padding: 0 $space-xs;
+  }
+
+  @media (max-width: $max-md) {
+    &.oneCell {
+      padding: 0 20px;
+      text-align: center;
+    }
   }
 }
 
@@ -45,4 +102,24 @@
   color: $secondary-color;
   font-weight: 500;
   text-transform: uppercase;
+}
+
+.stakingRadialChart {
+  display: flex;
+  width: 166px;
+
+  @media (max-width: $max-md) {
+    margin-top: $space-md;
+  }
+}
+
+.stakingAnnualApy {
+  font-size: $heading-3;
+  line-height: $lh-heading-3;
+  font-weight: 600;
+
+  @media (max-width: $max-xl) {
+    font-size: $heading-4;
+    line-height: $lh-heading-4;
+  }
 }
