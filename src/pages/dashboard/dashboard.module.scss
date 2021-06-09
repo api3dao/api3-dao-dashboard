@@ -30,3 +30,14 @@
   color: $secondary-color;
   text-transform: uppercase;
 }
+
+.dashboardHeader {
+  font-size: $heading-5;
+  line-height: $lh-heading-5;
+  color: $green-color;
+
+  @media (max-width: $max-sm) {
+    font-size: $text-normal;
+    line-height: $lh-normal;
+  }
+}

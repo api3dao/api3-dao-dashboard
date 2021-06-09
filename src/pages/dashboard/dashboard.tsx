@@ -89,11 +89,11 @@ const Dashboard = () => {
       {isDeadline && data?.pendingUnstake && <UnstakeBanner />}
       {!data?.pendingUnstake && (
         <>
-          <h5 className={globalStyles.greenColor}>How This Works</h5>
+          <p className={styles.dashboardHeader}>How This Works</p>
           <Slider />
         </>
       )}
-      <h5 className={globalStyles.greenColor}>Staking Pool</h5>
+      <p className={styles.dashboardHeader}>Staking Pool</p>
       <StakingPool data={data || undefined} />
       <div className={styles.borderedBoxesWrap}>
         <div className={styles.stakingBoxWrap}>
