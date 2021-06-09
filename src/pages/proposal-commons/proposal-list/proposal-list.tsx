@@ -3,7 +3,7 @@ import { Proposal } from '../../../chain-data';
 import { NavLink } from 'react-router-dom';
 import { encodeProposalTypeAndId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../vote-slider/vote-slider';
-import Timer from '../../../components/timer/timer';
+import Timer, { DATE_FORMAT } from '../../../components/timer/timer';
 import Tooltip from '../../../components/tooltip/tooltip';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag/tag';
@@ -49,7 +49,7 @@ const ProposalList = (props: Props) => {
                 </div>
                 <div className={classNames(styles.proposalItemBox, styles.date)}>
                   {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
-                  {p.open ? <Timer deadline={p.deadline} /> : format(p.startDate, 'do MMMM yyyy')}
+                  {p.open ? <Timer deadline={p.deadline} /> : format(p.startDate, DATE_FORMAT)}
                 </div>
                 <div className={styles.proposalItemBox}>
                   <Tooltip content={tooltipContent}>
