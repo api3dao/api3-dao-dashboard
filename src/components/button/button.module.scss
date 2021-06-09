@@ -35,6 +35,10 @@
     font-size: $text-small;
     line-height: $lh-small;
     padding: 17px $space-lg;
+
+    @media (max-width: $max-md) {
+      padding: $space-md;
+    }
   }
 
   &.large {
@@ -42,6 +46,12 @@
     font-size: $text-normal;
     line-height: 22px;
     padding: 20px 44px;
+
+    @media (max-width: $max-md) {
+      height: 58px;
+      font-size: $text-small;
+      padding: $space-md $space-xl;
+    }
   }
 
   &.link {

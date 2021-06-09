@@ -8,6 +8,7 @@
 
   @media (max-width: $max-md) {
     flex-direction: column;
+    margin-top: $space-xxl;
   }
 }
 
@@ -57,10 +58,6 @@
   padding: $space-md 0;
   border-top: 1px solid $black-line-color;
   box-sizing: border-box;
-
-  @media (max-width: $max-md) {
-    padding: $space-sm 0;
-  }
 }
 
 .stakingTableWrap {

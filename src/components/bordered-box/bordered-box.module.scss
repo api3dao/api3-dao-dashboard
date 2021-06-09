@@ -20,10 +20,11 @@
 }
 
 .borderedBoxCol {
-  width: 32px;
+  width: $space-xl;
   border-width: 1px;
   border-style: solid;
   flex-shrink: 0;
+  box-sizing: border-box;
 
   &.right {
     border-left-width: 0;
@@ -31,6 +32,10 @@
 
   &.left {
     border-right-width: 0;
+  }
+
+  @media (max-width: $max-md) {
+    width: $space-lg;
   }
 }
 
