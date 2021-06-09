@@ -13,6 +13,7 @@ export const messages = {
   VALIDATION_DEPOSIT_TOO_HIGH: 'Deposit value cannot be higher than the available balance',
   VALIDATION_INPUT_TOO_HIGH: 'Input amount cannot be higher than the available balance',
 
-  // Generic
+  // Blockchain errors
   FAILED_TO_LOAD_CHAIN_DATA: 'Unable to load blockchain data',
+  FAILED_TO_LOAD_TREASURY_AND_DELEGATION: 'Unable to load delegation and treasury data',
 };

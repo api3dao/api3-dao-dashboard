@@ -3,6 +3,8 @@ import { Treasury, useChainData } from '../../chain-data';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../contracts/hooks';
 import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, assertGoSuccess, GO_ERROR_INDEX } from '../../utils';
 import { isZeroAddress } from '../../contracts';
+import * as notifications from '../../components/notifications/notifications';
+import { messages } from '../../utils/messages';
 
 export const useTreasuryAndDelegation = () => {
   const { setChainData, userAccount, proposals } = useChainData();
@@ -42,17 +44,17 @@ export const useTreasuryAndDelegation = () => {
     };
 
     const goResponse = await go(loadTreasuryAndDelegation);
-    if (isGoSuccess(goResponse)) {
-      const treasuryAndDelegation = goResponse[GO_RESULT_INDEX];
-
-      setChainData('Load delegation and treasury', (state) => ({
-        ...state,
-        ...treasuryAndDelegation,
-      }));
-    } else {
-      // TODO: error handling
-      console.error('Unable to load delegation and treasury', goResponse[GO_ERROR_INDEX]);
+    if (!isGoSuccess(goResponse)) {
+      notifications.error(messages.FAILED_TO_LOAD_TREASURY_AND_DELEGATION);
+      return;
     }
+
+    const treasuryAndDelegation = goResponse[GO_RESULT_INDEX];
+
+    setChainData('Load delegation and treasury', (state) => ({
+      ...state,
+      ...treasuryAndDelegation,
+    }));
   }, [api3Voting, convenience, userAccount, setChainData]);
 
   // Ensure that the proposals are up to date with blockchain
