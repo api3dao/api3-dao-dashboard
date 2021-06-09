@@ -10,6 +10,8 @@ import { Modal as GenericModal } from '../../components/modal/modal';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown/dropdown';
 import styles from './sign-in.module.scss';
 import globalStyles from '../../styles/global-styles.module.scss';
+import * as notifications from '../../components/notifications/notifications';
+import { messages } from '../../utils/messages';
 import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscriptions } from '../../contracts';
 
 type Props = {
@@ -97,19 +99,28 @@ const SignIn = ({ dark, position }: Props) => {
       },
     });
 
-    const web3ModalProvider = await web3Modal.connect();
-    // Enable session (triggers QR Code modal)
-    const [err] = await go(web3ModalProvider.request({ method: 'eth_requestAccounts' }));
-    if (err) {
-      // TODO: handle error (e.g. user closes the modal)
+    // Enable session (connection), this triggers QR Code modal in case of wallet connect
+    const [connectionError, web3ModalProvider] = await go(web3Modal.connect());
+    // Connection error will often be caused by user declining to connect (e.g. close the modal) so we don't show any
+    // toast message to the user.
+    // NOTE: In case users closes the wallet connect modal there is no connection error, but the provider will be null
+    if (connectionError || !web3ModalProvider) return;
+
+    const [requestAccountsError] = await go(web3ModalProvider.request({ method: 'eth_requestAccounts' }));
+    // For example, user wants to connect via metamask, but declines connecting his account. We don't want to show toast
+    // message in this cas either.
+    if (requestAccountsError) return;
+
+    // https://github.com/ethers-io/ethers.js/discussions/1480
+    // NOTE: You can access the underlying 'web3ModalProvider' using the 'provider' property
+    const externalProvider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
+    const [networkDataError, data] = await go(getNetworkData(externalProvider));
+    if (networkDataError) {
+      notifications.error(messages.FAILED_TO_LOAD_CHAIN_DATA);
       return;
     }
 
-    // https://github.com/ethers-io/ethers.js/discussions/1480
-    // NOTE: You can access the underlying 'web3ModalProvider' using 'provider' property
-    const provider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
-    // User has chosen a provider and has signed in
-    setChainData('User connected', { ...(await getNetworkData(provider)) });
+    setChainData('User connected', { ...data });
   };
 
   const isSignedIn = !!provider && contracts !== null;

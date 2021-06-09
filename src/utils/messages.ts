@@ -12,4 +12,7 @@ export const messages = {
   VALIDATION_INPUT_PARSE: 'Unable to parse input amount',
   VALIDATION_DEPOSIT_TOO_HIGH: 'Deposit value cannot be higher than the available balance',
   VALIDATION_INPUT_TOO_HIGH: 'Input amount cannot be higher than the available balance',
+
+  // Generic
+  FAILED_TO_LOAD_CHAIN_DATA: 'Unable to load blockchain data',
 };
