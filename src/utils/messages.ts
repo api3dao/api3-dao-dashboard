@@ -16,4 +16,10 @@ export const messages = {
   // Blockchain errors
   FAILED_TO_LOAD_CHAIN_DATA: 'Unable to load blockchain data',
   FAILED_TO_LOAD_TREASURY_AND_DELEGATION: 'Unable to load delegation and treasury data',
+
+  // Delegation errors
+  UNABLE_TO_LOAD_DELEGATE: 'Unable to load the delagate of address',
+  INVALID_DELEGATE_ADDRESS: 'Delegation target must be a valid non zero address',
+  DELEGATE_IS_YOURSELF: "You can't delegate to yourself",
+  REDELEGATION_IS_FORBIDDEN: (targetDelegate: string) => `Address ${targetDelegate} delegates to some other account`,
 };

@@ -1,7 +1,6 @@
 import { ethers } from 'ethers';
 import { useState } from 'react';
 import { useChainData } from '../../chain-data';
-import { abbrStr } from '../../chain-data/helpers';
 import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
 import { Modal } from '../../components/modal/modal';
@@ -12,22 +11,16 @@ import { useLoadAllProposals, useReloadActiveProposalsOnMinedBlock } from '../..
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from '../proposal-commons/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
-import DelegateVotesForm from './forms/delegate-votes-form';
-import UndelegateForm from './forms/undelegate/undelegate-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import { openProposalsSelector } from '../../logic/proposals/selectors';
-import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposals.module.scss';
-import classNames from 'classnames';
+import Delegation from './delegation';
 
 const Proposals = () => {
-  const { provider, delegation, proposals } = useChainData();
+  const { provider, proposals } = useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
   const api3Agent = useApi3AgentAddresses();
-
-  const [openDelegationModal, setOpenDelegationModal] = useState(false);
-  const [openUndelegateModal, setOpenUndelegateModal] = useState(false);
 
   const [openNewProposalModal, setOpenNewProposalModal] = useState(false);
 
@@ -53,39 +46,7 @@ const Proposals = () => {
   return (
     <Layout title="Governance">
       <div className={styles.proposalsHeader}>
-        {/* TODO: Should the buttons be disabled according to conditions in https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622114047033800?thread_ts=1622113523.033100&cid=C020RCCC3EJ */}
-        {/* There was another slack discussion where we said we want to avoid disabled buttons */}
-        {delegation?.delegate ? (
-          <div>
-            <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`}>
-              Delegated to: {abbrStr(delegation.delegate)}
-            </p>
-            <Button className={styles.proposalsLink} type="text" onClick={() => setOpenDelegationModal(true)}>
-              Update delegation
-            </Button>
-            <Button
-              className={classNames(styles.proposalsLink, globalStyles.mlXl)}
-              type="text"
-              onClick={() => setOpenUndelegateModal(true)}
-            >
-              Undelegate
-            </Button>
-            <Modal open={openUndelegateModal} onClose={() => setOpenUndelegateModal(false)}>
-              <UndelegateForm onClose={() => setOpenUndelegateModal(false)} />
-            </Modal>
-          </div>
-        ) : (
-          <div>
-            <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`}>Undelegated</p>
-            <Button className={styles.proposalsLink} type="text" onClick={() => setOpenDelegationModal(true)}>
-              Update delegation
-            </Button>
-          </div>
-        )}
-        <Modal open={openDelegationModal} onClose={() => setOpenDelegationModal(false)}>
-          <DelegateVotesForm onClose={() => setOpenDelegationModal(false)} />
-        </Modal>
-
+        <Delegation />
         <Treasury />
       </div>
 

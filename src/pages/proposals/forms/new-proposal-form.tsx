@@ -6,7 +6,7 @@ import Input from '../../../components/input/input';
 import Textarea from '../../../components/textarea/textarea';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import { NewProposalFormData } from '../../../logic/proposals/encoding';
-import styles from './forms.module.scss';
+import styles from './new-proposal-form.module.scss';
 
 interface Props {
   onClose: () => void;
