@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
+import classNames from 'classnames';
 import { initialChainData, getNetworkData, useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import { go } from '../../utils/generic';
@@ -11,7 +12,12 @@ import styles from './sign-in.module.scss';
 import globalStyles from '../../styles/global-styles.module.scss';
 import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscriptions } from '../../contracts';
 
-const ConnectedStatus = () => {
+type Props = {
+  dark?: boolean;
+  hideSignInStatus?: boolean;
+};
+
+const ConnectedStatus = ({ dark, hideSignInStatus }: Props) => {
   const { provider, setChainData, networkName, userAccount } = useChainData();
 
   const onDisconnect = () => {
@@ -25,27 +31,29 @@ const ConnectedStatus = () => {
   };
 
   return (
-    <Dropdown
-      menu={
-        <DropdownMenu>
-          <DropdownMenuItem onClick={onDisconnect}>Disconnect</DropdownMenuItem>
-        </DropdownMenu>
-      }
-      icon={<img src="/arrow-dropdown.svg" alt="dropdown icon" />}
-      alignIcon="start"
-    >
-      <div className={styles.connectedStatus}>
-        <img src="/connected.svg" alt="connected icon" />
-        <div className={styles.connectedStatusInfo}>
-          <p>{abbrStr(userAccount)}</p>
-          <p className={globalStyles.textXSmall}>Connected to {networkName}</p>
+    <div className={classNames({ [styles.hideSignInStatus]: hideSignInStatus })}>
+      <Dropdown
+        menu={
+          <DropdownMenu position={dark ? 'top' : 'bottom'}>
+            <DropdownMenuItem onClick={onDisconnect}>Disconnect</DropdownMenuItem>
+          </DropdownMenu>
+        }
+        icon={<img src={dark ? '/arrow-dropdown-dark.svg' : '/arrow-dropdown.svg'} alt="dropdown icon" />}
+        alignIcon="start"
+      >
+        <div className={styles.connectedStatus}>
+          <img src={`/connected${dark ? '-dark' : ''}.svg`} alt="connected icon" />
+          <div className={classNames(styles.connectedStatusInfo, { [styles.dark]: dark })}>
+            <p>{abbrStr(userAccount)}</p>
+            <p className={globalStyles.textXSmall}>Connected to {networkName}</p>
+          </div>
         </div>
-      </div>
-    </Dropdown>
+      </Dropdown>
+    </div>
   );
 };
 
-const SignIn = () => {
+const SignIn = ({ dark, hideSignInStatus }: Props) => {
   const { setChainData, provider, contracts, networkName } = useChainData();
   useProviderSubscriptions(provider);
 
@@ -93,17 +101,17 @@ const SignIn = () => {
   return (
     <>
       {!provider && <Button onClick={onWalletConnect}>Connect Wallet</Button>}
-      {provider && <ConnectedStatus />}
+      {provider && <ConnectedStatus dark={dark} hideSignInStatus={hideSignInStatus} />}
       <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
         <div className={globalStyles.textCenter}>
           <h5>Unsupported chain!</h5>
 
           <p className={globalStyles.mtXl}>Supported networks are: {supportedNetworks}</p>
-          <p className={globalStyles.mtXl}>Current network: <b>{networkName}</b></p>
-
           <p className={globalStyles.mtXl}>
-            Please use your wallet and connect to one of the supported networks
+            Current network: <b>{networkName}</b>
           </p>
+
+          <p className={globalStyles.mtXl}>Please use your wallet and connect to one of the supported networks</p>
         </div>
       </GenericModal>
     </>

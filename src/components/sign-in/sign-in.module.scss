@@ -8,3 +8,13 @@
 .connectedStatusInfo {
   margin: 0 $space-md;
 }
+
+.dark {
+  color: $black-color;
+}
+
+.hideSignInStatus {
+  @media (max-width: $max-sm) {
+    display: none;
+  }
+}

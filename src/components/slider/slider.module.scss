@@ -6,7 +6,6 @@
   // It styles slider-wrapper so that it does not pass through the arrows
   & > div > div > div {
     width: calc(100% - 100px) !important;
-    padding: 0 50px;
   }
 }
 
