@@ -45,6 +45,7 @@ export interface Proposal {
   deadline: Date;
   startDateRaw: BigNumber;
   type: ProposalType;
+  script: string;
 }
 
 export interface Delegation {

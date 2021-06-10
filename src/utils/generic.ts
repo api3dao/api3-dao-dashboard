@@ -73,3 +73,8 @@ export const getSeconds = (distance: number) => {
     .toString()
     .padStart(2, '0');
 };
+
+export const isNumber = (value: unknown) => {
+  const [error] = goSync(() => BigNumber.from(value));
+  return !error;
+};

@@ -9,20 +9,31 @@ type Props = {
   value: string;
   size?: 'normal' | 'large';
   disabled?: boolean;
-  type?: 'text' | 'autosize-text' | 'number';
+  type?: 'text' | 'number';
+  autosize?: boolean;
   placeholder?: string;
   id?: string;
   block?: boolean;
 };
 
-const Input = ({ onChange, value, disabled, size = 'normal', type = 'text', placeholder, id, block }: Props) => (
+const Input = ({
+  onChange,
+  value,
+  disabled,
+  size = 'normal',
+  type = 'text',
+  placeholder,
+  id,
+  block,
+  autosize,
+}: Props) => (
   <div
     className={classNames(styles.inputWrapper, {
       [styles.disabled]: disabled,
       [styles.block]: block,
     })}
   >
-    {type === 'text' && (
+    {type === 'text' && !autosize && (
       <div
         className={classNames(styles.input, {
           [styles.large]: size === 'large',
@@ -32,7 +43,7 @@ const Input = ({ onChange, value, disabled, size = 'normal', type = 'text', plac
         <input id={id} value={value} onChange={onChange} placeholder={placeholder} autoFocus />
       </div>
     )}
-    {type === 'autosize-text' && (
+    {type === 'text' && autosize && (
       <AutosizeInput
         className={classNames(styles.input, styles.textCenter, {
           [styles.large]: size === 'large',
@@ -45,7 +56,7 @@ const Input = ({ onChange, value, disabled, size = 'normal', type = 'text', plac
         placeholderIsMinWidth
       />
     )}
-    {type === 'number' && (
+    {type === 'number' && autosize && (
       <NumberFormat
         className={classNames(styles.input, styles.textCenter, {
           [styles.large]: size === 'large',
@@ -54,6 +65,26 @@ const Input = ({ onChange, value, disabled, size = 'normal', type = 'text', plac
         value={value}
         onChange={onChange}
         customInput={AutosizeInput}
+        decimalScale={18}
+        autoFocus
+      />
+    )}
+    {type === 'number' && !autosize && (
+      <NumberFormat
+        value={value}
+        onChange={onChange}
+        customInput={(props) => {
+          return (
+            <div
+              className={classNames(styles.input, {
+                [styles.large]: size === 'large',
+                [styles.normal]: size === 'normal',
+              })}
+            >
+              <input {...props} />
+            </div>
+          );
+        }}
         decimalScale={18}
         autoFocus
       />

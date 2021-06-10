@@ -29,7 +29,8 @@ const DelegateVotesForm = (props: Props) => {
       <div className={globalStyles.textCenter}>
         <p className={styles.delegateVotesModalSubtitle}>ADDRESS</p>
         <Input
-          type="autosize-text"
+          type="text"
+          autosize
           placeholder="Enter address here"
           value={delegationAddress}
           onChange={(e) => {

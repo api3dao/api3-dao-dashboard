@@ -9,7 +9,7 @@ import Button from '../../../components/button/button';
 import Tag from '../../../components/tag/tag';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import { useApi3Voting } from '../../../contracts';
-import { decodeProposalTypeAndId } from '../../../logic/proposals/encoding';
+import { decodeProposalTypeAndId, decodeEvmScript } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useLoadAllProposals } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
@@ -44,6 +44,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
   const voting = useApi3Voting();
 
   const voteSliderData = voteSliderSelector(proposal);
+  const evmScriptData = decodeEvmScript(proposal.script, proposal.metadata);
 
   // NOTE: This should never happen, loading component in proposal details page should
   // make sure we are connected to valid chain and have valid proposal loaded
@@ -93,7 +94,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
             </p>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target contract address</p>
-              <p className={globalStyles.secondaryColor}>{proposal.creator}</p>
+              <p className={globalStyles.secondaryColor}>{evmScriptData.targetAddress}</p>
             </div>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target contract signature</p>
@@ -101,13 +102,13 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
             </div>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Value</p>
-              {/* TODO: Add value */}
-              <p className={globalStyles.secondaryColor}>Value</p>
+              <p className={globalStyles.secondaryColor}>{evmScriptData.value}</p>
             </div>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Parameters</p>
-              {/* TODO: Add parameters value */}
-              <p className={globalStyles.secondaryColor}>Parameters</p>
+              <p className={classNames(globalStyles.secondaryColor, styles.multiline)}>
+                {JSON.stringify(evmScriptData.parameters, null, 2)}
+              </p>
             </div>
           </div>
         }

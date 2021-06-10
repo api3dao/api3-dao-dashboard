@@ -78,7 +78,7 @@ const TokenAmountForm = (props: Props) => {
       {showTokenInput && (
         <div className={globalStyles.textCenter}>
           <p className={styles.tokenAmountFormToken}>TOKEN</p>
-          <Input type="number" value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
+          <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
           {error && <p className={styles.tokenAmountFormError}>{error}</p>}
           {helperText}
         </div>
