@@ -46,10 +46,6 @@
   margin-right: $space-xxs;
 }
 
-.timerNumber {
-  color: $primary-color;
-}
-
 .timerWrap {
   display: flex;
   align-items: center;
@@ -64,6 +60,9 @@
 }
 
 .timerColon {
-  color: $primary-color;
   margin: 0 $space-xxs;
+}
+
+.grayOut {
+  color: rgba(255, 255, 255, 0.4);
 }

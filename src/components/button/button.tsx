@@ -5,17 +5,26 @@ import styles from './button.module.scss';
 type Props = {
   children: ReactNode;
   className?: string;
+  buttonClassName?: string;
   type?: 'primary' | 'secondary' | 'link' | 'text';
   size?: 'normal' | 'large';
   disabled?: boolean;
   onClick?: () => void;
 };
 
-const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick, className }: Props) => {
+const Button = ({
+  children,
+  disabled,
+  type = 'primary',
+  size = 'normal',
+  onClick,
+  className,
+  buttonClassName,
+}: Props) => {
   return (
     <div className={classNames(styles.buttonWrapper, { [styles.disabled]: disabled }, className)}>
       <button
-        className={classNames(styles.button, {
+        className={classNames(buttonClassName, styles.button, {
           [styles.primary]: type === 'primary',
           [styles.secondary]: type === 'secondary',
           [styles.link]: type === 'link',
@@ -27,7 +36,7 @@ const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick
       >
         {children}
       </button>
-      {type !== 'link' && (
+      {['primary', 'secondary'].includes(type) && (
         <div
           className={classNames(styles.buttonUnderline, {
             [styles.primary]: type === 'primary',

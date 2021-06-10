@@ -6,21 +6,22 @@ import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
 import { Modal } from '../../components/modal/modal';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
-import Treasury from './treasury/treasury';
+import Treasury from '../proposal-commons/treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useLoadAllProposals, useReloadActiveProposalsOnMinedBlock } from '../../logic/proposals/hooks';
 import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
-import ProposalList from './proposal-list/proposal-list';
+import ProposalList from '../proposal-commons/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import DelegateVotesForm from './forms/delegate-votes-form';
 import UndelegateForm from './forms/undelegate/undelegate-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
+import { openProposalsSelector } from '../../logic/proposals/selectors';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposals.module.scss';
 import classNames from 'classnames';
 
 const Proposals = () => {
-  const { provider, delegation } = useChainData();
+  const { provider, delegation, proposals } = useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
   const api3Agent = useApi3AgentAddresses();
@@ -33,6 +34,8 @@ const Proposals = () => {
   useLoadAllProposals();
   useReloadActiveProposalsOnMinedBlock();
   useTreasuryAndDelegation();
+
+  const sortedProposals = openProposalsSelector(proposals);
 
   const onCreateProposal = async (formData: NewProposalFormData) => {
     if (!api3Token || !api3Voting || !api3Agent) return null;
@@ -95,7 +98,7 @@ const Proposals = () => {
             </Button>
           </Header>
         }
-        content={<ProposalList />}
+        content={<ProposalList proposals={sortedProposals} />}
       />
       <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)} size="large">
         <NewProposalForm

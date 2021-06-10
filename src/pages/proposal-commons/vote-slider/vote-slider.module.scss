@@ -1,4 +1,4 @@
-@import '../../styles/variables.module.scss';
+@import '../../../styles/variables.module.scss';
 
 $border-radius: 100px;
 
@@ -55,6 +55,10 @@ $border-radius: 100px;
   margin-left: auto;
 }
 
+.grayOut {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
 .voteInfo {
   display: flex;
   justify-content: space-between;
@@ -72,6 +76,23 @@ $border-radius: 100px;
   &.passing {
     color: $green-color;
   }
+}
+
+.votedAgainst {
+  color: $pink-color;
+}
+
+.votedFor {
+  color: $green-color;
+}
+
+.large {
+  margin-top: $space-xxl;
+}
+
+.icon {
+  margin: 0 $space-sm;
+  height: 25px;
 }
 
 .voteIcon {

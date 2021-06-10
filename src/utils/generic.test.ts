@@ -35,15 +35,15 @@ test('getDays', () => {
   expect(getDays(twelveDays)).toBe('12');
 
   const fiveDays = 1000 * 60 * 60 * 24 * 5.672839;
-  expect(getDays(fiveDays)).toBe('5');
+  expect(getDays(fiveDays)).toBe('05');
 });
 
 test('getHours', () => {
   const sixHours = 1000 * 60 * 60 * 6;
-  expect(getHours(sixHours)).toBe('6');
+  expect(getHours(sixHours)).toBe('06');
 
   const fiveHours = 1000 * 60 * 60 * 5.672839;
-  expect(getHours(fiveHours)).toBe('5');
+  expect(getHours(fiveHours)).toBe('05');
 });
 
 test('getMinutes', () => {
