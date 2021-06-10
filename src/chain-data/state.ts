@@ -22,6 +22,8 @@ export interface DashboardState {
 }
 
 export interface ProposalMetadata {
+  version: string;
+  title: string;
   targetSignature: string;
   description: string;
 }
