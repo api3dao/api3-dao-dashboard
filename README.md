@@ -85,13 +85,9 @@ We use [Fleek](https://fleek.co/) to host the application on IPFS. The hosting w
 - Every PR against `main` branch will be deployed as github action and you can find the IPFS hash in the "fleek deploy
   check" details.
 - The current version of app in `main` branch will be deployed as staging on the following URL:
-  https://blue-field-6902.on.fleek.co/. The app will be redeployed after every merged request automatically.
+  https://api3-dao-dashboard-staging.on.fleek.co/. The app will be redeployed after every merged request automatically.
 - Every push to `production` branch will trigger a production deploy. The app can be found on this URL:
-  https://late-butterfly-0267.on.fleek.co/
-
-> There is an [issue](https://github.com/api3dao/api3-dao-dashboard/issues/2) to setup ENS name for the production app
-> to avoid the strange name. Also, to keep fleek usage for free, only [@siegrift](https://github.com/Siegrift) has the
-> access rights to deployment dashboard.
+  api3-dao-dashboard.on.fleek.co/
 
 Apart from that, we are using [environment
 variables](https://create-react-app.dev/docs/adding-custom-environment-variables/), specifically `REACT_APP_NODE_ENV` to
