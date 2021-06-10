@@ -9,12 +9,21 @@
   border-top: 1px solid rgba(124, 227, 203, 0.4);
   border-bottom: 1px solid rgba(124, 227, 203, 0.4);
   margin-bottom: 2 * $space-xl;
+
+  @media (max-width: $max-sm) {
+    flex-direction: column;
+  }
 }
 
 .unstakeBannerWrap {
   display: flex;
   align-items: center;
   margin-right: $space-lg;
+
+  @media (max-width: $max-sm) {
+    margin-right: 0;
+    margin-bottom: $space-md;
+  }
 
   & > img {
     margin-right: $space-lg;

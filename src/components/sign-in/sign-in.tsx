@@ -14,10 +14,10 @@ import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscripti
 
 type Props = {
   dark?: boolean;
-  hideSignInStatus?: boolean;
+  position: 'mobileMenu' | 'navigation';
 };
 
-const ConnectedStatus = ({ dark, hideSignInStatus }: Props) => {
+const ConnectedStatus = ({ dark, position }: Props) => {
   const { provider, setChainData, networkName, userAccount } = useChainData();
 
   const onDisconnect = () => {
@@ -30,30 +30,52 @@ const ConnectedStatus = ({ dark, hideSignInStatus }: Props) => {
     setChainData('User disconnected', initialChainData);
   };
 
+  const connectedContent = (
+    <div className={styles.connectedStatus}>
+      <img src={`/connected${dark ? '-dark' : ''}.svg`} alt="connected icon" />
+      <div className={classNames(styles.connectedStatusInfo, { [styles.dark]: dark })}>
+        <p>{abbrStr(userAccount)}</p>
+        <p className={globalStyles.textXSmall}>Connected to {networkName}</p>
+      </div>
+    </div>
+  );
+
   return (
-    <div className={classNames({ [styles.hideSignInStatus]: hideSignInStatus })}>
-      <Dropdown
-        menu={
-          <DropdownMenu position={dark ? 'top' : 'bottom'}>
-            <DropdownMenuItem onClick={onDisconnect}>Disconnect</DropdownMenuItem>
-          </DropdownMenu>
-        }
-        icon={<img src={dark ? '/arrow-dropdown-dark.svg' : '/arrow-dropdown.svg'} alt="dropdown icon" />}
-        alignIcon="start"
-      >
-        <div className={styles.connectedStatus}>
-          <img src={`/connected${dark ? '-dark' : ''}.svg`} alt="connected icon" />
-          <div className={classNames(styles.connectedStatusInfo, { [styles.dark]: dark })}>
-            <p>{abbrStr(userAccount)}</p>
-            <p className={globalStyles.textXSmall}>Connected to {networkName}</p>
-          </div>
-        </div>
-      </Dropdown>
+    <div
+      className={classNames({
+        [styles.hideSignInStatus]: position === 'navigation',
+        [styles.mobileMenuConnectedStatus]: position === 'mobileMenu',
+      })}
+    >
+      {position === 'mobileMenu' ? (
+        <>
+          {connectedContent}
+          <Button
+            type="secondary"
+            onClick={onDisconnect}
+            className={classNames({ [styles.mobileMenuButton]: position === 'mobileMenu' })}
+          >
+            Disconnect Wallet
+          </Button>
+        </>
+      ) : (
+        <Dropdown
+          menu={
+            <DropdownMenu position={dark ? 'top' : 'bottom'}>
+              <DropdownMenuItem onClick={onDisconnect}>Disconnect Wallet</DropdownMenuItem>
+            </DropdownMenu>
+          }
+          icon={<img src={dark ? '/arrow-dropdown-dark.svg' : '/arrow-dropdown.svg'} alt="dropdown icon" />}
+          alignIcon="start"
+        >
+          {connectedContent}
+        </Dropdown>
+      )}
     </div>
   );
 };
 
-const SignIn = ({ dark, hideSignInStatus }: Props) => {
+const SignIn = ({ dark, position }: Props) => {
   const { setChainData, provider, contracts, networkName } = useChainData();
   useProviderSubscriptions(provider);
 
@@ -100,8 +122,16 @@ const SignIn = ({ dark, hideSignInStatus }: Props) => {
 
   return (
     <>
-      {!provider && <Button onClick={onWalletConnect}>Connect Wallet</Button>}
-      {provider && <ConnectedStatus dark={dark} hideSignInStatus={hideSignInStatus} />}
+      {!provider && (
+        <Button
+          type={dark ? 'secondary' : 'primary'}
+          onClick={onWalletConnect}
+          className={classNames({ [styles.mobileMenuButton]: dark })}
+        >
+          Connect Wallet
+        </Button>
+      )}
+      {provider && <ConnectedStatus dark={dark} position={position} />}
       <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
         <div className={globalStyles.textCenter}>
           <h5>Unsupported chain!</h5>

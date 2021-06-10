@@ -58,32 +58,34 @@ const MobileMenu = () => {
           <img src="/api3-logo-dark.svg" alt="dark logo" />
           <img className={styles.menuIcon} onClick={() => setOpen(false)} src="/menu-close.svg" alt="close icon" />
         </div>
-        <div className={styles.mobileMenuContent}>
-          <NavLink
-            activeClassName={styles.menuActiveItem}
-            to="/dashboard"
-            isActive={() => ['/', '/dashboard', '/dashboard/'].includes(pathname)}
-          >
-            <div className={styles.menuMobileItem}>
-              <DashboardIcon />
-              <p className={styles.menuMobileItemText}>Staking</p>
-            </div>
-          </NavLink>
-          <NavLink activeClassName={styles.menuActiveItem} to="/proposals">
-            <div className={styles.menuMobileItem}>
-              <ProposalsIcon />
-              <p className={styles.menuMobileItemText}>Governance</p>
-            </div>
-          </NavLink>
-          <NavLink activeClassName={styles.menuActiveItem} to="/history">
-            <div className={styles.menuMobileItem}>
-              <HistoryIcon />
-              <p className={styles.menuMobileItemText}>History</p>
-            </div>
-          </NavLink>
-        </div>
-        <div className={classNames(styles.mobileMenuFooter, { [styles.borderTop]: provider })}>
-          <SignIn dark />
+        <div className={styles.mobileMenuScrollWrap}>
+          <div className={styles.mobileMenuContent}>
+            <NavLink
+              activeClassName={styles.menuActiveItem}
+              to="/dashboard"
+              isActive={() => ['/', '/dashboard', '/dashboard/'].includes(pathname)}
+            >
+              <div className={styles.menuMobileItem}>
+                <DashboardIcon />
+                <p className={styles.menuMobileItemText}>Staking</p>
+              </div>
+            </NavLink>
+            <NavLink activeClassName={styles.menuActiveItem} to="/proposals">
+              <div className={styles.menuMobileItem}>
+                <ProposalsIcon />
+                <p className={styles.menuMobileItemText}>Governance</p>
+              </div>
+            </NavLink>
+            <NavLink activeClassName={styles.menuActiveItem} to="/history">
+              <div className={styles.menuMobileItem}>
+                <HistoryIcon />
+                <p className={styles.menuMobileItemText}>History</p>
+              </div>
+            </NavLink>
+          </div>
+          <div className={classNames(styles.mobileMenuFooter, { [styles.borderTop]: provider })}>
+            <SignIn position="mobileMenu" dark />
+          </div>
         </div>
       </div>
     </div>

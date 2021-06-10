@@ -3,6 +3,10 @@
 .header {
   position: relative;
   margin-bottom: 2.5 * $space-xxl;
+
+  @media (max-width: $max-md) {
+    margin-bottom: $space-xxxl;
+  }
 }
 
 .headerLargeTitle {

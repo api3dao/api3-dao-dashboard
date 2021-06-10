@@ -9,7 +9,7 @@ const Navigation = () => {
         <img src="/api3-logo-white.svg" alt="logo" />
         <Menu />
       </div>
-      <SignIn hideSignInStatus />
+      <SignIn position="navigation" />
     </div>
   );
 };
