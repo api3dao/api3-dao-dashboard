@@ -47,7 +47,7 @@ const NewProposalForm = (props: Props) => {
     let foundErrors = false;
 
     if (!utils.isAddress(targetAddress)) {
-      setTargetAddressError('Please specify valid address');
+      setTargetAddressError('Please specify a valid account address');
       foundErrors = true;
     }
 
@@ -146,7 +146,7 @@ const NewProposalForm = (props: Props) => {
               parameters,
             };
 
-            if (validateForm(formData)) {
+            if (!validateForm(formData)) {
               onConfirm(formData);
             }
           }}

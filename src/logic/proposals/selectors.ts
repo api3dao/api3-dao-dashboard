@@ -83,7 +83,7 @@ export const delegationCooldownOverSelector = (delegation: Delegation | null) =>
   // Make the buttons disabled until delegation is loaded
   if (!delegation) return false;
 
-  const lastAction = max([delegation.mostRecentUndelegationTimestam, delegation.mostRecentUndelegationTimestam]);
+  const lastAction = max([delegation.mostRecentDelegationTimestamp, delegation.mostRecentUndelegationTimestamp]);
   const now = new Date();
 
   return isAfter(now, addSeconds(lastAction, EPOCH_LENGTH));

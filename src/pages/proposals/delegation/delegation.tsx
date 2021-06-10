@@ -21,7 +21,6 @@ const Delegation = () => {
 
   const [openDelegationModal, setOpenDelegationModal] = useState(false);
   const [openChooseDelegateActionModal, setOpenChooseDelegateActionModal] = useState(false);
-  const closeChooseDelegateActionModal = () => setOpenChooseDelegateActionModal(false);
 
   const delegationCooldownOver = delegationCooldownOverSelector(delegation);
   const canDelegate = delegationCooldownOver && dashboardState?.userStake.gt(0);
@@ -36,7 +35,7 @@ const Delegation = () => {
           <Button className={styles.proposalsLink} type="text" onClick={() => setOpenChooseDelegateActionModal(true)}>
             Update delegation
           </Button>
-          <Modal open={openChooseDelegateActionModal} onClose={closeChooseDelegateActionModal}>
+          <Modal open={openChooseDelegateActionModal} onClose={() => setOpenChooseDelegateActionModal(false)}>
             <ChooseDelegateAction
               onUndelegate={async () => {
                 if (!api3Pool) return;
@@ -47,10 +46,10 @@ const Delegation = () => {
                   return;
                 }
 
-                closeChooseDelegateActionModal();
+                setOpenChooseDelegateActionModal(false);
               }}
               onUpdateDelegation={() => {
-                closeChooseDelegateActionModal();
+                setOpenChooseDelegateActionModal(false);
                 setOpenDelegationModal(true);
               }}
             />

@@ -3,7 +3,7 @@ import { ProposalMetadata, ProposalType } from '../../chain-data';
 import { Api3Agent } from '../../contracts';
 
 /**
- * NOTE: Aragon contracts are flexible and as a it makes it a bit harder to work with it's contracts. We have created a
+ * NOTE: Aragon contracts are flexible but this makes it a bit harder to work with it's contracts. We have created a
  * simple encoding/decoding scheme for the API3 proposals. The implementation of these utilities is inspired by
  * https://github.com/bbenligiray/proposal-test.
  */
@@ -94,7 +94,7 @@ export const decodeEvmScript = (script: string, metadata: ProposalMetadata): Dec
     targetAddress: targetContractAddress,
     value: value.toNumber(),
     rawParameters,
-    parameters: stringifyBigNumbersRecursively([...parameters]),
+    parameters: stringifyBigNumbersRecursively(rawParameters),
   };
 };
 

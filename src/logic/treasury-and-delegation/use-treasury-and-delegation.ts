@@ -36,7 +36,7 @@ export const useTreasuryAndDelegation = () => {
           delegate: isZeroAddress(data.delegate) ? null : data.delegate,
           mostRecentDelegationTimestamp: blockTimestampToDate(data.mostRecentDelegationTimestamp),
           mostRecentProposalTimestamp: blockTimestampToDate(data.mostRecentProposalTimestamp),
-          mostRecentUndelegationTimestam: blockTimestampToDate(data.mostRecentUndelegationTimestamp),
+          mostRecentUndelegationTimestamp: blockTimestampToDate(data.mostRecentUndelegationTimestamp),
           mostRecentVoteTimestamp: blockTimestampToDate(data.mostRecentVoteTimestamp),
         },
         treasury,

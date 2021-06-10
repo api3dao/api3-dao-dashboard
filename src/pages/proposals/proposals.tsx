@@ -33,12 +33,14 @@ const Proposals = () => {
     if (!api3Token || !api3Voting || !api3Agent) return null;
 
     // NOTE: For some reason only this 'ugly' version is available on the contract
-    api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](
+    await api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](
       encodeEvmScript(formData, api3Agent),
       encodeMetadata(formData),
       true,
       true
     );
+
+    setOpenNewProposalModal(false);
   };
 
   return (
@@ -62,10 +64,7 @@ const Proposals = () => {
       <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)} size="large">
         <NewProposalForm
           onClose={() => setOpenNewProposalModal(false)}
-          onConfirm={(formData) => {
-            onCreateProposal(formData);
-            setOpenNewProposalModal(false);
-          }}
+          onConfirm={onCreateProposal}
           api3Agent={api3Agent!}
         />
       </Modal>

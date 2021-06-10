@@ -22,6 +22,44 @@ const DelegateVotesForm = (props: Props) => {
   const [delegationAddress, setDelegationAddress] = useState('');
   const api3Pool = useApi3Pool();
 
+  const onDelegate = async () => {
+    if (!api3Pool) return;
+
+    if (!utils.isAddress(delegationAddress) || delegationAddress === constants.AddressZero) {
+      setError(messages.INVALID_DELEGATE_ADDRESS);
+      return;
+    }
+
+    if (delegationAddress === userAccount) {
+      setError(messages.DELEGATE_IS_YOURSELF);
+      return;
+    }
+
+    const goDelegate = await go(api3Pool.getUserDelegate(delegationAddress));
+    if (!isGoSuccess(goDelegate)) {
+      notifications.error(messages.UNABLE_TO_LOAD_DELEGATE);
+      return;
+    }
+
+    const targetDelegate = goDelegate[GO_RESULT_INDEX];
+    if (targetDelegate !== constants.AddressZero) {
+      setError(messages.REDELEGATION_IS_FORBIDDEN(targetDelegate));
+      return;
+    }
+
+    const [error] = await go(api3Pool.delegateVotingPower(delegationAddress));
+    if (error) {
+      if (isUserRejection(error)) {
+        notifications.info(messages.TX_GENERIC_REJECTED);
+        return;
+      }
+
+      notifications.error(messages.TX_GENERIC_ERROR);
+    }
+
+    onClose();
+  };
+
   return (
     <>
       <ModalHeader>Delegate my votes to:</ModalHeader>
@@ -42,42 +80,7 @@ const DelegateVotesForm = (props: Props) => {
       </div>
 
       <ModalFooter>
-        <Button
-          type="secondary"
-          size="large"
-          onClick={async () => {
-            if (!api3Pool) return;
-
-            if (!utils.isAddress(delegationAddress) || delegationAddress === constants.AddressZero) {
-              setError(messages.INVALID_DELEGATE_ADDRESS);
-            } else if (delegationAddress === userAccount) {
-              setError(messages.DELEGATE_IS_YOURSELF);
-            } else {
-              const goDelegate = await go(api3Pool.getUserDelegate(delegationAddress));
-              if (!isGoSuccess(goDelegate)) {
-                notifications.error(messages.UNABLE_TO_LOAD_DELEGATE);
-                return;
-              }
-
-              const targetDelegate = goDelegate[GO_RESULT_INDEX];
-              if (targetDelegate !== constants.AddressZero) {
-                setError(messages.REDELEGATION_IS_FORBIDDEN(targetDelegate));
-              } else {
-                const [error] = await go(api3Pool.delegateVotingPower(delegationAddress));
-                if (error) {
-                  if (isUserRejection(error)) {
-                    notifications.info(messages.TX_GENERIC_REJECTED);
-                    return;
-                  }
-
-                  notifications.error(messages.TX_GENERIC_ERROR);
-                }
-
-                onClose();
-              }
-            }
-          }}
-        >
+        <Button type="secondary" size="large" onClick={onDelegate}>
           Delegate
         </Button>
       </ModalFooter>

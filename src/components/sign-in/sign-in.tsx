@@ -108,7 +108,7 @@ const SignIn = ({ dark, position }: Props) => {
 
     const [requestAccountsError] = await go(web3ModalProvider.request({ method: 'eth_requestAccounts' }));
     // For example, user wants to connect via metamask, but declines connecting his account. We don't want to show toast
-    // message in this cas either.
+    // message in this case either.
     if (requestAccountsError) return;
 
     // https://github.com/ethers-io/ethers.js/discussions/1480

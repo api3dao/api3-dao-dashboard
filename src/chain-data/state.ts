@@ -53,7 +53,7 @@ export interface Delegation {
   mostRecentProposalTimestamp: Date;
   mostRecentVoteTimestamp: Date;
   mostRecentDelegationTimestamp: Date;
-  mostRecentUndelegationTimestam: Date;
+  mostRecentUndelegationTimestamp: Date;
 }
 
 export interface Treasury {
