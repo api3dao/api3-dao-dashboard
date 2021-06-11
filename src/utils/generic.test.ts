@@ -1,4 +1,4 @@
-import { getDays, getHours, getMinutes, getSeconds, go, goSync, removeKey } from './generic';
+import { getDays, getHours, getMinutes, getSeconds, go, goSync } from './generic';
 
 describe('goSync', () => {
   it('resolves successful synchronous functions', () => {
