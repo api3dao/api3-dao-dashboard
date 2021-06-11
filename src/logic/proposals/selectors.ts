@@ -1,5 +1,6 @@
-import { Proposal, Proposals, ProposalType } from '../../chain-data';
-import { computePercentage } from '../../contracts';
+import { Delegation, Proposal, Proposals, ProposalType } from '../../chain-data';
+import { computePercentage, EPOCH_LENGTH } from '../../contracts';
+import { max, addSeconds, isAfter } from 'date-fns';
 
 export type ProposalStatus = 'Passing' | 'Failing' | 'Executed' | 'Execute' | 'Rejected';
 export const voteSliderSelector = (proposal: Proposal) => {
@@ -76,4 +77,14 @@ export const historyProposalsSelector = (proposals: Proposals | null, type: Opti
   }
 
   return allProposals.filter((p) => !p.open).sort((p1, p2) => (p1.startDateRaw.lt(p2.startDateRaw) ? -1 : 1));
+};
+
+export const delegationCooldownOverSelector = (delegation: Delegation | null) => {
+  // Make the buttons disabled until delegation is loaded
+  if (!delegation) return false;
+
+  const lastAction = max([delegation.mostRecentDelegationTimestamp, delegation.mostRecentUndelegationTimestamp]);
+  const now = new Date();
+
+  return isAfter(now, addSeconds(lastAction, EPOCH_LENGTH));
 };

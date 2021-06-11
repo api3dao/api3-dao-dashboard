@@ -45,6 +45,7 @@ export interface Proposal {
   deadline: Date;
   startDateRaw: BigNumber;
   type: ProposalType;
+  script: string;
 }
 
 export interface Delegation {
@@ -52,7 +53,7 @@ export interface Delegation {
   mostRecentProposalTimestamp: Date;
   mostRecentVoteTimestamp: Date;
   mostRecentDelegationTimestamp: Date;
-  mostRecentUndelegationTimestam: Date;
+  mostRecentUndelegationTimestamp: Date;
 }
 
 export interface Treasury {

@@ -7,7 +7,6 @@ const ChainDataContextProvider: React.FC = ({ children }) => {
   const [chainData, setChainData] = useState(initialChainData);
 
   const loggableSetChainData = useMemo(() => {
-    // TODO: require an argument to simplify debugging and who is the caller of the function
     const setter: SettableChainData['setChainData'] = (reason, dataOrCallback) => {
       setChainData((oldChainData) => {
         const newChainData = typeof dataOrCallback === 'function' ? dataOrCallback(oldChainData) : dataOrCallback;

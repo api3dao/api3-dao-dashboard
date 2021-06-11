@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import ChainDataContextProvider from './chain-data';
 import Dashboard from './pages/dashboard';
 import Proposals from './pages/proposals';
-import ProposalDetails from './pages/proposal-details';
+import ProposalDetails from './pages/proposal-commons/proposal-details';
 import HistoryDetails from './pages/history-details';
 import History from './pages/history';
 

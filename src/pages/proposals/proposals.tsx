@@ -1,7 +1,4 @@
-import { ethers } from 'ethers';
 import { useState } from 'react';
-import { useChainData } from '../../chain-data';
-import { abbrStr } from '../../chain-data/helpers';
 import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
 import { Modal } from '../../components/modal/modal';
@@ -9,25 +6,20 @@ import BorderedBox, { Header } from '../../components/bordered-box/bordered-box'
 import Treasury from '../proposal-commons/treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useLoadAllProposals, useReloadActiveProposalsOnMinedBlock } from '../../logic/proposals/hooks';
-import { buildEVMScript, buildExtendedMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
+import { encodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from '../proposal-commons/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
-import DelegateVotesForm from './forms/delegate-votes-form';
-import UndelegateForm from './forms/undelegate/undelegate-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import { openProposalsSelector } from '../../logic/proposals/selectors';
-import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposals.module.scss';
-import classNames from 'classnames';
+import Delegation from './delegation';
+import { useChainData } from '../../chain-data';
 
 const Proposals = () => {
-  const { provider, delegation, proposals } = useChainData();
+  const { proposals } = useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
   const api3Agent = useApi3AgentAddresses();
-
-  const [openDelegationModal, setOpenDelegationModal] = useState(false);
-  const [openUndelegateModal, setOpenUndelegateModal] = useState(false);
 
   const [openNewProposalModal, setOpenNewProposalModal] = useState(false);
 
@@ -40,52 +32,21 @@ const Proposals = () => {
   const onCreateProposal = async (formData: NewProposalFormData) => {
     if (!api3Token || !api3Voting || !api3Agent) return null;
 
-    // TODO: why is newVote not picked up when initialized from artifact ABI?
-    const votingAbi = [
-      'function getVote(uint256 _voteId) public view returns (bool open, bool executed, uint64 startDate, uint64 snapshotBlock, uint64 supportRequired, uint64 minAcceptQuorum, uint256 yea, uint256 nay, uint256 votingPower, bytes script)',
-      'function newVote(bytes _executionScript, string _metadata, bool _castVote, bool _executesIfDecided) external returns (uint256 voteId)',
-      'event StartVote(uint256 indexed voteId, address indexed creator, string metadata)',
-    ];
-    const votingApp = new ethers.Contract(api3Voting[formData.type].address, votingAbi, provider?.getSigner());
-    await votingApp.newVote(buildEVMScript(formData, api3Agent), buildExtendedMetadata(formData), true, true);
+    // NOTE: For some reason only this 'ugly' version is available on the contract
+    await api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](
+      encodeEvmScript(formData, api3Agent),
+      encodeMetadata(formData),
+      true,
+      true
+    );
+
+    setOpenNewProposalModal(false);
   };
 
   return (
     <Layout title="Governance">
       <div className={styles.proposalsHeader}>
-        {/* TODO: Should the buttons be disabled according to conditions in https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622114047033800?thread_ts=1622113523.033100&cid=C020RCCC3EJ */}
-        {/* There was another slack discussion where we said we want to avoid disabled buttons */}
-        {delegation?.delegate ? (
-          <div>
-            <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`}>
-              Delegated to: {abbrStr(delegation.delegate)}
-            </p>
-            <Button className={styles.proposalsLink} type="text" onClick={() => setOpenDelegationModal(true)}>
-              Update delegation
-            </Button>
-            <Button
-              className={classNames(styles.proposalsLink, globalStyles.mlXl)}
-              type="text"
-              onClick={() => setOpenUndelegateModal(true)}
-            >
-              Undelegate
-            </Button>
-            <Modal open={openUndelegateModal} onClose={() => setOpenUndelegateModal(false)}>
-              <UndelegateForm onClose={() => setOpenUndelegateModal(false)} />
-            </Modal>
-          </div>
-        ) : (
-          <div>
-            <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`}>Undelegated</p>
-            <Button className={styles.proposalsLink} type="text" onClick={() => setOpenDelegationModal(true)}>
-              Update delegation
-            </Button>
-          </div>
-        )}
-        <Modal open={openDelegationModal} onClose={() => setOpenDelegationModal(false)}>
-          <DelegateVotesForm onClose={() => setOpenDelegationModal(false)} />
-        </Modal>
-
+        <Delegation />
         <Treasury />
       </div>
 
@@ -93,7 +54,7 @@ const Proposals = () => {
         header={
           <Header>
             <h5>Proposals</h5>
-            <Button onClick={() => setOpenNewProposalModal(true)} size="large">
+            <Button onClick={() => setOpenNewProposalModal(true)} size="large" disabled={!api3Agent}>
               + New proposal
             </Button>
           </Header>
@@ -103,10 +64,8 @@ const Proposals = () => {
       <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)} size="large">
         <NewProposalForm
           onClose={() => setOpenNewProposalModal(false)}
-          onConfirm={(formData) => {
-            onCreateProposal(formData);
-            setOpenNewProposalModal(false);
-          }}
+          onConfirm={onCreateProposal}
+          api3Agent={api3Agent!}
         />
       </Modal>
     </Layout>
