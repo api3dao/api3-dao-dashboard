@@ -59,7 +59,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
         </Tag>
       </div>
       <div className={styles.proposalDetailsHeader}>
-        <h4>{proposal.metadata.description}</h4>
+        <h4>{proposal.metadata.title}</h4>
         <div className={styles.proposalDetailsTimer}>
           <Timer size="large" deadline={proposal.deadline} />
         </div>

@@ -33,7 +33,7 @@ const NewProposalForm = (props: Props) => {
   const { onConfirm, api3Agent } = props;
 
   const [type, setType] = useState<ProposalType>('primary');
-  // TODO: Split this field into title and description + add validation
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [targetAddress, setTargetAddress] = useState('');
   const [targetSignature, setTargetSignature] = useState('');
@@ -87,6 +87,10 @@ const NewProposalForm = (props: Props) => {
             color="white"
           />
         </div>
+      </ProposalFormItem>
+
+      <ProposalFormItem name={<label htmlFor="title">Title</label>}>
+        <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} block />
       </ProposalFormItem>
 
       <ProposalFormItem name={<label htmlFor="description">description</label>}>
@@ -144,6 +148,7 @@ const NewProposalForm = (props: Props) => {
               targetSignature,
               targetValue,
               parameters,
+              title,
             };
 
             if (!validateForm(formData)) {

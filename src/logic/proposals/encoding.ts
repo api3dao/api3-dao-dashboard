@@ -9,6 +9,7 @@ import { Api3Agent } from '../../contracts';
  */
 export interface NewProposalFormData {
   type: ProposalType;
+  title: string;
   description: string;
   targetAddress: string;
   targetSignature: string;
@@ -16,11 +17,16 @@ export interface NewProposalFormData {
   parameters: string;
 }
 
-export const encodeMetadata = (formData: NewProposalFormData) => `${formData.targetSignature} ${formData.description}`;
+const METADATA_FORMAT_VERSION = '1';
+// https://stackoverflow.com/questions/492090/least-used-delimiter-character-in-normal-text-ascii-128/41555511#41555511
+export const METADATA_DELIMETER = String.fromCharCode(31);
+
+export const encodeMetadata = (formData: NewProposalFormData) =>
+  [METADATA_FORMAT_VERSION, formData.targetSignature, formData.title, formData.description].join(METADATA_DELIMETER);
 
 export const decodeMetadata = (metadata: string): ProposalMetadata => {
-  const tokens = metadata.split(' ');
-  return { targetSignature: tokens[0], description: tokens.slice(1).join(' ') };
+  const tokens = metadata.split(METADATA_DELIMETER);
+  return { version: tokens[0], targetSignature: tokens[1], title: tokens[2], description: tokens[3] };
 };
 
 export const encodeEvmScript = (formData: NewProposalFormData, api3Agent: Api3Agent) => {
