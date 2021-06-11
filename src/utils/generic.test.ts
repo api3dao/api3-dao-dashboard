@@ -61,15 +61,3 @@ test('getSeconds', () => {
   const twentySeconds = 1000 * 20.98472;
   expect(getSeconds(twentySeconds)).toBe('20');
 });
-
-describe('removeKey', () => {
-  it('returns the object without the specified key', () => {
-    const obj = { a: 1, b: 2, c: 3 };
-    expect(removeKey(obj, 'b')).toEqual({ a: 1, c: 3 });
-  });
-
-  it('returns the object as is if the key is not found', () => {
-    const obj = { a: 1, b: 2, c: 3 };
-    expect(removeKey(obj, 'd')).toEqual({ a: 1, b: 2, c: 3 });
-  });
-});

@@ -73,9 +73,3 @@ export const getSeconds = (distance: number) => {
     .toString()
     .padStart(2, '0');
 };
-
-// lodash has an 'omit' function but it's quite slow
-export function removeKey(obj: { [key: string]: any }, key: string) {
-  const { [key]: omit, ...rest } = obj;
-  return rest;
-}

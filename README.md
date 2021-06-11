@@ -107,7 +107,7 @@ branch:
 
 ## Error Monitoring
 
-Please note that the API3 core team tracks application errors on test and production deployments using [Sentry](https://sentry.io). This is used to fix errors and improve the user experience.
+Please note that the API3 core team tracks application errors on test and production environments using [Sentry](https://sentry.io). This is solely used to fix errors and improve the user experience.
 
 **NOTE: No identifying user information is collected**
 
