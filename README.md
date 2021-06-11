@@ -135,3 +135,11 @@ and run `docker-compose run --rm app`, which will create a `./build` directory.
 
 Then, (after installing `ipfs`) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build (`sudo` because `build` will likely be owned by root).
 This should be the same as the IPFS hash as the one on the Fleek dashboard and what our ENS/IPNS is pointing towards.
+
+## Error Monitoring
+
+Please note that the API3 core team tracks application errors on test and production environments using [Sentry](https://sentry.io). This is solely used to fix errors and improve the user experience.
+
+**NOTE: No identifying user information is collected**
+
+If hosting yourself, you can test Sentry by creating your own account and following the [React installation guide](https://docs.sentry.io/platforms/javascript/guides/react/)
