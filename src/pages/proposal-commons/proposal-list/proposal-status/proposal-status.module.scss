@@ -29,8 +29,7 @@
     padding: 0;
   }
 
-  // TODO: Hack for specificity issues, the className is the same as `text-normal` from typography
-  .override {
+  button {
     font-size: 18px;
     line-height: 28px;
   }
