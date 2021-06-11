@@ -1,0 +1,12 @@
+@import '../../../../styles/variables.module.scss';
+
+.delegateVotesModalSubtitle {
+  color: $secondary-color;
+  font-weight: 500;
+  margin-bottom: $space-md;
+}
+
+.error {
+  margin-top: $space-xl;
+  color: $error-color;
+}

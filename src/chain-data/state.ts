@@ -22,6 +22,8 @@ export interface DashboardState {
 }
 
 export interface ProposalMetadata {
+  version: string;
+  title: string;
   targetSignature: string;
   description: string;
 }
@@ -45,6 +47,7 @@ export interface Proposal {
   deadline: Date;
   startDateRaw: BigNumber;
   type: ProposalType;
+  script: string;
 }
 
 export interface Delegation {
@@ -52,7 +55,7 @@ export interface Delegation {
   mostRecentProposalTimestamp: Date;
   mostRecentVoteTimestamp: Date;
   mostRecentDelegationTimestamp: Date;
-  mostRecentUndelegationTimestam: Date;
+  mostRecentUndelegationTimestamp: Date;
 }
 
 export interface Treasury {
@@ -70,6 +73,8 @@ export interface Proposals {
   secondary: ProposalDictionary;
 }
 
+export type TransactionType = 'approve-deposit' | 'deposit' | 'stake' | 'initiate-unstake' | 'unstake' | 'withdraw' | 'delegate' | 'undelegate' | 'vote';
+
 export interface ChainData {
   provider: ethers.providers.Web3Provider | null;
   userAccount: string;
@@ -79,7 +84,7 @@ export interface ChainData {
   proposals: Proposals | null;
   treasuries: Treasury[];
   delegation: Delegation | null;
-  transactions: ethers.ContractTransaction[];
+  transactions: { type: TransactionType, tx: ethers.ContractTransaction }[];
 }
 
 export interface SettableChainData extends ChainData {

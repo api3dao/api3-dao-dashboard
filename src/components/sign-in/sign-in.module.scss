@@ -8,3 +8,36 @@
 .connectedStatusInfo {
   margin: 0 $space-md;
 }
+
+.dark {
+  color: $black-color;
+}
+
+.mobileMenuButton {
+  width: 100%;
+  button {
+    width: 100%;
+    color: $secondary-black-color;
+  }
+}
+
+.mobileMenuConnectedStatus {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & > * {
+    margin-bottom: $space-lg;
+  }
+
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.hideSignInStatus {
+  @media (max-width: $max-sm) {
+    display: none;
+  }
+}

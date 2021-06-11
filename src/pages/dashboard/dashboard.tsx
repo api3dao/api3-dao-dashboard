@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
-import { abbrStr, displayPendingTransaction } from '../../chain-data/helpers';
+import { displayPendingTransaction } from '../../chain-data/helpers';
 import {
   absoluteStakeTarget,
   calculateAnnualInflationRate,
@@ -86,15 +86,15 @@ const Dashboard = () => {
   const canInitiateUnstake = !disconnected && data?.userStake.gt(0);
 
   return (
-    <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">
+    <Layout title="Staking">
       {isDeadline && data?.pendingUnstake && <UnstakeBanner />}
       {!data?.pendingUnstake && (
         <>
-          <h5 className={globalStyles.greenColor}>How This Works</h5>
+          <p className={styles.dashboardHeader}>How This Works</p>
           <Slider />
         </>
       )}
-      <h5 className={globalStyles.greenColor}>Staking Pool</h5>
+      <p className={styles.dashboardHeader}>Staking Pool</p>
       <StakingPool data={data || undefined} />
       <div className={styles.borderedBoxesWrap}>
         <div className={styles.stakingBoxWrap}>
@@ -177,7 +177,13 @@ const Dashboard = () => {
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
             const tx = await api3Pool.withdraw(userAccount, parsedValue);
-            setChainData('Save withdraw transaction', { transactions: [...transactions, tx] });
+            displayPendingTransaction(tx, {
+              start: 'Withdrawing API3 tokens...',
+              success: 'Withdrawal of API3 tokens successful',
+              error: 'Failed to withdraw API3 tokens',
+            });
+            // TODO: Do we need to save the transaction to the state?
+            setChainData('Save withdraw transaction', { transactions: [...transactions, { type: 'withdraw', tx }] });
           }}
           inputValue={inputValue}
           onChange={setInputValue}
@@ -192,7 +198,7 @@ const Dashboard = () => {
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
             const tx = await api3Pool.stake(parsedValue);
-            setChainData('Save stake transaction', { transactions: [...transactions, tx] });
+            setChainData('Save stake transaction', { transactions: [...transactions, { type: 'stake', tx }] });
           }}
           inputValue={inputValue}
           onChange={setInputValue}
@@ -218,12 +224,7 @@ const Dashboard = () => {
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
             const tx = await api3Pool.scheduleUnstake(parsedValue);
-            displayPendingTransaction(tx, {
-              info: 'Initiating API3 token unstake...',
-              success: 'API3 token unstake initiated successfully!',
-              error: 'Failed to initiate API3 token unstake',
-            });
-            setChainData('Save unstake transaction', { transactions: [...transactions, tx] });
+            setChainData('Save unstake transaction', { transactions: [...transactions, { type: 'initiate-unstake', tx }] });
           }}
           inputValue={inputValue}
           onChange={setInputValue}

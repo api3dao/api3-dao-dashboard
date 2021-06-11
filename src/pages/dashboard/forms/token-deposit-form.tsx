@@ -48,11 +48,11 @@ const TokenDepositForm = (props: Props) => {
     if (isGoSuccess(goResponse)) {
       const tx = goResponse[GO_RESULT_INDEX];
       displayPendingTransaction(tx, {
-        info: 'Initiating API3 token unstake...',
+        start: 'Initiating API3 token unstake...',
         success: 'API3 token unstake initiated successfully!',
         error: 'Failed to initiate API3 token unstake',
       });
-      setChainData('Save deposit approval', { transactions: [...transactions, tx] });
+      setChainData('Save deposit approval', { transactions: [...transactions, { type: 'approve-deposit', tx }] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
         notifications.info({ message: messages.TX_APPROVAL_REJECTED });
@@ -83,8 +83,8 @@ const TokenDepositForm = (props: Props) => {
 
     const goResponse = await go(api3Pool.deposit(userAccount, parseApi3(inputValue), userAccount));
     if (isGoSuccess(goResponse)) {
-      displayPendingTransaction(goResponse[GO_RESULT_INDEX]);
-      setChainData('Save deposit transaction', { transactions: [...transactions, goResponse[GO_RESULT_INDEX]] });
+      const tx = goResponse[GO_RESULT_INDEX]
+      setChainData('Save deposit transaction', { transactions: [...transactions, { type: 'deposit', tx }] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
         notifications.info({ message: messages.TX_DEPOSIT_REJECTED });
@@ -110,7 +110,7 @@ const TokenDepositForm = (props: Props) => {
 
       <div className={globalStyles.textCenter}>
         <p className={styles.tokenAmountFormToken}>TOKEN</p>
-        <Input type="number" value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
+        <Input type="number" autosize value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
         {error && <p className={styles.tokenAmountFormError}>{error}</p>}
         <div className={styles.tokenDepositFormBalance}>Wallet balance: {balance ? formatApi3(balance) : '0.0'}</div>
       </div>

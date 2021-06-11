@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usePrevious, useIsMount, useOnMountEffect } from '../utils';
-import { getNetworkData, useChainData } from '../chain-data';
+import { getNetworkData, useChainData, displayPendingTransaction } from '../chain-data';
 import {
   Api3Pool__factory as Api3PoolFactory,
   Api3Token__factory as Api3TokenFactory,
@@ -157,3 +157,17 @@ export const usePossibleChainDataUpdate = (
     }
   });
 };
+
+export const useTransactionNotifications = () => {
+  const { transactions } = useChainData();
+  const prevTransactions = usePrevious(transactions);
+
+  useEffect(() => {
+    if (transactions.length !== (prevTransactions || []).length) {
+      const latestTx = transactions[transactions.length - 1];
+      const messages = 
+      displayPendingTransaction(latestTx, messages);
+    }
+  }, [transactions, prevTransactions]);
+};
+

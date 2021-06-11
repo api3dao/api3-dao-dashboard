@@ -6,7 +6,6 @@
   // It styles slider-wrapper so that it does not pass through the arrows
   & > div > div > div {
     width: calc(100% - 100px) !important;
-    padding: 0 50px;
   }
 }
 
@@ -17,6 +16,12 @@
   align-items: center;
   text-align: left;
   margin: 0 auto;
+
+  @media (max-width: $max-sm) {
+    height: 190px;
+    flex-direction: column;
+    text-align: center;
+  }
 }
 
 .sliderNumberWrap {
@@ -25,12 +30,48 @@
   align-items: center;
   justify-content: center;
   margin-right: $space-md;
+
+  @media (max-width: $max-sm) {
+    margin-right: 0;
+
+    img {
+      max-width: 100px;
+    }
+  }
 }
 
 .sliderNumber {
+  font-size: $heading-2;
+  line-height: $lh-heading-2;
+  font-weight: 600;
   position: absolute;
   -webkit-text-fill-color: transparent;
   -webkit-text-stroke: 1px $secondary-border;
+
+  @media (max-width: $max-md) {
+    font-size: $heading-4;
+    line-height: $lh-heading-4;
+  }
+}
+
+.sliderText {
+  font-size: $text-large;
+  line-height: $lh-large;
+
+  @media (max-width: $max-md) {
+    font-size: $text-normal;
+    line-height: $lh-normal;
+  }
+
+  @media (max-width: $max-sm) {
+    margin-top: -$space-sm;
+  }
+
+  @media (max-width: 380px) {
+    font-size: $text-small;
+    line-height: $lh-small;
+    margin-top: 0;
+  }
 }
 
 .sliderDot {
@@ -47,7 +88,7 @@
   }
 }
 
-.arrow {
+.sliderArrow {
   position: absolute;
   top: 0;
   width: auto !important;
@@ -61,5 +102,17 @@
 
   &.right {
     right: 0;
+  }
+
+  &.mobile {
+    @media (min-width: $min-md) {
+      display: none;
+    }
+  }
+
+  &.desktop {
+    @media (max-width: $max-md) {
+      display: none;
+    }
   }
 }

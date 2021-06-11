@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import { Proposal, useChainData } from '../../chain-data';
-import { BaseLayout } from '../../components/layout/layout';
-import { Modal } from '../../components/modal/modal';
-import VoteSlider from '../../components/vote-slider/vote-slider';
-import Timer from '../../components/timer/timer';
-import Button from '../../components/button/button';
-import Tag from '../../components/tag/tag';
-import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
-import { useApi3Voting } from '../../contracts';
-import { decodeProposalTypeAndId } from '../../logic/proposals/encoding';
-import { proposalDetailsSelector, voteSliderSelector } from '../../logic/proposals/selectors';
-import { useLoadAllProposals } from '../../logic/proposals/hooks';
+import { Proposal, useChainData } from '../../../chain-data';
+import { BaseLayout } from '../../../components/layout/layout';
+import { Modal } from '../../../components/modal/modal';
+import VoteSlider from '../vote-slider/vote-slider';
+import Timer from '../../../components/timer/timer';
+import Button from '../../../components/button/button';
+import Tag from '../../../components/tag/tag';
+import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
+import { useApi3Voting } from '../../../contracts';
+import { decodeProposalTypeAndId, decodeEvmScript } from '../../../logic/proposals/encoding';
+import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
+import { useLoadAllProposals } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
-import globalStyles from '../../styles/global-styles.module.scss';
+import ProposalStatus from '../proposal-list/proposal-status';
+import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import classNames from 'classnames';
 
@@ -43,6 +44,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
   const voting = useApi3Voting();
 
   const voteSliderData = voteSliderSelector(proposal);
+  const evmScriptData = decodeEvmScript(proposal.script, proposal.metadata);
 
   // NOTE: This should never happen, loading component in proposal details page should
   // make sure we are connected to valid chain and have valid proposal loaded
@@ -57,15 +59,12 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
         </Tag>
       </div>
       <div className={styles.proposalDetailsHeader}>
-        <h4>{proposal.metadata.description}</h4>
+        <h4>{proposal.metadata.title}</h4>
         <div className={styles.proposalDetailsTimer}>
-          <p className={`${globalStyles.textXSmall} ${globalStyles.medium}`}>
-            Ends on {proposal.deadline.toDateString()}
-          </p>
-          <Timer size="large" start={proposal.startDate} deadline={proposal.deadline} />
+          <Timer size="large" deadline={proposal.deadline} />
         </div>
       </div>
-      <h5 className={`${globalStyles.capitalize} ${globalStyles.pinkColor}`}>{voteSliderData.status}</h5>
+      <ProposalStatus proposal={proposal} large />
       <div className={styles.proposalDetailsVoteSection}>
         <VoteSlider {...voteSliderData} size="large" />
         <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)}>
@@ -76,6 +75,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
             voteId={proposal.voteId.toString()}
             onConfirm={async (choice) => {
               setVoteModalOpen(false);
+              // TODO: handle error
               await voting[proposal.type].vote(proposal.voteId, choice === 'for', true);
             }}
           />
@@ -94,7 +94,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
             </p>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target contract address</p>
-              <p className={globalStyles.secondaryColor}>{proposal.creator}</p>
+              <p className={globalStyles.secondaryColor}>{evmScriptData.targetAddress}</p>
             </div>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target contract signature</p>
@@ -102,13 +102,13 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
             </div>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Value</p>
-              {/* TODO: Add value */}
-              <p className={globalStyles.secondaryColor}>Value</p>
+              <p className={globalStyles.secondaryColor}>{evmScriptData.value}</p>
             </div>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Parameters</p>
-              {/* TODO: Add parameters value */}
-              <p className={globalStyles.secondaryColor}>Parameters</p>
+              <p className={classNames(globalStyles.secondaryColor, styles.multiline)}>
+                {JSON.stringify(evmScriptData.parameters, null, 2)}
+              </p>
             </div>
           </div>
         }

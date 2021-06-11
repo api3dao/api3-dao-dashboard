@@ -108,3 +108,6 @@ export const error = (props: ToastProps, overrides?: ToastOptions) => {
 export const close = (id: React.ReactText) => toast.dismiss(id);
 
 export const closeAll = () => toast.dismiss();
+
+export const notifications = { info, success, warning, error, close, closeAll };
+

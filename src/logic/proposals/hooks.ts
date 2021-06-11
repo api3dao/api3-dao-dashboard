@@ -35,6 +35,7 @@ const getProposals = async (
   const getVoteCallsInfo = (await Promise.all(startVotesInfo.map(({ voteId }) => api3Voting.getVote(voteId)))).map(
     (p) => ({
       open: p.open,
+      script: p.script,
       executed: p.executed,
       startDate: blockTimestampToDate(p.startDate),
       startDateRaw: p.startDate,

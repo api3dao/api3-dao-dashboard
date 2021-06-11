@@ -1,8 +1,8 @@
 import produce from 'immer';
 import { ethers } from 'ethers';
-import * as notifications from '../components/notifications/notifications';
+import { notifications } from '../components/notifications/notifications';
 import { getDaoAddresses, getNetworkName } from '../contracts';
-import { ChainData, initialChainData } from './state';
+import { initialChainData } from './state';
 import { go, GO_RESULT_INDEX, isGoSuccess } from '../utils';
 
 export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => void) => {
@@ -36,7 +36,7 @@ export const abbrStr = (str: string) => {
 };
 
 interface PendingTransactionMessages {
-  info: string;
+  start: string;
   success: string;
   error: string;
 }
@@ -45,8 +45,12 @@ export const displayPendingTransaction = async (
   transaction: ethers.ContractTransaction,
   messages: PendingTransactionMessages
 ) => {
-  const url = `https://etherscan.io/tx/${transaction.hash}`;
+  // Non-mainnet environments have different Etherscan subdomains
+  const etherscanHost = process.env.REACT_APP_ETHERSCAN_HOST || 'https://etherscan.io';
+  const url = `${etherscanHost}/tx/${transaction.hash}`;
 
+  // It's common for transactions to take between 1-5 minutes to confirm. Keep the
+  // intiial "progress" toast open until then
   const infoToastId = notifications.info({ url, message: messages.success }, { autoClose: false });
 
   // NOTE: ethers.js adds various additional fields to Error, so it's easier to type as 'any'

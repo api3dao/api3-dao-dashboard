@@ -6,14 +6,13 @@ import styles from './layout.module.scss';
 type Props = {
   children: ReactNode;
   title: string;
-  sectionTitle: string;
   subtitle?: string;
 };
 
-const Layout = ({ children, title, sectionTitle, subtitle }: Props) => {
+const Layout = ({ children, title, subtitle }: Props) => {
   return (
     <BaseLayout>
-      <Header title={title} sectionTitle={sectionTitle} subtitle={subtitle} />
+      <Header title={title} subtitle={subtitle} />
       {children}
     </BaseLayout>
   );

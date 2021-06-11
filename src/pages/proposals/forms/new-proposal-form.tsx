@@ -5,12 +5,16 @@ import RadioButton from '../../../components/radio-button/radio-button';
 import Input from '../../../components/input/input';
 import Textarea from '../../../components/textarea/textarea';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
-import { NewProposalFormData } from '../../../logic/proposals/encoding';
-import styles from './forms.module.scss';
+import { encodeEvmScript, NewProposalFormData } from '../../../logic/proposals/encoding';
+import styles from './new-proposal-form.module.scss';
+import { utils } from 'ethers';
+import { Api3Agent } from '../../../contracts';
+import { goSync } from '../../../utils';
 
 interface Props {
   onClose: () => void;
   onConfirm: (formData: NewProposalFormData) => void;
+  api3Agent: Api3Agent;
 }
 
 interface ProposalFormItemProps {
@@ -26,14 +30,41 @@ const ProposalFormItem = ({ children, name }: ProposalFormItemProps) => (
 );
 
 const NewProposalForm = (props: Props) => {
-  const { onConfirm } = props;
+  const { onConfirm, api3Agent } = props;
 
   const [type, setType] = useState<ProposalType>('primary');
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [targetAddress, setTargetAddress] = useState('');
   const [targetSignature, setTargetSignature] = useState('');
   const [targetValue, setTargetValue] = useState('');
   const [parameters, setParameters] = useState('');
+
+  const [targetAddressError, setTargetAddressError] = useState('');
+  const [parametersError, setParametersError] = useState('');
+
+  const validateForm = (formData: NewProposalFormData) => {
+    let foundErrors = false;
+
+    if (!utils.isAddress(targetAddress)) {
+      setTargetAddressError('Please specify a valid account address');
+      foundErrors = true;
+    }
+
+    const [jsonParseError] = goSync(() => JSON.parse(formData.parameters));
+    if (jsonParseError) {
+      setParametersError('Make sure parameters are in valid JSON format');
+      foundErrors = true;
+    }
+
+    const [encodeError] = goSync(() => encodeEvmScript(formData, api3Agent));
+    if (encodeError) {
+      setParametersError('Ensure parameters match target contract signature');
+      foundErrors = true;
+    }
+
+    return foundErrors;
+  };
 
   return (
     <>
@@ -58,6 +89,10 @@ const NewProposalForm = (props: Props) => {
         </div>
       </ProposalFormItem>
 
+      <ProposalFormItem name={<label htmlFor="title">Title</label>}>
+        <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} block />
+      </ProposalFormItem>
+
       <ProposalFormItem name={<label htmlFor="description">description</label>}>
         <Textarea
           id="description"
@@ -69,6 +104,7 @@ const NewProposalForm = (props: Props) => {
 
       <ProposalFormItem name={<label htmlFor="target-address">Target contract address</label>}>
         <Input id="target-address" value={targetAddress} onChange={(e) => setTargetAddress(e.target.value)} block />
+        {targetAddressError && <p className={styles.error}>{targetAddressError}</p>}
       </ProposalFormItem>
 
       <ProposalFormItem name={<label htmlFor="target-signature">Target contract signature</label>}>
@@ -81,7 +117,13 @@ const NewProposalForm = (props: Props) => {
       </ProposalFormItem>
 
       <ProposalFormItem name={<label htmlFor="target-value">Value</label>}>
-        <Input id="target-value" value={targetValue} onChange={(e) => setTargetValue(e.target.value)} block />
+        <Input
+          id="target-value"
+          type="number"
+          value={targetValue}
+          onChange={(e) => setTargetValue(e.target.value)}
+          block
+        />
       </ProposalFormItem>
 
       <ProposalFormItem name={<label htmlFor="parameters">Parameters</label>}>
@@ -91,23 +133,28 @@ const NewProposalForm = (props: Props) => {
           value={parameters}
           onChange={(e) => setParameters(e.target.value)}
         />
+        {parametersError && <p className={styles.error}>{parametersError}</p>}
       </ProposalFormItem>
 
       <ModalFooter>
         <Button
           type="secondary"
           size="large"
-          onClick={() =>
-            // TODO: validate form data before confirm (e.g. parameters must be JSON.parse-ble)
-            onConfirm({
+          onClick={() => {
+            const formData = {
               type,
               description,
               targetAddress,
               targetSignature,
               targetValue,
               parameters,
-            })
-          }
+              title,
+            };
+
+            if (!validateForm(formData)) {
+              onConfirm(formData);
+            }
+          }}
         >
           Create
         </Button>
