@@ -1,11 +1,5 @@
 @import '../../../styles/variables.module.scss';
 
-.delegateVotesModalSubtitle {
-  color: $secondary-color;
-  font-weight: 500;
-  margin-bottom: $space-md;
-}
-
 .newProposalFormItem {
   display: flex;
   align-items: flex-start;
@@ -35,4 +29,8 @@
   & > * {
     width: 50%;
   }
+}
+
+.error {
+  color: $error-color;
 }

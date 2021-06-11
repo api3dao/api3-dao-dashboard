@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29px" height="157px" viewBox="0 0 29 157" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>triangle-bracket-left-mobile</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="triangle-bracket-left-mobile">
+            <polyline id="Shape" stroke="#404141" points="27.75 156.205 3.75 78.205 27.75 0.2051"></polyline>
+            <path d="M3.75,81.205 C5.40685,81.205 6.75,79.862 6.75,78.205 C6.75,76.548 5.40685,75.205 3.75,75.205 C2.09315,75.205 0.75,76.548 0.75,78.205 C0.75,79.862 2.09315,81.205 3.75,81.205 Z" id="Shape" stroke="#7CE3CB" fill="#030303" fill-rule="nonzero"></path>
+        </g>
+    </g>
+</svg>

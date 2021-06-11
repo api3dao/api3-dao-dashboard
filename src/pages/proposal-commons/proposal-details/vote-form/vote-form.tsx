@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Button from '../../../components/button/button';
-import RadioButton from '../../../components/radio-button/radio-button';
+import Button from '../../../../components/button/button';
+import RadioButton from '../../../../components/radio-button/radio-button';
 import styles from './vote-form.module.scss';
 
 export type VotingChoice = 'for' | 'against';
