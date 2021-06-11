@@ -4,10 +4,10 @@ import * as Sentry from '@sentry/react';
 import './index.scss';
 import App from './app';
 
-if (process.env.REACT_APP_SENTRY_DSN && process.env.REACT_APP_ENVIRONMENT) {
+if (process.env.REACT_APP_SENTRY_DSN && process.env.REACT_APP_NODE_ENV) {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
-    environment: process.env.REACT_APP_ENVIRONMENT,
+    environment: process.env.REACT_APP_NODE_ENV,
   });
 }
 
