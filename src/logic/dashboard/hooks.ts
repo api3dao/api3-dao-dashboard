@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useChainData } from '../../chain-data';
 import { useApi3Pool, useApi3Token, useConvenience, usePossibleChainDataUpdate } from '../../contracts';
-import * as notifications from '../../components/notifications/notifications';
+import { notifications } from '../../components/notifications/notifications';
 import { go, messages } from '../../utils';
 
 export const useLoadDashboardData = () => {

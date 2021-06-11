@@ -84,3 +84,5 @@ export const error = throttle(
 export const close = (id: string) => toast.dismiss(id);
 
 export const closeAll = () => toast.dismiss();
+
+export const notifications = { info, success, warning, error, close, closeAll };

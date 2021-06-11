@@ -6,12 +6,12 @@ import {
   min,
   totalStakedPercentage,
 } from '../../contracts';
-import { UserStakingData } from '../../chain-data';
+import { ConvenienceDashboardData } from '../../chain-data';
 
-export const tokenBalancesSelector = (stakingData: UserStakingData | null) => {
-  if (!stakingData) return null;
+export const tokenBalancesSelector = (dashboardData: ConvenienceDashboardData | null) => {
+  if (!dashboardData) return null;
 
-  const { userLocked, userStaked, userUnstaked, userVesting } = stakingData;
+  const { userLocked, userStaked, userUnstaked, userVesting } = dashboardData;
   const userTotal = userStaked.add(userUnstaked);
 
   const unlocked = userTotal.sub(userLocked).sub(userVesting);
@@ -20,10 +20,10 @@ export const tokenBalancesSelector = (stakingData: UserStakingData | null) => {
   return { userTotal, withdrawable };
 };
 
-export const stakingPoolSelector = (stakingData: UserStakingData | null) => {
-  if (!stakingData) return null;
+export const stakingPoolSelector = (dashboardData: ConvenienceDashboardData | null) => {
+  if (!dashboardData) return null;
 
-  const { api3Supply, apr, stakeTarget, totalStake } = stakingData;
+  const { api3Supply, apr, stakeTarget, totalStake } = dashboardData;
   const currentApy = calculateApy(apr);
 
   const annualMintedTokens = calculateAnnualMintedTokens(totalStake, currentApy);
@@ -35,17 +35,22 @@ export const stakingPoolSelector = (stakingData: UserStakingData | null) => {
   return { currentApy, annualInflationRate, stakedPercentage };
 };
 
-export const pendingUnstakeSelector = (stakingData: UserStakingData | null) => {
-  if (!stakingData) return null;
+export const pendingUnstakeSelector = (dashboardData: ConvenienceDashboardData | null) => {
+  if (!dashboardData) return null;
 
-  const { totalStake, totalShares, userUnstakeAmount, userUnstakeScheduledFor, userUnstakeShares } = stakingData;
+  const { totalStake, totalShares, userUnstakeAmount, userUnstakeScheduledFor, userUnstakeShares } = dashboardData;
 
   // NOTE: userUnstakeScheduledFor === 0 is a special case indicating that the
   // user has not yet initiated an unstake. Full implementation details described here:
   // https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
   const hasInitiatedUnstake = userUnstakeScheduledFor.gt(0) ?? false;
 
+  // If the user has not initiated unstaking, there is no pending unstake
+  if (!hasInitiatedUnstake) return null;
+
+  // This is the earliest date the user can trigger an unstake after waiting a full epoch
   const unstakeDate = new Date(userUnstakeScheduledFor.mul(1000).toNumber());
+
   const now = new Date().getTime();
   const hasUnstakeDelayPassed = now > unstakeDate.getTime();
   const unstakeDelayComplete = hasInitiatedUnstake && hasUnstakeDelayPassed;
@@ -54,11 +59,5 @@ export const pendingUnstakeSelector = (stakingData: UserStakingData | null) => {
   const minimumUnstakeAmount = min(userUnstakeAmount, unstakePercentage);
   const canUnstake = hasInitiatedUnstake && unstakeDelayComplete && minimumUnstakeAmount.gte(userUnstakeShares);
 
-  return {
-    hasInitiatedUnstake,
-    unstakeDate,
-    unstakeDelayComplete,
-    minimumUnstakeAmount,
-    canUnstake,
-  };
+  return { hasInitiatedUnstake, unstakeDate, minimumUnstakeAmount, canUnstake };
 };

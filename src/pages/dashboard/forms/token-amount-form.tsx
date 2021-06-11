@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import * as notifications from '../../../components/notifications/notifications';
+import { notifications } from '../../../components/notifications/notifications';
 import { go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
