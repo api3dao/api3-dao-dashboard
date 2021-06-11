@@ -104,3 +104,11 @@ branch:
 
 > Note: As of now it's possible to push directly to production, but this will change after
 > https://github.com/api3dao/api3-dao-dashboard/issues/5 is resolved.
+
+## Error Monitoring
+
+Please note that the API3 core team tracks application errors on test and production environments using [Sentry](https://sentry.io). This is solely used to fix errors and improve the user experience.
+
+**NOTE: No identifying user information is collected**
+
+If hosting yourself, you can test Sentry by creating your own account and following the [React installation guide](https://docs.sentry.io/platforms/javascript/guides/react/)
