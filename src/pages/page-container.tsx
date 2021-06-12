@@ -16,7 +16,7 @@ const PageContainer = (props: Props) => {
   return (
     <Sentry.ErrorBoundary fallback="An error has occurred. Please refresh and try again.">
       <ToastContainer />
-      props.children;
+      {props.children}
     </Sentry.ErrorBoundary>
   );
 };
