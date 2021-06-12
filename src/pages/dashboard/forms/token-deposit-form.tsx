@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import { useState } from 'react';
 import { MAX_ALLOWANCE, useApi3Pool, useApi3Token } from '../../../contracts';
-import { displayPendingTransaction, useChainData } from '../../../chain-data';
+import { useChainData } from '../../../chain-data';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
@@ -47,11 +47,6 @@ const TokenDepositForm = (props: Props) => {
     const goResponse = await go(api3Token.approve(api3Pool.address, MAX_ALLOWANCE));
     if (isGoSuccess(goResponse)) {
       const tx = goResponse[GO_RESULT_INDEX];
-      displayPendingTransaction(tx, {
-        start: 'Initiating API3 token unstake...',
-        success: 'API3 token unstake initiated successfully!',
-        error: 'Failed to initiate API3 token unstake',
-      });
       setChainData('Save deposit approval', { transactions: [...transactions, { type: 'approve-deposit', tx }] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
@@ -83,7 +78,7 @@ const TokenDepositForm = (props: Props) => {
 
     const goResponse = await go(api3Pool.deposit(userAccount, parseApi3(inputValue), userAccount));
     if (isGoSuccess(goResponse)) {
-      const tx = goResponse[GO_RESULT_INDEX]
+      const tx = goResponse[GO_RESULT_INDEX];
       setChainData('Save deposit transaction', { transactions: [...transactions, { type: 'deposit', tx }] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {

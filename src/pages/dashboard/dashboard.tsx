@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useChainData } from '../../chain-data';
-import { displayPendingTransaction } from '../../chain-data/helpers';
 import {
   absoluteStakeTarget,
   calculateAnnualInflationRate,
@@ -177,12 +176,6 @@ const Dashboard = () => {
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
             const tx = await api3Pool.withdraw(userAccount, parsedValue);
-            displayPendingTransaction(tx, {
-              start: 'Withdrawing API3 tokens...',
-              success: 'Withdrawal of API3 tokens successful',
-              error: 'Failed to withdraw API3 tokens',
-            });
-            // TODO: Do we need to save the transaction to the state?
             setChainData('Save withdraw transaction', { transactions: [...transactions, { type: 'withdraw', tx }] });
           }}
           inputValue={inputValue}
@@ -224,7 +217,9 @@ const Dashboard = () => {
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
             const tx = await api3Pool.scheduleUnstake(parsedValue);
-            setChainData('Save unstake transaction', { transactions: [...transactions, { type: 'initiate-unstake', tx }] });
+            setChainData('Save unstake transaction', {
+              transactions: [...transactions, { type: 'initiate-unstake', tx }],
+            });
           }}
           inputValue={inputValue}
           onChange={setInputValue}

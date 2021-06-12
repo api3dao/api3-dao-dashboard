@@ -5,6 +5,7 @@ interface Props {
 }
 
 const PageContainer = (props: Props) => {
+  // Whenever a new transaction is added to the state, display notifications for it
   useTransactionNotifications();
 
   return props.children;
