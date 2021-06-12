@@ -35,7 +35,7 @@ export const abbrStr = (str: string) => {
   return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
 };
 
-interface PendingTransactionMessages {
+export interface PendingTransactionMessages {
   start: string;
   success: string;
   error: string;
@@ -45,7 +45,7 @@ export const displayPendingTransaction = async (
   transaction: ethers.ContractTransaction,
   messages: PendingTransactionMessages
 ) => {
-  // Non-mainnet environments have different Etherscan subdomains
+  // Non-mainnet networks have different Etherscan subdomains
   const etherscanHost = process.env.REACT_APP_ETHERSCAN_HOST || 'https://etherscan.io';
   const url = `${etherscanHost}/tx/${transaction.hash}`;
 

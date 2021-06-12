@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
-import { usePrevious, useIsMount, useOnMountEffect } from '../utils';
+import { TRANSACTION_MESSAGES, usePrevious, useIsMount, useOnMountEffect } from '../utils';
 import { getNetworkData, useChainData, displayPendingTransaction } from '../chain-data';
 import {
   Api3Pool__factory as Api3PoolFactory,
@@ -161,13 +161,19 @@ export const usePossibleChainDataUpdate = (
 export const useTransactionNotifications = () => {
   const { transactions } = useChainData();
   const prevTransactions = usePrevious(transactions);
+  const [displayedTxHashes, setDisplayedTxHashes] = useState<string[]>([]);
 
   useEffect(() => {
-    if (transactions.length !== (prevTransactions || []).length) {
-      const latestTx = transactions[transactions.length - 1];
-      const messages = 
-      displayPendingTransaction(latestTx, messages);
+    if (transactions.length > (prevTransactions || []).length) {
+      const { type, tx } = transactions[transactions.length - 1];
+      // Check if we've already displayed a notification for the given transaction hash
+      const hasBeenDisplayed = displayedTxHashes.includes(tx.hash);
+      if (!hasBeenDisplayed) {
+        const messages = TRANSACTION_MESSAGES[type];
+        // No need to 'await' this promise. Let it resolve in the background
+        displayPendingTransaction(tx, messages);
+        setDisplayedTxHashes([...displayedTxHashes, tx.hash]);
+      }
     }
-  }, [transactions, prevTransactions]);
+  }, [transactions, prevTransactions, displayedTxHashes]);
 };
-

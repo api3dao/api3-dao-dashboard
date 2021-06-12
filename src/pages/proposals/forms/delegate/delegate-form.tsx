@@ -37,7 +37,7 @@ const DelegateVotesForm = (props: Props) => {
 
     const goDelegate = await go(api3Pool.getUserDelegate(delegationAddress));
     if (!isGoSuccess(goDelegate)) {
-      notifications.error(messages.UNABLE_TO_LOAD_DELEGATE);
+      notifications.error({ message: messages.UNABLE_TO_LOAD_DELEGATE });
       return;
     }
 
@@ -50,11 +50,11 @@ const DelegateVotesForm = (props: Props) => {
     const [error] = await go(api3Pool.delegateVotingPower(delegationAddress));
     if (error) {
       if (isUserRejection(error)) {
-        notifications.info(messages.TX_GENERIC_REJECTED);
+        notifications.info({ message: messages.TX_GENERIC_REJECTED });
         return;
       }
 
-      notifications.error(messages.TX_GENERIC_ERROR);
+      notifications.error({ message: messages.TX_GENERIC_ERROR });
     }
 
     onClose();

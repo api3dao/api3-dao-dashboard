@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/react';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import ChainDataContextProvider from './chain-data';
+import PageContainer from './pages/page-container';
 import Dashboard from './pages/dashboard';
 import Proposals from './pages/proposals';
 import ProposalDetails from './pages/proposal-commons/proposal-details';
@@ -16,33 +17,35 @@ function App() {
     <Sentry.ErrorBoundary fallback="An error has occurred. Please refresh and try again.">
       <ChainDataContextProvider>
         <ToastContainer />
-        <Router>
-          <Switch>
-            <Route path="/dashboard" exact>
-              <Dashboard />
-            </Route>
-            <Route path="/proposals/:typeAndId" exact>
-              <ProposalDetails />
-            </Route>
-            <Route path="/proposals" exact>
-              <Proposals />
-            </Route>
-            <Route path="/history/:typeAndId" exact>
-              <HistoryDetails />
-            </Route>
-            <Route path="/history" exact>
-              <History />
-            </Route>
-            <Route path="/" exact>
-              <Dashboard />
-            </Route>
-            {/* NOTE: This fallback route must be last */}
-            <Route path="/">
-              {/* TODO: Not found page */}
-              <h5 style={{ color: 'black' }}>Not found</h5>
-            </Route>
-          </Switch>
-        </Router>
+        <PageContainer>
+          <Router>
+            <Switch>
+              <Route path="/dashboard" exact>
+                <Dashboard />
+              </Route>
+              <Route path="/proposals/:typeAndId" exact>
+                <ProposalDetails />
+              </Route>
+              <Route path="/proposals" exact>
+                <Proposals />
+              </Route>
+              <Route path="/history/:typeAndId" exact>
+                <HistoryDetails />
+              </Route>
+              <Route path="/history" exact>
+                <History />
+              </Route>
+              <Route path="/" exact>
+                <Dashboard />
+              </Route>
+              {/* NOTE: This fallback route must be last */}
+              <Route path="/">
+                {/* TODO: Not found page */}
+                <h5 style={{ color: 'black' }}>Not found</h5>
+              </Route>
+            </Switch>
+          </Router>
+        </PageContainer>
       </ChainDataContextProvider>
     </Sentry.ErrorBoundary>
   );

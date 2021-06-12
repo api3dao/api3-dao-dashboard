@@ -42,7 +42,7 @@ const Delegation = () => {
 
                 const [error] = await go(api3Pool.undelegateVotingPower());
                 if (error) {
-                  notifications.error(messages.TX_GENERIC_ERROR);
+                  notifications.error({ message: messages.TX_GENERIC_ERROR });
                   return;
                 }
 

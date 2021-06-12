@@ -73,7 +73,17 @@ export interface Proposals {
   secondary: ProposalDictionary;
 }
 
-export type TransactionType = 'approve-deposit' | 'deposit' | 'stake' | 'initiate-unstake' | 'unstake' | 'withdraw' | 'delegate' | 'undelegate' | 'vote';
+export type TransactionType =
+  | 'approve-deposit'
+  | 'deposit'
+  | 'stake'
+  | 'initiate-unstake'
+  | 'unstake'
+  | 'withdraw'
+  | 'delegate'
+  | 'undelegate'
+  | 'vote-yea'
+  | 'vote-nay';
 
 export interface ChainData {
   provider: ethers.providers.Web3Provider | null;
@@ -84,7 +94,7 @@ export interface ChainData {
   proposals: Proposals | null;
   treasuries: Treasury[];
   delegation: Delegation | null;
-  transactions: { type: TransactionType, tx: ethers.ContractTransaction }[];
+  transactions: { type: TransactionType; tx: ethers.ContractTransaction }[];
 }
 
 export interface SettableChainData extends ChainData {

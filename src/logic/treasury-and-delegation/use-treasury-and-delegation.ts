@@ -45,7 +45,7 @@ export const useTreasuryAndDelegation = () => {
 
     const goResponse = await go(loadTreasuryAndDelegation);
     if (!isGoSuccess(goResponse)) {
-      notifications.error(messages.FAILED_TO_LOAD_TREASURY_AND_DELEGATION);
+      notifications.error({ message: messages.FAILED_TO_LOAD_TREASURY_AND_DELEGATION });
       return;
     }
 

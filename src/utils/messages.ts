@@ -1,3 +1,5 @@
+import { PendingTransactionMessages, TransactionType } from '../chain-data';
+
 export const messages = {
   // Transaction messages
   TX_APPROVAL_REJECTED: 'API3 token approval transaction rejected',
@@ -24,6 +26,55 @@ export const messages = {
   REDELEGATION_IS_FORBIDDEN: (targetDelegate: string) => `Address ${targetDelegate} delegates to some other account`,
 };
 
-export const transactions = {
-
+export const TRANSACTION_MESSAGES: { [key in TransactionType]: PendingTransactionMessages } = {
+  'approve-deposit': {
+    start: 'Approving API3 token allowance...',
+    success: 'API3 token allowance approved!',
+    error: 'API3 token allowance failed',
+  },
+  deposit: {
+    start: 'Depositing API3 tokens...',
+    success: 'API3 tokens deposited successfully!',
+    error: 'API3 token deposit failed',
+  },
+  stake: {
+    start: 'Staking API3 tokens...',
+    success: 'API3 tokens staked successfully!',
+    error: 'API3 token stake failed',
+  },
+  'initiate-unstake': {
+    start: 'Initiating API3 token unstake...',
+    success: 'API3 token unstake initiated successfully!',
+    error: 'API3 token unstake initiation failed',
+  },
+  unstake: {
+    start: 'Unstaking API3 tokens...',
+    success: 'API3 tokens unstaked successfully!',
+    error: 'API3 token unstake failed',
+  },
+  withdraw: {
+    start: 'Withdrawing API3 tokens...',
+    success: 'API3 tokens withdrawn successfully!',
+    error: 'API3 token withdraw failed',
+  },
+  delegate: {
+    start: 'Delegating voting power...',
+    success: 'Voting power delegated successfully!',
+    error: 'Voting power delegation failed',
+  },
+  undelegate: {
+    start: 'Undelegating voting power...',
+    success: 'Voting power undelegated successfully!',
+    error: 'Voting power undelegation failed',
+  },
+  'vote-yea': {
+    start: 'Voting approve on proposal...',
+    success: 'Approval vote cast successfully!',
+    error: 'Approval vote failed',
+  },
+  'vote-nay': {
+    start: 'Voting decline on proposal...',
+    success: 'Decline vote cast successfully!',
+    error: 'Decline vote failed',
+  },
 };
