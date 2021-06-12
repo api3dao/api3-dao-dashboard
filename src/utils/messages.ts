@@ -67,14 +67,14 @@ export const TRANSACTION_MESSAGES: { [key in TransactionType]: PendingTransactio
     success: 'Voting power undelegated successfully!',
     error: 'Voting power undelegation failed',
   },
-  'vote-yea': {
-    start: 'Voting approve on proposal...',
-    success: 'Approval vote cast successfully!',
-    error: 'Approval vote failed',
+  'vote-for': {
+    start: 'Voting for proposal...',
+    success: 'Vote for proposal cast successfully!',
+    error: 'Vote for proposal failed',
   },
-  'vote-nay': {
-    start: 'Voting decline on proposal...',
-    success: 'Decline vote cast successfully!',
-    error: 'Decline vote failed',
+  'vote-against': {
+    start: 'Voting against proposal...',
+    success: 'Vote against proposal cast successfully!',
+    error: 'Vote against proposal failed',
   },
 };

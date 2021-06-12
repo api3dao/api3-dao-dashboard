@@ -41,6 +41,7 @@ interface ProposalDetailsProps {
 const ProposalDetails = (props: ProposalDetailsProps) => {
   const { proposal } = props;
   const [voteModalOpen, setVoteModalOpen] = useState(false);
+  const { transactions, setChainData } = useChainData();
   const voting = useApi3Voting();
 
   const voteSliderData = voteSliderSelector(proposal);
@@ -76,7 +77,9 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
             onConfirm={async (choice) => {
               setVoteModalOpen(false);
               // TODO: handle error
-              await voting[proposal.type].vote(proposal.voteId, choice === 'for', true);
+              const tx = await voting[proposal.type].vote(proposal.voteId, choice === 'for', true);
+              const type = choice === 'for' ? 'vote-for' : 'vote-against';
+              setChainData('Save vote transaction', { transactions: [...transactions, { tx, type }] });
             }}
           />
         </Modal>
