@@ -15,7 +15,6 @@ export const useLoadDashboardData = () => {
 
     const [stakingDataErr, stakingData] = await go(convenience.getUserStakingData(userAccount));
     if (stakingDataErr || !stakingData) {
-      // TODO: do we want to display anything to the user if the dashboard load fails?
       notifications.error(messages.LOAD_DASHBOARD_ERROR);
       return;
     }

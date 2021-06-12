@@ -10,11 +10,12 @@ import styles from './pending-unstake-panel.module.scss';
 interface Props {
   amount: BigNumber;
   canUnstake: boolean;
+  canUnstakeAndWithdraw: boolean;
   unstakeDate: Date;
 }
 
 const PendingUnstakePanel = (props: Props) => {
-  const { amount, canUnstake, unstakeDate } = props;
+  const { amount, canUnstake, canUnstakeAndWithdraw, unstakeDate } = props;
   const [timerDays, setTimerDays] = useState('0');
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
@@ -90,7 +91,7 @@ const PendingUnstakePanel = (props: Props) => {
             </div>
           </div>
           <div className={styles.pendingUnstakeActions}>
-            <Button type="link" disabled={!canUnstake}>
+            <Button type="link" disabled={!canUnstakeAndWithdraw}>
               Unstake & Withdraw
             </Button>
             <Button disabled={!canUnstake}>Unstake</Button>
