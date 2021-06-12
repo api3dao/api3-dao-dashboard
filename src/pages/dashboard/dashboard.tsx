@@ -217,7 +217,7 @@ const Dashboard = () => {
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
             const tx = await api3Pool.scheduleUnstake(parsedValue);
-            setChainData('Save unstake transaction', {
+            setChainData('Save initiate unstake transaction', {
               transactions: [...transactions, { type: 'initiate-unstake', tx }],
             });
           }}
