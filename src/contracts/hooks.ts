@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
-import { TRANSACTION_MESSAGES, usePrevious, useIsMount, useOnMountEffect } from '../utils';
+import { transactionMessages, usePrevious, useIsMount, useOnMountEffect } from '../utils';
 import { getNetworkData, useChainData, displayPendingTransaction } from '../chain-data';
 import {
   Api3Pool__factory as Api3PoolFactory,
@@ -158,6 +158,9 @@ export const usePossibleChainDataUpdate = (
   });
 };
 
+/*
+ * Hook that will trigger a notification when a new transaction is added to the state.
+ */
 export const useTransactionNotifications = () => {
   const { transactions } = useChainData();
   const prevTransactions = usePrevious(transactions);
@@ -169,9 +172,8 @@ export const useTransactionNotifications = () => {
       // Check if we've already displayed a notification for the given transaction hash
       const hasBeenDisplayed = displayedTxHashes.includes(tx.hash);
       if (!hasBeenDisplayed) {
-        const messages = TRANSACTION_MESSAGES[type];
         // No need to 'await' this promise. Let it resolve in the background
-        displayPendingTransaction(tx, messages);
+        displayPendingTransaction(tx, transactionMessages[type]);
         setDisplayedTxHashes([...displayedTxHashes, tx.hash]);
       }
     }

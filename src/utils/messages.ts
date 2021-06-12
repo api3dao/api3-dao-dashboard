@@ -26,7 +26,7 @@ export const messages = {
   REDELEGATION_IS_FORBIDDEN: (targetDelegate: string) => `Address ${targetDelegate} delegates to some other account`,
 };
 
-export const TRANSACTION_MESSAGES: { [key in TransactionType]: PendingTransactionMessages } = {
+export const transactionMessages: { [key in TransactionType]: PendingTransactionMessages } = {
   'approve-deposit': {
     start: 'Approving API3 token allowance...',
     success: 'API3 token allowance approved!',
