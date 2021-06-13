@@ -90,6 +90,8 @@ const TokenDepositForm = (props: Props) => {
     props.onClose();
   };
 
+  const handleSetMax = () => setInputValue(formatApi3(balance.toString()));
+
   if (!api3Pool || !api3Token) {
     return null;
   }
@@ -104,14 +106,24 @@ const TokenDepositForm = (props: Props) => {
       <div className={globalStyles.textCenter}>
         <p className={styles.tokenAmountFormToken}>TOKEN</p>
         <Input type="number" autosize value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
+        <Button type="secondary" onClick={handleSetMax}>
+          Max
+        </Button>
+
         {error && <p className={styles.tokenAmountFormError}>{error}</p>}
-        <div className={styles.tokenDepositFormBalance}>Wallet balance: {balance ? formatApi3(balance) : '0.0'}</div>
+
+        <div className={styles.tokenDepositFormBalance}>
+          Wallet balance:{' '}
+          <span className={globalStyles.pointer} onClick={handleSetMax}>
+            {balance ? formatApi3(balance) : '0.0'}
+          </span>
+        </div>
       </div>
 
       <ModalFooter>
         <div>
           <Button
-            type={approvalRequired ? 'primary' : 'secondary'}
+            type="secondary"
             onClick={handleApprove}
             disabled={!approvalRequired}
             className={styles.tokenAmountFormApprove}
@@ -119,7 +131,7 @@ const TokenDepositForm = (props: Props) => {
             Approve
           </Button>
 
-          <Button type={canDeposit ? 'primary' : 'secondary'} onClick={handleDeposit} disabled={!canDeposit}>
+          <Button type="secondary" onClick={handleDeposit} disabled={!canDeposit}>
             Deposit
           </Button>
         </div>

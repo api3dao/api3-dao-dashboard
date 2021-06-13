@@ -208,6 +208,7 @@ const Dashboard = () => {
           onChange={setInputValue}
           onClose={closeModal}
           closeOnConfirm={false}
+          maxValue={data?.userStake}
         />
       </Modal>
       <Modal open={openModal === 'confirm-unstake'} onClose={closeModal}>
@@ -223,7 +224,6 @@ const Dashboard = () => {
           onChange={setInputValue}
           onClose={closeModal}
           showTokenInput={false}
-          maxValue={data?.userStake}
         />
       </Modal>
     </Layout>
