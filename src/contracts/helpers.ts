@@ -1,4 +1,4 @@
-import { ethers, BigNumber, constants } from 'ethers';
+import { BigNumber, constants } from 'ethers';
 
 export const min = (first: BigNumber, ...others: BigNumber[]) =>
   others.reduce((min, n) => (min.lt(n) ? min : n), first);
@@ -38,8 +38,8 @@ export const convertPercentage = (daoPercentage: BigNumber, humanReadable = fals
  * Staking target is in percentages, where HUNDRED_PERCENT is the maximum value.
  * The absolute stake target is percentage of total token supply.
  */
-export const absoluteStakeTarget = (stakeTarget: BigNumber, totalSupply: BigNumber) =>
-  totalSupply.mul(stakeTarget).div(HUNDRED_PERCENT).div(ethers.utils.parseEther('1'));
+export const absoluteStakeTarget = (stakeTargetPercentages: BigNumber, totalSupply: BigNumber) =>
+  totalSupply.mul(stakeTargetPercentages).div(HUNDRED_PERCENT);
 
 /**
  * Compute the percentage of total stakes in the pool rounding to 1 decimal place.
