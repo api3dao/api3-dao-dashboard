@@ -1,5 +1,10 @@
 @import '../../../../styles/variables.module.scss';
 
+.proposalStatus {
+  text-align: center;
+  font-weight: 600;
+}
+
 .failing {
   color: $pink-color;
 }
@@ -12,16 +17,18 @@
   color: $pink-color;
 }
 
-.rejected {
-  color: $pink-color;
-}
-
 .executed {
   color: $green-color;
 }
 
 .icon {
-  margin: 0 $space-sm;
+  display: flex;
+  align-items: center;
+  margin-right: $space-xs;
+
+  img {
+    margin-top: 0;
+  }
 }
 
 .execute {
@@ -38,5 +45,6 @@
 
 .flex {
   display: flex;
+  align-items: center;
   justify-content: center;
 }

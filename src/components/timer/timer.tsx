@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 interface Props {
   deadline: Date;
   size?: 'normal' | 'large';
+  showDeadline?: boolean;
 }
 
 export const DATE_FORMAT = 'do MMMM yyyy';
@@ -15,7 +16,7 @@ export const DATE_FORMAT = 'do MMMM yyyy';
 export const formatDeadline = (deadline: Date) => format(deadline, DATE_FORMAT);
 
 const Timer = (props: Props) => {
-  const { deadline, size = 'normal' } = props;
+  const { deadline, size = 'normal', showDeadline } = props;
   const [timerDays, setTimerDays] = useState('00');
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
@@ -52,42 +53,62 @@ const Timer = (props: Props) => {
   }, [deadline]);
 
   const largeSize = size === 'large' ? `${styles.large}` : '';
-  const status = `${dateDiff > 0 ? 'Remaining' : 'Ended'}`;
-  const formattedDeadline = `${dateDiff > 0 ? 'Ends on' : 'Ended on'} ${formatDeadline(deadline)}`;
+  const status = `${dateDiff > 0 ? `Remaining${showDeadline ? '' : ':'}` : 'Ended'}`;
+  const formattedDeadline = `${dateDiff > 0 ? 'Ends on' : ''} ${formatDeadline(deadline)}`;
 
   return (
-    <div
-      className={classNames(styles.timer, largeSize, dateDiff === 0 ? styles.grayOut : globalStyles.primaryColor, {
-        [`_large`]: size === 'large',
-      })}
-    >
+    <div className={classNames(styles.timer, largeSize, dateDiff === 0 ? styles.grayOut : globalStyles.primaryColor)}>
       <div className={globalStyles.tertiaryColor}>{status}</div>
       <div className={styles.timerContainer}>
         <div className={styles.timerWrap}>
-          <div className={styles.timerNumber}>{timerDays}</div>
+          <div
+            className={classNames(styles.timerNumber, {
+              [globalStyles.violetColor]: dateDiff > 0 && showDeadline,
+            })}
+          >
+            {timerDays}
+          </div>
           <div className={globalStyles.tertiaryColor}>D</div>
         </div>
         <div className={styles.timerColon}>:</div>
         <div className={styles.timerWrap}>
-          <div className={styles.timerNumber}>{timerHours}</div>
+          <div
+            className={classNames(styles.timerNumber, {
+              [globalStyles.violetColor]: dateDiff > 0 && showDeadline,
+            })}
+          >
+            {timerHours}
+          </div>
           <div className={globalStyles.tertiaryColor}>HR</div>
         </div>
         <div className={styles.timerColon}>:</div>
         <div className={styles.timerWrap}>
-          <div className={styles.timerNumber}>{timerMinutes}</div>
+          <div
+            className={classNames(styles.timerNumber, {
+              [globalStyles.violetColor]: dateDiff > 0 && showDeadline,
+            })}
+          >
+            {timerMinutes}
+          </div>
           <div className={globalStyles.tertiaryColor}>MIN</div>
         </div>
         {size === 'large' && (
           <>
             <div className={styles.timerColon}>:</div>
             <div className={styles.timerWrap}>
-              <div className={styles.timerNumber}>{timerSeconds}</div>
+              <div
+                className={classNames(styles.timerNumber, {
+                  [globalStyles.violetColor]: dateDiff > 0 && showDeadline,
+                })}
+              >
+                {timerSeconds}
+              </div>
               <div className={globalStyles.tertiaryColor}>SEC</div>
             </div>
           </>
         )}
       </div>
-      <div className={globalStyles.secondaryColor}>{formattedDeadline}</div>
+      {showDeadline && <div className={globalStyles.tertiaryColor}>{formattedDeadline}</div>}
     </div>
   );
 };

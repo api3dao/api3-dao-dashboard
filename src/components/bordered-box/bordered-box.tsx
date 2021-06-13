@@ -8,6 +8,7 @@ type Props = {
   footer?: ReactNode;
   borderColor?: 'green' | 'grey';
   borderBottom?: boolean;
+  noMobileBorders?: boolean;
 };
 
 type HeaderProps = {
@@ -29,7 +30,7 @@ export const Header = ({ children, alignCenter, largeSpaces }: HeaderProps) => {
   );
 };
 
-const BorderedBox = ({ header, content, footer, borderColor = 'grey', borderBottom }: Props) => {
+const BorderedBox = ({ header, content, footer, borderColor = 'grey', borderBottom, noMobileBorders }: Props) => {
   return (
     <div
       className={classNames(styles.borderedBox, {
@@ -37,13 +38,26 @@ const BorderedBox = ({ header, content, footer, borderColor = 'grey', borderBott
         [styles.borderGreen]: borderColor === 'green',
       })}
     >
-      <div className={classNames(styles.borderedBoxCol, styles.left)} />
-      <div className={classNames(styles.borderedBoxContent, { [styles.borderBottom]: borderBottom })}>
+      <div
+        className={classNames(styles.borderedBoxCol, styles.left, {
+          [styles.noMobileBorders]: noMobileBorders,
+        })}
+      />
+      <div
+        className={classNames(styles.borderedBoxContent, {
+          [styles.borderBottom]: borderBottom,
+          [styles.noMobileBorders]: noMobileBorders,
+        })}
+      >
         {header}
         {content}
         {footer && <div className={styles.borderedBoxFooter}>{footer}</div>}
       </div>
-      <div className={classNames(styles.borderedBoxCol, styles.right)} />
+      <div
+        className={classNames(styles.borderedBoxCol, styles.right, {
+          [styles.noMobileBorders]: noMobileBorders,
+        })}
+      />
     </div>
   );
 };

@@ -12,9 +12,12 @@
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
   margin-bottom: 80px;
+
+  @media (min-width: $min-md) {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 .treasury {

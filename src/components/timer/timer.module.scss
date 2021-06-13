@@ -8,7 +8,18 @@
 
   &.large {
     flex-direction: column;
-    align-items: flex-end;
+
+    @media (min-width: $min-md) {
+      align-items: flex-end;
+    }
+
+    @media (max-width: $max-md) {
+      align-items: flex-start;
+    }
+
+    @media (max-width: $max-xs) {
+      display: block;
+    }
 
     .timerContainer {
       border-top: 1px solid $secondary-black-color;
@@ -17,6 +28,11 @@
       padding-bottom: 2px;
       margin-top: $space-xxs;
       margin-right: 0;
+      margin-left: 0;
+
+      @media (max-width: $max-xs) {
+        justify-content: center;
+      }
     }
 
     .timerNumber {
@@ -43,7 +59,7 @@
 .timerContainer {
   display: flex;
   align-items: center;
-  margin-right: $space-xxs;
+  margin: 0 $space-xxs;
 }
 
 .timerWrap {

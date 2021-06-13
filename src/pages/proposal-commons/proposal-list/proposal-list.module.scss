@@ -1,26 +1,48 @@
 @import '../../../styles/variables.module.scss';
 
 .proposalItem {
-  display: flex;
-  align-items: center;
   border-top: 1px solid $black-line-color;
   padding-top: $space-md;
   padding-bottom: $space-lg;
+
+  @media (min-width: $min-md) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 .proposalItemWrapper {
   max-width: calc(100% - 330px);
-  width: 60%;
   font-weight: 500;
   padding-right: $space-xxxl;
+  box-sizing: border-box;
+
+  @media (max-width: $max-xl) {
+    max-width: calc(100% - 280px);
+    padding-right: $space-xl;
+  }
+
+  @media (max-width: $max-md) {
+    max-width: none;
+    padding-right: 0;
+  }
 }
 
 .proposalItemTitle {
-  color: $primary-color;
   margin-bottom: $space-xxs;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+
+  @media (max-width: $max-md) {
+    margin-bottom: $space-md;
+  }
+
+  a {
+    color: $primary-color;
+    text-decoration: none;
+  }
 }
 
 .proposalItemVoteId {
@@ -35,22 +57,39 @@
 .proposalItemSubtitle {
   display: flex;
   align-items: center;
-  font-size: 12px;
-  line-height: 18px;
 }
 
 .proposalItemBox {
   display: flex;
   align-items: center;
+  font-size: 12px;
+  line-height: 18px;
 
-  &.mr {
-    margin-right: 2 * $space-xl;
+  &.mobile {
+    margin-bottom: $space-xxs;
+
+    @media (min-width: $min-lg) {
+      display: none;
+    }
   }
 
-  &.date {
-    min-width: 200px;
-    margin-right: $space-lg;
+  &.desktop {
+    min-width: 220px;
+    padding-right: $space-md;
+    box-sizing: border-box;
+
+    @media (max-width: $max-xl) {
+      min-width: 210px;
+    }
+
+    @media (max-width: $max-lg) {
+      display: none;
+    }
   }
+}
+
+.proposalItemTag {
+  margin-left: $space-md;
 }
 
 .proposalVoteBar {
@@ -59,11 +98,28 @@
   display: flex;
   align-items: center;
 
-  & > * {
-    margin-right: $space-lg;
+  @media (max-width: $max-xl) {
+    max-width: 280px;
   }
 
-  & > *:last-child {
-    margin-right: 0;
+  @media (max-width: $max-md) {
+    max-width: none;
+    margin-top: $space-xl;
+  }
+
+  @media (min-width: $min-md) {
+    & > * {
+      margin-right: $space-lg;
+    }
+
+    & > *:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.proposalVoteArrow {
+  @media (max-width: $max-md) {
+    display: none;
   }
 }
