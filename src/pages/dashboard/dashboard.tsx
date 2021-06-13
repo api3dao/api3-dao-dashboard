@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers';
 import { useState } from 'react';
 import { useChainData } from '../../chain-data';
-import { abbrStr } from '../../chain-data/helpers';
 import { useApi3Pool, useApi3Token } from '../../contracts';
 import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
 import { formatApi3 } from '../../utils';
