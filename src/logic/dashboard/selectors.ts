@@ -33,7 +33,7 @@ export const stakingPoolSelector = (dashboardData: ConvenienceDashboardData | nu
   const stakingTarget = absoluteStakeTarget(stakeTarget, api3Supply);
   const stakedPercentage = totalStakedPercentage(totalStake, stakingTarget);
 
-  return { currentApy, annualInflationRate, stakedPercentage };
+  return { currentApy, annualInflationRate, stakeTarget, stakedPercentage };
 };
 
 export const pendingUnstakeSelector = (dashboardData: ConvenienceDashboardData | null) => {

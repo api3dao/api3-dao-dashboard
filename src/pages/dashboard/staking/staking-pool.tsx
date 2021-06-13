@@ -15,7 +15,7 @@ const StakingPool = () => {
   const stakedPercentage = parseFloat((stakingPool?.stakedPercentage || 0).toFixed(2));
 
   const totalStaked = parseFloat(data ? formatApi3(data.totalStake) : '0').toLocaleString();
-  const stakeTarget = parseFloat(data ? formatApi3(data.stakeTarget) : '0').toLocaleString();
+  const stakeTarget = parseFloat(stakingPool ? formatApi3(stakingPool.stakeTarget) : '0').toLocaleString();
 
   return (
     <div className={styles.stakingPool}>
