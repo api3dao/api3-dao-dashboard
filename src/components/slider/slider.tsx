@@ -2,7 +2,6 @@ import { MouseEvent, KeyboardEvent } from 'react';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import classNames from 'classnames';
-import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './slider.module.scss';
 
 const sliderData = [
@@ -16,12 +15,26 @@ const dot = (onClick: (e: MouseEvent | KeyboardEvent) => void, isSelected: boole
 );
 
 const arrow = (direction: 'prev' | 'next', onClick: () => void) => (
-  <img
-    className={classNames(styles.arrow, { [styles.left]: direction === 'prev', [styles.right]: direction === 'next' })}
-    src={`/triangle-bracket-${direction === 'prev' ? 'left' : 'right'}.svg`}
-    onClick={onClick}
-    alt="arrow"
-  />
+  <>
+    <img
+      className={classNames(styles.sliderArrow, styles.desktop, {
+        [styles.left]: direction === 'prev',
+        [styles.right]: direction === 'next',
+      })}
+      src={`/triangle-bracket-${direction === 'prev' ? 'left' : 'right'}.svg`}
+      onClick={onClick}
+      alt="arrow"
+    />
+    <img
+      className={classNames(styles.sliderArrow, styles.mobile, {
+        [styles.left]: direction === 'prev',
+        [styles.right]: direction === 'next',
+      })}
+      src={`/triangle-bracket-${direction === 'prev' ? 'left' : 'right'}-mobile.svg`}
+      onClick={onClick}
+      alt="mobile arrow"
+    />
+  </>
 );
 
 const Slider = () => {
@@ -41,9 +54,9 @@ const Slider = () => {
             <div className={styles.sliderContent}>
               <div className={styles.sliderNumberWrap}>
                 <img src="/triangles.svg" alt="triangles" />
-                <h2 className={styles.sliderNumber}>{index + 1}</h2>
+                <p className={styles.sliderNumber}>{index + 1}</p>
               </div>
-              <p className={globalStyles.textLarge}>{slideItem}</p>
+              <p className={styles.sliderText}>{slideItem}</p>
             </div>
           </div>
         ))}

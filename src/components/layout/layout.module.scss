@@ -15,6 +15,21 @@
   padding-right: $space-xxl;
   padding-left: 184px;
   padding-bottom: 2 * $space-xxl;
+
+  @media (max-width: $max-lg) {
+    padding-left: 110px;
+  }
+
+  @media (max-width: $max-md) {
+    padding-top: $space-xxxl;
+    padding-right: $space-lg;
+    padding-left: 2 * $space-xxl;
+  }
+
+  @media (max-width: $max-sm) {
+    padding: $space-lg;
+    padding-bottom: $space-xxxl;
+  }
 }
 
 .layoutTexture {

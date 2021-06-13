@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router';
 
 // Allows access to the previous to the previous value when re-rendering
 // https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
@@ -24,4 +25,9 @@ export const useIsMount = () => {
     isMountRef.current = false;
   }, []);
   return isMountRef.current;
+};
+
+// https://reactrouter.com/web/example/query-parameters
+export const useQueryParams = () => {
+  return new URLSearchParams(useLocation().search);
 };

@@ -103,7 +103,7 @@ const TokenDepositForm = (props: Props) => {
 
       <div className={globalStyles.textCenter}>
         <p className={styles.tokenAmountFormToken}>TOKEN</p>
-        <Input type="number" value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
+        <Input type="number" autosize value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
         {error && <p className={styles.tokenAmountFormError}>{error}</p>}
         <div className={styles.tokenDepositFormBalance}>
           Wallet balance: {walletBalance ? formatApi3(walletBalance) : '0.0'}

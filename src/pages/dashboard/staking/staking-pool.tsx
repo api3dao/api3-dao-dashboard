@@ -22,7 +22,7 @@ const StakingPool = () => {
       <div className={classNames(styles.stakingTable, styles.twoCells)}>
         <div className={styles.stakingTableRow}>
           <div className={classNames(styles.stakingTableCell, styles.rightAlign)}>
-            <h3>{currentApy}%</h3>
+            <p className={styles.stakingAnnualApy}>{currentApy}%</p>
           </div>
           <div className={styles.stakingTableCell}>
             <p className={globalStyles.secondaryColor}>Annual rewards (APY)</p>
@@ -37,21 +37,25 @@ const StakingPool = () => {
           </div>
         </div>
       </div>
-      <div className={styles.stakingTable}>
-        <div className={styles.stakingTableRow}>
-          <div className={classNames(styles.stakingTableCell, styles.oneCell, styles.rightAlign)}>
-            <p className={styles.stakingTableCellTitle}>total staked</p>
-            <p className={globalStyles.medium}>{totalStaked}</p>
+      <div className={styles.stakingTableWrap}>
+        <div className={classNames(styles.stakingTable, styles.oneCell)}>
+          <div className={styles.stakingTableRow}>
+            <div className={classNames(styles.stakingTableCell, styles.oneCell, styles.rightAlign)}>
+              <p className={styles.stakingTableCellTitle}>total staked</p>
+              <p className={globalStyles.medium}>{totalStaked}</p>
+            </div>
+          </div>
+          <div className={styles.stakingTableRow}>
+            <div className={classNames(styles.stakingTableCell, styles.oneCell, styles.rightAlign)}>
+              <p className={styles.stakingTableCellTitle}>staking target</p>
+              <p className={globalStyles.medium}>{stakeTarget}</p>
+            </div>
           </div>
         </div>
-        <div className={styles.stakingTableRow}>
-          <div className={classNames(styles.stakingTableCell, styles.oneCell, styles.rightAlign)}>
-            <p className={styles.stakingTableCellTitle}>staking target</p>
-            <p className={globalStyles.medium}>{stakeTarget}</p>
-          </div>
+        <div className={styles.stakingRadialChart}>
+          <RadialChart completionPercent={stakedPercentage} />
         </div>
       </div>
-      <RadialChart completionPercent={stakedPercentage} />
     </div>
   );
 };

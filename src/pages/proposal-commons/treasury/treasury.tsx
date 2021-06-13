@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../../components/dropdown/dropdown';
 import { FormattedTreasury, useTreasuries } from './hooks';
 import globalStyles from '../../../styles/global-styles.module.scss';
@@ -34,11 +35,16 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
   );
 };
 
-const Treasury = () => {
+interface TreasuryProps {
+  className?: string;
+}
+
+const Treasury = (props: TreasuryProps) => {
+  const { className } = props;
   const { primary, secondary } = useTreasuries();
 
   return (
-    <div className={styles.treasury}>
+    <div className={classNames(styles.treasury, className)}>
       <p
         className={`${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.uppercase} ${globalStyles.textRight}`}
       >

@@ -4,11 +4,27 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+
   & > * {
     margin-right: $space-xxl;
   }
+
   & > *:last-child {
     margin-right: 0;
+  }
+
+  @media (max-width: $max-md) {
+    flex-direction: column;
+    align-items: center;
+
+    & > * {
+      margin-right: 0;
+      margin-bottom: 100px;
+    }
+
+    & > *:last-child {
+      margin-bottom: 0;
+    }
   }
 }
 
@@ -29,4 +45,15 @@
   font-weight: 500;
   color: $secondary-color;
   text-transform: uppercase;
+}
+
+.dashboardHeader {
+  font-size: $heading-5;
+  line-height: $lh-heading-5;
+  color: $green-color;
+
+  @media (max-width: $max-sm) {
+    font-size: $text-normal;
+    line-height: $lh-normal;
+  }
 }

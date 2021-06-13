@@ -42,15 +42,15 @@ const Dashboard = () => {
   const canWithdraw = !disconnected && (tokenBalances?.withdrawable.gt(0) ?? false);
 
   return (
-    <Layout title={disconnected ? 'Welcome to the API3 DAO' : abbrStr(userAccount)} sectionTitle="Staking">
+    <Layout title="Staking">
       {pendingUnstake?.canUnstake && <UnstakeBanner />}
       {!pendingUnstake?.canUnstake && (
         <>
-          <h5 className={globalStyles.greenColor}>How This Works</h5>
+          <p className={styles.dashboardHeader}>How This Works</p>
           <Slider />
         </>
       )}
-      <h5 className={globalStyles.greenColor}>Staking Pool</h5>
+      <p className={styles.dashboardHeader}>Staking Pool</p>
       <StakingPool />
       <div className={styles.borderedBoxesWrap}>
         <div className={styles.stakingBoxWrap}>

@@ -71,8 +71,6 @@ const config: HardhatUserConfig = {
   },
   paths: {
     /**
-     * TODO: Fix https://github.com/api3dao/api3-dao-dashboard/issues/8.
-     *
      * For now, we need the code of the contracts to build TypeChain wrappers for solidity contracts. Unfortunately,
      * there need to be couple of hacks to support this:
      *  1) Use DAO contracts dependency with github URL
@@ -85,7 +83,7 @@ const config: HardhatUserConfig = {
      * I've tried to workaround this using solidity `--allow-paths` but that didn't work.
      *
      * NOTE: The deployment of DAO contracts is done using the DAO contracts repository
-     * (https://github.com/api3dao/api3-dao). See README for more information why.
+     * (https://github.com/api3dao/api3-dao). See README for more information.
      */
     sources: 'contracts',
   },

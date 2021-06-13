@@ -85,13 +85,9 @@ We use [Fleek](https://fleek.co/) to host the application on IPFS. The hosting w
 - Every PR against `main` branch will be deployed as github action and you can find the IPFS hash in the "fleek deploy
   check" details.
 - The current version of app in `main` branch will be deployed as staging on the following URL:
-  https://blue-field-6902.on.fleek.co/. The app will be redeployed after every merged request automatically.
+  https://api3-dao-dashboard-staging.on.fleek.co/. The app will be redeployed after every merged request automatically.
 - Every push to `production` branch will trigger a production deploy. The app can be found on this URL:
-  https://late-butterfly-0267.on.fleek.co/
-
-> There is an [issue](https://github.com/api3dao/api3-dao-dashboard/issues/2) to setup ENS name for the production app
-> to avoid the strange name. Also, to keep fleek usage for free, only [@siegrift](https://github.com/Siegrift) has the
-> access rights to deployment dashboard.
+  api3-dao-dashboard.on.fleek.co/
 
 Apart from that, we are using [environment
 variables](https://create-react-app.dev/docs/adding-custom-environment-variables/), specifically `REACT_APP_NODE_ENV` to
@@ -108,3 +104,42 @@ branch:
 
 > Note: As of now it's possible to push directly to production, but this will change after
 > https://github.com/api3dao/api3-dao-dashboard/issues/5 is resolved.
+
+### Verifying the Fleek build
+
+We're using Fleek to build and deploy the dashboard.
+To avoid trusting Fleek to build and deploy the app correctly, one can also build it locally and compare its hash with the IPFS deployment.
+
+To do so, first create a `docker-compose.yml` as explained [here](https://docs.fleek.co/hosting/site-deployment/#testing-deployments-locally) in this repo
+
+```yml
+version: '3.7'
+services:
+  verdaccio:
+    container_name: verdaccio
+    image: verdaccio/verdaccio
+    ports:
+      - "4873:4873"
+
+  app:
+    image: fleek/create-react-app
+    command: sh -c 'npm set registry http://verdaccio:4873 && yarn && yarn build'
+    working_dir: /workspace/build
+    environment:
+      - REACT_APP_NODE_ENV=staging
+      - REACT_APP_ROPSTEN_PROVIDER_URL=https://ropsten.infura.io/v3/...
+    volumes:
+      - './:/workspace'
+```
+and run `docker-compose run --rm app`, which will create a `./build` directory.
+
+Then, (after installing `ipfs`) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build (`sudo` because `build` will likely be owned by root).
+This should be the same as the IPFS hash as the one on the Fleek dashboard and what our ENS/IPNS is pointing towards.
+
+## Error Monitoring
+
+Please note that the API3 core team tracks application errors on test and production environments using [Sentry](https://sentry.io). This is solely used to fix errors and improve the user experience.
+
+**NOTE: No identifying user information is collected**
+
+If hosting yourself, you can test Sentry by creating your own account and following the [React installation guide](https://docs.sentry.io/platforms/javascript/guides/react/)

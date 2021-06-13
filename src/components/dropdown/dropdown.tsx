@@ -11,6 +11,7 @@ interface DropdownProps {
 
 interface DropdownMenuProps {
   children: ReactNode;
+  position?: 'top' | 'bottom';
 }
 
 interface DropdownMenuItemProps {
@@ -19,7 +20,16 @@ interface DropdownMenuItemProps {
   onClick?: () => void;
 }
 
-export const DropdownMenu = ({ children }: DropdownMenuProps) => <div className={styles.dropdownMenu}>{children}</div>;
+export const DropdownMenu = ({ children, position = 'bottom' }: DropdownMenuProps) => (
+  <div
+    className={classNames(styles.dropdownMenu, {
+      [styles.top]: position === 'top',
+      [styles.bottom]: position === 'bottom',
+    })}
+  >
+    {children}
+  </div>
+);
 
 export const DropdownMenuItem = ({ children, className, onClick }: DropdownMenuItemProps) => (
   <div onClick={onClick} className={classNames(styles.dropdownMenuItem, className, { [styles.clickable]: onClick })}>
