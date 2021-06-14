@@ -24,3 +24,15 @@
   margin-top: $space-xl;
   color: $error-color;
 }
+
+.inputWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.maxButton {
+  button {
+    margin: 0 0 0 $space-sm;
+  }
+}

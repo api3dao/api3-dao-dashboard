@@ -80,10 +80,12 @@ const TokenAmountForm = (props: Props) => {
       {showTokenInput && (
         <div className={globalStyles.textCenter}>
           <p className={styles.tokenAmountFormToken}>TOKEN</p>
-          <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
-          <Button type="secondary" onClick={handleSetMax}>
-            Max
-          </Button>
+          <div className={styles.inputWrapper}>
+            <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
+            <Button className={styles.maxButton} type="text" onClick={handleSetMax}>
+              Max
+            </Button>
+          </div>
 
           {error && <p className={styles.tokenAmountFormError}>{error}</p>}
           {helperText}

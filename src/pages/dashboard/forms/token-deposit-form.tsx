@@ -105,10 +105,18 @@ const TokenDepositForm = (props: Props) => {
 
       <div className={globalStyles.textCenter}>
         <p className={styles.tokenAmountFormToken}>TOKEN</p>
-        <Input type="number" autosize value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
-        <Button type="secondary" onClick={handleSetMax}>
-          Max
-        </Button>
+        <div className={styles.inputWrapper}>
+          <Input
+            type="number"
+            autosize
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            size="large"
+          />
+          <Button className={styles.maxButton} type="text" onClick={handleSetMax} size="normal">
+            Max
+          </Button>
+        </div>
 
         {error && <p className={styles.tokenAmountFormError}>{error}</p>}
 
