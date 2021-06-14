@@ -7,18 +7,24 @@ export interface PendingUnstake {
   scheduledFor: Date;
 }
 
-export interface DashboardState {
-  allowance: BigNumber;
-  annualApy: number;
-  annualInflationRate: number;
-  balance: BigNumber;
-  ownedTokens: BigNumber;
-  pendingUnstake: PendingUnstake | null;
+export interface ConvenienceDashboardData {
+  api3Supply: BigNumber;
+  apr: BigNumber;
   stakeTarget: BigNumber;
-  totalStaked: BigNumber;
-  totalStakedPercentage: number;
-  userStake: BigNumber;
-  withdrawable: BigNumber;
+  totalShares: BigNumber;
+  totalStake: BigNumber;
+  userLocked: BigNumber;
+  userStaked: BigNumber;
+  userUnstaked: BigNumber;
+  userUnstakeAmount: BigNumber;
+  userUnstakeScheduledFor: BigNumber;
+  userUnstakeShares: BigNumber;
+  userVesting: BigNumber;
+}
+
+export interface DashboardState extends ConvenienceDashboardData {
+  allowance: BigNumber;
+  ownedTokens: BigNumber;
 }
 
 export interface ProposalMetadata {

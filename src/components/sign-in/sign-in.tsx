@@ -78,7 +78,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
 };
 
 const SignIn = ({ dark, position }: Props) => {
-  const { setChainData, provider, contracts, networkName } = useChainData();
+  const { setChainData, provider, networkName } = useChainData();
   useProviderSubscriptions(provider);
 
   const onWalletConnect = async () => {
@@ -123,13 +123,13 @@ const SignIn = ({ dark, position }: Props) => {
     setChainData('User connected', { ...data });
   };
 
-  const isSignedIn = !!provider && contracts !== null;
+  const isSignedIn = !!provider;
   const supportedNetworks = SUPPORTED_NETWORKS.filter((name) => {
     // Disable localhost network on non-development environment
     if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
     else return true;
   }).join(', ');
-  const isSupportedNetwork = !!isSignedIn || supportedNetworks.includes(networkName);
+  const isSupportedNetwork = !isSignedIn || supportedNetworks.includes(networkName);
 
   return (
     <>

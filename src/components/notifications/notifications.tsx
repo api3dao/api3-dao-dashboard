@@ -1,9 +1,12 @@
+import throttle from 'lodash/throttle';
 import { toast, Slide, ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // Use these static classes to style react-toastify defaults
 import './react-toastify-overrides.scss';
 // Use these classes to style content
 import styles from './notifications.module.scss';
+
+const THROTTLE_MS = 500;
 
 // TODO: add styling for various components
 interface CloseButtonProps {
@@ -22,52 +25,12 @@ interface ToastProps {
   url?: string;
 }
 
-const InfoToast = ({ message, url }: ToastProps) => {
-  return (
-    <>
-      <div>
-        <p>{message}</p>
-      </div>
-      {url && (
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          {url}
-        </a>
-      )}
-    </>
-  );
-};
+interface ToastPropsWithType extends ToastProps {
+  type: 'info' | 'success' | 'warning' | 'error';
+}
 
-const SuccessToast = ({ message, url }: ToastProps) => {
-  return (
-    <>
-      <div>
-        <p>{message}</p>
-      </div>
-      {url && (
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          {url}
-        </a>
-      )}
-    </>
-  );
-};
-
-const WarningToast = ({ message, url }: ToastProps) => {
-  return (
-    <>
-      <div>
-        <p>{message}</p>
-      </div>
-      {url && (
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          {url}
-        </a>
-      )}
-    </>
-  );
-};
-
-const ErrorToast = ({ message, url }: ToastProps) => {
+const CustomToast = ({ message, type, url }: ToastPropsWithType) => {
+  // TODO: style based on the type of toast
   return (
     <>
       <div>
@@ -89,25 +52,42 @@ const BASE_OPTIONS: ToastOptions = {
   hideProgressBar: true,
 };
 
-export const info = (props: ToastProps, overrides?: ToastOptions) => {
-  return toast.info(<InfoToast {...props} />, { ...BASE_OPTIONS, ...overrides });
-};
+// NOTE: toasts are throttled to prevent duplicate notifications being displayed.
+// This can occur due to callbacks being fired multiple times in quick succession
+export const info = throttle(
+  (props: ToastProps, overrides?: ToastOptions) => {
+    return toast.info(<CustomToast {...props} type="info" />, { ...BASE_OPTIONS, ...overrides });
+  },
+  THROTTLE_MS,
+  { trailing: false }
+);
 
-export const success = (props: ToastProps, overrides?: ToastOptions) => {
-  return toast.success(<SuccessToast {...props} />, { ...BASE_OPTIONS, ...overrides });
-};
+export const success = throttle(
+  (props: ToastProps, overrides?: ToastOptions) => {
+    return toast.info(<CustomToast {...props} type="success" />, { ...BASE_OPTIONS, ...overrides });
+  },
+  THROTTLE_MS,
+  { trailing: false }
+);
 
-export const warning = (props: ToastProps, overrides?: ToastOptions) => {
-  return toast.warning(<WarningToast {...props} />, { ...BASE_OPTIONS, ...overrides });
-};
+export const warning = throttle(
+  (props: ToastProps, overrides?: ToastOptions) => {
+    return toast.info(<CustomToast {...props} type="warning" />, { ...BASE_OPTIONS, ...overrides });
+  },
+  THROTTLE_MS,
+  { trailing: false }
+);
 
-export const error = (props: ToastProps, overrides?: ToastOptions) => {
-  return toast.error(<ErrorToast {...props} />, { ...BASE_OPTIONS, ...overrides });
-};
+export const error = throttle(
+  (props: ToastProps, overrides?: ToastOptions) => {
+    return toast.info(<CustomToast {...props} type="error" />, { ...BASE_OPTIONS, ...overrides });
+  },
+  THROTTLE_MS,
+  { trailing: false }
+);
 
 export const close = (id: React.ReactText) => toast.dismiss(id);
 
 export const closeAll = () => toast.dismiss();
 
 export const notifications = { info, success, warning, error, close, closeAll };
-

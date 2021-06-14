@@ -40,8 +40,7 @@ const ProposalStatus = (props: Props) => {
         </span>
       )}
       {proposalStatus === 'Execute' ? (
-        // TODO: implement onClick action
-        <Button type="text" className={styles.execute} buttonClassName={large ? styles.override : ''}>
+        <Button type="text" className={styles.execute}>
           {proposalStatus}
         </Button>
       ) : (

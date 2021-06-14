@@ -24,15 +24,6 @@ export const calculateAnnualInflationRate = (annualMintedTokens: BigNumber, tota
 
 // See: https://github.com/api3dao/api3-dao/blob/1dc0cfd219addcded295e0ae246461eaf6fae6e8/packages/pool/contracts/StateUtils.sol#L68
 export const HUNDRED_PERCENT = BigNumber.from(10).pow(18);
-export const ONE_PERCENT = HUNDRED_PERCENT.div(100);
-
-/**
- * Convert smart contract percentages to human readable percentages.
- * For example, 75 * 1e18 should convert to 0.75
- * If humanReadable is true, percentage is multiplied by 100
- */
-export const convertPercentage = (daoPercentage: BigNumber, humanReadable = false) =>
-  computePercentage(daoPercentage, HUNDRED_PERCENT, humanReadable);
 
 /**
  * Staking target is in percentages, where HUNDRED_PERCENT is the maximum value.
@@ -49,8 +40,6 @@ export const totalStakedPercentage = (totalStaked: BigNumber, stakeTarget: BigNu
   (totalStaked.mul(precision).div(stakeTarget).toNumber() / precision) * 100;
 
 export const MAX_ALLOWANCE = BigNumber.from(2).pow(256).sub(1);
-
-export const ALLOWANCE_REFILL_TRESHOLD = MAX_ALLOWANCE.div(2);
 
 export const computePercentage = (value: BigNumber, hundredPercent: BigNumber, humanReadable = false) => {
   const percentage = value.mul(precision).div(hundredPercent).toNumber() / precision;

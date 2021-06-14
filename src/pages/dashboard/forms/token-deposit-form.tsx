@@ -5,7 +5,7 @@ import { useChainData } from '../../../chain-data';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import * as notifications from '../../../components/notifications/notifications';
+import { notifications } from '../../../components/notifications/notifications';
 import {
   go,
   goSync,
@@ -22,12 +22,12 @@ import styles from './forms.module.scss';
 
 interface Props {
   allowance: BigNumber;
-  balance: BigNumber;
   onClose: () => void;
+  walletBalance: BigNumber;
 }
 
 const TokenDepositForm = (props: Props) => {
-  const { allowance, balance } = props;
+  const { allowance, walletBalance } = props;
 
   const { setChainData, transactions, userAccount } = useChainData();
   const api3Token = useApi3Token();
@@ -69,7 +69,7 @@ const TokenDepositForm = (props: Props) => {
       setError(messages.VALIDATION_INPUT_PARSE);
       return;
     }
-    if (inputBigNum.gt(balance)) {
+    if (inputBigNum.gt(walletBalance)) {
       setError(messages.VALIDATION_DEPOSIT_TOO_HIGH);
       return;
     }
@@ -107,7 +107,9 @@ const TokenDepositForm = (props: Props) => {
         <p className={styles.tokenAmountFormToken}>TOKEN</p>
         <Input type="number" autosize value={inputValue} onChange={(e) => setInputValue(e.target.value)} size="large" />
         {error && <p className={styles.tokenAmountFormError}>{error}</p>}
-        <div className={styles.tokenDepositFormBalance}>Wallet balance: {balance ? formatApi3(balance) : '0.0'}</div>
+        <div className={styles.tokenDepositFormBalance}>
+          Wallet balance: {walletBalance ? formatApi3(walletBalance) : '0.0'}
+        </div>
       </div>
 
       <ModalFooter>

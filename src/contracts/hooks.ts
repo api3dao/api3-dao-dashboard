@@ -8,6 +8,7 @@ import {
   Api3Voting__factory as Api3VotingFactory,
   Convenience__factory as ConvenienceFactory,
 } from '../generated-contracts';
+import { initialChainData } from '../chain-data/state';
 
 export const useApi3Pool = () => {
   const { provider, contracts } = useChainData();
@@ -76,7 +77,8 @@ export const useProviderSubscriptions = (provider: ethers.providers.Web3Provider
     if (!provider) return;
 
     const refreshChainData = async () => {
-      setChainData('EIP-1193 event triggered', { ...(await getNetworkData(provider)) });
+      // We also want to clear the application state because data from one chain is invalid on another
+      setChainData('EIP-1193 event triggered', { ...initialChainData, ...(await getNetworkData(provider)) });
     };
 
     const underlyingProvider = provider.provider as ethers.providers.Provider;

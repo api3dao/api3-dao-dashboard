@@ -23,7 +23,7 @@ const Delegation = () => {
   const [openChooseDelegateActionModal, setOpenChooseDelegateActionModal] = useState(false);
 
   const delegationCooldownOver = delegationCooldownOverSelector(delegation);
-  const canDelegate = delegationCooldownOver && dashboardState?.userStake.gt(0);
+  const canDelegate = delegationCooldownOver && dashboardState?.userStaked.gt(0);
 
   return (
     <>

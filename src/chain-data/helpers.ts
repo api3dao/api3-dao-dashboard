@@ -50,13 +50,14 @@ export const displayPendingTransaction = async (
   const url = `${etherscanHost}/tx/${transaction.hash}`;
 
   // It's common for transactions to take between 1-5 minutes to confirm. Keep the
-  // intiial "progress" toast open until then
+  // initial "progress" toast open until then
   const infoToastId = notifications.info({ url, message: messages.success }, { autoClose: false });
 
   // NOTE: ethers.js adds various additional fields to Error, so it's easier to type as 'any'
   // https://docs.ethers.io/v5/api/providers/types/#providers-TransactionRequest
   const [err] = (await go(transaction.wait())) as any;
-  notifications.close(infoToastId);
+
+  if (infoToastId) notifications.close(infoToastId);
 
   if (err) {
     // A receipt with status 0 means the transaction failed
