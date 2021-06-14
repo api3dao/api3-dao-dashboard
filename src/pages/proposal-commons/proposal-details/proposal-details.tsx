@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { Proposal, useChainData } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout/layout';
@@ -11,12 +11,13 @@ import BorderedBox, { Header } from '../../../components/bordered-box/bordered-b
 import { useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndId, decodeEvmScript } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
-import { useLoadAllProposals } from '../../../logic/proposals/hooks';
+import { useLoadProposalsByIds } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
 import ProposalStatus from '../proposal-list/proposal-status';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import classNames from 'classnames';
+import { BigNumber } from '@ethersproject/bignumber';
 
 interface RouterParameters {
   typeAndId: string;
@@ -27,7 +28,10 @@ const ProposalDetailsPage = () => {
   // TODO: Validate id and type - a proposal might not exist (e.g. user tries invalid voteId)
   const { id, type } = decodeProposalTypeAndId(typeAndId);
   const { proposals } = useChainData();
-  useLoadAllProposals();
+
+  // Need to memoize the id array to avoid infinite update loop
+  const memoizedId = useMemo(() => [BigNumber.from(id)], [id]);
+  useLoadProposalsByIds(type, memoizedId);
 
   const proposal = proposalDetailsSelector(proposals, type, id);
   // TODO: Loading component

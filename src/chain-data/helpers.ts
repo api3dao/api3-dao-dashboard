@@ -13,6 +13,9 @@ export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => vo
   });
 };
 
+export const updateImmutablyCurried = <T>(updateCb: (immutableState: T) => void) => (state: T) =>
+  updateImmutably(state, updateCb);
+
 export const getNetworkData = async (provider: ethers.providers.Web3Provider | null) => {
   // If the user has disconnected
   if (!provider) return initialChainData;

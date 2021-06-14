@@ -1,64 +1,15 @@
-import { BigNumber } from 'ethers';
 import { useCallback, useEffect } from 'react';
-import { Proposals, ProposalType, updateImmutably, useChainData, VoterState } from '../../../chain-data';
-import { Api3Voting, Convenience } from '../../../generated-contracts';
+import { Proposals, ProposalType, updateImmutably, updateImmutablyCurried, useChainData } from '../../../chain-data';
+import { Convenience } from '../../../generated-contracts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { Proposal } from '../../../chain-data';
-import { decodeMetadata } from '../encoding';
-import zip from 'lodash/zip';
-import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, GO_ERROR_INDEX } from '../../../utils';
+import { isGoSuccess, go, GO_RESULT_INDEX, GO_ERROR_INDEX } from '../../../utils';
 import { chunk, difference, keyBy } from 'lodash';
 import { openProposalIdsSelector, proposalDetailsSelector } from '../selectors';
-import { HUNDRED_PERCENT } from '../../../contracts';
-
-interface StartVoteProposal {
-  voteId: BigNumber;
-  creator: string;
-  metadata: string;
-}
-
-const getProposals = async (
-  api3Voting: Api3Voting,
-  userAccount: string,
-  startVoteProposals: StartVoteProposal[],
-  type: ProposalType
-): Promise<Proposal[]> => {
-  const startVotesInfo = startVoteProposals.map((p) => ({
-    voteId: p.voteId,
-    creator: p.creator,
-    metadata: decodeMetadata(p.metadata),
-  }));
-
-  const votingTime = await api3Voting.voteTime();
-  const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT);
-
-  const getVoteCallsInfo = (await Promise.all(startVotesInfo.map(({ voteId }) => api3Voting.getVote(voteId)))).map(
-    (p) => ({
-      open: p.open,
-      script: p.script,
-      executed: p.executed,
-      startDate: blockTimestampToDate(p.startDate),
-      startDateRaw: p.startDate,
-      supportRequired: toPercent(p.supportRequired),
-      minAcceptQuorum: toPercent(p.minAcceptQuorum),
-      yea: p.yea,
-      nay: p.nay,
-      votingPower: p.votingPower,
-      deadline: blockTimestampToDate(p.startDate.add(votingTime)),
-    })
-  );
-
-  const voterStatesInfo = await Promise.all(
-    startVotesInfo.map(({ voteId }) => api3Voting.getVoterState(voteId, userAccount))
-  );
-
-  return zip(startVotesInfo, getVoteCallsInfo, voterStatesInfo).map(([startVote, getVote, voterState]) => ({
-    ...startVote!,
-    ...getVote!,
-    voterState: voterState! as VoterState,
-    type,
-  }));
-};
+import { getProposals, StartVoteProposal } from './get-proposals';
+import { BigNumber } from '@ethersproject/bignumber';
+import { notifications } from '../../../components/notifications/notifications';
+import { messages } from '../../../utils/messages';
 
 const reloadActiveProposalsAsChunks = async (
   api3Voting: ReturnType<typeof useApi3Voting>,
@@ -212,4 +163,49 @@ export const useReloadActiveProposalsOnMinedBlock = () => {
 
   // Ensure that the proposals are up to date with blockchain
   usePossibleChainDataUpdate(reloadActiveProposals);
+};
+
+export const useLoadProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
+  const api3Voting = useApi3Voting();
+  const { userAccount, setChainData } = useChainData();
+
+  const loadProposalsByIds = useCallback(async () => {
+    if (!api3Voting) return;
+
+    const votingApp = api3Voting[type];
+    const startVoteFilters = ids.map((id) => votingApp.filters.StartVote(id, null, null));
+    const startVotePromises = startVoteFilters.map((filter) => votingApp.queryFilter(filter));
+
+    const goStartVoteFilters = await go(Promise.all(startVotePromises));
+    if (!isGoSuccess(goStartVoteFilters)) {
+      notifications.error(messages.FAILED_TO_LOAD_PROPOSALS);
+      return;
+    }
+    const startVotes: StartVoteProposal[] = goStartVoteFilters[GO_RESULT_INDEX].map((logs) => logs[0].args).map(
+      (log) => ({
+        // Removing ethers array-ish response format
+        creator: log.creator,
+        metadata: log.metadata,
+        voteId: log.voteId,
+      })
+    );
+
+    const loadedProposals = await getProposals(votingApp, userAccount, startVotes, type);
+    setChainData(
+      'Load proposals by ids',
+      updateImmutablyCurried((state) => {
+        if (!state.proposals) {
+          state.proposals = { primary: {}, secondary: {} };
+        }
+
+        for (const proposal of loadedProposals) {
+          state.proposals[type][proposal.voteId.toString()] = proposal;
+        }
+      })
+    );
+  }, [api3Voting, userAccount, setChainData, type, ids]);
+
+  useEffect(() => {
+    loadProposalsByIds();
+  }, [loadProposalsByIds]);
 };

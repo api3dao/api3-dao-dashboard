@@ -26,6 +26,9 @@ export const messages = {
   INVALID_DELEGATE_ADDRESS: 'Delegation target must be a valid non zero address',
   DELEGATE_IS_YOURSELF: "You can't delegate to yourself",
   REDELEGATION_IS_FORBIDDEN: (targetDelegate: string) => `Address ${targetDelegate} delegates to some other account`,
+
+  // Proposals errors
+  FAILED_TO_LOAD_PROPOSALS: 'Unable to load proposals',
 };
 
 // TODO: these messages should change depending on the final designs
