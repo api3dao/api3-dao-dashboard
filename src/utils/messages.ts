@@ -1,4 +1,6 @@
 export const messages = {
+  LOAD_DASHBOARD_ERROR: 'Failed to load latest dashboard data',
+
   // Transaction messages
   TX_APPROVAL_REJECTED: 'API3 token approval transaction rejected',
   TX_APPROVAL_ERROR: 'Failed to approve API3 token allowance. Please try again',
