@@ -15,7 +15,9 @@ const StakingPool = () => {
   const stakedPercentage = parseFloat((stakingPool?.stakedPercentage || 0).toFixed(2));
 
   const totalStaked = parseFloat(data ? formatApi3(data.totalStake) : '0').toLocaleString();
-  const stakeTarget = parseFloat(stakingPool ? formatApi3(stakingPool.stakeTarget) : '0').toLocaleString();
+  const stakingTargetInTokens = parseFloat(
+    stakingPool ? formatApi3(stakingPool.stakingTargetInTokens) : '0'
+  ).toLocaleString();
 
   return (
     <div className={styles.stakingPool}>
@@ -48,7 +50,7 @@ const StakingPool = () => {
           <div className={styles.stakingTableRow}>
             <div className={classNames(styles.stakingTableCell, styles.oneCell, styles.rightAlign)}>
               <p className={styles.stakingTableCellTitle}>staking target</p>
-              <p className={globalStyles.medium}>{stakeTarget}</p>
+              <p className={globalStyles.medium}>{stakingTargetInTokens}</p>
             </div>
           </div>
         </div>

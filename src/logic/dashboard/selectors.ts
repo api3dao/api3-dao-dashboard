@@ -30,10 +30,10 @@ export const stakingPoolSelector = (dashboardData: ConvenienceDashboardData | nu
   const annualMintedTokens = calculateAnnualMintedTokens(totalStake, currentApy);
   const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, api3Supply);
 
-  const stakingTarget = absoluteStakeTarget(stakeTarget, api3Supply);
-  const stakedPercentage = totalStakedPercentage(totalStake, stakingTarget);
+  const stakingTargetInTokens = absoluteStakeTarget(stakeTarget, api3Supply);
+  const stakedPercentage = totalStakedPercentage(totalStake, stakingTargetInTokens);
 
-  return { currentApy, annualInflationRate, stakeTarget, stakedPercentage };
+  return { currentApy, annualInflationRate, stakingTargetInTokens, stakedPercentage };
 };
 
 export const pendingUnstakeSelector = (dashboardData: ConvenienceDashboardData | null) => {
