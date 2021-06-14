@@ -53,7 +53,7 @@ const Timer = (props: Props) => {
   }, [deadline]);
 
   const largeSize = size === 'large' ? `${styles.large}` : '';
-  const status = `${dateDiff > 0 ? `Remaining${showDeadline ? '' : ':'}` : 'Ended'}`;
+  const status = dateDiff > 0 ? `Remaining${showDeadline ? '' : ':'}` : 'Ended';
   const formattedDeadline = `${dateDiff > 0 ? 'Ends on' : ''} ${formatDeadline(deadline)}`;
 
   return (
@@ -61,48 +61,24 @@ const Timer = (props: Props) => {
       <div className={globalStyles.tertiaryColor}>{status}</div>
       <div className={styles.timerContainer}>
         <div className={styles.timerWrap}>
-          <div
-            className={classNames(styles.timerNumber, {
-              [globalStyles.violetColor]: dateDiff > 0 && showDeadline,
-            })}
-          >
-            {timerDays}
-          </div>
+          <div className={styles.timerNumber}>{timerDays}</div>
           <div className={globalStyles.tertiaryColor}>D</div>
         </div>
         <div className={styles.timerColon}>:</div>
         <div className={styles.timerWrap}>
-          <div
-            className={classNames(styles.timerNumber, {
-              [globalStyles.violetColor]: dateDiff > 0 && showDeadline,
-            })}
-          >
-            {timerHours}
-          </div>
+          <div className={styles.timerNumber}>{timerHours}</div>
           <div className={globalStyles.tertiaryColor}>HR</div>
         </div>
         <div className={styles.timerColon}>:</div>
         <div className={styles.timerWrap}>
-          <div
-            className={classNames(styles.timerNumber, {
-              [globalStyles.violetColor]: dateDiff > 0 && showDeadline,
-            })}
-          >
-            {timerMinutes}
-          </div>
+          <div className={styles.timerNumber}>{timerMinutes}</div>
           <div className={globalStyles.tertiaryColor}>MIN</div>
         </div>
         {size === 'large' && (
           <>
             <div className={styles.timerColon}>:</div>
             <div className={styles.timerWrap}>
-              <div
-                className={classNames(styles.timerNumber, {
-                  [globalStyles.violetColor]: dateDiff > 0 && showDeadline,
-                })}
-              >
-                {timerSeconds}
-              </div>
+              <div className={styles.timerNumber}>{timerSeconds}</div>
               <div className={globalStyles.tertiaryColor}>SEC</div>
             </div>
           </>
