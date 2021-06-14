@@ -76,7 +76,7 @@ const TokenDepositForm = (props: Props) => {
 
     setError('');
 
-    const goResponse = await go(api3Pool.deposit(userAccount, parseApi3(inputValue), userAccount));
+    const goResponse = await go(api3Pool.depositRegular(parseApi3(inputValue)));
     if (isGoSuccess(goResponse)) {
       const tx = goResponse[GO_RESULT_INDEX];
       setChainData('Save deposit transaction', { transactions: [...transactions, { type: 'deposit', tx }] });

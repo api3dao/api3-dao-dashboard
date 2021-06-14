@@ -10,24 +10,29 @@ import { encodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logi
 import ProposalList from '../proposal-commons/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
-import { openProposalsSelector } from '../../logic/proposals/selectors';
+import { openProposalsSelector, canCreateNewProposalSelector } from '../../logic/proposals/selectors';
 import styles from './proposals.module.scss';
 import Delegation from './delegation';
 import { useChainData } from '../../chain-data';
+import { useLoadDashboardData } from '../../logic/dashboard';
 
 const Proposals = () => {
-  const { proposals } = useChainData();
+  // TODO: Retrieve only "userVotingPower" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
+  const { proposals, delegation, dashboardState } = useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
   const api3Agent = useApi3AgentAddresses();
 
   const [openNewProposalModal, setOpenNewProposalModal] = useState(false);
 
+  useLoadDashboardData();
+
   useLoadAllProposals();
   useReloadActiveProposalsOnMinedBlock();
   useTreasuryAndDelegation();
 
   const sortedProposals = openProposalsSelector(proposals);
+  const canCreateNewProposal = canCreateNewProposalSelector(delegation, dashboardState);
 
   const onCreateProposal = async (formData: NewProposalFormData) => {
     if (!api3Token || !api3Voting || !api3Agent) return null;
@@ -54,7 +59,7 @@ const Proposals = () => {
         header={
           <Header>
             <h5>Proposals</h5>
-            <Button onClick={() => setOpenNewProposalModal(true)} size="large" disabled={!api3Agent}>
+            <Button onClick={() => setOpenNewProposalModal(true)} size="large" disabled={!canCreateNewProposal}>
               + New proposal
             </Button>
           </Header>

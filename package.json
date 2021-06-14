@@ -86,7 +86,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-input-autosize": "^2.2.0",
     "@types/react-router-dom": "^5.1.7",
-    "api3-dao": "git+https://github.com/api3dao/api3-dao.git#344feb59c3a8219c0d25300fad5a75ad391c010a",
+    "api3-dao": "git+https://github.com/api3dao/api3-dao.git#0bc9ee4a4a29828f4b034e1e03005f5cdb27f9e5",
     "chai": "^4.3.4",
     "dotenv": "^10.0.0",
     "hardhat": "^2.2.1",

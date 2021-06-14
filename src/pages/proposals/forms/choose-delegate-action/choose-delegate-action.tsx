@@ -5,10 +5,12 @@ import styles from './choose-delegate-action.module.scss';
 interface Props {
   onUpdateDelegation: () => void;
   onUndelegate: () => void;
+  canUpdateDelegation: boolean;
+  canUndelegate: boolean;
 }
 
 const ChooseDelegateAction = (props: Props) => {
-  const { onUpdateDelegation, onUndelegate } = props;
+  const { onUpdateDelegation, onUndelegate, canUpdateDelegation, canUndelegate } = props;
 
   return (
     <>
@@ -16,11 +18,11 @@ const ChooseDelegateAction = (props: Props) => {
 
       <ModalFooter>
         <div className={styles.actions}>
-          <Button type="secondary" onClick={onUpdateDelegation}>
+          <Button type="secondary" onClick={onUpdateDelegation} disabled={!canUpdateDelegation}>
             Update delegation
           </Button>
 
-          <Button type="secondary" onClick={onUndelegate}>
+          <Button type="secondary" onClick={onUndelegate} disabled={!canUndelegate}>
             Undelegate
           </Button>
         </div>

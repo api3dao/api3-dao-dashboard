@@ -9,6 +9,7 @@ import zip from 'lodash/zip';
 import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, GO_ERROR_INDEX } from '../../utils';
 import { chunk, difference, keyBy } from 'lodash';
 import { openProposalIdsSelector, proposalDetailsSelector } from './selectors';
+import { HUNDRED_PERCENT } from '../../contracts';
 
 interface StartVoteProposal {
   voteId: BigNumber;
@@ -29,8 +30,7 @@ const getProposals = async (
   }));
 
   const votingTime = await api3Voting.voteTime();
-  const PCT_BASE = await api3Voting.PCT_BASE();
-  const toPercent = (value: BigNumber) => value.mul(100).div(PCT_BASE);
+  const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT);
 
   const getVoteCallsInfo = (await Promise.all(startVotesInfo.map(({ voteId }) => api3Voting.getVote(voteId)))).map(
     (p) => ({

@@ -25,19 +25,12 @@ export const useLoadDashboardData = () => {
       return;
     }
 
-    // TODO: get this from stakingData.userApi3Balance when available
-    const [ownedTokensErr, ownedTokens] = await go(api3Token.balanceOf(userAccount));
-    if (ownedTokensErr || !ownedTokens) {
-      notifications.error({ message: messages.LOAD_DASHBOARD_ERROR });
-      return;
-    }
-
     setChainData('Load dashboard data', {
       dashboardState: {
         allowance,
-        ownedTokens,
         // NOTE: normally we could just spread the stakingData object here, but ethers.js
         // also returns the values in an array.
+        userApi3Balance: stakingData.userApi3Balance,
         api3Supply: stakingData.api3Supply,
         apr: stakingData.apr,
         stakeTarget: stakingData.stakeTarget,
