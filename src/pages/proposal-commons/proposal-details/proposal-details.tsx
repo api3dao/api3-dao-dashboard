@@ -59,9 +59,9 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
         </Tag>
       </div>
       <div className={styles.proposalDetailsHeader}>
-        <h4>{proposal.metadata.title}</h4>
+        <p className={styles.proposalDetailsTitle}>{proposal.metadata.title}</p>
         <div className={styles.proposalDetailsTimer}>
-          <Timer size="large" deadline={proposal.deadline} />
+          <Timer size="large" deadline={proposal.deadline} showDeadline />
         </div>
       </div>
       <ProposalStatus proposal={proposal} large />
@@ -94,7 +94,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
             </p>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target contract address</p>
-              <p className={globalStyles.secondaryColor}>{evmScriptData.targetAddress}</p>
+              <p className={classNames(globalStyles.secondaryColor, styles.address)}>{evmScriptData.targetAddress}</p>
             </div>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target contract signature</p>
@@ -112,6 +112,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
             </div>
           </div>
         }
+        noMobileBorders
       />
     </div>
   );

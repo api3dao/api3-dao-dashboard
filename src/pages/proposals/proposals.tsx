@@ -60,6 +60,7 @@ const Proposals = () => {
           </Header>
         }
         content={<ProposalList proposals={sortedProposals} />}
+        noMobileBorders
       />
       <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)} size="large">
         <NewProposalForm

@@ -70,6 +70,7 @@ const History = () => {
           </div>
         }
         content={<ProposalList proposals={proposalsToShow} />}
+        noMobileBorders
       />
     </BaseLayout>
   );
