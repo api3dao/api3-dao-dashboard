@@ -16,11 +16,12 @@ interface CloseButtonProps {
 // TODO: this should have the same styling as the modal close button
 export const CloseButton = ({ closeToast }: CloseButtonProps) => (
   <div className={styles.closeButton} onClick={() => closeToast()}>
-    X
+    <img src="/notification-close.svg" alt="notification close button" />
   </div>
 );
 
 interface ToastProps {
+  title?: string;
   message: string;
   url?: string;
 }
@@ -29,11 +30,13 @@ interface ToastPropsWithType extends ToastProps {
   type: 'info' | 'success' | 'warning' | 'error';
 }
 
-const CustomToast = ({ message, type, url }: ToastPropsWithType) => {
+const CustomToast = ({ message, title, type, url }: ToastPropsWithType) => {
   // TODO: style based on the type of toast
   return (
-    <>
-      <div>
+    <div className={styles.notificationBody}>
+      <img src={`/${type}.svg`} alt={`${type} icon`} />
+      <div className={styles.notificationContent}>
+        {title && <p className={styles.notificationTitle}>{title}</p>}
         <p>{message}</p>
       </div>
       {url && (
@@ -41,7 +44,7 @@ const CustomToast = ({ message, type, url }: ToastPropsWithType) => {
           {url}
         </a>
       )}
-    </>
+    </div>
   );
 };
 
@@ -49,7 +52,8 @@ const CustomToast = ({ message, type, url }: ToastPropsWithType) => {
 const BASE_OPTIONS: ToastOptions = {
   transition: Slide,
   closeButton: CloseButton,
-  hideProgressBar: true,
+  hideProgressBar: false,
+  autoClose: 100000,
 };
 
 // NOTE: toasts are throttled to prevent duplicate notifications being displayed.

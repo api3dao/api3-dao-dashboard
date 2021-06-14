@@ -17,7 +17,11 @@ $dropdown-bgd: #030303;
 $dropdown-border-color: rgba(#404141, 0.6);
 $dropdown-shadow: 0px 4px 8px rgba(148, 223, 203, 0.5);
 $tooltip-shadow: 0px 9px 28px 8px rgba(0, 0, 0, 0.05), 0px 3px 6px -4px rgba(0, 0, 0, 0.12);
-$error-color: #d233f2;
+$error-color: $pink-color;
+$progressbar-info: #6699ff;
+$progressbar-success: #57d4a2;
+$progressbar-warning: #ffc53d;
+$progressbar-error: $pink-color;
 
 // FONT-SIZES
 $heading-1: 136px;
