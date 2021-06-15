@@ -92,7 +92,7 @@ const TokenDepositForm = (props: Props) => {
     props.onClose();
   };
 
-  const handleSetMax = () => setInputValue(formatApi3(balance.toString()));
+  const handleSetMax = () => setInputValue(formatApi3(walletBalance.toString()));
 
   if (!api3Pool || !api3Token) {
     return null;
