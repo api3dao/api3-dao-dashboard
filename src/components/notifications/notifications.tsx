@@ -1,5 +1,7 @@
 import throttle from 'lodash/throttle';
+import classNames from 'classnames';
 import { toast, Slide, ToastOptions } from 'react-toastify';
+import NotificationLinkButton from './notification-link-button';
 import 'react-toastify/dist/ReactToastify.css';
 // Use these static classes to style react-toastify defaults
 import './react-toastify-overrides.scss';
@@ -16,11 +18,12 @@ interface CloseButtonProps {
 // TODO: this should have the same styling as the modal close button
 export const CloseButton = ({ closeToast }: CloseButtonProps) => (
   <div className={styles.closeButton} onClick={() => closeToast()}>
-    X
+    <img src="/notification-close.svg" alt="notification close button" />
   </div>
 );
 
 interface ToastProps {
+  title?: string;
   message: string;
   url?: string;
 }
@@ -29,19 +32,21 @@ interface ToastPropsWithType extends ToastProps {
   type: 'info' | 'success' | 'warning' | 'error';
 }
 
-const CustomToast = ({ message, type, url }: ToastPropsWithType) => {
+const CustomToast = ({ message, title, type, url }: ToastPropsWithType) => {
   // TODO: style based on the type of toast
   return (
-    <>
-      <div>
+    <div className={classNames(styles.notificationBody, { [styles.url]: url })}>
+      <img src={`/${type}.svg`} alt={`${type} icon`} />
+      <div className={styles.notificationContent}>
+        <p className={styles.notificationTitle}>{title || type}</p>
         <p>{message}</p>
+        {url && (
+          <div className={styles.notificationUrl}>
+            <NotificationLinkButton href={url}>View transaction</NotificationLinkButton>
+          </div>
+        )}
       </div>
-      {url && (
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          {url}
-        </a>
-      )}
-    </>
+    </div>
   );
 };
 
@@ -49,7 +54,7 @@ const CustomToast = ({ message, type, url }: ToastPropsWithType) => {
 const BASE_OPTIONS: ToastOptions = {
   transition: Slide,
   closeButton: CloseButton,
-  hideProgressBar: true,
+  hideProgressBar: false,
 };
 
 // NOTE: toasts are throttled to prevent duplicate notifications being displayed.

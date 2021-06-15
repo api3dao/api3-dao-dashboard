@@ -1,10 +1,62 @@
+@import '../../styles/variables.module.scss';
+
 /*
- * NOTE: Use these classes to style notification content.
- *
- * react-toastify defaults can be overridden in react-toastify-overrides.scss.
- * This would include styling for things like backgrounds and containers
- */
+* NOTE: Use these classes to style notification content.
+*
+* react-toastify defaults can be overridden in react-toastify-overrides.scss.
+* This would include styling for things like backgrounds and containers
+*/
+
+.notificationBody {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  padding: $space-xl;
+  box-sizing: border-box;
+
+  &.url {
+    padding: $space-lg;
+  }
+
+  @media (max-width: $max-sm) {
+    padding: $space-lg;
+  }
+}
+
+.notificationContent {
+  flex: 1;
+  margin-left: $space-md;
+}
+
+.notificationTitle {
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: $space-xxs;
+
+  &:first-letter {
+    text-transform: uppercase;
+  }
+}
 
 .closeButton {
-  font-size: 16px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.notificationButton {
+  background-color: $black-color;
+  color: $primary-color;
+  padding: 6px 20px;
+  font-size: $text-xsmall;
+  line-height: 20px;
+  font-weight: 600;
+  border-radius: 16px;
+  text-decoration: none;
+}
+
+.notificationUrl {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: $space-md;
 }
