@@ -16,7 +16,6 @@ interface Props {
   onClose: () => void;
   onChange: (input: string) => void;
   inputValue: string;
-  helperText?: ReactNode;
   showTokenInput?: boolean;
   maxValue?: BigNumber;
   closeOnConfirm?: boolean;
@@ -31,7 +30,6 @@ const TokenAmountForm = (props: Props) => {
     onChange,
     onClose,
     inputValue,
-    helperText,
     showTokenInput = true,
     closeOnConfirm = true,
   } = props;
@@ -87,13 +85,17 @@ const TokenAmountForm = (props: Props) => {
             </Button>
           </div>
 
-          {error && <p className={styles.tokenAmountFormError}>{error}</p>}
-          {helperText}
+          <div className={styles.tokenFormBalance}>
+            Wallet balance:{' '}
+            <span className={globalStyles.pointer} onClick={handleSetMax}>
+              {maxValue ? formatApi3(maxValue) : '0.0'}
+            </span>
+          </div>
         </div>
       )}
 
       <ModalFooter>
-        <div className={classNames({ [styles.tokenAmountFormActions]: !showTokenInput })}>
+        <div className={styles.tokenAmountFormActions}>
           {!showTokenInput && (
             <Button type="text" onClick={onClose}>
               Cancel
@@ -103,6 +105,8 @@ const TokenAmountForm = (props: Props) => {
             {action}
           </Button>
         </div>
+
+        {error && <p className={styles.tokenAmountFormError}>{error}</p>}
       </ModalFooter>
     </>
   );
