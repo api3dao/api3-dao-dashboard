@@ -2,15 +2,11 @@ import { useCallback, useEffect } from 'react';
 import { ProposalType, updateImmutablyCurried, useChainData, VoterState } from '../../../chain-data';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { isGoSuccess, go, GO_RESULT_INDEX } from '../../../utils';
-import { getProposals, StartVoteProposal } from './get-proposals';
+import { getProposals } from './get-proposals';
 import { BigNumber } from '@ethersproject/bignumber';
 import { notifications } from '../../../components/notifications/notifications';
 import { messages } from '../../../utils/messages';
-
-const PROPOSAL_TYPE_TO_NUMBER = {
-  primary: 0,
-  secondary: 1,
-};
+import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 
 interface DynamicVotingData {
   id: BigNumber;
@@ -36,7 +32,7 @@ export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
   const { userAccount, setChainData } = useChainData();
 
   const loadProposalsByIds = useCallback(async () => {
-    if (!api3Voting) return;
+    if (!api3Voting || !convenience) return;
 
     const votingApp = api3Voting[type];
     const startVoteFilters = ids.map((id) => votingApp.filters.StartVote(id, null, null));
@@ -56,8 +52,15 @@ export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
       })
     );
 
+    const goOpenVoteIds = await go(convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
+    if (!isGoSuccess(goOpenVoteIds)) {
+      notifications.error(messages.FAILED_TO_LOAD_PROPOSALS);
+      return;
+    }
+    const openVoteIds = goOpenVoteIds[GO_RESULT_INDEX];
+
     // TODO: error handling using go
-    const loadedProposals = await getProposals(votingApp, userAccount, startVotes, type);
+    const loadedProposals = await getProposals(votingApp, convenience, userAccount, startVotes, openVoteIds, type);
     setChainData(
       'Load proposals by ids',
       updateImmutablyCurried((state) => {
@@ -70,13 +73,13 @@ export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
         }
       })
     );
-  }, [api3Voting, userAccount, setChainData, type, ids]);
+  }, [api3Voting, convenience, userAccount, setChainData, type, ids]);
 
   const reloadProposalsByIds = useCallback(async () => {
     if (!convenience) return;
 
     // TODO: maybe batch this as well?
-    const goVotingData = await go(convenience.getDynamicVoteData(PROPOSAL_TYPE_TO_NUMBER[type], userAccount, ids));
+    const goVotingData = await go(convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, ids));
     if (!isGoSuccess(goVotingData)) {
       notifications.error(messages.FAILED_TO_LOAD_PROPOSALS);
       return;

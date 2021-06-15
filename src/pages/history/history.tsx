@@ -11,7 +11,6 @@ import styles from './history.module.scss';
 import classNames from 'classnames';
 import { useHistory } from 'react-router';
 import Treasury from '../proposal-commons/treasury/treasury';
-import { useLoadAllProposals, useReloadActiveProposalsOnMinedBlock } from '../../logic/proposals/hooks';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 
 const getValidatedProposalType = (typeFromUrl: string | null): OptionalProposalType => {
@@ -26,8 +25,9 @@ const History = () => {
   const proposalType = getValidatedProposalType(params.get('type'));
   const proposalsToShow = historyProposalsSelector(allProposals, proposalType);
 
-  useLoadAllProposals();
-  useReloadActiveProposalsOnMinedBlock();
+  // TODO: Fix the hook for history proposals
+  // useLoadAllProposals();
+  // useReloadActiveProposalsOnMinedBlock();
   useTreasuryAndDelegation();
 
   const applyHistoryFilter = (type: ProposalType) => {

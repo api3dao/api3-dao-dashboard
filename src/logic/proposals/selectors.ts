@@ -9,6 +9,8 @@ export const voteSliderSelector = (proposal: Proposal) => {
   const forPercentage = computePercentage(proposal.yea, proposal.votingPower);
   const againstPercentage = computePercentage(proposal.nay, proposal.votingPower);
 
+  console.log(proposal.yea.toString(), proposal.votingPower.toString(), forPercentage);
+
   const computeProposalStatus = (): ProposalStatus => {
     // NOTE: We rely on proposal.supportRequired to be 50% because we don't expect it to change
     // See: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1621103766015200
@@ -95,6 +97,13 @@ export const canCreateNewProposalSelector = (delegation: Delegation | null, dash
   const epochOver = isAfter(now, addSeconds(delegation.lastProposalTimestamp, EPOCH_LENGTH));
   const hasEnoughVotingPower = delegation.userVotingPower.gte(
     dashboardState.totalShares.mul(delegation.proposalVotingPowerThreshold).div(HUNDRED_PERCENT)
+  );
+
+  console.log(
+    'enough',
+    hasEnoughVotingPower,
+    delegation.userVotingPower.toString(),
+    dashboardState.totalShares.mul(delegation.proposalVotingPowerThreshold).div(HUNDRED_PERCENT).toString()
   );
 
   return epochOver && hasEnoughVotingPower;

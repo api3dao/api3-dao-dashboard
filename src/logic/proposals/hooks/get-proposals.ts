@@ -1,57 +1,56 @@
 import { BigNumber } from 'ethers';
 import { ProposalType, VoterState } from '../../../chain-data';
-import { Api3Voting } from '../../../generated-contracts';
+import { Api3Voting, Convenience } from '../../../generated-contracts';
 import { Proposal } from '../../../chain-data';
 import { decodeMetadata } from '../encoding';
-import zip from 'lodash/zip';
 import { blockTimestampToDate } from '../../../utils';
 import { HUNDRED_PERCENT } from '../../../contracts';
+import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 
-export interface StartVoteProposal {
-  voteId: BigNumber;
-  creator: string;
-  metadata: string;
-}
+const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT);
 
 export const getProposals = async (
   api3Voting: Api3Voting,
+  convenience: Convenience,
   userAccount: string,
   startVoteProposals: StartVoteProposal[],
+  openVoteIds: BigNumber[],
   type: ProposalType
 ): Promise<Proposal[]> => {
   const startVotesInfo = startVoteProposals.map((p) => ({
-    voteId: p.voteId,
-    creator: p.creator,
+    ...p,
     metadata: decodeMetadata(p.metadata),
   }));
 
+  // TODO: load this just once for all proposals and save to state
   const votingTime = await api3Voting.voteTime();
-  const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT);
 
-  const getVoteCallsInfo = (await Promise.all(startVotesInfo.map(({ voteId }) => api3Voting.getVote(voteId)))).map(
-    (p) => ({
-      open: p.open,
-      script: p.script,
-      executed: p.executed,
-      startDate: blockTimestampToDate(p.startDate),
-      startDateRaw: p.startDate,
-      supportRequired: toPercent(p.supportRequired),
-      minAcceptQuorum: toPercent(p.minAcceptQuorum),
-      yea: p.yea,
-      nay: p.nay,
-      votingPower: p.votingPower,
-      deadline: blockTimestampToDate(p.startDate.add(votingTime)),
-    })
-  );
+  const voteIdsToLoad = startVotesInfo.map((log) => log.voteId);
+  const openVoteIdsStr = openVoteIds.map((id) => id.toString());
+  const staticVoteData = await convenience.getStaticVoteData(VOTING_APP_IDS[type], userAccount, voteIdsToLoad);
+  const dynamicVoteData = await convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, voteIdsToLoad);
 
-  const voterStatesInfo = await Promise.all(
-    startVotesInfo.map(({ voteId }) => api3Voting.getVoterState(voteId, userAccount))
-  );
+  const proposals: Proposal[] = [];
+  for (let i = 0; i < startVoteProposals.length; i++) {
+    proposals.push({
+      type,
+      ...startVotesInfo[i],
+      open: openVoteIdsStr.includes(startVotesInfo[i].voteId.toString()),
 
-  return zip(startVotesInfo, getVoteCallsInfo, voterStatesInfo).map(([startVote, getVote, voterState]) => ({
-    ...startVote!,
-    ...getVote!,
-    voterState: voterState! as VoterState,
-    type,
-  }));
+      startDate: blockTimestampToDate(staticVoteData.startDate[i]),
+      supportRequired: toPercent(staticVoteData.supportRequired[i]),
+      minAcceptQuorum: toPercent(staticVoteData.minAcceptQuorum[i]),
+      votingPower: staticVoteData.votingPower[i],
+      deadline: blockTimestampToDate(staticVoteData.startDate[i].add(votingTime)),
+      startDateRaw: staticVoteData.startDate[i],
+      script: staticVoteData.script[i],
+
+      voterState: dynamicVoteData.voterState[i] as VoterState,
+      executed: dynamicVoteData.executed[i],
+      yea: dynamicVoteData.yea[i],
+      nay: dynamicVoteData.nay[i],
+    });
+  }
+
+  return proposals;
 };
