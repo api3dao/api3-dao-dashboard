@@ -49,16 +49,15 @@ export const pendingUnstakeSelector = (dashboardData: ConvenienceDashboardData |
   // If the user has not initiated unstaking, there is no pending unstake
   if (!hasInitiatedUnstake) return null;
 
-  const { unlocked } = tokenBalancesSelector(dashboardData)!;
-
   // This is the earliest date the user can trigger an unstake after waiting a full epoch
   const unstakeDate = new Date(userUnstakeScheduledFor.mul(1000).toNumber());
-
   const now = new Date();
   const canUnstake = isAfter(now, unstakeDate);
 
   const tokensAtScheduleTime = userUnstakeShares.mul(totalStake).div(totalShares);
   const tokensAtUnstakeTime = min(userUnstakeAmount, tokensAtScheduleTime);
+
+  const { unlocked } = tokenBalancesSelector(dashboardData)!;
   const canUnstakeAndWithdraw = canUnstake && unlocked.gte(tokensAtUnstakeTime);
 
   return { unstakeDate, tokensAtUnstakeTime, canUnstake, canUnstakeAndWithdraw };

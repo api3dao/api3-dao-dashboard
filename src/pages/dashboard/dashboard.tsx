@@ -33,12 +33,15 @@ const Dashboard = () => {
     setOpenModal(null);
   };
 
+  // TODO: move this (and fields below) to the dashboard selector
   const disconnected = !api3Pool || !api3Token || !data;
 
   const tokenBalances = tokenBalancesSelector(data);
   const pendingUnstake = pendingUnstakeSelector(data);
 
-  const canWithdraw = !disconnected && (tokenBalances?.withdrawable.gt(0) ?? false);
+  const canStake = !disconnected && data?.userUnstaked.gt(0);
+  const canWithdraw = !disconnected && tokenBalances?.withdrawable.gt(0);
+  const canInitiateUnstake = !disconnected && !!pendingUnstake && data?.userStaked.gt(0);
 
   return (
     <Layout title="Staking">
@@ -90,7 +93,7 @@ const Dashboard = () => {
             header={
               <Header>
                 <h5>Staking</h5>
-                <Button onClick={() => setOpenModal('stake')} disabled={disconnected}>
+                <Button onClick={() => setOpenModal('stake')} disabled={!canStake}>
                   + Stake
                 </Button>
               </Header>
@@ -110,7 +113,8 @@ const Dashboard = () => {
               </>
             }
             footer={
-              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={disconnected || !!pendingUnstake}>
+              // TODO: In case there is a pending unstake there should be no button, just green arrow (see figma)
+              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={canInitiateUnstake}>
                 Initiate Unstake
               </Button>
             }
@@ -129,7 +133,7 @@ const Dashboard = () => {
         <TokenDepositForm
           allowance={data?.allowance ?? BigNumber.from('0')}
           onClose={closeModal}
-          walletBalance={data?.ownedTokens ?? BigNumber.from('0')}
+          walletBalance={data?.userApi3Balance ?? BigNumber.from('0')}
         />
       </Modal>
       <Modal open={openModal === 'withdraw'} onClose={closeModal}>
@@ -159,7 +163,7 @@ const Dashboard = () => {
           inputValue={inputValue}
           onChange={setInputValue}
           onClose={closeModal}
-          maxValue={tokenBalances?.withdrawable}
+          maxValue={data?.userUnstaked}
         />
       </Modal>
       <Modal open={openModal === 'unstake'} onClose={closeModal}>

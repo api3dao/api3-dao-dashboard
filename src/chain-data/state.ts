@@ -24,7 +24,7 @@ export interface ConvenienceDashboardData {
 
 export interface DashboardState extends ConvenienceDashboardData {
   allowance: BigNumber;
-  ownedTokens: BigNumber;
+  userApi3Balance: BigNumber;
 }
 
 export interface ProposalMetadata {
@@ -57,11 +57,11 @@ export interface Proposal {
 }
 
 export interface Delegation {
+  proposalVotingPowerThreshold: BigNumber;
+  userVotingPower: BigNumber;
   delegate: string | null;
-  mostRecentProposalTimestamp: Date;
-  mostRecentVoteTimestamp: Date;
-  mostRecentDelegationTimestamp: Date;
-  mostRecentUndelegationTimestamp: Date;
+  lastDelegationUpdateTimestamp: Date;
+  lastProposalTimestamp: Date;
 }
 
 export interface Treasury {

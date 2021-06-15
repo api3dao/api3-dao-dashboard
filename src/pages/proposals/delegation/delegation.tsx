@@ -12,18 +12,22 @@ import { useApi3Pool } from '../../../contracts';
 import { go, isUserRejection } from '../../../utils';
 import * as notifications from '../../../components/notifications/notifications';
 import { messages } from '../../../utils/messages';
+import { useLoadDashboardData } from '../../../logic/dashboard';
 
 const Delegation = () => {
-  // TODO: call useDashboard state that is in https://github.com/api3dao/api3-dao-dashboard/pull/79
-  // otherwise the dashboardState will not be loaded
+  // TODO: Retrieve only "userStaked" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
   const { delegation, dashboardState, setChainData, transactions, userAccount } = useChainData();
   const api3Pool = useApi3Pool();
+
+  useLoadDashboardData();
 
   const [openDelegationModal, setOpenDelegationModal] = useState(false);
   const [openChooseDelegateActionModal, setOpenChooseDelegateActionModal] = useState(false);
 
+  // TODO: Merge into bigger selector
   const delegationCooldownOver = delegationCooldownOverSelector(delegation);
-  const canDelegate = delegationCooldownOver && dashboardState?.userStaked.gt(0);
+  const canDelegate = delegationCooldownOver && (dashboardState?.userStaked.gt(0) ?? false);
+  const canUndelegate = delegationCooldownOver;
 
   return (
     <>
@@ -32,11 +36,18 @@ const Delegation = () => {
           <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`}>
             Delegated to: {abbrStr(delegation.delegate)}
           </p>
-          <Button className={styles.proposalsLink} type="text" onClick={() => setOpenChooseDelegateActionModal(true)}>
+          <Button
+            className={styles.proposalsLink}
+            type="text"
+            onClick={() => setOpenChooseDelegateActionModal(true)}
+            disabled={!canDelegate && !canUndelegate}
+          >
             Update delegation
           </Button>
           <Modal open={openChooseDelegateActionModal} onClose={() => setOpenChooseDelegateActionModal(false)}>
             <ChooseDelegateAction
+              canUpdateDelegation={canDelegate}
+              canUndelegate={canUndelegate}
               onUndelegate={async () => {
                 if (!api3Pool) return;
 
