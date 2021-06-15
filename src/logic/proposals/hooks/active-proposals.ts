@@ -10,9 +10,11 @@ import {
 import { Api3Voting } from '../../../generated-contracts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { isGoSuccess, go, GO_RESULT_INDEX, GO_ERROR_INDEX, messages } from '../../../utils';
-import { chunk, difference, keyBy } from 'lodash';
+import difference from 'lodash/difference';
+import keyBy from 'lodash/keyBy';
+import chunk from 'lodash/chunk';
 import { getProposals } from './get-proposals';
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { notifications } from '../../../components/notifications/notifications';
 import { openProposalIdsSelector, proposalDetailsSelector } from '../selectors';
 import { CHUNKS_SIZE, StartVoteProposal, VOTING_APP_IDS } from './commons';

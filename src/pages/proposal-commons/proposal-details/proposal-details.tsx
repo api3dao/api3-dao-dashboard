@@ -17,7 +17,7 @@ import ProposalStatus from '../proposal-list/proposal-status';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import classNames from 'classnames';
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 
 interface RouterParameters {
   typeAndId: string;

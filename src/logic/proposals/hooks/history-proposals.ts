@@ -3,9 +3,9 @@ import { updateImmutablyCurried, useChainData } from '../../../chain-data';
 import { Api3Voting } from '../../../generated-contracts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { isGoSuccess, go, GO_RESULT_INDEX, GO_ERROR_INDEX, messages } from '../../../utils';
-import { keyBy } from 'lodash';
+import keyBy from 'lodash/keyBy';
 import { getProposals } from './get-proposals';
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { notifications } from '../../../components/notifications/notifications';
 import { VOTING_APP_IDS } from './commons';
 
