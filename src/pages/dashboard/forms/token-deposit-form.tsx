@@ -120,10 +120,8 @@ const TokenDepositForm = (props: Props) => {
           </Button>
         </div>
 
-        {error && <p className={styles.tokenAmountFormError}>{error}</p>}
-
-        <div className={styles.tokenDepositFormBalance}>
-          Wallet balance:{' '}
+        <div className={styles.tokenFormBalance}>
+          Your balance:{' '}
           <span className={globalStyles.pointer} onClick={handleSetMax}>
             {walletBalance ? formatApi3(walletBalance) : '0.0'}
           </span>
@@ -131,7 +129,7 @@ const TokenDepositForm = (props: Props) => {
       </div>
 
       <ModalFooter>
-        <div>
+        <div className={styles.tokenAmountFormActions}>
           <Button
             type="secondary"
             onClick={handleApprove}
@@ -145,6 +143,8 @@ const TokenDepositForm = (props: Props) => {
             Deposit
           </Button>
         </div>
+
+        {error && <p className={styles.tokenAmountFormError}>{error}</p>}
       </ModalFooter>
     </>
   );

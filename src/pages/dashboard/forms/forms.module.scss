@@ -6,8 +6,8 @@
   text-transform: uppercase;
 }
 
-.tokenDepositFormBalance {
-  margin-top: $space-lg;
+.tokenFormBalance {
+  margin-top: $space-xl;
 }
 
 .tokenAmountFormActions {
@@ -23,6 +23,7 @@
 .tokenAmountFormError {
   margin-top: $space-xl;
   color: $error-color;
+  text-align: center;
 }
 
 .inputWrapper {
