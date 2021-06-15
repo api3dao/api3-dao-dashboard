@@ -37,14 +37,10 @@
   box-shadow: 0px 9px 28px 8px rgba(0, 0, 0, 0.05), 0px 6px 16px rgba(0, 0, 0, 0.08),
     0px 3px 6px -4px rgba(0, 0, 0, 0.12);
   border-radius: 0;
-  padding: $space-xl;
+  padding: 0;
   font-size: $text-small;
   line-height: $lh-small;
   color: $black-color;
-
-  @media (max-width: $max-sm) {
-    padding: $space-lg;
-  }
 }
 
 .Toastify__toast-body {

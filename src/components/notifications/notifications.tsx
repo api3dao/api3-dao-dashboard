@@ -1,5 +1,7 @@
 import throttle from 'lodash/throttle';
+import classNames from 'classnames';
 import { toast, Slide, ToastOptions } from 'react-toastify';
+import NotificationLinkButton from './notification-link-button';
 import 'react-toastify/dist/ReactToastify.css';
 // Use these static classes to style react-toastify defaults
 import './react-toastify-overrides.scss';
@@ -33,17 +35,17 @@ interface ToastPropsWithType extends ToastProps {
 const CustomToast = ({ message, title, type, url }: ToastPropsWithType) => {
   // TODO: style based on the type of toast
   return (
-    <div className={styles.notificationBody}>
+    <div className={classNames(styles.notificationBody, { [styles.url]: url })}>
       <img src={`/${type}.svg`} alt={`${type} icon`} />
       <div className={styles.notificationContent}>
-        {title && <p className={styles.notificationTitle}>{title}</p>}
+        <p className={styles.notificationTitle}>{title || type}</p>
         <p>{message}</p>
+        {url && (
+          <div className={styles.notificationUrl}>
+            <NotificationLinkButton href={url}>{url}</NotificationLinkButton>
+          </div>
+        )}
       </div>
-      {url && (
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          {url}
-        </a>
-      )}
     </div>
   );
 };
@@ -53,7 +55,6 @@ const BASE_OPTIONS: ToastOptions = {
   transition: Slide,
   closeButton: CloseButton,
   hideProgressBar: false,
-  autoClose: 100000,
 };
 
 // NOTE: toasts are throttled to prevent duplicate notifications being displayed.
