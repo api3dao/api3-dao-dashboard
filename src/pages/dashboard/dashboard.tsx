@@ -16,7 +16,6 @@ import BorderedBox, { Header } from '../../components/bordered-box/bordered-box'
 import UnstakeBanner from './unstake-banner/unstake-banner';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './dashboard.module.scss';
-import { disconnect } from 'process';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
@@ -40,7 +39,7 @@ const Dashboard = () => {
   const tokenBalances = tokenBalancesSelector(data);
   const pendingUnstake = pendingUnstakeSelector(data);
 
-  const canStake = !disconnect && data?.userUnstaked.gt(0);
+  const canStake = !disconnected && data?.userUnstaked.gt(0);
   const canWithdraw = !disconnected && tokenBalances?.withdrawable.gt(0);
   const canInitiateUnstake = !disconnected && !!pendingUnstake && data?.userStaked.gt(0);
 
