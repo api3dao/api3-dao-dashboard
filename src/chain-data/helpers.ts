@@ -35,10 +35,17 @@ export const abbrStr = (str: string) => {
   return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
 };
 
-export const getEtherscanUrl = (hash: string) => {
-  // Non-mainnet networks have different Etherscan subdomains
-  const etherscanHost = process.env.REACT_APP_ETHERSCAN_HOST || 'https://etherscan.io';
-  return `${etherscanHost}/tx/${hash}`;
+export const ETHERSCAN_HOSTS: { [chainId: string]: string } = {
+  1: 'https://etherscan.io',
+  3: 'https://ropsten.etherscan.io',
+  4: 'https://rinkeby.etherscan.io',
+  5: 'https://goerli.etherscan.io',
+  42: 'https://kovan.etherscan.io',
+};
+
+export const getEtherscanUrl = (transaction: ethers.Transaction) => {
+  const host = ETHERSCAN_HOSTS[transaction.chainId.toString()];
+  return `${host}/tx/${transaction.hash}`;
 };
 
 export interface PendingTransactionMessages {
@@ -51,7 +58,7 @@ export const displayPendingTransaction = async (
   transaction: ethers.ContractTransaction,
   messages: PendingTransactionMessages
 ) => {
-  const url = getEtherscanUrl(transaction.hash);
+  const url = getEtherscanUrl(transaction);
 
   // It's common for transactions to take between 1-5 minutes to confirm. Keep the
   // initial "progress" toast open until then
@@ -77,7 +84,7 @@ export const displayPendingTransaction = async (
 
       // The user "sped up" their transaction by resending it with a higher gas price
       if (ethersError.replacement && ethersError.replacement.hash) {
-        const replacementTxUrl = getEtherscanUrl(ethersError.replacement.hash);
+        const replacementTxUrl = getEtherscanUrl(ethersError.replacement);
         notifications.success({ url: replacementTxUrl, message: messages.success });
         return;
       }
