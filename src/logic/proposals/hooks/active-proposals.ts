@@ -1,5 +1,12 @@
 import { useCallback, useEffect } from 'react';
-import { Proposal, updateImmutably, useChainData, VoterState } from '../../../chain-data';
+import {
+  Proposal,
+  ProposalType,
+  updateImmutably,
+  updateImmutablyCurried,
+  useChainData,
+  VoterState,
+} from '../../../chain-data';
 import { Api3Voting } from '../../../generated-contracts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { isGoSuccess, go, GO_RESULT_INDEX, GO_ERROR_INDEX, messages } from '../../../utils';
@@ -68,11 +75,18 @@ const useLoadActiveProposals = () => {
     }
     const proposals = goResponse[GO_RESULT_INDEX];
 
-    setChainData('Load proposals', {
-      proposals: {
-        ...proposals,
-      },
-    });
+    setChainData(
+      'Load active proposals',
+      updateImmutablyCurried((state) => {
+        if (!state.proposals) {
+          state.proposals = proposals;
+          return;
+        }
+
+        state.proposals.primary = { ...state.proposals.primary, ...proposals.primary };
+        state.proposals.secondary = { ...state.proposals.secondary, ...proposals.secondary };
+      })
+    );
   }, [api3Voting, convenience, userAccount, setChainData]);
 
   useEffect(() => {
@@ -92,7 +106,7 @@ const useReloadActiveProposals = () => {
     const loadProposals = async () => {
       const oldActiveProposalIds = openProposalIdsSelector(proposals);
 
-      const updateState = (loadedChunk: Proposal[]) =>
+      const updateState = (type: ProposalType, loadedChunk: Proposal[]) =>
         setChainData('Update active proposals after chunk loaded', (state) =>
           updateImmutably(state, (immutableState) => {
             const proposals = immutableState.proposals;
@@ -100,7 +114,7 @@ const useReloadActiveProposals = () => {
             if (!proposals) return immutableState;
 
             loadedChunk.forEach((proposal) => {
-              proposals.primary[proposal.voteId.toString()] = proposal;
+              proposals[type][proposal.voteId.toString()] = proposal;
             });
           })
         );
@@ -125,7 +139,10 @@ const useReloadActiveProposals = () => {
           // We don't expect many new proposals to be added, but we are loading as chunks just in case
           const chunks = chunk(newProposalEvents, CHUNKS_SIZE);
           for (const chunk of chunks) {
-            updateState(await getProposals(api3Voting[type], convenience, userAccount, chunk, currentVoteIds, type));
+            updateState(
+              type,
+              await getProposals(api3Voting[type], convenience, userAccount, chunk, currentVoteIds, type)
+            );
           }
         };
 
@@ -148,7 +165,7 @@ const useReloadActiveProposals = () => {
               };
             });
 
-            updateState(updatedProposals);
+            updateState(type, updatedProposals);
           }
         };
 

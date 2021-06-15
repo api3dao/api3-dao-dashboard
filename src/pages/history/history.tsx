@@ -12,6 +12,7 @@ import classNames from 'classnames';
 import { useHistory } from 'react-router';
 import Treasury from '../proposal-commons/treasury/treasury';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
+import { useHistoryProposals } from '../../logic/proposals/hooks/history-proposals';
 
 const getValidatedProposalType = (typeFromUrl: string | null): OptionalProposalType => {
   if (typeFromUrl && ['primary', 'secondary'].includes(typeFromUrl)) return typeFromUrl as ProposalType;
@@ -25,9 +26,8 @@ const History = () => {
   const proposalType = getValidatedProposalType(params.get('type'));
   const proposalsToShow = historyProposalsSelector(allProposals, proposalType);
 
-  // TODO: Fix the hook for history proposals
-  // useLoadAllProposals();
-  // useReloadActiveProposalsOnMinedBlock();
+  // TODO: Implement pagination for history proposals
+  useHistoryProposals();
   useTreasuryAndDelegation();
 
   const applyHistoryFilter = (type: ProposalType) => {

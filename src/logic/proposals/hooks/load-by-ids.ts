@@ -26,6 +26,7 @@ interface DynamicVotingData {
  * @param type The type of the voting app (primary or secondary)
  * @param ids Array of vote ids of proposals to be loaded
  */
+// TODO: refactor the second argument to accept just a single id (the only use case for this function will be to load proposal details for a single proposal)
 export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
