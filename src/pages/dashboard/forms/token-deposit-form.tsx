@@ -46,10 +46,11 @@ const TokenDepositForm = (props: Props) => {
 
     const goResponse = await go(api3Token.approve(api3Pool.address, MAX_ALLOWANCE));
     if (isGoSuccess(goResponse)) {
-      setChainData('Save deposit approval', { transactions: [...transactions, goResponse[GO_RESULT_INDEX]] });
+      const tx = goResponse[GO_RESULT_INDEX];
+      setChainData('Save deposit approval', { transactions: [...transactions, { type: 'approve-deposit', tx }] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
-        notifications.info(messages.TX_APPROVAL_REJECTED);
+        notifications.info({ message: messages.TX_APPROVAL_REJECTED });
         return;
       }
       setError(messages.TX_APPROVAL_ERROR);
@@ -77,10 +78,11 @@ const TokenDepositForm = (props: Props) => {
 
     const goResponse = await go(api3Pool.deposit(userAccount, parseApi3(inputValue), userAccount));
     if (isGoSuccess(goResponse)) {
-      setChainData('Save deposit transaction', { transactions: [...transactions, goResponse[GO_RESULT_INDEX]] });
+      const tx = goResponse[GO_RESULT_INDEX];
+      setChainData('Save deposit transaction', { transactions: [...transactions, { type: 'deposit', tx }] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
-        notifications.info(messages.TX_DEPOSIT_REJECTED);
+        notifications.info({ message: messages.TX_DEPOSIT_REJECTED });
         return;
       }
       setError(messages.TX_DEPOSIT_ERROR);

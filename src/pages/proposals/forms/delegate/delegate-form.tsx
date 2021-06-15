@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from '../../../../components/button/button';
 import Input from '../../../../components/input/input';
 import { ModalFooter, ModalHeader } from '../../../../components/modal/modal';
+import { useChainData } from '../../../../chain-data';
 import { useApi3Pool } from '../../../../contracts';
 import globalStyles from '../../../../styles/global-styles.module.scss';
 import styles from './delegate.module.scss';
@@ -17,6 +18,7 @@ interface Props {
 
 const DelegateVotesForm = (props: Props) => {
   const { onClose, userAccount } = props;
+  const { setChainData, transactions } = useChainData();
 
   const [error, setError] = useState('');
   const [delegationAddress, setDelegationAddress] = useState('');
@@ -37,7 +39,7 @@ const DelegateVotesForm = (props: Props) => {
 
     const goDelegate = await go(api3Pool.getUserDelegate(delegationAddress));
     if (!isGoSuccess(goDelegate)) {
-      notifications.error(messages.UNABLE_TO_LOAD_DELEGATE);
+      notifications.error({ message: messages.UNABLE_TO_LOAD_DELEGATE });
       return;
     }
 
@@ -47,14 +49,17 @@ const DelegateVotesForm = (props: Props) => {
       return;
     }
 
-    const [error] = await go(api3Pool.delegateVotingPower(delegationAddress));
+    const [error, tx] = await go(api3Pool.delegateVotingPower(delegationAddress));
     if (error) {
       if (isUserRejection(error)) {
-        notifications.info(messages.TX_GENERIC_REJECTED);
+        notifications.info({ message: messages.TX_GENERIC_REJECTED });
         return;
       }
+      notifications.error({ message: messages.TX_GENERIC_ERROR });
+    }
 
-      notifications.error(messages.TX_GENERIC_ERROR);
+    if (tx) {
+      setChainData('Save delegate transaction', { transactions: [...transactions, { type: 'delegate', tx }] });
     }
 
     onClose();

@@ -59,7 +59,7 @@ const TokenAmountForm = (props: Props) => {
     const [err] = await go(onConfirm(inputBigNum));
     if (err) {
       if (isUserRejection(err)) {
-        notifications.info(messages.TX_GENERIC_REJECTED);
+        notifications.info({ message: messages.TX_GENERIC_REJECTED });
         return;
       }
       setError(messages.TX_GENERIC_ERROR);

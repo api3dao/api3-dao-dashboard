@@ -1,3 +1,5 @@
+import { PendingTransactionMessages, TransactionType } from '../chain-data';
+
 export const messages = {
   LOAD_DASHBOARD_ERROR: 'Failed to load latest dashboard data',
 
@@ -24,4 +26,58 @@ export const messages = {
   INVALID_DELEGATE_ADDRESS: 'Delegation target must be a valid non zero address',
   DELEGATE_IS_YOURSELF: "You can't delegate to yourself",
   REDELEGATION_IS_FORBIDDEN: (targetDelegate: string) => `Address ${targetDelegate} delegates to some other account`,
+};
+
+// TODO: these messages should change depending on the final designs
+export const transactionMessages: { [key in TransactionType]: PendingTransactionMessages } = {
+  'approve-deposit': {
+    start: 'Approving API3 token allowance...',
+    success: 'API3 token allowance approved!',
+    error: 'API3 token allowance failed',
+  },
+  deposit: {
+    start: 'Depositing API3 tokens...',
+    success: 'API3 tokens deposited successfully!',
+    error: 'API3 token deposit failed',
+  },
+  stake: {
+    start: 'Staking API3 tokens...',
+    success: 'API3 tokens staked successfully!',
+    error: 'API3 token stake failed',
+  },
+  'initiate-unstake': {
+    start: 'Initiating API3 token unstake...',
+    success: 'API3 token unstake initiated successfully!',
+    error: 'API3 token unstake initiation failed',
+  },
+  unstake: {
+    start: 'Unstaking API3 tokens...',
+    success: 'API3 tokens unstaked successfully!',
+    error: 'API3 token unstake failed',
+  },
+  withdraw: {
+    start: 'Withdrawing API3 tokens...',
+    success: 'API3 tokens withdrawn successfully!',
+    error: 'API3 token withdraw failed',
+  },
+  delegate: {
+    start: 'Delegating voting power...',
+    success: 'Voting power delegated successfully!',
+    error: 'Voting power delegation failed',
+  },
+  undelegate: {
+    start: 'Undelegating voting power...',
+    success: 'Voting power undelegated successfully!',
+    error: 'Voting power undelegation failed',
+  },
+  'vote-for': {
+    start: 'Voting for proposal...',
+    success: 'Vote for proposal cast successfully!',
+    error: 'Vote for proposal failed',
+  },
+  'vote-against': {
+    start: 'Voting against proposal...',
+    success: 'Vote against proposal cast successfully!',
+    error: 'Vote against proposal failed',
+  },
 };
