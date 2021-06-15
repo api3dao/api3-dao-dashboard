@@ -5,7 +5,7 @@ import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
 import { notifications } from '../../../components/notifications/notifications';
-import { go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
+import { formatApi3, go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
 
@@ -71,6 +71,8 @@ const TokenAmountForm = (props: Props) => {
     }
   };
 
+  const handleSetMax = () => maxValue && onChange(formatApi3(maxValue.toString()));
+
   return (
     <>
       <ModalHeader>{props.title}</ModalHeader>
@@ -78,7 +80,13 @@ const TokenAmountForm = (props: Props) => {
       {showTokenInput && (
         <div className={globalStyles.textCenter}>
           <p className={styles.tokenAmountFormToken}>TOKEN</p>
-          <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
+          <div className={styles.inputWrapper}>
+            <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
+            <Button className={styles.maxButton} type="text" onClick={handleSetMax}>
+              Max
+            </Button>
+          </div>
+
           {error && <p className={styles.tokenAmountFormError}>{error}</p>}
           {helperText}
         </div>
