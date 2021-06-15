@@ -2,9 +2,8 @@ import classNames from 'classnames';
 import { Proposal } from '../../../../chain-data';
 import { voteSliderSelector } from '../../../../logic/proposals/selectors';
 import { NegativeVoteIcon, PositiveVoteIcon } from '../../vote-slider/vote-slider';
-import styles from './proposal-status.module.scss';
-
 import Button from '../../../../components/button/button';
+import styles from './proposal-status.module.scss';
 
 interface Props {
   proposal: Proposal;
@@ -19,7 +18,7 @@ const ProposalStatus = (props: Props) => {
     return (
       <p
         // Open proposal status can be either 'Failing' or 'Passing'
-        className={classNames({
+        className={classNames(styles.proposalStatus, {
           [styles.failing]: proposalStatus === 'Failing',
           [styles.passing]: proposalStatus === 'Passing',
         })}
@@ -40,13 +39,12 @@ const ProposalStatus = (props: Props) => {
         </span>
       )}
       {proposalStatus === 'Execute' ? (
-        // TODO: implement onClick action
-        <Button type="text" className={styles.execute} buttonClassName={large ? styles.override : ''}>
+        <Button type="text" className={styles.execute}>
           {proposalStatus}
         </Button>
       ) : (
         <span
-          className={classNames({
+          className={classNames(styles.proposalStatus, {
             [styles.executed]: proposalStatus === 'Executed',
             [styles.rejected]: proposalStatus === 'Rejected',
           })}

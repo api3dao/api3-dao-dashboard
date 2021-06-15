@@ -1,33 +1,47 @@
 @import '../../../styles/variables.module.scss';
 
 .newProposalFormItem {
-  display: flex;
-  align-items: flex-start;
   margin-bottom: $space-xxxl;
+
+  @media (min-width: $min-md) {
+    display: flex;
+    align-items: flex-start;
+  }
 }
 
 .newProposalFormName {
   font-size: $text-small;
   line-height: 17px;
-  width: 40%;
   color: $secondary-color;
   text-transform: uppercase;
-  text-align: right;
   font-weight: 500;
   padding-right: $space-xl;
-  margin-top: 6px;
+
+  @media (min-width: $min-md) {
+    width: 40%;
+    text-align: right;
+    margin-top: 6px;
+  }
+
+  @media (max-width: $max-md) {
+    margin-bottom: $space-md;
+  }
 }
 
 .newProposalFormInput {
-  width: 60%;
+  @media (min-width: $min-md) {
+    width: 60%;
+  }
 }
 
 .newProposalFormRadioButtons {
-  display: flex;
-  align-items: center;
+  @media (min-width: $min-sm) {
+    display: flex;
+    align-items: center;
 
-  & > * {
-    width: 50%;
+    & > * {
+      width: 50%;
+    }
   }
 }
 

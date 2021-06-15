@@ -51,18 +51,18 @@ const History = () => {
               <Button
                 onClick={() => applyHistoryFilter('primary')}
                 type="text"
-                className={classNames({ [styles.active]: !proposalType || proposalType === 'primary' })}
-                buttonClassName={styles.button}
+                className={classNames(styles.filterButton, {
+                  [styles.active]: !proposalType || proposalType === 'primary',
+                })}
               >
                 Primary
               </Button>
               <Button
                 onClick={() => applyHistoryFilter('secondary')}
                 type="text"
-                className={classNames({
+                className={classNames(styles.filterButton, {
                   [styles.active]: !proposalType || proposalType === 'secondary',
                 })}
-                buttonClassName={styles.button}
               >
                 Secondary
               </Button>
@@ -70,6 +70,7 @@ const History = () => {
           </div>
         }
         content={<ProposalList proposals={proposalsToShow} />}
+        noMobileBorders
       />
     </BaseLayout>
   );

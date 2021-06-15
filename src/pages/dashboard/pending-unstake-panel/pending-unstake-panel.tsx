@@ -1,39 +1,32 @@
+import { BigNumber } from 'ethers';
 import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import Button from '../../../components/button/button';
-import { getDays, getHours, getMinutes, getSeconds } from '../../../utils/generic';
+import { formatApi3, getDays, getHours, getMinutes, getSeconds } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './pending-unstake-panel.module.scss';
 
 interface Props {
-  amount: string;
-  scheduledFor: Date;
-  deadline: Date;
+  amount: BigNumber;
+  canUnstake: boolean;
+  canUnstakeAndWithdraw: boolean;
+  unstakeDate: Date;
 }
 
 const PendingUnstakePanel = (props: Props) => {
-  const { amount, scheduledFor, deadline } = props;
-  const [isDeadline, setDeadline] = useState(false);
+  const { amount, canUnstake, canUnstakeAndWithdraw, unstakeDate } = props;
   const [timerDays, setTimerDays] = useState('0');
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
   const [timerSeconds, setTimerSeconds] = useState('00');
-  const [timerDeadline, setTimerDeadline] = useState('You have 0 days 0 hours 0 min 0 sec remaining to unstake.');
 
   useEffect(() => {
-    const deadlineDate = deadline.getTime();
     const timer = setInterval(() => {
       const now = new Date().getTime();
-      const scheduledDate = scheduledFor.getTime();
-      let distance;
+      const unstakeTime = unstakeDate.getTime();
 
-      if (scheduledDate > now) {
-        distance = scheduledDate - now;
-      } else {
-        distance = deadlineDate - now;
-      }
-
+      const distance = unstakeTime - now;
       const days = getDays(distance);
       const hours = getHours(distance);
       const minutes = getMinutes(distance);
@@ -44,25 +37,20 @@ const PendingUnstakePanel = (props: Props) => {
       setTimerMinutes(minutes);
       setTimerSeconds(seconds);
 
-      if (scheduledDate < now) {
+      if (unstakeTime < now) {
         setTimerDays('0');
         setTimerHours('00');
         setTimerMinutes('00');
         setTimerSeconds('00');
-        setTimerDeadline(`You have ${days} days ${hours} hours ${minutes} min ${seconds} sec remaining to unstake.`);
-        setDeadline(true);
-      }
 
-      if (deadlineDate < now) {
         clearInterval(timer);
-        // TODO: This will be incorrect for singular, e.g. 1 days
-        setTimerDeadline(`You have 0 days 0 hours 0 min 0 sec remaining to unstake.`);
       }
     }, 1000);
+
     return () => {
       clearInterval(timer);
     };
-  }, [deadline, scheduledFor]);
+  }, [unstakeDate]);
 
   return (
     <BorderedBox
@@ -76,9 +64,9 @@ const PendingUnstakePanel = (props: Props) => {
           <p className={styles.pendingUnstakeTitle}>Pending API3 tokens unstaking</p>
           <div className={classNames(styles.pendingUnstakeRow, styles.amount)}>
             <p className={styles.pendingUnstakeName}>Amount</p>
-            <h5>{amount}</h5>
+            <h5>{formatApi3(amount)}</h5>
           </div>
-          <div className={classNames(styles.pendingUnstakeRow, { [globalStyles.tertiaryColor]: isDeadline })}>
+          <div className={classNames(styles.pendingUnstakeRow, { [globalStyles.tertiaryColor]: canUnstake })}>
             <p className={styles.pendingUnstakeName}>Cooldown</p>
             <div className={styles.pendingUnstakeCountdown}>
               <div className={styles.pendingUnstakeCountdownItem}>
@@ -102,17 +90,11 @@ const PendingUnstakePanel = (props: Props) => {
               </div>
             </div>
           </div>
-          {isDeadline && (
-            <div className={classNames(styles.pendingUnstakeRow, styles.deadline)}>
-              <p className={styles.pendingUnstakeName} />
-              <p className={globalStyles.textXSmall}>{timerDeadline}</p>
-            </div>
-          )}
           <div className={styles.pendingUnstakeActions}>
-            <Button type="link" disabled={!isDeadline}>
+            <Button type="link" disabled={!canUnstakeAndWithdraw}>
               Unstake & Withdraw
             </Button>
-            <Button disabled={!isDeadline}>Unstake</Button>
+            <Button disabled={!canUnstake}>Unstake</Button>
           </div>
         </div>
       }

@@ -7,18 +7,24 @@ export interface PendingUnstake {
   scheduledFor: Date;
 }
 
-export interface DashboardState {
-  allowance: BigNumber;
-  annualApy: number;
-  annualInflationRate: number;
-  balance: BigNumber;
-  ownedTokens: BigNumber;
-  pendingUnstake: PendingUnstake | null;
+export interface ConvenienceDashboardData {
+  api3Supply: BigNumber;
+  apr: BigNumber;
   stakeTarget: BigNumber;
-  totalStaked: BigNumber;
-  totalStakedPercentage: number;
-  userStake: BigNumber;
-  withdrawable: BigNumber;
+  totalShares: BigNumber;
+  totalStake: BigNumber;
+  userLocked: BigNumber;
+  userStaked: BigNumber;
+  userUnstaked: BigNumber;
+  userUnstakeAmount: BigNumber;
+  userUnstakeScheduledFor: BigNumber;
+  userUnstakeShares: BigNumber;
+  userVesting: BigNumber;
+}
+
+export interface DashboardState extends ConvenienceDashboardData {
+  allowance: BigNumber;
+  ownedTokens: BigNumber;
 }
 
 export interface ProposalMetadata {
@@ -73,6 +79,18 @@ export interface Proposals {
   secondary: ProposalDictionary;
 }
 
+export type TransactionType =
+  | 'approve-deposit'
+  | 'deposit'
+  | 'stake'
+  | 'initiate-unstake'
+  | 'unstake'
+  | 'withdraw'
+  | 'delegate'
+  | 'undelegate'
+  | 'vote-for'
+  | 'vote-against';
+
 export interface ChainData {
   provider: ethers.providers.Web3Provider | null;
   userAccount: string;
@@ -82,7 +100,7 @@ export interface ChainData {
   proposals: Proposals | null;
   treasuries: Treasury[];
   delegation: Delegation | null;
-  transactions: ethers.ContractTransaction[];
+  transactions: { type: TransactionType; tx: ethers.ContractTransaction }[];
 }
 
 export interface SettableChainData extends ChainData {

@@ -4,4 +4,12 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 2 * $space-xxl;
+
+  @media (max-width: $max-md) {
+    flex-direction: column-reverse;
+
+    & > *:last-child {
+      margin-bottom: $space-xxxl;
+    }
+  }
 }

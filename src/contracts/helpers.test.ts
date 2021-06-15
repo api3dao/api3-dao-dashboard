@@ -5,12 +5,10 @@ import {
   calculateApy,
   calculateAnnualMintedTokens,
   calculateAnnualInflationRate,
-  convertPercentage,
   absoluteStakeTarget,
   HUNDRED_PERCENT,
   totalStakedPercentage,
   min,
-  ONE_PERCENT,
 } from './helpers';
 
 const createPercentage = (numerator: number, denominator: number) => HUNDRED_PERCENT.mul(numerator).div(denominator);
@@ -60,17 +58,8 @@ describe('calculateAnnualInflationRate and friends', () => {
   });
 });
 
-test('convertPercentage', () => {
-  expect(convertPercentage(BigNumber.from('75').mul(ONE_PERCENT)).toString()).toBe('0.75');
-  expect(convertPercentage(BigNumber.from(0)).toString()).toBe('0');
-
-  expect(convertPercentage(BigNumber.from('75').mul(ONE_PERCENT), true).toString()).toBe('75');
-  expect(convertPercentage(BigNumber.from('17513972457961257'), true).toString()).toBe('1.751397');
-});
-
 test('absoluteStakeTarget', () => {
   expect(absoluteStakeTarget(HUNDRED_PERCENT.div(2), API3_TOKEN_SUPPLY)).toEqual(API3_TOKEN_SUPPLY.div(2));
-  expect(absoluteStakeTarget(ONE_PERCENT, API3_TOKEN_SUPPLY).toString()).toBe('1000000000000000000000000');
 });
 
 test('totalStakedPercentage', () => {

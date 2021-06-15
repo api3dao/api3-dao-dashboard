@@ -1,9 +1,10 @@
 @import '../../styles/variables.module.scss';
 
-.button {
-  // Ugly solution to overcome specificity issues
-  padding: $space-sm !important;
-  text-decoration: none !important;
+.filterButton {
+  button {
+    padding: $space-sm !important;
+    text-decoration: none !important;
+  }
 }
 
 .active {
@@ -12,9 +13,12 @@
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
   margin-bottom: 80px;
+
+  @media (min-width: $min-md) {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 .treasury {

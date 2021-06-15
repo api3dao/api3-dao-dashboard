@@ -1,7 +1,6 @@
-import * as Sentry from '@sentry/react';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 import ChainDataContextProvider from './chain-data';
+import PageContainer from './pages/page-container';
 import Dashboard from './pages/dashboard';
 import Proposals from './pages/proposals';
 import ProposalDetails from './pages/proposal-commons/proposal-details';
@@ -10,12 +9,9 @@ import History from './pages/history';
 import './styles/variables.module.scss';
 
 function App() {
-  // TODO: Implement a nicely designed error page/component for Sentry.ErrorBoundary fallback
-  // See: https://docs.sentry.io/platforms/javascript/guides/react/components/errorboundary/
   return (
-    <Sentry.ErrorBoundary fallback="An error has occurred. Please refresh and try again.">
-      <ChainDataContextProvider>
-        <ToastContainer />
+    <ChainDataContextProvider>
+      <PageContainer>
         <Router>
           <Switch>
             <Route path="/dashboard" exact>
@@ -43,8 +39,8 @@ function App() {
             </Route>
           </Switch>
         </Router>
-      </ChainDataContextProvider>
-    </Sentry.ErrorBoundary>
+      </PageContainer>
+    </ChainDataContextProvider>
   );
 }
 
