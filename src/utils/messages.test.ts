@@ -23,6 +23,8 @@ test('messages', () => {
     INVALID_DELEGATE_ADDRESS: 'Delegation target must be a valid non zero address',
     DELEGATE_IS_YOURSELF: "You can't delegate to yourself",
     REDELEGATION_IS_FORBIDDEN: expect.anything(), // REDELEGATION_IS_FORBIDDEN is a function
+
+    FAILED_TO_LOAD_PROPOSALS: 'Unable to load proposals',
   });
 });
 

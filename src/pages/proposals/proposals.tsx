@@ -5,7 +5,7 @@ import { Modal } from '../../components/modal/modal';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import Treasury from '../proposal-commons/treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
-import { useLoadAllProposals, useReloadActiveProposalsOnMinedBlock } from '../../logic/proposals/hooks';
+import { useActiveProposals } from '../../logic/proposals/hooks';
 import { encodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from '../proposal-commons/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
@@ -27,8 +27,7 @@ const Proposals = () => {
 
   useLoadDashboardData();
 
-  useLoadAllProposals();
-  useReloadActiveProposalsOnMinedBlock();
+  useActiveProposals();
   useTreasuryAndDelegation();
 
   const sortedProposals = openProposalsSelector(proposals);
