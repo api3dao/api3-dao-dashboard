@@ -41,7 +41,7 @@ export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
 
     const goStartVoteFilters = await go(Promise.all(startVotePromises));
     if (!isGoSuccess(goStartVoteFilters)) {
-      notifications.error(messages.FAILED_TO_LOAD_PROPOSALS);
+      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
       return;
     }
     const startVotes: StartVoteProposal[] = goStartVoteFilters[GO_RESULT_INDEX].map((logs) => logs[0].args).map(
@@ -55,7 +55,7 @@ export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
 
     const goOpenVoteIds = await go(convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
     if (!isGoSuccess(goOpenVoteIds)) {
-      notifications.error(messages.FAILED_TO_LOAD_PROPOSALS);
+      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
       return;
     }
     const openVoteIds = goOpenVoteIds[GO_RESULT_INDEX];
@@ -82,7 +82,7 @@ export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
     // TODO: maybe batch this as well?
     const goVotingData = await go(convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, ids));
     if (!isGoSuccess(goVotingData)) {
-      notifications.error(messages.FAILED_TO_LOAD_PROPOSALS);
+      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
       return;
     }
     const rawVotingData = goVotingData[GO_RESULT_INDEX];

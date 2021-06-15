@@ -70,7 +70,7 @@ const useLoadActiveProposals = () => {
       };
     });
     if (!isGoSuccess(goResponse)) {
-      notifications.error(messages.FAILED_TO_LOAD_PROPOSALS);
+      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
       return;
     }
     const proposals = goResponse[GO_RESULT_INDEX];
