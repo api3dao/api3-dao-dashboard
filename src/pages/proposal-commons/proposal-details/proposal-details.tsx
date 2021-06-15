@@ -11,7 +11,7 @@ import BorderedBox, { Header } from '../../../components/bordered-box/bordered-b
 import { useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndId, decodeEvmScript } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
-import { useLoadProposalsByIds } from '../../../logic/proposals/hooks';
+import { useProposalsByIds } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
 import ProposalStatus from '../proposal-list/proposal-status';
 import globalStyles from '../../../styles/global-styles.module.scss';
@@ -31,7 +31,7 @@ const ProposalDetailsPage = () => {
 
   // Need to memoize the id array to avoid infinite update loop
   const memoizedId = useMemo(() => [BigNumber.from(id)], [id]);
-  useLoadProposalsByIds(type, memoizedId);
+  useProposalsByIds(type, memoizedId);
 
   const proposal = proposalDetailsSelector(proposals, type, id);
   // TODO: Loading component

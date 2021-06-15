@@ -1,14 +1,38 @@
 import { useCallback, useEffect } from 'react';
-import { ProposalType, updateImmutablyCurried, useChainData } from '../../../chain-data';
-import { useApi3Voting } from '../../../contracts/hooks';
+import { ProposalType, updateImmutablyCurried, useChainData, VoterState } from '../../../chain-data';
+import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { isGoSuccess, go, GO_RESULT_INDEX } from '../../../utils';
 import { getProposals, StartVoteProposal } from './get-proposals';
 import { BigNumber } from '@ethersproject/bignumber';
 import { notifications } from '../../../components/notifications/notifications';
 import { messages } from '../../../utils/messages';
 
-export const useLoadProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
+const PROPOSAL_TYPE_TO_NUMBER = {
+  primary: 0,
+  secondary: 1,
+};
+
+interface DynamicVotingData {
+  id: BigNumber;
+  executed: boolean;
+  yea: BigNumber;
+  nay: BigNumber;
+  voterState: number;
+  // TODO: The following two are useless for proposals and it will be messy to update delegation from these hooks
+  delegateAt: string;
+  delegateState: number;
+}
+
+/**
+ * Hook which loads proposals by ids and voting app type. It will also refetch dynamic voting data from chain after
+ * every mined block.
+ *
+ * @param type The type of the voting app (primary or secondary)
+ * @param ids Array of vote ids of proposals to be loaded
+ */
+export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
   const api3Voting = useApi3Voting();
+  const convenience = useConvenience();
   const { userAccount, setChainData } = useChainData();
 
   const loadProposalsByIds = useCallback(async () => {
@@ -32,6 +56,7 @@ export const useLoadProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
       })
     );
 
+    // TODO: error handling using go
     const loadedProposals = await getProposals(votingApp, userAccount, startVotes, type);
     setChainData(
       'Load proposals by ids',
@@ -47,7 +72,52 @@ export const useLoadProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
     );
   }, [api3Voting, userAccount, setChainData, type, ids]);
 
+  const reloadProposalsByIds = useCallback(async () => {
+    if (!convenience) return;
+
+    // TODO: maybe batch this as well?
+    const goVotingData = await go(convenience.getDynamicVoteData(PROPOSAL_TYPE_TO_NUMBER[type], userAccount, ids));
+    if (!isGoSuccess(goVotingData)) {
+      notifications.error(messages.FAILED_TO_LOAD_PROPOSALS);
+      return;
+    }
+    const rawVotingData = goVotingData[GO_RESULT_INDEX];
+    let votingData: DynamicVotingData[] = [];
+    for (let i = 0; i < rawVotingData.executed.length; i++) {
+      votingData.push({
+        id: ids[i],
+        delegateAt: rawVotingData.delegateAt[i],
+        delegateState: rawVotingData.delegateState[i],
+        executed: rawVotingData.executed[i],
+        nay: rawVotingData.nay[i],
+        voterState: rawVotingData.voterState[i],
+        yea: rawVotingData.yea[i],
+      });
+    }
+
+    setChainData(
+      'Update proposals by ids',
+      updateImmutablyCurried((state) => {
+        if (!state.proposals) return;
+
+        for (const updatedProposal of votingData) {
+          // NOTE: Proposal should be defined at this point
+          const originalProposal = state.proposals[type][updatedProposal.id.toString()];
+          state.proposals[type][updatedProposal.id.toString()] = {
+            ...originalProposal,
+            yea: updatedProposal.yea,
+            nay: updatedProposal.nay,
+            executed: updatedProposal.executed,
+            voterState: updatedProposal.voterState as VoterState,
+          };
+        }
+      })
+    );
+  }, [convenience, ids, userAccount, setChainData, type]);
+
   useEffect(() => {
     loadProposalsByIds();
   }, [loadProposalsByIds]);
+
+  usePossibleChainDataUpdate(reloadProposalsByIds);
 };
