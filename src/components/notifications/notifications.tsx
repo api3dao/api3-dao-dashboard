@@ -42,7 +42,7 @@ const CustomToast = ({ message, title, type, url }: ToastPropsWithType) => {
         <p>{message}</p>
         {url && (
           <div className={styles.notificationUrl}>
-            <NotificationLinkButton href={url}>{url}</NotificationLinkButton>
+            <NotificationLinkButton href={url}>View transaction</NotificationLinkButton>
           </div>
         )}
       </div>
