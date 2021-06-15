@@ -1,6 +1,5 @@
 import { BigNumber } from 'ethers';
-import { ReactNode, useState } from 'react';
-import classNames from 'classnames';
+import { useState } from 'react';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
@@ -86,7 +85,7 @@ const TokenAmountForm = (props: Props) => {
           </div>
 
           <div className={styles.tokenFormBalance}>
-            Wallet balance:{' '}
+            Your balance:{' '}
             <span className={globalStyles.pointer} onClick={handleSetMax}>
               {maxValue ? formatApi3(maxValue) : '0.0'}
             </span>

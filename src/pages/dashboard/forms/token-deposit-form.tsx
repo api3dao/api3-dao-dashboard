@@ -121,7 +121,7 @@ const TokenDepositForm = (props: Props) => {
         </div>
 
         <div className={styles.tokenFormBalance}>
-          Wallet balance:{' '}
+          Your balance:{' '}
           <span className={globalStyles.pointer} onClick={handleSetMax}>
             {walletBalance ? formatApi3(walletBalance) : '0.0'}
           </span>
