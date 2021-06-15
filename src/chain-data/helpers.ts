@@ -45,6 +45,7 @@ export const ETHERSCAN_HOSTS: { [chainId: string]: string } = {
 
 export const getEtherscanUrl = (transaction: ethers.Transaction) => {
   const host = ETHERSCAN_HOSTS[transaction.chainId.toString()];
+  if (!host) return;
   return `${host}/tx/${transaction.hash}`;
 };
 
@@ -62,7 +63,10 @@ export const displayPendingTransaction = async (
 
   // It's common for transactions to take between 1-5 minutes to confirm. Keep the
   // initial "progress" toast open until then
-  const infoToastId = notifications.info({ url, message: messages.start }, { autoClose: false, closeOnClick: false });
+  const infoToastId = notifications.info(
+    { url: url, message: messages.start },
+    { autoClose: false, closeOnClick: false }
+  );
 
   const [err, receipt] = await go(transaction.wait());
 
