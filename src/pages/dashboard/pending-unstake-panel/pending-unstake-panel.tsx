@@ -6,7 +6,16 @@ import Button from '../../../components/button/button';
 import { useApi3Pool } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
 import { notifications } from '../../../components/notifications/notifications';
-import { formatApi3, getDays, getHours, getMinutes, getSeconds, go, isUserRejection, messages } from '../../../utils';
+import {
+  formatAndRoundApi3,
+  getDays,
+  getHours,
+  getMinutes,
+  getSeconds,
+  go,
+  isUserRejection,
+  messages,
+} from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './pending-unstake-panel.module.scss';
 
@@ -104,7 +113,7 @@ const PendingUnstakePanel = (props: Props) => {
           <p className={styles.pendingUnstakeTitle}>Pending API3 tokens unstaking</p>
           <div className={classNames(styles.pendingUnstakeRow, styles.amount)}>
             <p className={styles.pendingUnstakeName}>Amount</p>
-            <h5>{formatApi3(amount)}</h5>
+            <h5>{formatAndRoundApi3(amount)}</h5>
           </div>
           <div className={classNames(styles.pendingUnstakeRow, { [globalStyles.tertiaryColor]: canUnstake })}>
             <p className={styles.pendingUnstakeName}>Cooldown</p>

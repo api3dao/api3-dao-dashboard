@@ -1,5 +1,5 @@
 import { useChainData } from '../../../chain-data';
-import { formatApi3 } from '../../../utils/api3-format';
+import { formatAndRoundApi3, round } from '../../../utils/api3-format';
 import { stakingPoolSelector } from '../../../logic/dashboard';
 import RadialChart from './radial-chart';
 import globalStyles from '../../../styles/global-styles.module.scss';
@@ -11,15 +11,11 @@ const StakingPool = () => {
   const { dashboardState: data } = useChainData();
   const stakingPool = stakingPoolSelector(data);
 
-  const currentApy = stakingPool ? parseFloat(stakingPool.currentApy.toString()).toFixed(1) : UNKNOWN_NUMBER;
-  const annualInflationRate = stakingPool
-    ? parseFloat(stakingPool.annualInflationRate.toString()).toFixed(2)
-    : UNKNOWN_NUMBER;
-  const stakedPercentage = stakingPool ? parseFloat(stakingPool.stakedPercentage.toFixed(2)) : UNKNOWN_NUMBER;
-  const totalStaked = data ? parseFloat(formatApi3(data.totalStake)).toLocaleString() : UNKNOWN_NUMBER;
-  const stakingTargetInTokens = stakingPool
-    ? parseFloat(formatApi3(stakingPool.stakingTargetInTokens)).toFixed(2)
-    : UNKNOWN_NUMBER;
+  const currentApy = stakingPool ? round(stakingPool.currentApy, 1) : UNKNOWN_NUMBER;
+  const annualInflationRate = stakingPool ? round(stakingPool.annualInflationRate) : UNKNOWN_NUMBER;
+  const stakedPercentage = stakingPool ? round(stakingPool.stakedPercentage) : UNKNOWN_NUMBER;
+  const totalStaked = data ? formatAndRoundApi3(data.totalStake) : UNKNOWN_NUMBER;
+  const stakingTargetInTokens = stakingPool ? formatAndRoundApi3(stakingPool.stakingTargetInTokens) : UNKNOWN_NUMBER;
 
   const currentApyText = currentApy === UNKNOWN_NUMBER ? currentApy : `${currentApy}%`;
   const annualInflationRateText =

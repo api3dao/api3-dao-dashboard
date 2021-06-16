@@ -1,9 +1,9 @@
 import { BigNumber } from 'ethers';
 import { useState } from 'react';
 import { useChainData } from '../../chain-data';
-import { useApi3Pool, useApi3Token } from '../../contracts';
+import { useApi3Pool } from '../../contracts';
 import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
-import { formatApi3, UNKNOWN_NUMBER } from '../../utils';
+import { formatAndRoundApi3, UNKNOWN_NUMBER } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
@@ -16,19 +16,13 @@ import BorderedBox, { Header } from '../../components/bordered-box/bordered-box'
 import UnstakeBanner from './unstake-banner/unstake-banner';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './dashboard.module.scss';
-import round from 'lodash/round';
+import ConfirmUnstakeForm from './forms/confirm-unstake-form';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
-
-const formatAndRoundApi3 = (tokens: BigNumber) => {
-  const formatted = formatApi3(tokens);
-  return round(Number.parseFloat(formatted), 2);
-};
 
 const Dashboard = () => {
   const { dashboardState: data, transactions, setChainData } = useChainData();
   const api3Pool = useApi3Pool();
-  const api3Token = useApi3Token();
 
   useLoadDashboardData();
 
@@ -39,15 +33,12 @@ const Dashboard = () => {
     setOpenModal(null);
   };
 
-  // TODO: move this (and fields below) to the dashboard selector
-  const disconnected = !api3Pool || !api3Token || !data;
-
   const tokenBalances = tokenBalancesSelector(data);
   const pendingUnstake = pendingUnstakeSelector(data);
 
-  const canStake = !disconnected && data?.userUnstaked.gt(0);
-  const canWithdraw = !disconnected && tokenBalances?.withdrawable.gt(0);
-  const canInitiateUnstake = !disconnected && !pendingUnstake && data?.userStaked.gt(0);
+  const canStake = data && data.userUnstaked.gt(0);
+  const canWithdraw = tokenBalances && tokenBalances.withdrawable.gt(0);
+  const canInitiateUnstake = data && !pendingUnstake && data.userStaked.gt(0);
 
   // https://github.com/api3dao/api3-dao-dashboard/issues/108
   const shouldDisplayHowThisWorks = false;
@@ -69,7 +60,7 @@ const Dashboard = () => {
             header={
               <Header>
                 <h5>Balance</h5>
-                <Button onClick={() => setOpenModal('deposit')} disabled={disconnected}>
+                <Button onClick={() => setOpenModal('deposit')} disabled={!data}>
                   + Deposit
                 </Button>
               </Header>
@@ -140,13 +131,11 @@ const Dashboard = () => {
           )}
         </div>
       </div>
-      <Modal open={openModal === 'deposit'} onClose={closeModal}>
-        <TokenDepositForm
-          allowance={data?.allowance ?? BigNumber.from('0')}
-          onClose={closeModal}
-          walletBalance={data?.userApi3Balance ?? BigNumber.from('0')}
-        />
-      </Modal>
+      {data && (
+        <Modal open={openModal === 'deposit'} onClose={closeModal}>
+          <TokenDepositForm allowance={data.allowance} onClose={closeModal} walletBalance={data.userApi3Balance} />
+        </Modal>
+      )}
       <Modal open={openModal === 'withdraw'} onClose={closeModal}>
         <TokenAmountForm
           title="How many tokens would you like to withdraw?"
@@ -190,22 +179,24 @@ const Dashboard = () => {
         />
       </Modal>
       <Modal open={openModal === 'confirm-unstake'} onClose={closeModal}>
-        <TokenAmountForm
-          title={`Are you sure you would like to unstake ${inputValue} tokens?`}
-          action="Initiate Unstaking"
-          onConfirm={async (parsedValue: BigNumber) => {
-            if (!api3Pool || !data) return;
-            const userShares = parsedValue.mul(data.totalShares).div(data.totalStake);
-            const tx = await api3Pool.scheduleUnstake(userShares);
-            setChainData('Save initiate unstake transaction', {
-              transactions: [...transactions, { type: 'initiate-unstake', tx }],
-            });
-          }}
-          inputValue={inputValue}
-          onChange={setInputValue}
-          onClose={closeModal}
-          showTokenInput={false}
-        />
+        {/* NOTE: Prevent react executing the component if not opened, otherwise BigNumber.from might throw */}
+        {openModal === 'confirm-unstake' && (
+          <ConfirmUnstakeForm
+            title={`Are you sure you would like to unstake ${inputValue} tokens?`}
+            onConfirm={async (parsedValue: BigNumber) => {
+              if (!api3Pool || !data) return;
+              const userShares = parsedValue.mul(data.totalShares).div(data.totalStake);
+              const tx = await api3Pool.scheduleUnstake(userShares);
+              setChainData('Save initiate unstake transaction', {
+                transactions: [...transactions, { type: 'initiate-unstake', tx }],
+              });
+            }}
+            // We expect the inputValue to be validated by previous form
+            amount={BigNumber.from(inputValue)}
+            onChange={setInputValue}
+            onClose={closeModal}
+          />
+        )}
       </Modal>
     </Layout>
   );
