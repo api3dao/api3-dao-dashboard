@@ -20,7 +20,7 @@ import styles from './dashboard.module.scss';
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
 const Dashboard = () => {
-  const { dashboardState: data, userAccount, transactions, setChainData } = useChainData();
+  const { dashboardState: data, transactions, setChainData } = useChainData();
   const api3Pool = useApi3Pool();
   const api3Token = useApi3Token();
 
@@ -145,7 +145,7 @@ const Dashboard = () => {
           action="Withdraw"
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
-            const tx = await api3Pool.withdraw(userAccount, parsedValue);
+            const tx = await api3Pool.withdrawRegular(parsedValue);
             setChainData('Save withdraw transaction', { transactions: [...transactions, { type: 'withdraw', tx }] });
           }}
           inputValue={inputValue}
