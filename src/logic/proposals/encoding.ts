@@ -1,6 +1,7 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { ProposalMetadata, ProposalType } from '../../chain-data';
 import { Api3Agent } from '../../contracts';
+import { goSync, isGoSuccess } from '../../utils';
 
 /**
  * NOTE: Aragon contracts are flexible but this makes it a bit harder to work with it's contracts. We have created a
@@ -112,7 +113,14 @@ export const stringifyBigNumbersRecursively = (value: unknown): any => {
 
 export const encodeProposalTypeAndId = (type: ProposalType, id: string) => `${type}-${id}`;
 
+const isValidProposalType = (type: string): type is ProposalType => type === 'primary' || type === 'secondary';
+
 export const decodeProposalTypeAndId = (typeAndId: string) => {
-  const [type, id] = typeAndId.split('-');
-  return { type: type as ProposalType, id };
+  const [type, id, ...rest] = typeAndId.split('-');
+
+  if (rest.length !== 0) return null;
+  if (!isValidProposalType(type)) return null;
+  if (!isGoSuccess(goSync(() => BigNumber.from(id)))) return null;
+
+  return { type: type, id: BigNumber.from(id) };
 };

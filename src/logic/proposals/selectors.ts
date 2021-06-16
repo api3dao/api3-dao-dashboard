@@ -2,6 +2,7 @@ import { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '.
 import { computePercentage, EPOCH_LENGTH } from '../../contracts';
 import { addSeconds, isAfter } from 'date-fns';
 import { HUNDRED_PERCENT } from '../../contracts';
+import { BigNumber } from 'ethers';
 
 export type ProposalStatus = 'Passing' | 'Failing' | 'Executed' | 'Execute' | 'Rejected';
 export const voteSliderSelector = (proposal: Proposal) => {
@@ -36,10 +37,10 @@ export const voteSliderSelector = (proposal: Proposal) => {
   };
 };
 
-export const proposalDetailsSelector = (proposals: Proposals | null, type: ProposalType, id: string) => {
+export const proposalDetailsSelector = (proposals: Proposals | null, type: ProposalType, id: BigNumber) => {
   if (!proposals) return null;
 
-  const proposal = proposals[type][id];
+  const proposal = proposals[type][id.toString()];
   return proposal ?? null;
 };
 
@@ -100,9 +101,6 @@ export const canCreateNewProposalSelector = (delegation: Delegation | null, dash
   return epochOver && hasEnoughVotingPower;
 };
 
-export const canVote = (delegation: Delegation | null) => {
-  if (!delegation) return false;
-
-  // TODO: Use convenience contract field userVotingPowerAt as described in spec
-  return true;
+export const canVoteSelector = (proposal: Proposal) => {
+  return proposal.userVotingPowerAt.gt(0);
 };

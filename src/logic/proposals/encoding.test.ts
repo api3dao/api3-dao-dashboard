@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { updateImmutably } from '../../chain-data';
 import {
   decodeEvmScript,
@@ -73,7 +74,13 @@ describe('proposal type and id', () => {
   });
 
   test('decoding', () => {
-    const id = encodeProposalTypeAndId('primary', '123');
-    expect(decodeProposalTypeAndId(id)).toEqual({ id: '123', type: 'primary' });
+    expect(decodeProposalTypeAndId('primary-123')).toEqual({ id: BigNumber.from(123), type: 'primary' });
+  });
+
+  test('decoding invalid value', () => {
+    expect(decodeProposalTypeAndId('invalid-23notgood')).toBe(null);
+    expect(decodeProposalTypeAndId('primary-1-5')).toBe(null);
+    expect(decodeProposalTypeAndId('secondary-23notgood')).toBe(null);
+    expect(decodeProposalTypeAndId('primary-23-randomjunk')).toBe(null);
   });
 });

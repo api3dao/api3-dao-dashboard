@@ -7,6 +7,7 @@ import ProposalDetails from './pages/proposal-commons/proposal-details';
 import HistoryDetails from './pages/history-details';
 import History from './pages/history';
 import './styles/variables.module.scss';
+import NotFoundPage from './pages/not-found';
 
 function App() {
   return (
@@ -34,8 +35,7 @@ function App() {
             </Route>
             {/* NOTE: This fallback route must be last */}
             <Route path="/">
-              {/* TODO: Not found page */}
-              <h5 style={{ color: 'black' }}>Not found</h5>
+              <NotFoundPage />
             </Route>
           </Switch>
         </Router>

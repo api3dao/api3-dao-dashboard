@@ -44,6 +44,7 @@ export const getProposals = async (
       deadline: blockTimestampToDate(staticVoteData.startDate[i].add(votingTime)),
       startDateRaw: staticVoteData.startDate[i],
       script: staticVoteData.script[i],
+      userVotingPowerAt: staticVoteData.userVotingPowerAt[i],
 
       voterState: dynamicVoteData.voterState[i] as VoterState,
       executed: dynamicVoteData.executed[i],
