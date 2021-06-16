@@ -5,26 +5,32 @@ import RadialChart from './radial-chart';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './staking-pool.module.scss';
 import classNames from 'classnames';
+import { UNKNOWN_NUMBER } from '../../../utils';
 
 const StakingPool = () => {
   const { dashboardState: data } = useChainData();
   const stakingPool = stakingPoolSelector(data);
 
-  const currentApy = parseFloat(stakingPool?.currentApy.toString() || '0').toFixed(1);
-  const annualInflationRate = parseFloat(stakingPool ? stakingPool.annualInflationRate.toString() : '0').toFixed(2);
-  const stakedPercentage = parseFloat((stakingPool?.stakedPercentage || 0).toFixed(2));
+  const currentApy = stakingPool ? parseFloat(stakingPool.currentApy.toString()).toFixed(1) : UNKNOWN_NUMBER;
+  const annualInflationRate = stakingPool
+    ? parseFloat(stakingPool.annualInflationRate.toString()).toFixed(2)
+    : UNKNOWN_NUMBER;
+  const stakedPercentage = stakingPool ? parseFloat(stakingPool.stakedPercentage.toFixed(2)) : UNKNOWN_NUMBER;
+  const totalStaked = data ? parseFloat(formatApi3(data.totalStake)).toLocaleString() : UNKNOWN_NUMBER;
+  const stakingTargetInTokens = stakingPool
+    ? parseFloat(formatApi3(stakingPool.stakingTargetInTokens)).toFixed(2)
+    : UNKNOWN_NUMBER;
 
-  const totalStaked = parseFloat(data ? formatApi3(data.totalStake) : '0').toLocaleString();
-  const stakingTargetInTokens = parseFloat(
-    stakingPool ? formatApi3(stakingPool.stakingTargetInTokens) : '0'
-  ).toLocaleString();
+  const currentApyText = currentApy === UNKNOWN_NUMBER ? currentApy : `${currentApy}%`;
+  const annualInflationRateText =
+    annualInflationRate === UNKNOWN_NUMBER ? annualInflationRate : `${annualInflationRate}%`;
 
   return (
     <div className={styles.stakingPool}>
       <div className={classNames(styles.stakingTable, styles.twoCells)}>
         <div className={styles.stakingTableRow}>
           <div className={classNames(styles.stakingTableCell, styles.rightAlign)}>
-            <p className={styles.stakingAnnualApy}>{currentApy}%</p>
+            <p className={styles.stakingAnnualApy}>{currentApyText}</p>
           </div>
           <div className={styles.stakingTableCell}>
             <p className={globalStyles.secondaryColor}>Annual rewards (APY)</p>
@@ -32,7 +38,7 @@ const StakingPool = () => {
         </div>
         <div className={styles.stakingTableRow}>
           <div className={classNames(styles.stakingTableCell, styles.rightAlign)}>
-            <h5>{annualInflationRate}%</h5>
+            <h5>{annualInflationRateText}</h5>
           </div>
           <div className={styles.stakingTableCell}>
             <p className={globalStyles.secondaryColor}>Annual Inflation Rate</p>

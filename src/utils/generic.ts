@@ -73,3 +73,6 @@ export const getSeconds = (distance: number) => {
     .toString()
     .padStart(2, '0');
 };
+
+// If the user is not logged in, we want to display dash in the number fields
+export const UNKNOWN_NUMBER = '-';
