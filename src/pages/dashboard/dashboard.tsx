@@ -41,7 +41,7 @@ const Dashboard = () => {
 
   const canStake = !disconnected && data?.userUnstaked.gt(0);
   const canWithdraw = !disconnected && tokenBalances?.withdrawable.gt(0);
-  const canInitiateUnstake = !disconnected && !!pendingUnstake && data?.userStaked.gt(0);
+  const canInitiateUnstake = !disconnected && !pendingUnstake && data?.userStaked.gt(0);
 
   // https://github.com/api3dao/api3-dao-dashboard/issues/108
   const shouldDisplayHowThisWorks = false;
@@ -117,7 +117,7 @@ const Dashboard = () => {
             }
             footer={
               // TODO: In case there is a pending unstake there should be no button, just green arrow (see figma)
-              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={canInitiateUnstake}>
+              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={!canInitiateUnstake}>
                 Initiate Unstake
               </Button>
             }
