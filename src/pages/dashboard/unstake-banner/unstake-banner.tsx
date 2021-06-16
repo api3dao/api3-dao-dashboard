@@ -8,11 +8,11 @@ import styles from './unstake-banner.module.scss';
 
 const UnstakeBanner = () => {
   const api3Pool = useApi3Pool();
-  const { setChainData, transactions } = useChainData();
+  const { setChainData, transactions, userAccount } = useChainData();
 
   const handleUnstake = async () => {
     if (!api3Pool) return;
-    const [err, tx] = await go(api3Pool.unstake());
+    const [err, tx] = await go(api3Pool.unstake(userAccount));
     if (err) {
       if (isUserRejection(err!)) {
         notifications.info({ message: messages.TX_GENERIC_REJECTED });

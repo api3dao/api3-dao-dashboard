@@ -19,7 +19,7 @@ interface Props {
 
 const PendingUnstakePanel = (props: Props) => {
   const api3Pool = useApi3Pool();
-  const { transactions, setChainData } = useChainData();
+  const { transactions, setChainData, userAccount } = useChainData();
 
   const { amount, canUnstake, canUnstakeAndWithdraw, unstakeDate } = props;
   const [timerDays, setTimerDays] = useState('0');
@@ -60,7 +60,7 @@ const PendingUnstakePanel = (props: Props) => {
 
   const handleUnstake = async () => {
     if (!api3Pool) return;
-    const [err, tx] = await go(api3Pool.unstake());
+    const [err, tx] = await go(api3Pool.unstake(userAccount));
     if (err) {
       if (isUserRejection(err!)) {
         notifications.info({ message: messages.TX_GENERIC_REJECTED });
