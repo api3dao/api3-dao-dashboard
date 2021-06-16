@@ -16,6 +16,8 @@ import {
   isGoSuccess,
   GO_RESULT_INDEX,
   GO_ERROR_INDEX,
+  formatAndRoundApi3,
+  UNKNOWN_NUMBER,
 } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
@@ -92,7 +94,7 @@ const TokenDepositForm = (props: Props) => {
     props.onClose();
   };
 
-  const handleSetMax = () => setInputValue(formatApi3(walletBalance.toString()));
+  const handleSetMax = () => walletBalance && setInputValue(formatApi3(walletBalance.toString()));
 
   if (!api3Pool || !api3Token) {
     return null;
@@ -123,7 +125,7 @@ const TokenDepositForm = (props: Props) => {
         <div className={styles.tokenFormBalance}>
           Your balance:{' '}
           <span className={globalStyles.pointer} onClick={handleSetMax}>
-            {walletBalance ? formatApi3(walletBalance) : '0.0'}
+            {walletBalance ? formatAndRoundApi3(walletBalance) : UNKNOWN_NUMBER}
           </span>
         </div>
       </div>

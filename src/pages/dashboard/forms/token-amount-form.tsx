@@ -4,7 +4,7 @@ import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
 import { notifications } from '../../../components/notifications/notifications';
-import { formatApi3, go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
+import { formatApi3, go, goSync, isUserRejection, parseApi3, messages, UNKNOWN_NUMBER } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
 
@@ -87,7 +87,8 @@ const TokenAmountForm = (props: Props) => {
           <div className={styles.tokenFormBalance}>
             Your balance:{' '}
             <span className={globalStyles.pointer} onClick={handleSetMax}>
-              {maxValue ? formatApi3(maxValue) : '0.0'}
+              {/* We don't round because we want to show all decimal digits for the maxValue field */}
+              {maxValue ? formatApi3(maxValue) : UNKNOWN_NUMBER}
             </span>
           </div>
         </div>
