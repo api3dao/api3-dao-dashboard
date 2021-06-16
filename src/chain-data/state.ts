@@ -85,6 +85,7 @@ export type TransactionType =
   | 'stake'
   | 'initiate-unstake'
   | 'unstake'
+  | 'unstake-withdraw'
   | 'withdraw'
   | 'delegate'
   | 'undelegate'

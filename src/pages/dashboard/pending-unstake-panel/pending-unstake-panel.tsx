@@ -3,7 +3,10 @@ import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import Button from '../../../components/button/button';
-import { formatApi3, getDays, getHours, getMinutes, getSeconds } from '../../../utils';
+import { useApi3Pool } from '../../../contracts';
+import { useChainData } from '../../../chain-data';
+import { notifications } from '../../../components/notifications/notifications';
+import { formatApi3, getDays, getHours, getMinutes, getSeconds, go, isUserRejection, messages } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './pending-unstake-panel.module.scss';
 
@@ -15,6 +18,9 @@ interface Props {
 }
 
 const PendingUnstakePanel = (props: Props) => {
+  const api3Pool = useApi3Pool();
+  const { transactions, setChainData } = useChainData();
+
   const { amount, canUnstake, canUnstakeAndWithdraw, unstakeDate } = props;
   const [timerDays, setTimerDays] = useState('0');
   const [timerHours, setTimerHours] = useState('00');
@@ -51,6 +57,40 @@ const PendingUnstakePanel = (props: Props) => {
       clearInterval(timer);
     };
   }, [unstakeDate]);
+
+  const handleUnstake = async () => {
+    if (!api3Pool) return;
+    const [err, tx] = await go(api3Pool.unstake());
+    if (err) {
+      if (isUserRejection(err!)) {
+        notifications.info({ message: messages.TX_GENERIC_REJECTED });
+        return;
+      }
+      notifications.error({ message: messages.TX_GENERIC_ERROR });
+      return;
+    }
+    if (tx) {
+      setChainData('Save unstake transaction', { transactions: [...transactions, { type: 'unstake', tx }] });
+    }
+  };
+
+  const handleUnstakeAndWithdraw = async () => {
+    if (!api3Pool) return;
+    const [err, tx] = await go(api3Pool.unstakeAndWithdraw());
+    if (err) {
+      if (isUserRejection(err!)) {
+        notifications.info({ message: messages.TX_GENERIC_REJECTED });
+        return;
+      }
+      notifications.error({ message: messages.TX_GENERIC_ERROR });
+      return;
+    }
+    if (tx) {
+      setChainData('Save unstake & withdraw transaction', {
+        transactions: [...transactions, { type: 'unstake-withdraw', tx }],
+      });
+    }
+  };
 
   return (
     <BorderedBox
@@ -91,10 +131,12 @@ const PendingUnstakePanel = (props: Props) => {
             </div>
           </div>
           <div className={styles.pendingUnstakeActions}>
-            <Button type="link" disabled={!canUnstakeAndWithdraw}>
+            <Button type="link" onClick={handleUnstakeAndWithdraw} disabled={!canUnstakeAndWithdraw}>
               Unstake & Withdraw
             </Button>
-            <Button disabled={!canUnstake}>Unstake</Button>
+            <Button onClick={handleUnstake} disabled={!canUnstake}>
+              Unstake
+            </Button>
           </div>
         </div>
       }

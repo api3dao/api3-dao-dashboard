@@ -1,12 +1,31 @@
+import { useApi3Pool } from '../../../contracts';
+import { useChainData } from '../../../chain-data';
+import { go, isUserRejection, messages } from '../../../utils';
+import { notifications } from '../../../components/notifications/notifications';
 import Button from '../../../components/button/button';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './unstake-banner.module.scss';
 
-type Props = {
-  onClick?: () => void;
-};
+const UnstakeBanner = () => {
+  const api3Pool = useApi3Pool();
+  const { setChainData, transactions } = useChainData();
 
-const UnstakeBanner = ({ onClick }: Props) => {
+  const handleUnstake = async () => {
+    if (!api3Pool) return;
+    const [err, tx] = await go(api3Pool.unstake());
+    if (err) {
+      if (isUserRejection(err!)) {
+        notifications.info({ message: messages.TX_GENERIC_REJECTED });
+        return;
+      }
+      notifications.error({ message: messages.TX_GENERIC_ERROR });
+      return;
+    }
+    if (tx) {
+      setChainData('Save unstake transaction', { transactions: [...transactions, { type: 'unstake', tx }] });
+    }
+  };
+
   return (
     <div className={styles.unstakeBanner}>
       <div className={styles.unstakeBannerWrap}>
@@ -15,7 +34,7 @@ const UnstakeBanner = ({ onClick }: Props) => {
           <p className={globalStyles.bold}>Your tokens are ready to be unstaked.</p>
         </div>
       </div>
-      <Button size="large" onClick={onClick}>
+      <Button size="large" onClick={handleUnstake}>
         Unstake
       </Button>
     </div>

@@ -58,6 +58,11 @@ export const transactionMessages: { [key in TransactionType]: PendingTransaction
     success: 'API3 tokens unstaked successfully!',
     error: 'API3 token unstake failed',
   },
+  'unstake-withdraw': {
+    start: 'Unstaking and withdrawing API3 tokens...',
+    success: 'API3 tokens unstaked and withdrawn successfully!',
+    error: 'API3 token unstake and withdraw failed',
+  },
   withdraw: {
     start: 'Withdrawing API3 tokens...',
     success: 'API3 tokens withdrawn successfully!',
