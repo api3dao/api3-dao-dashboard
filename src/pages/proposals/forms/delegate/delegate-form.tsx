@@ -81,13 +81,14 @@ const DelegateVotesForm = (props: Props) => {
             setError('');
           }}
         />
-        {error && <p className={styles.error}>{error}</p>}
       </div>
 
       <ModalFooter>
         <Button type="secondary" size="large" onClick={onDelegate}>
           Delegate
         </Button>
+
+        {error && <p className={styles.error}>{error}</p>}
       </ModalFooter>
     </>
   );
