@@ -2,7 +2,7 @@ import { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '.
 import { computePercentage, EPOCH_LENGTH } from '../../contracts';
 import { addSeconds, isAfter } from 'date-fns';
 import { HUNDRED_PERCENT } from '../../contracts';
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 
 export type ProposalStatus = 'Passing' | 'Failing' | 'Executed' | 'Execute' | 'Rejected';
 export const voteSliderSelector = (proposal: Proposal) => {

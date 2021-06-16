@@ -89,7 +89,7 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
       return;
     }
     const rawVotingData = goVotingData[GO_RESULT_INDEX];
-    let votingData: DynamicVotingData = {
+    const votingData: DynamicVotingData = {
       id: id,
       delegateAt: rawVotingData.delegateAt[0],
       delegateState: rawVotingData.delegateState[0],
