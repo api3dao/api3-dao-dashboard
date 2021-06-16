@@ -6,8 +6,8 @@ import { HUNDRED_PERCENT } from '../../contracts';
 export type ProposalStatus = 'Passing' | 'Failing' | 'Executed' | 'Execute' | 'Rejected';
 export const voteSliderSelector = (proposal: Proposal) => {
   const minAcceptanceQuorum = proposal.minAcceptQuorum.toNumber();
-  const forPercentage = computePercentage(proposal.yea, proposal.votingPower);
-  const againstPercentage = computePercentage(proposal.nay, proposal.votingPower);
+  const forPercentage = computePercentage(proposal.yea, proposal.votingPower, true);
+  const againstPercentage = computePercentage(proposal.nay, proposal.votingPower, true);
 
   const computeProposalStatus = (): ProposalStatus => {
     // NOTE: We rely on proposal.supportRequired to be 50% because we don't expect it to change
