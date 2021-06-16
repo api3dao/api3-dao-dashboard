@@ -109,7 +109,7 @@ const useReloadHistoryProposals = () => {
       // TODO: chunk this?
       const [primaryProposalsUpdates, secondaryProposalsUpdates] = await Promise.all([
         convenience.getDynamicVoteData(VOTING_APP_IDS.primary, userAccount, primaryHistoryVoteIds),
-        convenience.getDynamicVoteData(VOTING_APP_IDS.primary, userAccount, secondaryHistoryVoteIds),
+        convenience.getDynamicVoteData(VOTING_APP_IDS.secondary, userAccount, secondaryHistoryVoteIds),
       ]);
 
       setChainData(
