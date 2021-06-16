@@ -1,9 +1,9 @@
 {
-  "api3Token": "0x7e391216f4e9f3b3cdb33ffa21e61cf50f61c898",
-  "api3Pool": "0x2f9b613724ddd2d62885fef627ae52da76ccae6a",
-  "convenience": "0xaa8753dd7e07a3616067ba02108249903bae01e9",
-  "votingAppPrimary": "0xa60ecdf4349ed9a2e3481d91dee2703b37f116cf",
-  "votingAppSecondary": "0x1d8fa6d49b49ffad86708d46cbac1f3ee2ab3625",
-  "agentAppPrimary": "0xccf0c4f1a62dad9efc45e2401149541e060d01d8",
-  "agentAppSecondary": "0x46764c7203b20cd1d55db577ab5c353f2bf8e2d7"
+  "api3Token": "0xc8fed58d49c9fd3d2690e0eb29cde9678cc45a9a",
+  "api3Pool": "0x494e1ecd9d232d97f727002aefdecf4080e495f9",
+  "convenience": "0xaf68375a0c1ab3644c7673c60ea485aeffbbd290",
+  "votingAppPrimary": "0x6945d2bc395757b7c18ef932c27e957868a2db4b",
+  "votingAppSecondary": "0xc456fbb34e3d5931d9af8a4f0d8d7e038ccede05",
+  "agentAppPrimary": "0x1e2b396705bd8bf6070d02aac03220da26c8c2ff",
+  "agentAppSecondary": "0xd4aa0a53f6fdc17501b96834776dc2131f9d8017"
 }
