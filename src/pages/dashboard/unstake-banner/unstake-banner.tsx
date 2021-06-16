@@ -13,7 +13,6 @@ const UnstakeBanner = ({ onClick }: Props) => {
         <img src="/api-icon.svg" alt="api icon" />
         <div>
           <p className={globalStyles.bold}>Your tokens are ready to be unstaked.</p>
-          <p>Unstake within 5 days 15 hours.</p>
         </div>
       </div>
       <Button size="large" onClick={onClick}>
