@@ -28,7 +28,7 @@ describe('calculateAnnualInflationRate and friends', () => {
     test('calculateAnnualMintedTokens', () => {
       const apy = calculateApy(currentApr);
       expect(calculateAnnualMintedTokens(totalStake, apy).toString()).toBe('55284457030000000000000000');
-      expect(formatApi3(calculateAnnualMintedTokens(totalStake, apy))).toBe('55284457.03');
+      expect(formatApi3(calculateAnnualMintedTokens(totalStake, apy))).toBe('55,284,457.03');
     });
 
     test('calculateAnnualInflationRate', () => {

@@ -13,7 +13,7 @@ const StakingPool = () => {
 
   const currentApy = stakingPool ? round(stakingPool.currentApy, 1) : UNKNOWN_NUMBER;
   const annualInflationRate = stakingPool ? round(stakingPool.annualInflationRate) : UNKNOWN_NUMBER;
-  const stakedPercentage = stakingPool ? round(stakingPool.stakedPercentage) : UNKNOWN_NUMBER;
+  const stakedPercentage = stakingPool ? Number.parseFloat(round(stakingPool.stakedPercentage)) : undefined;
   const totalStaked = data ? formatAndRoundApi3(data.totalStake) : UNKNOWN_NUMBER;
   const stakingTargetInTokens = stakingPool ? formatAndRoundApi3(stakingPool.stakingTargetInTokens) : UNKNOWN_NUMBER;
 
