@@ -96,7 +96,7 @@ const TokenAmountForm = (props: Props) => {
       <ModalFooter>
         <div className={styles.tokenAmountFormActions}>
           {!showTokenInput && (
-            <Button type="text" onClick={onClose}>
+            <Button type="text" onClick={onClose} className={styles.cancelButton}>
               Cancel
             </Button>
           )}
