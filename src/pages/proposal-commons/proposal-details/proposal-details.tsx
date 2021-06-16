@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router';
-import { Proposal, useChainData } from '../../../chain-data';
+import { Proposal, ProposalType, useChainData } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout/layout';
 import { Modal } from '../../../components/modal/modal';
 import VoteSlider from '../vote-slider/vote-slider';
@@ -19,6 +19,24 @@ import styles from './proposal-details.module.scss';
 import classNames from 'classnames';
 import { BigNumber } from 'ethers';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
+import NotFoundPage from '../../not-found';
+
+interface ProposalDetailsContentProps {
+  type: ProposalType;
+  id: BigNumber;
+}
+
+const ProposalDetailsContent = (props: ProposalDetailsContentProps) => {
+  const { type, id } = props;
+  const { proposals } = useChainData();
+
+  // Need to memoize the id array to avoid infinite update loop
+  useProposalsByIds(type, id);
+
+  const proposal = proposalDetailsSelector(proposals, type, id);
+  // TODO: Loading component
+  return <BaseLayout>{!proposal ? <p>Loading...</p> : <ProposalDetails proposal={proposal} />}</BaseLayout>;
+};
 
 interface RouterParameters {
   typeAndId: string;
@@ -26,17 +44,10 @@ interface RouterParameters {
 
 const ProposalDetailsPage = () => {
   const { typeAndId } = useParams<RouterParameters>();
-  // TODO: Validate id and type - a proposal might not exist (e.g. user tries invalid voteId)
-  const { id, type } = decodeProposalTypeAndId(typeAndId);
-  const { proposals } = useChainData();
+  const decoded = decodeProposalTypeAndId(typeAndId);
 
-  // Need to memoize the id array to avoid infinite update loop
-  const memoizedId = useMemo(() => [BigNumber.from(id)], [id]);
-  useProposalsByIds(type, memoizedId);
-
-  const proposal = proposalDetailsSelector(proposals, type, id);
-  // TODO: Loading component
-  return <BaseLayout>{!proposal ? <p>Loading...</p> : <ProposalDetails proposal={proposal} />}</BaseLayout>;
+  if (!decoded) return <NotFoundPage />;
+  return <ProposalDetailsContent {...decoded} />;
 };
 
 interface ProposalDetailsProps {

@@ -108,7 +108,7 @@ const useReloadActiveProposals = () => {
     const loadProposals = async () => {
       const oldActiveProposalIds = openProposalIdsSelector(proposals);
 
-      const updateState = (type: ProposalType, loadedChunk: Proposal[]) =>
+      const updateState = (type: ProposalType, loadedChunk: Proposal[]) => {
         setChainData('Update active proposals after chunk loaded', (state) =>
           updateImmutably(state, (immutableState) => {
             const proposals = immutableState.proposals;
@@ -120,6 +120,7 @@ const useReloadActiveProposals = () => {
             });
           })
         );
+      };
 
       const types = ['primary', 'secondary'] as const;
 
@@ -149,7 +150,7 @@ const useReloadActiveProposals = () => {
         };
 
         // All of the old proposals have metadata already loaded, we just need to update voting state
-        const oldVoteIds = difference(currentVoteIds, previousVoteIds);
+        const oldVoteIds = difference(currentVoteIds, newVoteIds);
         const loadOldProposals = async () => {
           const voteIdsChunks = chunk(oldVoteIds, CHUNKS_SIZE); // TODO: sort by voteIds descending
 
@@ -159,7 +160,7 @@ const useReloadActiveProposals = () => {
             const updatedProposals: Proposal[] = chunkIds.map((id, index) => {
               return {
                 // TODO: We assume the proposal with the given id exists (and theoretically it might not)
-                ...proposalDetailsSelector(proposals, type, id.toString())!,
+                ...proposalDetailsSelector(proposals, type, id)!,
                 yea: dynamicData.yea[index],
                 nay: dynamicData.nay[index],
                 executed: dynamicData.executed[index],

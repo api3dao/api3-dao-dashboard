@@ -26,8 +26,7 @@ interface DynamicVotingData {
  * @param type The type of the voting app (primary or secondary)
  * @param ids Array of vote ids of proposals to be loaded
  */
-// TODO: refactor the second argument to accept just a single id (the only use case for this function will be to load proposal details for a single proposal)
-export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
+export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
   const { userAccount, setChainData } = useChainData();
@@ -36,22 +35,21 @@ export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
     if (!api3Voting || !convenience) return;
 
     const votingApp = api3Voting[type];
-    const startVoteFilters = ids.map((id) => votingApp.filters.StartVote(id, null, null));
-    const startVotePromises = startVoteFilters.map((filter) => votingApp.queryFilter(filter));
+    const startVoteFilter = votingApp.filters.StartVote(id, null, null);
 
-    const goStartVoteFilters = await go(Promise.all(startVotePromises));
+    const goStartVoteFilters = await go(votingApp.queryFilter(startVoteFilter));
     if (!isGoSuccess(goStartVoteFilters)) {
       notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
       return;
     }
-    const startVotes: StartVoteProposal[] = goStartVoteFilters[GO_RESULT_INDEX].map((logs) => logs[0].args).map(
-      (log) => ({
-        // Removing ethers array-ish response format
-        creator: log.creator,
-        metadata: log.metadata,
-        voteId: log.voteId,
-      })
-    );
+    // There will inly be one StartEvent response for the given filter
+    const ethersArgs = goStartVoteFilters[GO_RESULT_INDEX][0].args;
+    const startVote: StartVoteProposal = {
+      // Removing ethers array-ish response format
+      creator: ethersArgs.creator,
+      metadata: ethersArgs.metadata,
+      voteId: ethersArgs.voteId,
+    };
 
     const goOpenVoteIds = await go(convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
     if (!isGoSuccess(goOpenVoteIds)) {
@@ -61,7 +59,13 @@ export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
     const openVoteIds = goOpenVoteIds[GO_RESULT_INDEX];
 
     // TODO: error handling using go
-    const loadedProposals = await getProposals(votingApp, convenience, userAccount, startVotes, openVoteIds, type);
+    const goLoadProposal = await go(getProposals(votingApp, convenience, userAccount, [startVote], openVoteIds, type));
+    if (!isGoSuccess(goLoadProposal)) {
+      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
+      return;
+    }
+    const loadedProposals = goLoadProposal[GO_RESULT_INDEX];
+
     setChainData(
       'Load proposals by ids',
       updateImmutablyCurried((state) => {
@@ -74,50 +78,44 @@ export const useProposalsByIds = (type: ProposalType, ids: BigNumber[]) => {
         }
       })
     );
-  }, [api3Voting, convenience, userAccount, setChainData, type, ids]);
+  }, [api3Voting, convenience, userAccount, setChainData, type, id]);
 
   const reloadProposalsByIds = useCallback(async () => {
     if (!convenience) return;
 
-    // TODO: maybe batch this as well?
-    const goVotingData = await go(convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, ids));
+    const goVotingData = await go(convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, [id]));
     if (!isGoSuccess(goVotingData)) {
       notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
       return;
     }
     const rawVotingData = goVotingData[GO_RESULT_INDEX];
-    let votingData: DynamicVotingData[] = [];
-    for (let i = 0; i < rawVotingData.executed.length; i++) {
-      votingData.push({
-        id: ids[i],
-        delegateAt: rawVotingData.delegateAt[i],
-        delegateState: rawVotingData.delegateState[i],
-        executed: rawVotingData.executed[i],
-        nay: rawVotingData.nay[i],
-        voterState: rawVotingData.voterState[i],
-        yea: rawVotingData.yea[i],
-      });
-    }
+    let votingData: DynamicVotingData = {
+      id: id,
+      delegateAt: rawVotingData.delegateAt[0],
+      delegateState: rawVotingData.delegateState[0],
+      executed: rawVotingData.executed[0],
+      nay: rawVotingData.nay[0],
+      voterState: rawVotingData.voterState[0],
+      yea: rawVotingData.yea[0],
+    };
 
     setChainData(
       'Update proposals by ids',
       updateImmutablyCurried((state) => {
         if (!state.proposals) return;
 
-        for (const updatedProposal of votingData) {
-          // NOTE: Proposal should be defined at this point
-          const originalProposal = state.proposals[type][updatedProposal.id.toString()];
-          state.proposals[type][updatedProposal.id.toString()] = {
-            ...originalProposal,
-            yea: updatedProposal.yea,
-            nay: updatedProposal.nay,
-            executed: updatedProposal.executed,
-            voterState: updatedProposal.voterState as VoterState,
-          };
-        }
+        // NOTE: Proposal should be defined at this point
+        const originalProposal = state.proposals[type][votingData.id.toString()];
+        state.proposals[type][votingData.id.toString()] = {
+          ...originalProposal,
+          yea: votingData.yea,
+          nay: votingData.nay,
+          executed: votingData.executed,
+          voterState: votingData.voterState as VoterState,
+        };
       })
     );
-  }, [convenience, ids, userAccount, setChainData, type]);
+  }, [convenience, id, userAccount, setChainData, type]);
 
   useEffect(() => {
     loadProposalsByIds();

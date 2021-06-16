@@ -2,6 +2,7 @@ import { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '.
 import { computePercentage, EPOCH_LENGTH } from '../../contracts';
 import { addSeconds, isAfter } from 'date-fns';
 import { HUNDRED_PERCENT } from '../../contracts';
+import { BigNumber } from '@ethersproject/bignumber';
 
 export type ProposalStatus = 'Passing' | 'Failing' | 'Executed' | 'Execute' | 'Rejected';
 export const voteSliderSelector = (proposal: Proposal) => {
@@ -36,10 +37,10 @@ export const voteSliderSelector = (proposal: Proposal) => {
   };
 };
 
-export const proposalDetailsSelector = (proposals: Proposals | null, type: ProposalType, id: string) => {
+export const proposalDetailsSelector = (proposals: Proposals | null, type: ProposalType, id: BigNumber) => {
   if (!proposals) return null;
 
-  const proposal = proposals[type][id];
+  const proposal = proposals[type][id.toString()];
   return proposal ?? null;
 };
 
