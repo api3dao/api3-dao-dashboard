@@ -16,6 +16,7 @@ import BorderedBox, { Header } from '../../components/bordered-box/bordered-box'
 import UnstakeBanner from './unstake-banner/unstake-banner';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './dashboard.module.scss';
+import ConfirmUnstakeForm from './forms/confirm-unstake-form';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
@@ -178,22 +179,24 @@ const Dashboard = () => {
         />
       </Modal>
       <Modal open={openModal === 'confirm-unstake'} onClose={closeModal}>
-        <TokenAmountForm
-          title={`Are you sure you would like to unstake ${inputValue} tokens?`}
-          action="Initiate Unstaking"
-          onConfirm={async (parsedValue: BigNumber) => {
-            if (!api3Pool || !data) return;
-            const userShares = parsedValue.mul(data.totalShares).div(data.totalStake);
-            const tx = await api3Pool.scheduleUnstake(userShares);
-            setChainData('Save initiate unstake transaction', {
-              transactions: [...transactions, { type: 'initiate-unstake', tx }],
-            });
-          }}
-          inputValue={inputValue}
-          onChange={setInputValue}
-          onClose={closeModal}
-          showTokenInput={false}
-        />
+        {/* NOTE: Prevent react executing the component if not opened, otherwise BigNumber.from might throw */}
+        {openModal === 'confirm-unstake' && (
+          <ConfirmUnstakeForm
+            title={`Are you sure you would like to unstake ${inputValue} tokens?`}
+            onConfirm={async (parsedValue: BigNumber) => {
+              if (!api3Pool || !data) return;
+              const userShares = parsedValue.mul(data.totalShares).div(data.totalStake);
+              const tx = await api3Pool.scheduleUnstake(userShares);
+              setChainData('Save initiate unstake transaction', {
+                transactions: [...transactions, { type: 'initiate-unstake', tx }],
+              });
+            }}
+            // We expect the inputValue to be validated by previous form
+            amount={BigNumber.from(inputValue)}
+            onChange={setInputValue}
+            onClose={closeModal}
+          />
+        )}
       </Modal>
     </Layout>
   );

@@ -4,7 +4,7 @@ import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
 import { notifications } from '../../../components/notifications/notifications';
-import { formatApi3, go, goSync, isUserRejection, parseApi3, messages, UNKNOWN_NUMBER } from '../../../utils';
+import { formatApi3, go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
 
@@ -15,23 +15,13 @@ interface Props {
   onClose: () => void;
   onChange: (input: string) => void;
   inputValue: string;
-  showTokenInput?: boolean;
   maxValue?: BigNumber;
   closeOnConfirm?: boolean;
 }
 
 const TokenAmountForm = (props: Props) => {
   const [error, setError] = useState('');
-  const {
-    action,
-    onConfirm,
-    maxValue,
-    onChange,
-    onClose,
-    inputValue,
-    showTokenInput = true,
-    closeOnConfirm = true,
-  } = props;
+  const { action, onConfirm, maxValue, onChange, onClose, inputValue, closeOnConfirm = true } = props;
 
   // The input field should catch any bad inputs, but just in case, try parse and display any errors
   const [parseErr, inputBigNum] = goSync(() => parseApi3(inputValue));
@@ -74,33 +64,30 @@ const TokenAmountForm = (props: Props) => {
     <>
       <ModalHeader>{props.title}</ModalHeader>
 
-      {showTokenInput && (
-        <div className={globalStyles.textCenter}>
-          <p className={styles.tokenAmountFormToken}>TOKEN</p>
-          <div className={styles.inputWrapper}>
-            <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
+      <div className={globalStyles.textCenter}>
+        <p className={styles.tokenAmountFormToken}>TOKEN</p>
+        <div className={styles.inputWrapper}>
+          <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
+          {maxValue && (
             <Button className={styles.maxButton} type="text" onClick={handleSetMax}>
               Max
             </Button>
-          </div>
+          )}
+        </div>
 
+        {maxValue && (
           <div className={styles.tokenFormBalance}>
             Your balance:{' '}
             <span className={globalStyles.pointer} onClick={handleSetMax}>
               {/* We don't round because we want to show all decimal digits for the maxValue field */}
-              {maxValue ? formatApi3(maxValue) : UNKNOWN_NUMBER}
+              {formatApi3(maxValue)}
             </span>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <ModalFooter>
         <div className={styles.tokenAmountFormActions}>
-          {!showTokenInput && (
-            <Button type="text" onClick={onClose} className={styles.cancelButton}>
-              Cancel
-            </Button>
-          )}
           <Button type="secondary" onClick={handleAction} disabled={!!parseErr}>
             {action}
           </Button>
