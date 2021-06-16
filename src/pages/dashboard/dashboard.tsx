@@ -43,10 +43,13 @@ const Dashboard = () => {
   const canWithdraw = !disconnected && tokenBalances?.withdrawable.gt(0);
   const canInitiateUnstake = !disconnected && !!pendingUnstake && data?.userStaked.gt(0);
 
+  // https://github.com/api3dao/api3-dao-dashboard/issues/108
+  const shouldDisplayHowThisWorks = false;
+
   return (
     <Layout title="Staking">
       {pendingUnstake?.canUnstake && <UnstakeBanner />}
-      {!pendingUnstake?.canUnstake && (
+      {!pendingUnstake?.canUnstake && shouldDisplayHowThisWorks && (
         <>
           <p className={styles.dashboardHeader}>How This Works</p>
           <Slider />
