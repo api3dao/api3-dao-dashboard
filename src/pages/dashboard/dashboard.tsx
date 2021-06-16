@@ -145,7 +145,7 @@ const Dashboard = () => {
           action="Withdraw"
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
-            const tx = await api3Pool.withdraw(userAccount, parsedValue);
+            const tx = await api3Pool.withdraw(parsedValue);
             setChainData('Save withdraw transaction', { transactions: [...transactions, { type: 'withdraw', tx }] });
           }}
           inputValue={inputValue}
