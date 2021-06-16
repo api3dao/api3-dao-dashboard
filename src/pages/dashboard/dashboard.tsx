@@ -16,12 +16,13 @@ import BorderedBox, { Header } from '../../components/bordered-box/bordered-box'
 import UnstakeBanner from './unstake-banner/unstake-banner';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './dashboard.module.scss';
+import round from 'lodash/round';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
 const formatAndRoundApi3 = (tokens: BigNumber) => {
   const formatted = formatApi3(tokens);
-  return Math.round(Number.parseFloat(formatted));
+  return round(Number.parseFloat(formatted), 2);
 };
 
 const Dashboard = () => {
