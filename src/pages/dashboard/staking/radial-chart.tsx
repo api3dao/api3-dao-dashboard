@@ -1,7 +1,9 @@
+import { UNKNOWN_NUMBER } from '../../../utils';
+
 const { round, PI, cos, sin } = Math;
 
 type Props = {
-  completionPercent: number;
+  completionPercent: number | string;
 };
 
 const RadialChart = ({ completionPercent }: Props) => {
@@ -9,6 +11,9 @@ const RadialChart = ({ completionPercent }: Props) => {
     strokeWidth = 10,
     side = r * 2 + strokeWidth * 2,
     center = r + strokeWidth;
+
+  const completionText = typeof completionPercent === 'string' ? UNKNOWN_NUMBER : `${completionPercent}%`;
+  const completionValue = typeof completionPercent === 'string' ? 0 : completionPercent;
 
   return (
     <svg width={side} height={side}>
@@ -18,7 +23,7 @@ const RadialChart = ({ completionPercent }: Props) => {
         stroke="url(#gradient)"
         strokeWidth={strokeWidth}
         strokeLinecap="round"
-        d={describeArc(center, center, r, 0, completionPercent === 100 ? 359 : round((completionPercent / 100) * 360))}
+        d={describeArc(center, center, r, 0, completionValue === 100 ? 359 : round((completionValue / 100) * 360))}
       />
 
       <text
@@ -28,7 +33,7 @@ const RadialChart = ({ completionPercent }: Props) => {
         dominantBaseline="middle"
         fill="white"
         fontSize={27}
-        children={completionPercent + '%'}
+        children={completionText}
       />
 
       <text

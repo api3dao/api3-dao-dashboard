@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useChainData } from '../../chain-data';
 import { useApi3Pool, useApi3Token } from '../../contracts';
 import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
-import { formatApi3 } from '../../utils';
+import { formatApi3, UNKNOWN_NUMBER } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
@@ -16,8 +16,14 @@ import BorderedBox, { Header } from '../../components/bordered-box/bordered-box'
 import UnstakeBanner from './unstake-banner/unstake-banner';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './dashboard.module.scss';
+import round from 'lodash/round';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
+
+const formatAndRoundApi3 = (tokens: BigNumber) => {
+  const formatted = formatApi3(tokens);
+  return round(Number.parseFloat(formatted), 2);
+};
 
 const Dashboard = () => {
   const { dashboardState: data, transactions, setChainData } = useChainData();
@@ -73,13 +79,13 @@ const Dashboard = () => {
                 <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
                   <p className={styles.borderedBoxContentTitle}>total</p>
                   <p className={globalStyles.textXLarge}>
-                    {tokenBalances ? formatApi3(tokenBalances.userTotal) : '0.0'}
+                    {tokenBalances ? formatAndRoundApi3(tokenBalances.userTotal) : UNKNOWN_NUMBER}
                   </p>
                 </div>
                 <div className={globalStyles.textCenter}>
                   <p className={styles.borderedBoxContentTitle}>withdrawable</p>
                   <p className={globalStyles.textXLarge}>
-                    {tokenBalances ? formatApi3(tokenBalances.withdrawable) : '0.0'}
+                    {tokenBalances ? formatAndRoundApi3(tokenBalances.withdrawable) : UNKNOWN_NUMBER}
                   </p>
                 </div>
               </>
@@ -105,12 +111,14 @@ const Dashboard = () => {
               <>
                 <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
                   <p className={styles.borderedBoxContentTitle}>staked</p>
-                  <p className={globalStyles.textXLarge}>{data ? formatApi3(data.userStaked) : '0.0'}</p>
+                  <p className={globalStyles.textXLarge}>
+                    {data ? formatAndRoundApi3(data.userStaked) : UNKNOWN_NUMBER}
+                  </p>
                 </div>
                 <div className={globalStyles.textCenter}>
                   <p className={styles.borderedBoxContentTitle}>unstaked</p>
                   <p className={globalStyles.textXLarge}>
-                    {tokenBalances ? formatApi3(tokenBalances.withdrawable) : '0.0'}
+                    {tokenBalances ? formatAndRoundApi3(tokenBalances.withdrawable) : UNKNOWN_NUMBER}
                   </p>
                 </div>
               </>

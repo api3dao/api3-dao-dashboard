@@ -70,7 +70,6 @@ const DelegateVotesForm = (props: Props) => {
       <ModalHeader>Delegate my votes to:</ModalHeader>
 
       <div className={globalStyles.textCenter}>
-        <p className={styles.delegateVotesModalSubtitle}>ADDRESS</p>
         <Input
           type="text"
           autosize
