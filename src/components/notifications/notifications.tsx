@@ -10,12 +10,10 @@ import styles from './notifications.module.scss';
 
 const THROTTLE_MS = 500;
 
-// TODO: add styling for various components
 interface CloseButtonProps {
   closeToast: () => void;
 }
 
-// TODO: this should have the same styling as the modal close button
 export const CloseButton = ({ closeToast }: CloseButtonProps) => (
   <div className={styles.closeButton} onClick={() => closeToast()}>
     <img src="/notification-close.svg" alt="notification close button" />
@@ -33,7 +31,6 @@ interface ToastPropsWithType extends ToastProps {
 }
 
 const CustomToast = ({ message, title, type, url }: ToastPropsWithType) => {
-  // TODO: style based on the type of toast
   return (
     <div className={classNames(styles.notificationBody, { [styles.url]: url })}>
       <img src={`/${type}.svg`} alt={`${type} icon`} />

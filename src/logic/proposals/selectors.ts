@@ -100,9 +100,6 @@ export const canCreateNewProposalSelector = (delegation: Delegation | null, dash
   return epochOver && hasEnoughVotingPower;
 };
 
-export const canVote = (delegation: Delegation | null) => {
-  if (!delegation) return false;
-
-  // TODO: Use convenience contract field userVotingPowerAt as described in spec
-  return true;
+export const canVoteSelector = (proposal: Proposal) => {
+  return proposal.userVotingPowerAt.gt(0);
 };

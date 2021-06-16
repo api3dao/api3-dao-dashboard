@@ -18,6 +18,7 @@ import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import classNames from 'classnames';
 import { BigNumber } from 'ethers';
+import { canVoteSelector } from '../../../logic/proposals/selectors';
 
 interface RouterParameters {
   typeAndId: string;
@@ -51,6 +52,8 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
   const voteSliderData = voteSliderSelector(proposal);
   const evmScriptData = decodeEvmScript(proposal.script, proposal.metadata);
 
+  const canVote = canVoteSelector(proposal);
+
   // NOTE: This should never happen, loading component in proposal details page should
   // make sure we are connected to valid chain and have valid proposal loaded
   if (!voting) return null;
@@ -72,7 +75,7 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
       <ProposalStatus proposal={proposal} large />
       <div className={styles.proposalDetailsVoteSection}>
         <VoteSlider {...voteSliderData} size="large" />
-        <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)}>
+        <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
           Vote
         </Button>
         <Modal open={voteModalOpen} onClose={() => setVoteModalOpen(false)}>

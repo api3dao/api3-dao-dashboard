@@ -54,6 +54,7 @@ export interface Proposal {
   startDateRaw: BigNumber;
   type: ProposalType;
   script: string;
+  userVotingPowerAt: BigNumber;
 }
 
 export interface Delegation {
