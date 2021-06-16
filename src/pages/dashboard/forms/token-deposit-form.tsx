@@ -108,7 +108,6 @@ const TokenDepositForm = (props: Props) => {
       <ModalHeader>How many tokens would you like to deposit?</ModalHeader>
 
       <div className={globalStyles.textCenter}>
-        <p className={styles.tokenAmountFormToken}>TOKEN</p>
         <div className={styles.inputWrapper}>
           <Input
             type="number"

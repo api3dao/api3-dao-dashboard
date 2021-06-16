@@ -65,7 +65,6 @@ const TokenAmountForm = (props: Props) => {
       <ModalHeader>{props.title}</ModalHeader>
 
       <div className={globalStyles.textCenter}>
-        <p className={styles.tokenAmountFormToken}>TOKEN</p>
         <div className={styles.inputWrapper}>
           <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
           {maxValue && (
