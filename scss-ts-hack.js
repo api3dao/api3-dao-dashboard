@@ -5,7 +5,7 @@
  * present.
  *
  * Unfortunately, this check doesn't play nice with css modules and typings provided by CRA. The fix is to use more
- * loose checks which avoid violations for this rule. This doesn't degrade typing results in no way, because we use css
+ * loose checks which avoid violations for this rule. This doesn't degrade typing results in any way, because we use css
  * modules TS plugin for IDE (so we have full type inference there).
  *
  * NOTE: It's possible (but unlikely) that the module typings change, filename changes or react-scripts end up installed

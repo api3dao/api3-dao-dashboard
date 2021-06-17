@@ -42,7 +42,7 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
       notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
       return;
     }
-    // There will inly be one StartEvent response for the given filter
+    // There will only be one StartEvent response for the given filter
     const ethersArgs = goStartVoteFilters[GO_RESULT_INDEX][0]!.args;
     const startVote: StartVoteProposal = {
       // Removing ethers array-ish response format
