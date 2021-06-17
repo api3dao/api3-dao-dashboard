@@ -34,22 +34,22 @@ export const getProposals = async (
   for (let i = 0; i < startVoteProposals.length; i++) {
     proposals.push({
       type,
-      ...startVotesInfo[i],
-      open: openVoteIdsStr.includes(startVotesInfo[i].voteId.toString()),
+      ...startVotesInfo[i]!,
+      open: openVoteIdsStr.includes(startVotesInfo[i]!.voteId.toString()),
 
-      startDate: blockTimestampToDate(staticVoteData.startDate[i]),
-      supportRequired: toPercent(staticVoteData.supportRequired[i]),
-      minAcceptQuorum: toPercent(staticVoteData.minAcceptQuorum[i]),
-      votingPower: staticVoteData.votingPower[i],
-      deadline: blockTimestampToDate(staticVoteData.startDate[i].add(votingTime)),
-      startDateRaw: staticVoteData.startDate[i],
-      script: staticVoteData.script[i],
-      userVotingPowerAt: staticVoteData.userVotingPowerAt[i],
+      startDate: blockTimestampToDate(staticVoteData.startDate[i]!),
+      supportRequired: toPercent(staticVoteData.supportRequired[i]!),
+      minAcceptQuorum: toPercent(staticVoteData.minAcceptQuorum[i]!),
+      votingPower: staticVoteData.votingPower[i]!,
+      deadline: blockTimestampToDate(staticVoteData.startDate[i]!.add(votingTime)),
+      startDateRaw: staticVoteData.startDate[i]!,
+      script: staticVoteData.script[i]!,
+      userVotingPowerAt: staticVoteData.userVotingPowerAt[i]!,
 
       voterState: dynamicVoteData.voterState[i] as VoterState,
-      executed: dynamicVoteData.executed[i],
-      yea: dynamicVoteData.yea[i],
-      nay: dynamicVoteData.nay[i],
+      executed: dynamicVoteData.executed[i]!,
+      yea: dynamicVoteData.yea[i]!,
+      nay: dynamicVoteData.nay[i]!,
     });
   }
 

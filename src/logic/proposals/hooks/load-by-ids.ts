@@ -42,8 +42,8 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
       notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
       return;
     }
-    // There will inly be one StartEvent response for the given filter
-    const ethersArgs = goStartVoteFilters[GO_RESULT_INDEX][0].args;
+    // There will only be one StartEvent response for the given filter
+    const ethersArgs = goStartVoteFilters[GO_RESULT_INDEX][0]!.args;
     const startVote: StartVoteProposal = {
       // Removing ethers array-ish response format
       creator: ethersArgs.creator,
@@ -58,7 +58,6 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
     }
     const openVoteIds = goOpenVoteIds[GO_RESULT_INDEX];
 
-    // TODO: error handling using go
     const goLoadProposal = await go(getProposals(votingApp, convenience, userAccount, [startVote], openVoteIds, type));
     if (!isGoSuccess(goLoadProposal)) {
       notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
@@ -91,12 +90,13 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
     const rawVotingData = goVotingData[GO_RESULT_INDEX];
     const votingData: DynamicVotingData = {
       id: id,
-      delegateAt: rawVotingData.delegateAt[0],
-      delegateState: rawVotingData.delegateState[0],
-      executed: rawVotingData.executed[0],
-      nay: rawVotingData.nay[0],
-      voterState: rawVotingData.voterState[0],
-      yea: rawVotingData.yea[0],
+      // The rawVotingData is an object with fields that are single element arrays
+      delegateAt: rawVotingData.delegateAt[0]!,
+      delegateState: rawVotingData.delegateState[0]!,
+      executed: rawVotingData.executed[0]!,
+      nay: rawVotingData.nay[0]!,
+      voterState: rawVotingData.voterState[0]!,
+      yea: rawVotingData.yea[0]!,
     };
 
     setChainData(
@@ -104,8 +104,10 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
       updateImmutablyCurried((state) => {
         if (!state.proposals) return;
 
-        // NOTE: Proposal should be defined at this point
         const originalProposal = state.proposals[type][votingData.id.toString()];
+        // NOTE: If the proposal is not defined, it is probably still being loaded
+        if (!originalProposal) return;
+
         state.proposals[type][votingData.id.toString()] = {
           ...originalProposal,
           yea: votingData.yea,
@@ -121,5 +123,6 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
     loadProposalsByIds();
   }, [loadProposalsByIds]);
 
-  usePossibleChainDataUpdate(reloadProposalsByIds);
+  // TODO: Maybe instead of avoiding `triggerOnMount` we should merge reloadProposalsByIds and loadProposalsByIds
+  usePossibleChainDataUpdate(reloadProposalsByIds, { triggerOnMount: false });
 };

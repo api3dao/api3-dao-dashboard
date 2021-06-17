@@ -120,13 +120,19 @@ const useReloadHistoryProposals = () => {
           if (!proposals) return immutableState;
 
           for (let i = 0; i < primaryHistoryVoteIds.length; i++) {
-            const id = primaryHistoryVoteIds[i].toString();
-            proposals.primary[id].executed = primaryProposalsUpdates.executed[i];
+            const id = primaryHistoryVoteIds[i]!.toString();
+            const proposal = proposals.primary[id];
+            // If proposals are not loaded yet, they are still being fetched at the moment
+            if (!proposal) continue;
+            proposal.executed = primaryProposalsUpdates.executed[i]!;
           }
 
           for (let i = 0; i < secondaryHistoryVoteIds.length; i++) {
-            const id = secondaryHistoryVoteIds[i].toString();
-            proposals.secondary[id].executed = secondaryProposalsUpdates.executed[i];
+            const id = secondaryHistoryVoteIds[i]!.toString();
+            const proposal = proposals.secondary[id];
+            // If proposals are not loaded yet, they are still being fetched at the moment
+            if (!proposal) continue;
+            proposal.executed = secondaryProposalsUpdates.executed[i]!;
           }
         })
       );

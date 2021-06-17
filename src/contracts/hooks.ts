@@ -170,7 +170,7 @@ export const useTransactionNotifications = () => {
 
   useEffect(() => {
     if (transactions.length > (prevTransactions || []).length) {
-      const { type, tx } = transactions[transactions.length - 1];
+      const { type, tx } = transactions[transactions.length - 1]!;
       // Check if we've already displayed a notification for the given transaction hash
       const hasBeenDisplayed = displayedTxHashes.includes(tx.hash);
       if (!hasBeenDisplayed) {
