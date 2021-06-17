@@ -3,7 +3,7 @@ import { UNKNOWN_NUMBER } from '../../../utils';
 const { round, PI, cos, sin } = Math;
 
 type Props = {
-  completionPercent: number | string;
+  completionPercent: number | undefined;
 };
 
 const RadialChart = ({ completionPercent }: Props) => {
@@ -12,8 +12,8 @@ const RadialChart = ({ completionPercent }: Props) => {
     side = r * 2 + strokeWidth * 2,
     center = r + strokeWidth;
 
-  const completionText = typeof completionPercent === 'string' ? UNKNOWN_NUMBER : `${completionPercent}%`;
-  const completionValue = typeof completionPercent === 'string' ? 0 : completionPercent;
+  const completionText = completionPercent !== undefined ? `${completionPercent}%` : UNKNOWN_NUMBER;
+  const completionValue = completionPercent ?? 0;
 
   return (
     <svg width={side} height={side}>
