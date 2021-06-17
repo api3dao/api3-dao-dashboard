@@ -27,7 +27,8 @@ export const encodeMetadata = (formData: NewProposalFormData) =>
 
 export const decodeMetadata = (metadata: string): ProposalMetadata => {
   const tokens = metadata.split(METADATA_DELIMETER);
-  return { version: tokens[0], targetSignature: tokens[1], title: tokens[2], description: tokens[3] };
+  // https://github.com/api3dao/api3-dao-dashboard/issues/104
+  return { version: tokens[0]!, targetSignature: tokens[1]!, title: tokens[2]!, description: tokens[3]! };
 };
 
 export const encodeEvmScript = (formData: NewProposalFormData, api3Agent: Api3Agent) => {
@@ -113,7 +114,8 @@ export const stringifyBigNumbersRecursively = (value: unknown): any => {
 
 export const encodeProposalTypeAndId = (type: ProposalType, id: string) => `${type}-${id}`;
 
-const isValidProposalType = (type: string): type is ProposalType => type === 'primary' || type === 'secondary';
+const isValidProposalType = (type: string | undefined): type is ProposalType =>
+  type === 'primary' || type === 'secondary';
 
 export const decodeProposalTypeAndId = (typeAndId: string) => {
   const [type, id, ...rest] = typeAndId.split('-');

@@ -136,7 +136,7 @@ const useReloadActiveProposals = () => {
           for (const id of newVoteIds) {
             const startVoteFilter = api3Voting[type].filters.StartVote(id, null, null);
             const events = (await api3Voting[type].queryFilter(startVoteFilter)).map((p) => p.args);
-            newProposalEvents.push(events[0]); // There will be only one start event per voteId
+            newProposalEvents.push(events[0]!); // There will be only one start event per voteId
           }
 
           // We don't expect many new proposals to be added, but we are loading as chunks just in case
@@ -161,9 +161,9 @@ const useReloadActiveProposals = () => {
               return {
                 // TODO: We assume the proposal with the given id exists (and theoretically it might not)
                 ...proposalDetailsSelector(proposals, type, id)!,
-                yea: dynamicData.yea[index],
-                nay: dynamicData.nay[index],
-                executed: dynamicData.executed[index],
+                yea: dynamicData.yea[index]!,
+                nay: dynamicData.nay[index]!,
+                executed: dynamicData.executed[index]!,
                 voterState: dynamicData.voterState[index] as VoterState,
               };
             });

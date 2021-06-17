@@ -23,11 +23,12 @@ export const useTreasuryAndDelegation = () => {
       const treasury: Treasury[] = [];
       for (let i = 0; i < data.names.length; i++) {
         treasury.push({
-          name: data.names[i],
-          symbol: data.symbols[i],
-          decimal: data.decimals[i],
-          balanceOfPrimaryAgent: data.balancesOfPrimaryAgent[i],
-          balanceOfSecondaryAgent: data.balancesOfSecondaryAgent[i],
+          // The data is an object containing fields that are arrays with same length and each index defines one entry.
+          name: data.names[i]!,
+          symbol: data.symbols[i]!,
+          decimal: data.decimals[i]!,
+          balanceOfPrimaryAgent: data.balancesOfPrimaryAgent[i]!,
+          balanceOfSecondaryAgent: data.balancesOfSecondaryAgent[i]!,
         });
       }
 
