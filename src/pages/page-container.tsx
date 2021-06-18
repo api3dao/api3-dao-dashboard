@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react';
+import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
 import { useTransactionNotifications } from '../contracts';
 
@@ -15,8 +16,19 @@ const PageContainer = (props: Props) => {
   // See: https://docs.sentry.io/platforms/javascript/guides/react/components/errorboundary/
   return (
     <Sentry.ErrorBoundary fallback="An error has occurred. Please refresh and try again.">
-      <ToastContainer />
-      {props.children}
+      <HelmetProvider>
+        {/* Helmet children can be overridden in components lower down the tree */}
+        <Helmet>
+          <title>API3 DAO</title>
+          {/* Preload any important images here */}
+          {/* https://web.dev/preload-responsive-images/ */}
+          <link rel="preload" as="image" href="/api3-logo-white.svg" />
+        </Helmet>
+
+        <ToastContainer />
+
+        {props.children}
+      </HelmetProvider>
     </Sentry.ErrorBoundary>
   );
 };
