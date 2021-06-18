@@ -6,6 +6,10 @@
   justify-content: space-between;
   padding: $space-xl $space-xxl;
 
+  @media (min-width: $min-sm) {
+    height: 46px;
+  }
+
   @media (max-width: $max-md) {
     padding: $space-lg;
   }
@@ -26,4 +30,9 @@
     justify-content: space-between;
     padding-bottom: $space-lg;
   }
+}
+
+.logo {
+  height: 36px;
+  width: 116px;
 }
