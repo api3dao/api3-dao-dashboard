@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useChainData } from '../../chain-data';
 import { useApi3Pool } from '../../contracts';
 import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
-import { formatAndRoundApi3, UNKNOWN_NUMBER } from '../../utils';
+import { formatAndRoundApi3, goSync, isGoSuccess, UNKNOWN_NUMBER } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
@@ -179,24 +179,23 @@ const Dashboard = () => {
         />
       </Modal>
       <Modal open={openModal === 'confirm-unstake'} onClose={closeModal}>
-        {/* NOTE: Prevent react executing the component if not opened, otherwise BigNumber.from might throw */}
-        {openModal === 'confirm-unstake' && (
-          <ConfirmUnstakeForm
-            title={`Are you sure you would like to unstake ${inputValue} tokens?`}
-            onConfirm={async (parsedValue: BigNumber) => {
-              if (!api3Pool || !data) return;
-              const userShares = parsedValue.mul(data.totalShares).div(data.totalStake);
-              const tx = await api3Pool.scheduleUnstake(userShares);
-              setChainData('Save initiate unstake transaction', {
-                transactions: [...transactions, { type: 'initiate-unstake', tx }],
-              });
-            }}
-            // We expect the inputValue to be validated by previous form
-            amount={BigNumber.from(inputValue)}
-            onChange={setInputValue}
-            onClose={closeModal}
-          />
-        )}
+        <ConfirmUnstakeForm
+          title={`Are you sure you would like to unstake ${inputValue} tokens?`}
+          onConfirm={async (parsedValue: BigNumber) => {
+            if (!api3Pool || !data) return;
+            const userShares = parsedValue.mul(data.totalShares).div(data.totalStake);
+            const tx = await api3Pool.scheduleUnstake(userShares);
+            setChainData('Save initiate unstake transaction', {
+              transactions: [...transactions, { type: 'initiate-unstake', tx }],
+            });
+          }}
+          // We expect the inputValue to be validated by previous form
+          // but once the form is closed and the field is reset it might throw
+          amount={
+            isGoSuccess(goSync(() => BigNumber.from(inputValue))) ? BigNumber.from(inputValue) : BigNumber.from(0)
+          }
+          onClose={closeModal}
+        />
       </Modal>
     </Layout>
   );
