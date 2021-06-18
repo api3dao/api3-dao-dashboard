@@ -35,7 +35,11 @@ const ProposalDetailsContent = (props: ProposalDetailsContentProps) => {
 
   const proposal = proposalDetailsSelector(proposals, type, id);
   // TODO: Loading component
-  return <BaseLayout>{!proposal ? <p>Loading...</p> : <ProposalDetails proposal={proposal} />}</BaseLayout>;
+  return (
+    <BaseLayout title={`Proposal ${id.toString()}`}>
+      {!proposal ? <p>Loading...</p> : <ProposalDetails proposal={proposal} />}
+    </BaseLayout>
+  );
 };
 
 interface RouterParameters {
