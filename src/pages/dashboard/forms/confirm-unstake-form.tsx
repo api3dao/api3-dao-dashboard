@@ -11,7 +11,6 @@ interface Props {
   amount: BigNumber;
   onConfirm: (parsedInput: BigNumber) => Promise<any>;
   onClose: () => void;
-  onChange: (input: string) => void;
   closeOnConfirm?: boolean;
 }
 
