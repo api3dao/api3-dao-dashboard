@@ -12,7 +12,7 @@ type Props = {
 
 const Layout = ({ children, title, subtitle }: Props) => {
   return (
-    <BaseLayout title={title}>
+    <BaseLayout subtitle={title}>
       <Header title={title} subtitle={subtitle} />
       {children}
     </BaseLayout>
@@ -21,14 +21,14 @@ const Layout = ({ children, title, subtitle }: Props) => {
 
 interface BaseLayoutProps {
   children: ReactNode;
-  title: string;
+  subtitle: string;
 }
 
-export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
+export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
   return (
     <>
       <Helmet>
-        <title>{`API3 DAO | ${title}`}</title>
+        <title>{`API3 DAO | ${subtitle}`}</title>
       </Helmet>
 
       <div className={styles.layout}>

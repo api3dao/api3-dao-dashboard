@@ -37,7 +37,7 @@ const History = () => {
   };
 
   return (
-    <BaseLayout title="History">
+    <BaseLayout subtitle="History">
       <div className={styles.header}>
         <Header title="History"></Header>
         <Treasury className={styles.treasury} />

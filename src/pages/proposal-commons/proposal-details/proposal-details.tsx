@@ -36,7 +36,7 @@ const ProposalDetailsContent = (props: ProposalDetailsContentProps) => {
   const proposal = proposalDetailsSelector(proposals, type, id);
   // TODO: Loading component
   return (
-    <BaseLayout title={`Proposal ${id.toString()}`}>
+    <BaseLayout subtitle={`Proposal ${id.toString()}`}>
       {!proposal ? <p>Loading...</p> : <ProposalDetails proposal={proposal} />}
     </BaseLayout>
   );
