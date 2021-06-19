@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Navigation from '../navigation/navigation';
 import Header from '../header/header';
+import { images } from '../../utils';
 import styles from './layout.module.scss';
 
 type Props = {
@@ -34,7 +35,7 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
       <div className={styles.layout}>
         <Navigation />
         <div className={styles.container}>{children}</div>
-        <img className={styles.layoutTexture} src="/texture.png" alt="texture background" />
+        <img className={styles.layoutTexture} src={images.texture} alt="texture background" />
       </div>
     </>
   );

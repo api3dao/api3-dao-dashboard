@@ -1,6 +1,6 @@
 import { useApi3Pool } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
-import { go, isUserRejection, messages } from '../../../utils';
+import { go, images, isUserRejection, messages } from '../../../utils';
 import { notifications } from '../../../components/notifications/notifications';
 import Button from '../../../components/button/button';
 import globalStyles from '../../../styles/global-styles.module.scss';
@@ -29,7 +29,7 @@ const UnstakeBanner = () => {
   return (
     <div className={styles.unstakeBanner}>
       <div className={styles.unstakeBannerWrap}>
-        <img src="/api-icon.svg" alt="api icon" />
+        <img src={images['api-icon']} alt="api icon" />
         <div>
           <p className={globalStyles.bold}>Your tokens are ready to be unstaked.</p>
         </div>

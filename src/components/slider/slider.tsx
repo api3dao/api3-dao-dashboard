@@ -2,6 +2,7 @@ import { MouseEvent, KeyboardEvent } from 'react';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import classNames from 'classnames';
+import { images } from '../../utils';
 import styles from './slider.module.scss';
 
 const sliderData = [
@@ -21,7 +22,7 @@ const arrow = (direction: 'prev' | 'next', onClick: () => void) => (
         [styles.left]: direction === 'prev',
         [styles.right]: direction === 'next',
       })}
-      src={`/triangle-bracket-${direction === 'prev' ? 'left' : 'right'}.svg`}
+      src={direction === 'prev' ? images['triangle-bracket-left'] : images['triangle-bracket-right']}
       onClick={onClick}
       alt="arrow"
     />
@@ -30,7 +31,7 @@ const arrow = (direction: 'prev' | 'next', onClick: () => void) => (
         [styles.left]: direction === 'prev',
         [styles.right]: direction === 'next',
       })}
-      src={`/triangle-bracket-${direction === 'prev' ? 'left' : 'right'}-mobile.svg`}
+      src={direction === 'prev' ? images['triangle-bracket-left-mobile'] : images['triangle-bracket-right-mobile']}
       onClick={onClick}
       alt="mobile arrow"
     />
@@ -53,7 +54,7 @@ const Slider = () => {
           <div key={index}>
             <div className={styles.sliderContent}>
               <div className={styles.sliderNumberWrap}>
-                <img src="/triangles.svg" alt="triangles" />
+                <img src={images.triangles} alt="triangles" />
                 <p className={styles.sliderNumber}>{index + 1}</p>
               </div>
               <p className={styles.sliderText}>{slideItem}</p>

@@ -1,5 +1,6 @@
 import { ReactNode, useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
+import { images } from '../../utils';
 import styles from './dropdown.module.scss';
 
 interface DropdownProps {
@@ -66,7 +67,7 @@ const Dropdown = ({ children, menu, icon, alignIcon = 'center' }: DropdownProps)
       >
         {children}
         <div className={classNames(styles.dropdownIcon, { [styles.open]: open })}>
-          {icon || <img src="/dropdown.svg" alt="dropdown icon" />}
+          {icon || <img src={images.dropdown} alt="dropdown icon" />}
         </div>
       </div>
       {open && menu}
