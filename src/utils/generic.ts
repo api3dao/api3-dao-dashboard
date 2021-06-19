@@ -25,11 +25,16 @@ export const goSync = <T>(fn: () => T): GoResult<T> => {
   }
 };
 
-export const go = <T>(fn: Promise<T> | (() => Promise<T>)): Promise<GoResult<T>> => {
-  if (typeof fn === 'function') {
-    return fn().then(successFn).catch(errorFn);
+export const go = async <T>(fn: Promise<T> | (() => Promise<T>)): Promise<GoResult<T>> => {
+  // We need try/catch because `fn` might throw sync errors as well
+  try {
+    if (typeof fn === 'function') {
+      return fn().then(successFn).catch(errorFn);
+    }
+    return fn.then(successFn).catch(errorFn);
+  } catch (e) {
+    return [e, null];
   }
-  return fn.then(successFn).catch(errorFn);
 };
 
 export const isGoSuccess = <T>(result: GoResult<T>): result is GoResultSuccess<T> => !result[GO_ERROR_INDEX];
