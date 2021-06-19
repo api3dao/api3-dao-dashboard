@@ -36,3 +36,6 @@ yarn-error.log*
 
 # TypeChain generated contracts
 /src/generated-contracts
+
+# Cypress blockchain configuration
+cypress-shared.json

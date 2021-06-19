@@ -33,7 +33,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
   };
 
   const connectedContent = (
-    <div className={styles.connectedStatus}>
+    <div className={styles.connectedStatus} data-cy="connected-status">
       <img src={dark ? images.connectedDark : images.connected} alt="connected icon" />
       <div className={classNames(styles.connectedStatusInfo, { [styles.dark]: dark })}>
         <p>{abbrStr(userAccount)}</p>
