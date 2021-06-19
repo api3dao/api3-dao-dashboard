@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
-import { images } from '../utils';
+import { images, preloadImageList } from '../utils';
 import { useTransactionNotifications } from '../contracts';
 
 interface Props {
@@ -23,9 +23,10 @@ const PageContainer = (props: Props) => {
           <title>API3 DAO</title>
           {/* Preload any important images here */}
           {/* https://web.dev/preload-responsive-images/ */}
-          {Object.values(images).map((image) => (
-            <link rel="preload" as="image" href={image} key={image} />
-          ))}
+          {(Object.keys(images) as Array<keyof typeof images>).map((image) => {
+            const rel = preloadImageList.includes(images[image]) ? 'preload' : 'prefetch';
+            return <link rel={rel} as="image" href={images[image]} key={image} />;
+          })}
         </Helmet>
 
         <ToastContainer />

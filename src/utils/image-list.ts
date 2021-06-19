@@ -29,3 +29,9 @@ export const images = {
   votedFor: '/voted-for.svg',
   warning: '/warning.svg',
 };
+
+// We only want to 'preload' certain images that will definitely be displayed immediately.
+// All other images are fetched with 'prefetch'. Preloading too many resources can be
+// a net negative for performance.
+// https://www.debugbear.com/blog/rel-preload-problems
+export const preloadImageList = [images.api3LogoWhite, images.api3LogoDark];
