@@ -3,7 +3,7 @@ import { images } from './image-list';
 test('messages', () => {
   expect(images).toEqual({
     api3LogoDark: '/api3-logo-dark.svg',
-    api3LogoWhite: '/api3-logo-dark.svg',
+    api3LogoWhite: '/api3-logo-white.svg',
     apiIcon: '/api-icon.svg',
     arrowDown: '/arrow-down.svg',
     arrowDropdown: '/arrow-dropdown.svg',
