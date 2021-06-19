@@ -52,12 +52,12 @@ const MobileMenu = () => {
     <div className={styles.mobileMenuWrapper}>
       <div className={styles.menuIconWrapper}>
         {provider && <img src={images.connected} alt="connected icon" />}
-        <img className={styles.menuIcon} onClick={() => setOpen(true)} src={images['hamburger-menu']} alt="menu icon" />
+        <img className={styles.menuIcon} onClick={() => setOpen(true)} src={images.hamburgerMenu} alt="menu icon" />
       </div>
       <div className={classNames(styles.mobileMenu, { [styles.open]: open })}>
         <div className={styles.mobileMenuHeader}>
-          <img src={images['api3-logo-dark']} alt="dark logo" />
-          <img className={styles.menuIcon} onClick={() => setOpen(false)} src={images['menu-close']} alt="close icon" />
+          <img src={images.api3LogoDark} alt="dark logo" />
+          <img className={styles.menuIcon} onClick={() => setOpen(false)} src={images.menuClose} alt="close icon" />
         </div>
         <div className={styles.mobileMenuScrollWrap}>
           <div className={styles.mobileMenuContent}>

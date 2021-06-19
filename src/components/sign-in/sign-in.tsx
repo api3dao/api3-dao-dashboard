@@ -11,7 +11,7 @@ import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropd
 import styles from './sign-in.module.scss';
 import globalStyles from '../../styles/global-styles.module.scss';
 import * as notifications from '../../components/notifications/notifications';
-import { messages } from '../../utils/messages';
+import { images, messages } from '../../utils';
 import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscriptions } from '../../contracts';
 
 type Props = {
@@ -34,7 +34,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
 
   const connectedContent = (
     <div className={styles.connectedStatus}>
-      <img src={`/connected${dark ? '-dark' : ''}.svg`} alt="connected icon" />
+      <img src={dark ? images.connectedDark : images.connected} alt="connected icon" />
       <div className={classNames(styles.connectedStatusInfo, { [styles.dark]: dark })}>
         <p>{abbrStr(userAccount)}</p>
         <p className={globalStyles.textXSmall}>Connected to {networkName}</p>
@@ -67,7 +67,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
               <DropdownMenuItem onClick={onDisconnect}>Disconnect Wallet</DropdownMenuItem>
             </DropdownMenu>
           }
-          icon={<img src={dark ? '/arrow-dropdown-dark.svg' : '/arrow-dropdown.svg'} alt="dropdown icon" />}
+          icon={<img src={dark ? images.arrowDropdownDark : images.arrowDropdown} alt="dropdown icon" />}
           alignIcon="start"
         >
           {connectedContent}

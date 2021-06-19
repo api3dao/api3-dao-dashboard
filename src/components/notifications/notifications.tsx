@@ -17,7 +17,7 @@ interface CloseButtonProps {
 
 export const CloseButton = ({ closeToast }: CloseButtonProps) => (
   <div className={styles.closeButton} onClick={() => closeToast()}>
-    <img src={images['notification-close']} alt="notification close button" />
+    <img src={images.notificationClose} alt="notification close button" />
   </div>
 );
 

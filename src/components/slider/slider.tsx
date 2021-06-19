@@ -22,7 +22,7 @@ const arrow = (direction: 'prev' | 'next', onClick: () => void) => (
         [styles.left]: direction === 'prev',
         [styles.right]: direction === 'next',
       })}
-      src={direction === 'prev' ? images['triangle-bracket-left'] : images['triangle-bracket-right']}
+      src={direction === 'prev' ? images.triangleBracketLeft : images.triangleBracketRight}
       onClick={onClick}
       alt="arrow"
     />
@@ -31,7 +31,7 @@ const arrow = (direction: 'prev' | 'next', onClick: () => void) => (
         [styles.left]: direction === 'prev',
         [styles.right]: direction === 'next',
       })}
-      src={direction === 'prev' ? images['triangle-bracket-left-mobile'] : images['triangle-bracket-right-mobile']}
+      src={direction === 'prev' ? images.triangleBracketLeftMobile : images.triangleBracketRightMobile}
       onClick={onClick}
       alt="mobile arrow"
     />

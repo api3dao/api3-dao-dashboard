@@ -11,19 +11,11 @@ interface IconProp {
 const VOTER_STATES = { 0: 'Unvoted', 1: 'Voted For', 2: 'Voted Against' } as const;
 
 export const NegativeVoteIcon = ({ large }: IconProp) => (
-  <img
-    className={classNames(styles.voteIcon, { [styles.large]: large })}
-    src={images['close-pink']}
-    alt="rejected icon"
-  />
+  <img className={classNames(styles.voteIcon, { [styles.large]: large })} src={images.closePink} alt="rejected icon" />
 );
 
 export const PositiveVoteIcon = ({ large }: IconProp) => (
-  <img
-    className={classNames(styles.voteIcon, { [styles.large]: large })}
-    src={images['check-green']}
-    alt="passed icon"
-  />
+  <img className={classNames(styles.voteIcon, { [styles.large]: large })} src={images.checkGreen} alt="passed icon" />
 );
 
 const formatPercentage = (percentage: number) => `${percentage.toFixed(2)}%`;

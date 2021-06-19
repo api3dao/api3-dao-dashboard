@@ -86,7 +86,7 @@ const ProposalList = (props: Props) => {
               <VoteSlider {...votingSliderData} />
               <span className={styles.proposalVoteArrow}>
                 <NavLink to={`/${navlink.base}/${navlink.typeAndId}`}>
-                  <img src={images['arrow-right']} alt="right arrow" />
+                  <img src={images.arrowRight} alt="right arrow" />
                 </NavLink>
               </span>
             </div>

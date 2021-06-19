@@ -106,7 +106,7 @@ const PendingUnstakePanel = (props: Props) => {
     <BorderedBox
       header={
         <Header alignCenter>
-          <img src={images['arrow-down']} alt="arrow down" />
+          <img src={images.arrowDown} alt="arrow down" />
         </Header>
       }
       content={

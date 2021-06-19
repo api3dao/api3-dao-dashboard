@@ -29,7 +29,7 @@ const UnstakeBanner = () => {
   return (
     <div className={styles.unstakeBanner}>
       <div className={styles.unstakeBannerWrap}>
-        <img src={images['api-icon']} alt="api icon" />
+        <img src={images.apiIcon} alt="API icon" />
         <div>
           <p className={globalStyles.bold}>Your tokens are ready to be unstaked.</p>
         </div>
