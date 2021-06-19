@@ -6,7 +6,7 @@ const Navigation = () => {
   return (
     <div className={styles.navigation}>
       <div className={styles.navigationMenu}>
-        <img src="/api3-logo-white.svg" alt="logo" className={styles.logo} />
+        <img src="/api3-logo-white.svg" alt="logo" height="36" width="116" />
         <Menu />
       </div>
       <SignIn position="navigation" />
