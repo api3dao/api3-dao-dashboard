@@ -29,7 +29,6 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
     >
       <div className={styles.treasuryButton}>
         <p className={`${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.medium}`}>{type}</p>
-        <p className={`${globalStyles.textXSmall} ${globalStyles.medium} ${globalStyles.underline}`}>{data.length}</p>
       </div>
     </Dropdown>
   );
