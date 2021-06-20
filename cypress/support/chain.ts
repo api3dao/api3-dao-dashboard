@@ -1,5 +1,6 @@
 import { ethersProvider } from './common';
 
+// Name of the file which will hold the information to be persisted between tests
 const CYPRESS_SHARED_FILE = 'cypress-shared.json';
 
 // Make sure the file is created and if not create empty JSON file
@@ -10,7 +11,9 @@ before(() => {
 });
 
 interface SharedState {
-  evmSnapshotId?: string; // Snapshot id of the initial blockchain state (saved before all tests)
+  // Snapshot id of the initial blockchain state (saved before all tests)
+  evmSnapshotId?: string;
+  // Custom snapshots created by createChainSnapshot
   customSnapshots?: {
     [key: string]: string;
   };

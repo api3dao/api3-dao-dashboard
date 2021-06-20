@@ -25,7 +25,7 @@ describe('dashboard', () => {
     cy.createChainSnapshot('user-staked');
   });
 
-  it('unstake', () => {
+  it('user can unstake', () => {
     cy.useChainSnapshot('user-staked');
 
     // Schedule unstake
@@ -55,7 +55,7 @@ describe('dashboard', () => {
     cy.dataCy('withdrawable').should('have.text', '420.0');
   });
 
-  it('withdraw', () => {
+  it('user can withdraw', () => {
     cy.useChainSnapshot('user-staked');
 
     cy.findByText('Withdraw').click();

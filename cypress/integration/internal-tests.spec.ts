@@ -17,13 +17,13 @@ it('snapshots reverts are destructive (later snapshots are destroyed)', async ()
   const r1 = await ethersProvider.send('evm_revert', [s1]);
   expect(r1).to.equal(true);
 
-  // But what happened after such snapshot is inevitably lost (false response means unknown spanshot)
+  // But what happened after such snapshot is inevitably lost (false response means unknown snapshot)
   const r2 = await ethersProvider.send('evm_revert', [s2]);
   expect(r2).to.equal(false);
   const r3 = await ethersProvider.send('evm_revert', [s3]);
   expect(r3).to.equal(false);
 });
 
-it('can login twice', () => {
+it('multiple login command work without errors', () => {
   cy.login().login();
 });

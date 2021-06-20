@@ -1,19 +1,20 @@
 import { ethersProvider } from './common';
 
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
+// -- This is a parent command -- Cypress.Commands.add('login', (email, password) => { ... })
 //
 //
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
+// -- This is a child command -- Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
 //
 //
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
+// -- This is a dual command -- Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ...
+// })
 //
 //
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+// -- This will overwrite an existing command -- Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ...
+// })
+//
+// NOTE: Not everything should be a custom command and it's perfectly fine to encapsulate login in JS functions. See:
+// https://docs.cypress.io/api/cypress-api/custom-commands#1-Don-t-make-everything-a-custom-command
 
 Cypress.Commands.add('increaseTime', (timeInSeconds: number) => {
   cy.log('increaseTime');
