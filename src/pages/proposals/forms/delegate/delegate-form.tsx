@@ -79,6 +79,7 @@ const DelegateVotesForm = (props: Props) => {
             setDelegationAddress(e.target.value);
             setError('');
           }}
+          autoFocus
         />
       </div>
 

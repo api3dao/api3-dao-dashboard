@@ -14,6 +14,7 @@ type Props = {
   placeholder?: string;
   id?: string;
   block?: boolean;
+  autoFocus?: boolean;
 };
 
 const Input = ({
@@ -26,6 +27,7 @@ const Input = ({
   id,
   block,
   autosize,
+  autoFocus,
 }: Props) => {
   const CustomNumberInput = useCallback(
     (props: any) => {
@@ -57,7 +59,7 @@ const Input = ({
             [styles.normal]: size === 'normal',
           })}
         >
-          <input id={id} value={value} onChange={onChange} placeholder={placeholder} autoFocus />
+          <input id={id} value={value} onChange={onChange} placeholder={placeholder} autoFocus={autoFocus} />
         </div>
       )}
       {type === 'text' && autosize && (
@@ -69,7 +71,7 @@ const Input = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          autoFocus
+          autoFocus={autoFocus}
           placeholderIsMinWidth
         />
       )}
@@ -83,11 +85,17 @@ const Input = ({
           onChange={onChange}
           customInput={AutosizeInput}
           decimalScale={18}
-          autoFocus
+          autoFocus={autoFocus}
         />
       )}
       {type === 'number' && !autosize && (
-        <NumberFormat value={value} onChange={onChange} customInput={CustomNumberInput} decimalScale={18} autoFocus />
+        <NumberFormat
+          value={value}
+          onChange={onChange}
+          customInput={CustomNumberInput}
+          decimalScale={18}
+          autoFocus={autoFocus}
+        />
       )}
       <div className={styles.inputUnderline} />
     </div>

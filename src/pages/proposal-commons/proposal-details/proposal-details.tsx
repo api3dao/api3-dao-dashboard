@@ -17,7 +17,7 @@ import ProposalStatus from '../proposal-list/proposal-status';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import classNames from 'classnames';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
 import NotFoundPage from '../../not-found';
 import { messages } from '../../../utils';
@@ -152,10 +152,12 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={globalStyles.bold}>Target contract signature</p>
               <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
             </div>
-            <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Value</p>
-              <p className={globalStyles.secondaryColor}>{evmScriptData.value}</p>
-            </div>
+            {evmScriptData.value.gt(0) && (
+              <div className={styles.proposalDetailsItem}>
+                <p className={globalStyles.bold}>ETH Value</p>
+                <p className={globalStyles.secondaryColor}>{utils.formatEther(evmScriptData.value)}</p>
+              </div>
+            )}
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Parameters</p>
               <p className={classNames(globalStyles.secondaryColor, styles.multiline)}>

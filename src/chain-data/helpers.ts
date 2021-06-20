@@ -29,7 +29,7 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
   let networkName = network.name;
   // NOTE: The localhost doesn't have a name, so set any unknown networks
   // to localhost. The network name is needed to display the "Unsupported Network"
-  // message to the user if required.
+  // message to the user if required and in "connected to" status panel.
   if (networkName === 'unknown') networkName = 'localhost';
 
   const newData = {

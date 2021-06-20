@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { updateImmutably } from '../../chain-data';
 import {
   decodeEvmScript,
@@ -71,7 +71,7 @@ describe('EVM script', () => {
 
     expect(decodeEvmScript(encoded, metadata!)).toEqual({
       targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
-      value: 12,
+      value: utils.parseEther('12'),
       rawParameters: expect.anything(),
       parameters: ['arg1', '123'],
     });

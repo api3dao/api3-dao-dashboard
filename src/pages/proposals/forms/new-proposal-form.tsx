@@ -37,7 +37,7 @@ const NewProposalForm = (props: Props) => {
   const [description, setDescription] = useState('');
   const [targetAddress, setTargetAddress] = useState('');
   const [targetSignature, setTargetSignature] = useState('');
-  const [targetValue, setTargetValue] = useState('');
+  const [targetValue, setTargetValue] = useState('0');
   const [parameters, setParameters] = useState('');
 
   const initialErrorsState = {
@@ -107,7 +107,7 @@ const NewProposalForm = (props: Props) => {
       </ProposalFormItem>
 
       <ProposalFormItem name={<label htmlFor="title">Title</label>}>
-        <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} block />
+        <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} block autoFocus />
         {errors.title && <p className={styles.error}>{errors.title}</p>}
       </ProposalFormItem>
 
@@ -135,7 +135,7 @@ const NewProposalForm = (props: Props) => {
         />
       </ProposalFormItem>
 
-      <ProposalFormItem name={<label htmlFor="target-value">Value</label>}>
+      <ProposalFormItem name={<label htmlFor="target-value">ETH Value</label>}>
         <Input
           id="target-value"
           type="number"

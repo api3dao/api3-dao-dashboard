@@ -115,6 +115,7 @@ const TokenDepositForm = (props: Props) => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             size="large"
+            autoFocus
           />
           <Button className={styles.maxButton} type="text" onClick={handleSetMax} size="normal">
             Max
