@@ -20,13 +20,14 @@ import classNames from 'classnames';
 import { BigNumber } from 'ethers';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
 import NotFoundPage from '../../not-found';
+import { messages } from '../../../utils';
 
 interface ProposalDetailsContentProps {
   type: ProposalType;
   id: BigNumber;
 }
 
-const ProposalDetailsContent = (props: ProposalDetailsContentProps) => {
+const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
   const { type, id } = props;
   const { proposals } = useChainData();
 
@@ -37,7 +38,7 @@ const ProposalDetailsContent = (props: ProposalDetailsContentProps) => {
   // TODO: Loading component
   return (
     <BaseLayout subtitle={`Proposal ${id.toString()}`}>
-      {!proposal ? <p>Loading...</p> : <ProposalDetails proposal={proposal} />}
+      {!proposal ? <p>Loading...</p> : <ProposalDetailsContent proposal={proposal} />}
     </BaseLayout>
   );
 };
@@ -51,14 +52,14 @@ const ProposalDetailsPage = () => {
   const decoded = decodeProposalTypeAndId(typeAndId);
 
   if (!decoded) return <NotFoundPage />;
-  return <ProposalDetailsContent {...decoded} />;
+  return <ProposalDetailsLayout {...decoded} />;
 };
 
 interface ProposalDetailsProps {
   proposal: Proposal;
 }
 
-const ProposalDetails = (props: ProposalDetailsProps) => {
+const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const { proposal } = props;
   const [voteModalOpen, setVoteModalOpen] = useState(false);
   const { transactions, setChainData } = useChainData();
@@ -70,8 +71,11 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
   const canVote = canVoteSelector(proposal);
 
   // NOTE: This should never happen, loading component in proposal details page should
-  // make sure we are connected to valid chain and have valid proposal loaded
+  // make sure we are connected to valid chain
   if (!voting) return null;
+  if (!evmScriptData) {
+    return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
+  }
 
   return (
     <div>

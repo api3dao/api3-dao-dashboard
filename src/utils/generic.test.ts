@@ -1,4 +1,4 @@
-import { getDays, getHours, getMinutes, getSeconds, go, goSync } from './generic';
+import { filterAlphanumerical, getDays, getHours, getMinutes, getSeconds, go, goSync } from './generic';
 
 describe('goSync', () => {
   it('resolves successful synchronous functions', () => {
@@ -60,4 +60,10 @@ test('getSeconds', () => {
 
   const twentySeconds = 1000 * 20.98472;
   expect(getSeconds(twentySeconds)).toBe('20');
+});
+
+test('filterAlphanumerical', () => {
+  expect(filterAlphanumerical('\\test\\Red\\Bob-%./"FredNew')).toEqual('testRedBobFredNew');
+  expect(filterAlphanumerical('')).toEqual('');
+  expect(filterAlphanumerical(' \t\n')).toEqual('');
 });

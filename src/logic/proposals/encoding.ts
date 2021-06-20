@@ -1,7 +1,7 @@
 import { BigNumber, ethers } from 'ethers';
 import { ProposalMetadata, ProposalType } from '../../chain-data';
 import { Api3Agent } from '../../contracts';
-import { goSync, isGoSuccess } from '../../utils';
+import { goSync, GO_RESULT_INDEX, isGoSuccess } from '../../utils';
 
 /**
  * NOTE: Aragon contracts are flexible but this makes it a bit harder to work with it's contracts. We have created a
@@ -25,9 +25,11 @@ export const METADATA_DELIMETER = String.fromCharCode(31);
 export const encodeMetadata = (formData: NewProposalFormData) =>
   [METADATA_FORMAT_VERSION, formData.targetSignature, formData.title, formData.description].join(METADATA_DELIMETER);
 
-export const decodeMetadata = (metadata: string): ProposalMetadata => {
+export const decodeMetadata = (metadata: string): ProposalMetadata | null => {
   const tokens = metadata.split(METADATA_DELIMETER);
-  // https://github.com/api3dao/api3-dao-dashboard/issues/104
+  // NOTE: Our metadata encoding is just a convention and people might create proposals directly via the contract. They
+  // shouldn't do it and we will probably just ignore their proposal created this way.
+  if (tokens.length !== 4) return null;
   return { version: tokens[0]!, targetSignature: tokens[1]!, title: tokens[2]!, description: tokens[3]! };
 };
 
@@ -78,32 +80,40 @@ export interface DecodedEvmScript {
   value: number;
 }
 
-export const decodeEvmScript = (script: string, metadata: ProposalMetadata): DecodedEvmScript => {
-  const evmScriptPayload = ethers.utils.hexDataSlice(script, 4);
-  const callData = ethers.utils.hexDataSlice(evmScriptPayload, 24);
+export const decodeEvmScript = (script: string, metadata: ProposalMetadata): DecodedEvmScript | null => {
+  const goResponse = goSync(() => {
+    const evmScriptPayload = ethers.utils.hexDataSlice(script, 4);
+    const callData = ethers.utils.hexDataSlice(evmScriptPayload, 24);
 
-  // https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
-  const executionParameters = ethers.utils.defaultAbiCoder.decode(
-    ['address', 'uint256', 'bytes'],
-    ethers.utils.hexDataSlice(callData, 4)
-  );
-  const targetContractAddress = executionParameters[0];
-  const value = executionParameters[1];
+    // https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
+    const executionParameters = ethers.utils.defaultAbiCoder.decode(
+      ['address', 'uint256', 'bytes'],
+      ethers.utils.hexDataSlice(callData, 4)
+    );
+    const targetContractAddress = executionParameters[0];
+    const value = executionParameters[1];
 
-  // Decode the calldata
-  const targetCallData = executionParameters[2];
-  const parameterTypes = metadata.targetSignature
-    .substring(metadata.targetSignature.indexOf('(') + 1, metadata.targetSignature.indexOf(')'))
-    .split(',');
-  const parameters = ethers.utils.defaultAbiCoder.decode(parameterTypes, ethers.utils.hexDataSlice(targetCallData, 4));
-  const rawParameters = [...parameters]; // destructuring to enforce Array shape
+    // Decode the calldata
+    const targetCallData = executionParameters[2];
+    const parameterTypes = metadata.targetSignature
+      .substring(metadata.targetSignature.indexOf('(') + 1, metadata.targetSignature.indexOf(')'))
+      .split(',');
+    const parameters = ethers.utils.defaultAbiCoder.decode(
+      parameterTypes,
+      ethers.utils.hexDataSlice(targetCallData, 4)
+    );
+    const rawParameters = [...parameters]; // destructuring to enforce Array shape
 
-  return {
-    targetAddress: targetContractAddress,
-    value: value.toNumber(),
-    rawParameters,
-    parameters: stringifyBigNumbersRecursively(rawParameters),
-  };
+    return {
+      targetAddress: targetContractAddress,
+      value: value.toNumber(),
+      rawParameters,
+      parameters: stringifyBigNumbersRecursively(rawParameters),
+    };
+  });
+
+  if (isGoSuccess(goResponse)) return goResponse[GO_RESULT_INDEX];
+  else return null;
 };
 
 export const stringifyBigNumbersRecursively = (value: unknown): any => {

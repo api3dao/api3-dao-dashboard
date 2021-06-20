@@ -3,9 +3,9 @@ import { utils, BigNumberish } from 'ethers';
 const DEFAULT_DECIMALS = 2;
 
 // API3 Token has the same denomination as ETH.
-export const formatApi3 = (value: BigNumberish) => {
+export const formatApi3 = (value: BigNumberish, commify = true) => {
   const formatted = utils.formatEther(value);
-  return utils.commify(formatted);
+  return commify ? utils.commify(formatted) : formatted;
 };
 
 export const formatAndRoundApi3 = (tokens: BigNumberish, decimals = DEFAULT_DECIMALS) => {

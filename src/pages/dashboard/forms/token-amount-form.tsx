@@ -58,7 +58,7 @@ const TokenAmountForm = (props: Props) => {
     }
   };
 
-  const handleSetMax = () => maxValue && onChange(formatApi3(maxValue.toString()));
+  const handleSetMax = () => maxValue && onChange(formatApi3(maxValue.toString(), false));
 
   return (
     <>

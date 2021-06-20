@@ -20,6 +20,7 @@ test('formatApi3', () => {
   expect(formatApi3('12345000000').toString()).toBe('0.000000012345');
   expect(() => formatApi3('abc')).toThrowError('invalid BigNumber string');
   expect(formatApi3('1234567890000000000000000000')).toBe('1,234,567,890.0');
+  expect(formatApi3('1234567890000000000000000000', false)).toBe('1234567890.0');
 });
 
 test('round', () => {
