@@ -1,3 +1,5 @@
+@import './variables.module.scss';
+
 body {
   // This is a bit of a hack to stop content scrollbar shifting with Web3modal. It
   // currently (v1.9.3) renders a div at the bottom of the document that is a
@@ -46,6 +48,13 @@ h5 {
   font-weight: 300;
 }
 
+a {
+  color: $secondary-color;
+  border: 0;
+  text-decoration: underline;
+  padding: 0;
+}
+
 .textNormal {
   font-size: 18px;
   line-height: 28px;
@@ -72,27 +81,27 @@ h5 {
 }
 
 .primaryColor {
-  color: #fff;
+  color: $primary-color;
 }
 
 .secondaryColor {
-  color: #c3c4c3;
+  color: $secondary-color;
 }
 
 .tertiaryColor {
-  color: #878888;
+  color: $tertiary-color;
 }
 
 .greenColor {
-  color: #7ce3cb;
+  color: $green-color;
 }
 
 .pinkColor {
-  color: #d233f2;
+  color: $pink-color;
 }
 
 .violetColor {
-  color: #7963b2;
+  color: $violet-color;
 }
 
 .uppercase {

@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { ethers } from 'ethers';
 import { notifications } from '../components/notifications/notifications';
-import { getDaoAddresses, getNetworkName } from '../contracts';
+import { getDaoAddresses, getEtherscanUrl } from '../contracts';
 import { initialChainData } from './state';
 import { go, GO_RESULT_INDEX, isGoSuccess } from '../utils';
 
@@ -24,10 +24,18 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
   // Happens when the user locks his metamask account
   if (!isGoSuccess(goResponse)) return initialChainData;
 
-  const networkName = await getNetworkName(provider);
+  const network = await provider.getNetwork();
+
+  let networkName = network.name;
+  // NOTE: The localhost doesn't have a name, so set any unknown networks
+  // to localhost. The network name is needed to display the "Unsupported Network"
+  // message to the user if required.
+  if (networkName === 'unknown') networkName = 'localhost';
+
   const newData = {
     userAccount: goResponse[GO_RESULT_INDEX],
     networkName: networkName,
+    chainId: network.chainId,
     contracts: getDaoAddresses(networkName),
   };
 
@@ -36,20 +44,6 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
 
 export const abbrStr = (str: string) => {
   return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
-};
-
-export const ETHERSCAN_HOSTS: { [chainId: string]: string } = {
-  1: 'https://etherscan.io',
-  3: 'https://ropsten.etherscan.io',
-  4: 'https://rinkeby.etherscan.io',
-  5: 'https://goerli.etherscan.io',
-  42: 'https://kovan.etherscan.io',
-};
-
-export const getEtherscanUrl = (transaction: ethers.Transaction) => {
-  const host = ETHERSCAN_HOSTS[transaction.chainId.toString()];
-  if (!host) return;
-  return `${host}/tx/${transaction.hash}`;
 };
 
 export interface PendingTransactionMessages {

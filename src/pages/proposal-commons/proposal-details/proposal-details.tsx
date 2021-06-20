@@ -8,7 +8,7 @@ import Timer from '../../../components/timer/timer';
 import Button from '../../../components/button/button';
 import Tag from '../../../components/tag/tag';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
-import { useApi3Voting } from '../../../contracts';
+import { getEtherscanUrlFromAddress, useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndId, decodeEvmScript } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useProposalsByIds } from '../../../logic/proposals/hooks';
@@ -60,15 +60,13 @@ interface ProposalDetailsProps {
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
+  const { chainId } = useChainData();
   const { proposal } = props;
   const [voteModalOpen, setVoteModalOpen] = useState(false);
   const { transactions, setChainData } = useChainData();
   const voting = useApi3Voting();
 
-  const voteSliderData = voteSliderSelector(proposal);
   const evmScriptData = decodeEvmScript(proposal.script, proposal.metadata);
-
-  const canVote = canVoteSelector(proposal);
 
   // NOTE: This should never happen, loading component in proposal details page should
   // make sure we are connected to valid chain
@@ -76,6 +74,11 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   if (!evmScriptData) {
     return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
   }
+
+  const voteSliderData = voteSliderSelector(proposal);
+  const canVote = canVoteSelector(proposal);
+  const urlCreator = getEtherscanUrlFromAddress(chainId, proposal.creator);
+  const urlTargetAddress = getEtherscanUrlFromAddress(chainId, evmScriptData.targetAddress);
 
   return (
     <div>
@@ -122,8 +125,28 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               {proposal.metadata.description}
             </p>
             <div className={styles.proposalDetailsItem}>
+              <p className={globalStyles.bold}>Creator</p>
+              <p className={classNames(globalStyles.secondaryColor, styles.address)}>
+                {urlCreator ? (
+                  <a href={urlCreator} target="_blank" rel="noopener noreferrer">
+                    {proposal.creator}
+                  </a>
+                ) : (
+                  proposal.creator
+                )}
+              </p>
+            </div>
+            <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target contract address</p>
-              <p className={classNames(globalStyles.secondaryColor, styles.address)}>{evmScriptData.targetAddress}</p>
+              <p className={classNames(globalStyles.secondaryColor, styles.address)}>
+                {urlTargetAddress ? (
+                  <a href={urlTargetAddress} target="_blank" rel="noopener noreferrer">
+                    {evmScriptData.targetAddress}
+                  </a>
+                ) : (
+                  evmScriptData.targetAddress
+                )}
+              </p>
             </div>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target contract signature</p>

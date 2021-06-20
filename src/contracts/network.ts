@@ -2,16 +2,6 @@ import { ethers } from 'ethers';
 import localhostDao from '../contract-deployments/localhost-dao.json';
 import ropstenDao from '../contract-deployments/ropsten-dao.json';
 
-export const getNetworkName = async (provider: ethers.providers.Web3Provider) => {
-  const networkName = (await provider.getNetwork()).name;
-
-  // NOTE: The localhost doesn't have a name, so set any unknown networks
-  // to localhost. The network name is needed to display the "Unsupported Network"
-  // message to the user if required.
-  if (networkName === 'unknown') return 'localhost';
-  else return networkName;
-};
-
 export const SUPPORTED_NETWORKS = ['localhost', 'ropsten'];
 
 export const getDaoAddresses = (networkName: string) => {
@@ -23,6 +13,32 @@ export const getDaoAddresses = (networkName: string) => {
     default:
       return null;
   }
+};
+
+export const ETHERSCAN_HOSTS: { [chainId: string]: string } = {
+  1: 'https://etherscan.io',
+  3: 'https://ropsten.etherscan.io',
+  4: 'https://rinkeby.etherscan.io',
+  5: 'https://goerli.etherscan.io',
+  42: 'https://kovan.etherscan.io',
+};
+
+export const getEtherscanUrl = (transaction: ethers.Transaction) => {
+  const host = ETHERSCAN_HOSTS[transaction.chainId.toString()];
+  if (!host) return;
+
+  // For example: https://ropsten.etherscan.io/tx/0xe4394ea70b32486f59f92c5194c9083bd36c99f2f0c32cfc9bacce3486055d24
+  return [host, 'tx', transaction.hash].join('/');
+};
+
+export const getEtherscanUrlFromAddress = (chainId: number | undefined, address: string) => {
+  if (!chainId) return;
+
+  const host = ETHERSCAN_HOSTS[chainId];
+  if (!host) return;
+
+  // For example: https://etherscan.io/address/0xb0A20975f540656E331e2331C6caEc608Ff254fc
+  return [host, 'address', address].join('/');
 };
 
 export const WALLET_CONNECT_RPC_PROVIDERS = {

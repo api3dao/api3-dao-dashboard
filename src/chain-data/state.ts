@@ -98,6 +98,7 @@ export interface ChainData {
   provider: ethers.providers.Web3Provider | null;
   userAccount: string;
   networkName: string;
+  chainId: undefined | number;
   contracts: typeof ContractsAddresses | null;
   dashboardState: DashboardState | null;
   proposals: Proposals | null;
@@ -117,6 +118,7 @@ export const initialChainData: ChainData = {
   provider: null,
   userAccount: '',
   networkName: '',
+  chainId: undefined,
   contracts: null,
   dashboardState: null,
   proposals: null,
