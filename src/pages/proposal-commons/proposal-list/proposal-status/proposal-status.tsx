@@ -1,9 +1,10 @@
 import classNames from 'classnames';
-import { Proposal } from '../../../../chain-data';
+import { Proposal, useChainData } from '../../../../chain-data';
 import { voteSliderSelector } from '../../../../logic/proposals/selectors';
 import { NegativeVoteIcon, PositiveVoteIcon } from '../../vote-slider/vote-slider';
 import Button from '../../../../components/button/button';
 import styles from './proposal-status.module.scss';
+import { useApi3Voting } from '../../../../contracts';
 
 interface Props {
   proposal: Proposal;
@@ -11,6 +12,8 @@ interface Props {
 }
 
 const ProposalStatus = (props: Props) => {
+  const voting = useApi3Voting();
+  const { setChainData } = useChainData();
   const { proposal, large } = props;
   const proposalStatus = voteSliderSelector(proposal).proposalStatus;
 
@@ -39,7 +42,19 @@ const ProposalStatus = (props: Props) => {
         </span>
       )}
       {proposalStatus === 'Execute' ? (
-        <Button type="text" className={styles.execute}>
+        <Button
+          type="text"
+          className={styles.execute}
+          onClick={async () => {
+            if (!voting) return;
+            const tx = await voting[proposal.type].executeVote(proposal.voteId);
+            setChainData('Save execute transaction', (state) => ({
+              transactions: [...state.transactions, { type: 'execute', tx }],
+            }));
+            await voting[proposal.type].executeVote(proposal.voteId);
+          }}
+          disabled={!voting}
+        >
           {proposalStatus}
         </Button>
       ) : (

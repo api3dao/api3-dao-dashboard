@@ -1,4 +1,5 @@
 import { UNKNOWN_NUMBER } from '../../../utils';
+import clamp from 'lodash/clamp';
 
 const { round, PI, cos, sin } = Math;
 
@@ -13,7 +14,8 @@ const RadialChart = ({ completionPercent }: Props) => {
     center = r + strokeWidth;
 
   const completionText = completionPercent !== undefined ? `${completionPercent}%` : UNKNOWN_NUMBER;
-  const completionValue = completionPercent ?? 0;
+  // Radial chart styling breaks if the value is more than 100%
+  const completionValue = clamp(completionPercent ?? 0, 0, 100);
 
   return (
     <svg width={side} height={side}>

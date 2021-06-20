@@ -91,7 +91,8 @@ export type TransactionType =
   | 'delegate'
   | 'undelegate'
   | 'vote-for'
-  | 'vote-against';
+  | 'vote-against'
+  | 'execute';
 
 export interface ChainData {
   provider: ethers.providers.Web3Provider | null;
