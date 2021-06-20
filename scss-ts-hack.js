@@ -30,7 +30,7 @@ const main = async () => {
   
   try {
     const results = await replace(options)
-    console.log('Replacement results:', results);
+    console.info('Replacement results:', results);
   }
   catch (error) {
     console.error('Error occurred:', error);
