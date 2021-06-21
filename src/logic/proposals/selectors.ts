@@ -102,5 +102,5 @@ export const canCreateNewProposalSelector = (delegation: Delegation | null, dash
 };
 
 export const canVoteSelector = (proposal: Proposal) => {
-  return proposal.userVotingPowerAt.gt(0);
+  return proposal.open && proposal.userVotingPowerAt.gt(0);
 };

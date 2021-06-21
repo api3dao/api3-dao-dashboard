@@ -88,4 +88,9 @@ export const transactionMessages: { [key in TransactionType]: PendingTransaction
     success: 'Vote against proposal cast successfully!',
     error: 'Vote against proposal failed',
   },
+  execute: {
+    start: 'Executing proposal...',
+    success: 'Successfully executed proposal!',
+    error: 'Proposal execution failed',
+  },
 };
