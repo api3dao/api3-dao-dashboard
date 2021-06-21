@@ -20,9 +20,9 @@ export const useTreasuryAndDelegation = () => {
       assertGoSuccess(goResponse);
       const data = goResponse[GO_RESULT_INDEX];
 
-      const treasury: Treasury[] = [];
+      const treasuries: Treasury[] = [];
       for (let i = 0; i < data.names.length; i++) {
-        treasury.push({
+        treasuries.push({
           // The data is an object containing fields that are arrays with same length and each index defines one entry.
           name: data.names[i]!,
           symbol: data.symbols[i]!,
@@ -40,7 +40,7 @@ export const useTreasuryAndDelegation = () => {
           lastDelegationUpdateTimestamp: blockTimestampToDate(data.lastDelegationUpdateTimestamp),
           lastProposalTimestamp: blockTimestampToDate(data.lastProposalTimestamp),
         },
-        treasury,
+        treasuries,
       };
     };
 
