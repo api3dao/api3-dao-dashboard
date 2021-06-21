@@ -25,8 +25,7 @@ test('messages', () => {
     REDELEGATION_IS_FORBIDDEN: expect.anything(), // REDELEGATION_IS_FORBIDDEN is a function
 
     FAILED_TO_LOAD_PROPOSALS: 'Unable to load proposals',
-    INVALID_PROPOSAL_FORMAT:
-      "This proposal seems not be created by the dashboard and we are unable to show it's details",
+    INVALID_PROPOSAL_FORMAT: 'This proposal was not created through the DAO dashboard and cannot to be displayed',
   });
 });
 

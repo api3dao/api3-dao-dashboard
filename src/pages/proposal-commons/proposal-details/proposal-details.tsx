@@ -8,7 +8,7 @@ import Timer from '../../../components/timer/timer';
 import Button from '../../../components/button/button';
 import Tag from '../../../components/tag/tag';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
-import { getEtherscanUrlFromAddress, useApi3Voting } from '../../../contracts';
+import { getEtherscanAddressUrl, useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndId, decodeEvmScript } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useProposalsByIds } from '../../../logic/proposals/hooks';
@@ -77,8 +77,8 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
 
   const voteSliderData = voteSliderSelector(proposal);
   const canVote = canVoteSelector(proposal);
-  const urlCreator = getEtherscanUrlFromAddress(chainId, proposal.creator);
-  const urlTargetAddress = getEtherscanUrlFromAddress(chainId, evmScriptData.targetAddress);
+  const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
+  const urlTargetAddress = getEtherscanAddressUrl(chainId, evmScriptData.targetAddress);
 
   return (
     <div>

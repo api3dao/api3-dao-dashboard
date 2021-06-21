@@ -23,7 +23,7 @@ export const ETHERSCAN_HOSTS: { [chainId: string]: string } = {
   42: 'https://kovan.etherscan.io',
 };
 
-export const getEtherscanUrl = (transaction: ethers.Transaction) => {
+export const getEtherscanTransactionUrl = (transaction: ethers.Transaction) => {
   const host = ETHERSCAN_HOSTS[transaction.chainId.toString()];
   if (!host) return;
 
@@ -31,7 +31,7 @@ export const getEtherscanUrl = (transaction: ethers.Transaction) => {
   return [host, 'tx', transaction.hash].join('/');
 };
 
-export const getEtherscanUrlFromAddress = (chainId: number | undefined, address: string) => {
+export const getEtherscanAddressUrl = (chainId: number | undefined, address: string) => {
   if (!chainId) return;
 
   const host = ETHERSCAN_HOSTS[chainId];

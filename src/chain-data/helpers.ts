@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { ethers } from 'ethers';
 import { notifications } from '../components/notifications/notifications';
-import { getDaoAddresses, getEtherscanUrl } from '../contracts';
+import { getDaoAddresses, getEtherscanTransactionUrl } from '../contracts';
 import { initialChainData } from './state';
 import { go, GO_RESULT_INDEX, isGoSuccess } from '../utils';
 
@@ -56,7 +56,7 @@ export const displayPendingTransaction = async (
   transaction: ethers.ContractTransaction,
   messages: PendingTransactionMessages
 ) => {
-  const url = getEtherscanUrl(transaction);
+  const url = getEtherscanTransactionUrl(transaction);
 
   // It's common for transactions to take between 1-5 minutes to confirm. Keep the
   // initial "progress" toast open until then
@@ -85,7 +85,7 @@ export const displayPendingTransaction = async (
 
       // The user "sped up" their transaction by resending it with a higher gas price
       if (ethersError.replacement && ethersError.replacement.hash) {
-        const replacementTxUrl = getEtherscanUrl(ethersError.replacement);
+        const replacementTxUrl = getEtherscanTransactionUrl(ethersError.replacement);
         notifications.success({ url: replacementTxUrl, message: messages.success });
         return;
       }
