@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import SignIn from '../sign-in/sign-in';
 import Menu from '../menu/menu';
 import { images } from '../../utils';
@@ -7,7 +8,9 @@ const Navigation = () => {
   return (
     <div className={styles.navigation}>
       <div className={styles.navigationMenu}>
-        <img src={images.api3LogoWhite} alt="logo" height="36" width="116" />
+        <Link to="/dashboard">
+          <img src={images.api3LogoWhite} alt="logo" height="36" width="116" />
+        </Link>
         <Menu />
       </div>
       <SignIn position="navigation" />
