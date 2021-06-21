@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { updateImmutably } from '../../chain-data';
 import {
   decodeEvmScript,
@@ -41,6 +41,16 @@ describe('metadata', () => {
       version: '1',
     });
   });
+
+  test('decoding invalid (separated by reserved delimiter)', () => {
+    const invalidData = {
+      ...newFormData,
+      description: 'separated by reserved delimiter'.split(' ').join(METADATA_DELIMETER),
+    };
+    const metadata = decodeMetadata(encodeMetadata(invalidData));
+
+    expect(metadata).toEqual(null);
+  });
 });
 
 describe('EVM script', () => {
@@ -59,9 +69,9 @@ describe('EVM script', () => {
     const encoded = encodeEvmScript(newFormData, api3Agent);
     const metadata = decodeMetadata(encodeMetadata(newFormData));
 
-    expect(decodeEvmScript(encoded, metadata)).toEqual({
+    expect(decodeEvmScript(encoded, metadata!)).toEqual({
       targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
-      value: 12,
+      value: utils.parseEther('12'),
       rawParameters: expect.anything(),
       parameters: ['arg1', '123'],
     });

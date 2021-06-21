@@ -76,3 +76,5 @@ export const getSeconds = (distance: number) => {
 
 // If the user is not logged in, we want to display dash in the number fields
 export const UNKNOWN_NUMBER = '-';
+
+export const filterAlphanumerical = (value: string) => value.replace(/[^0-9a-zA-Z]/g, '');

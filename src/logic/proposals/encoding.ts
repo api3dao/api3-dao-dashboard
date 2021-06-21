@@ -1,7 +1,7 @@
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { ProposalMetadata, ProposalType } from '../../chain-data';
 import { Api3Agent } from '../../contracts';
-import { goSync, isGoSuccess } from '../../utils';
+import { goSync, GO_RESULT_INDEX, isGoSuccess } from '../../utils';
 
 /**
  * NOTE: Aragon contracts are flexible but this makes it a bit harder to work with it's contracts. We have created a
@@ -25,9 +25,11 @@ export const METADATA_DELIMETER = String.fromCharCode(31);
 export const encodeMetadata = (formData: NewProposalFormData) =>
   [METADATA_FORMAT_VERSION, formData.targetSignature, formData.title, formData.description].join(METADATA_DELIMETER);
 
-export const decodeMetadata = (metadata: string): ProposalMetadata => {
+export const decodeMetadata = (metadata: string): ProposalMetadata | null => {
   const tokens = metadata.split(METADATA_DELIMETER);
-  // https://github.com/api3dao/api3-dao-dashboard/issues/104
+  // NOTE: Our metadata encoding is just a convention and people might create proposals directly via the contract. They
+  // shouldn't do it and we will probably just ignore their proposal created this way.
+  if (tokens.length !== 4) return null;
   return { version: tokens[0]!, targetSignature: tokens[1]!, title: tokens[2]!, description: tokens[3]! };
 };
 
@@ -40,29 +42,26 @@ export const encodeEvmScript = (formData: NewProposalFormData, api3Agent: Api3Ag
     .substring(formData.targetSignature.indexOf('(') + 1, formData.targetSignature.indexOf(')'))
     .split(',');
   // Encode the parameters using the parameter types
-  const encodedTargetParameters = ethers.utils.defaultAbiCoder.encode(parameterTypes, targetParameters);
-  function encodeFunctionSignature(ethers: any, functionFragment: any) {
-    return ethers.utils.hexDataSlice(ethers.utils.keccak256(ethers.utils.toUtf8Bytes(functionFragment)), 0, 4);
+  const encodedTargetParameters = utils.defaultAbiCoder.encode(parameterTypes, targetParameters);
+  function encodeFunctionSignature(functionFragment: any) {
+    return utils.hexDataSlice(utils.keccak256(utils.toUtf8Bytes(functionFragment)), 0, 4);
   }
-  const encodedExecuteSignature = encodeFunctionSignature(ethers, 'execute(address,uint256,bytes)');
+  const encodedExecuteSignature = encodeFunctionSignature('execute(address,uint256,bytes)');
   // Build the call data that the EVMScript will use
   const callData =
     encodedExecuteSignature +
-    ethers.utils.defaultAbiCoder
+    utils.defaultAbiCoder
       .encode(
         ['address', 'uint256', 'bytes'],
         [
           formData.targetAddress,
-          formData.targetValue,
-          encodeFunctionSignature(ethers, formData.targetSignature) + encodedTargetParameters.substring(2),
+          utils.parseEther(formData.targetValue),
+          encodeFunctionSignature(formData.targetSignature) + encodedTargetParameters.substring(2),
         ]
       )
       .substring(2);
   // Calculate the length of the call data (in bytes) because that also goes in the EVMScript
-  const callDataLengthInBytes = ethers.utils.hexZeroPad(
-    ethers.BigNumber.from(callData.substring(2).length / 2).toHexString(),
-    4
-  );
+  const callDataLengthInBytes = utils.hexZeroPad(BigNumber.from(callData.substring(2).length / 2).toHexString(), 4);
   // See the EVMScript layout in
   // https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
   const evmScript =
@@ -75,39 +74,44 @@ export interface DecodedEvmScript {
   targetAddress: string;
   parameters: unknown[];
   rawParameters: unknown[];
-  value: number;
+  value: BigNumber; // amount of ETH that is sent to the contract
 }
 
-export const decodeEvmScript = (script: string, metadata: ProposalMetadata): DecodedEvmScript => {
-  const evmScriptPayload = ethers.utils.hexDataSlice(script, 4);
-  const callData = ethers.utils.hexDataSlice(evmScriptPayload, 24);
+export const decodeEvmScript = (script: string, metadata: ProposalMetadata): DecodedEvmScript | null => {
+  const goResponse = goSync(() => {
+    const evmScriptPayload = utils.hexDataSlice(script, 4);
+    const callData = utils.hexDataSlice(evmScriptPayload, 24);
 
-  // https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
-  const executionParameters = ethers.utils.defaultAbiCoder.decode(
-    ['address', 'uint256', 'bytes'],
-    ethers.utils.hexDataSlice(callData, 4)
-  );
-  const targetContractAddress = executionParameters[0];
-  const value = executionParameters[1];
+    // https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
+    const executionParameters = utils.defaultAbiCoder.decode(
+      ['address', 'uint256', 'bytes'],
+      utils.hexDataSlice(callData, 4)
+    );
+    const targetContractAddress = executionParameters[0];
+    const value = executionParameters[1];
 
-  // Decode the calldata
-  const targetCallData = executionParameters[2];
-  const parameterTypes = metadata.targetSignature
-    .substring(metadata.targetSignature.indexOf('(') + 1, metadata.targetSignature.indexOf(')'))
-    .split(',');
-  const parameters = ethers.utils.defaultAbiCoder.decode(parameterTypes, ethers.utils.hexDataSlice(targetCallData, 4));
-  const rawParameters = [...parameters]; // destructuring to enforce Array shape
+    // Decode the calldata
+    const targetCallData = executionParameters[2];
+    const parameterTypes = metadata.targetSignature
+      .substring(metadata.targetSignature.indexOf('(') + 1, metadata.targetSignature.indexOf(')'))
+      .split(',');
+    const parameters = utils.defaultAbiCoder.decode(parameterTypes, utils.hexDataSlice(targetCallData, 4));
+    const rawParameters = [...parameters]; // destructuring to enforce Array shape
 
-  return {
-    targetAddress: targetContractAddress,
-    value: value.toNumber(),
-    rawParameters,
-    parameters: stringifyBigNumbersRecursively(rawParameters),
-  };
+    return {
+      targetAddress: targetContractAddress,
+      value,
+      rawParameters,
+      parameters: stringifyBigNumbersRecursively(rawParameters),
+    };
+  });
+
+  if (isGoSuccess(goResponse)) return goResponse[GO_RESULT_INDEX];
+  else return null;
 };
 
 export const stringifyBigNumbersRecursively = (value: unknown): any => {
-  if (ethers.BigNumber.isBigNumber(value)) return value.toString();
+  if (BigNumber.isBigNumber(value)) return value.toString();
   else if (Array.isArray(value)) return value.map(stringifyBigNumbersRecursively);
   else return value;
 };

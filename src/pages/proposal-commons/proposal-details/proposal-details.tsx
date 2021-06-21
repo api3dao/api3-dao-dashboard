@@ -8,7 +8,7 @@ import Timer from '../../../components/timer/timer';
 import Button from '../../../components/button/button';
 import Tag from '../../../components/tag/tag';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
-import { useApi3Voting } from '../../../contracts';
+import { getEtherscanAddressUrl, useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndId, decodeEvmScript } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useProposalsByIds } from '../../../logic/proposals/hooks';
@@ -17,16 +17,17 @@ import ProposalStatus from '../proposal-list/proposal-status';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import classNames from 'classnames';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
 import NotFoundPage from '../../not-found';
+import { messages } from '../../../utils';
 
 interface ProposalDetailsContentProps {
   type: ProposalType;
   id: BigNumber;
 }
 
-const ProposalDetailsContent = (props: ProposalDetailsContentProps) => {
+const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
   const { type, id } = props;
   const { proposals } = useChainData();
 
@@ -37,7 +38,7 @@ const ProposalDetailsContent = (props: ProposalDetailsContentProps) => {
   // TODO: Loading component
   return (
     <BaseLayout subtitle={`Proposal ${id.toString()}`}>
-      {!proposal ? <p>Loading...</p> : <ProposalDetails proposal={proposal} />}
+      {!proposal ? <p>Loading...</p> : <ProposalDetailsContent proposal={proposal} />}
     </BaseLayout>
   );
 };
@@ -51,27 +52,33 @@ const ProposalDetailsPage = () => {
   const decoded = decodeProposalTypeAndId(typeAndId);
 
   if (!decoded) return <NotFoundPage />;
-  return <ProposalDetailsContent {...decoded} />;
+  return <ProposalDetailsLayout {...decoded} />;
 };
 
 interface ProposalDetailsProps {
   proposal: Proposal;
 }
 
-const ProposalDetails = (props: ProposalDetailsProps) => {
+const ProposalDetailsContent = (props: ProposalDetailsProps) => {
+  const { chainId } = useChainData();
   const { proposal } = props;
   const [voteModalOpen, setVoteModalOpen] = useState(false);
   const { transactions, setChainData } = useChainData();
   const voting = useApi3Voting();
 
-  const voteSliderData = voteSliderSelector(proposal);
   const evmScriptData = decodeEvmScript(proposal.script, proposal.metadata);
 
-  const canVote = canVoteSelector(proposal);
-
   // NOTE: This should never happen, loading component in proposal details page should
-  // make sure we are connected to valid chain and have valid proposal loaded
+  // make sure we are connected to valid chain
   if (!voting) return null;
+  if (!evmScriptData) {
+    return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
+  }
+
+  const voteSliderData = voteSliderSelector(proposal);
+  const canVote = canVoteSelector(proposal);
+  const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
+  const urlTargetAddress = getEtherscanAddressUrl(chainId, evmScriptData.targetAddress);
 
   return (
     <div>
@@ -118,17 +125,39 @@ const ProposalDetails = (props: ProposalDetailsProps) => {
               {proposal.metadata.description}
             </p>
             <div className={styles.proposalDetailsItem}>
+              <p className={globalStyles.bold}>Creator</p>
+              <p className={classNames(globalStyles.secondaryColor, styles.address)}>
+                {urlCreator ? (
+                  <a href={urlCreator} target="_blank" rel="noopener noreferrer">
+                    {proposal.creator}
+                  </a>
+                ) : (
+                  proposal.creator
+                )}
+              </p>
+            </div>
+            <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target contract address</p>
-              <p className={classNames(globalStyles.secondaryColor, styles.address)}>{evmScriptData.targetAddress}</p>
+              <p className={classNames(globalStyles.secondaryColor, styles.address)}>
+                {urlTargetAddress ? (
+                  <a href={urlTargetAddress} target="_blank" rel="noopener noreferrer">
+                    {evmScriptData.targetAddress}
+                  </a>
+                ) : (
+                  evmScriptData.targetAddress
+                )}
+              </p>
             </div>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target contract signature</p>
               <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
             </div>
-            <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Value</p>
-              <p className={globalStyles.secondaryColor}>{evmScriptData.value}</p>
-            </div>
+            {evmScriptData.value.gt(0) && (
+              <div className={styles.proposalDetailsItem}>
+                <p className={globalStyles.bold}>ETH Value</p>
+                <p className={globalStyles.secondaryColor}>{utils.formatEther(evmScriptData.value)}</p>
+              </div>
+            )}
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Parameters</p>
               <p className={classNames(globalStyles.secondaryColor, styles.multiline)}>

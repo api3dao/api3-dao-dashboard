@@ -17,10 +17,16 @@ export const getProposals = async (
   openVoteIds: BigNumber[],
   type: ProposalType
 ): Promise<Proposal[]> => {
-  const startVotesInfo = startVoteProposals.map((p) => ({
-    ...p,
-    metadata: decodeMetadata(p.metadata),
-  }));
+  // NOTE: For now, let's skip the invalid proposals. Later we can do something more clever about it
+  const validStartVoteProposals = startVoteProposals.filter((p) => decodeMetadata(p.metadata) !== null);
+
+  const startVotesInfo = validStartVoteProposals.map((p) => {
+    const metadata = decodeMetadata(p.metadata)!;
+    return {
+      ...p,
+      metadata,
+    };
+  });
 
   // TODO: load this just once for all proposals and save to state
   const votingTime = await api3Voting.voteTime();
@@ -31,7 +37,7 @@ export const getProposals = async (
   const dynamicVoteData = await convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, voteIdsToLoad);
 
   const proposals: Proposal[] = [];
-  for (let i = 0; i < startVoteProposals.length; i++) {
+  for (let i = 0; i < validStartVoteProposals.length; i++) {
     proposals.push({
       type,
       ...startVotesInfo[i]!,

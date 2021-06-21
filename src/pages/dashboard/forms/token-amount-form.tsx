@@ -58,7 +58,7 @@ const TokenAmountForm = (props: Props) => {
     }
   };
 
-  const handleSetMax = () => maxValue && onChange(formatApi3(maxValue.toString()));
+  const handleSetMax = () => maxValue && onChange(formatApi3(maxValue.toString(), false));
 
   return (
     <>
@@ -66,7 +66,14 @@ const TokenAmountForm = (props: Props) => {
 
       <div className={globalStyles.textCenter}>
         <div className={styles.inputWrapper}>
-          <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} size="large" />
+          <Input
+            type="number"
+            autosize
+            value={inputValue}
+            onChange={(e) => onChange(e.target.value)}
+            size="large"
+            autoFocus
+          />
           {maxValue && (
             <Button className={styles.maxButton} type="text" onClick={handleSetMax}>
               Max

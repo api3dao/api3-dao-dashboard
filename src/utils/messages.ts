@@ -29,6 +29,7 @@ export const messages = {
 
   // Proposals errors
   FAILED_TO_LOAD_PROPOSALS: 'Unable to load proposals',
+  INVALID_PROPOSAL_FORMAT: 'This proposal was not created through the DAO dashboard and cannot to be displayed',
 };
 
 // TODO: these messages should change depending on the final designs
