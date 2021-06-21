@@ -1,6 +1,9 @@
 import { BigNumber } from 'ethers';
-import { Proposal } from '../../../chain-data';
+import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
+import { format } from 'date-fns';
+import { Proposal } from '../../../chain-data';
+import { images } from '../../../utils';
 import { encodeProposalTypeAndId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../vote-slider/vote-slider';
 import Timer, { DATE_FORMAT } from '../../../components/timer/timer';
@@ -9,9 +12,7 @@ import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag/tag';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
-import classNames from 'classnames';
 import ProposalStatus from './proposal-status/proposal-status';
-import { format } from 'date-fns';
 
 interface Props {
   // Proposals should be sorted by priority (the topmost proposal in the list has index 0)
@@ -85,7 +86,7 @@ const ProposalList = (props: Props) => {
               <VoteSlider {...votingSliderData} />
               <span className={styles.proposalVoteArrow}>
                 <NavLink to={`/${navlink.base}/${navlink.typeAndId}`}>
-                  <img src="/arrow-right.svg" alt="right arrow" />
+                  <img src={images.arrowRight} alt="right arrow" />
                 </NavLink>
               </span>
             </div>

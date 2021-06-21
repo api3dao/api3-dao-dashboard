@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { useOnAccountOrNetworkChange } from '../../contracts';
+import { images } from '../../utils';
 import styles from './modal.module.scss';
 
 interface ModalProps {
@@ -37,7 +38,7 @@ export const Modal = (props: ModalProps) => {
           <img
             className={classNames(styles.closeButton, { [styles.hidden]: hideCloseButton })}
             onClick={onClose}
-            src="/close.svg"
+            src={images.close}
             alt="close icon"
           />
           {children}

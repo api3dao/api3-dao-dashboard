@@ -2,6 +2,7 @@ import throttle from 'lodash/throttle';
 import classNames from 'classnames';
 import { toast, Slide, ToastOptions } from 'react-toastify';
 import NotificationLinkButton from './notification-link-button';
+import { images } from '../../utils';
 import 'react-toastify/dist/ReactToastify.css';
 // Use these static classes to style react-toastify defaults
 import './react-toastify-overrides.scss';
@@ -16,7 +17,7 @@ interface CloseButtonProps {
 
 export const CloseButton = ({ closeToast }: CloseButtonProps) => (
   <div className={styles.closeButton} onClick={() => closeToast()}>
-    <img src="/notification-close.svg" alt="notification close button" />
+    <img src={images.notificationClose} alt="notification close button" />
   </div>
 );
 

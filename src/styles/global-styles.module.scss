@@ -1,3 +1,12 @@
+body {
+  // This is a bit of a hack to stop content scrollbar shifting with Web3modal. It
+  // currently (v1.9.3) renders a div at the bottom of the document that is a
+  // sibling to the app root div, so it has no context of the current height
+  // of the application and if the scrollbar is visible or not. Setting
+  // display: contents fixes this.
+  display: contents;
+}
+
 h1,
 h2,
 h3,

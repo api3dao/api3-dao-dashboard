@@ -13,6 +13,7 @@ import {
   getMinutes,
   getSeconds,
   go,
+  images,
   isUserRejection,
   messages,
 } from '../../../utils';
@@ -105,7 +106,7 @@ const PendingUnstakePanel = (props: Props) => {
     <BorderedBox
       header={
         <Header alignCenter>
-          <img src="/arrow-down.svg" alt="arrow down" />
+          <img src={images.arrowDown} alt="arrow down" />
         </Header>
       }
       content={

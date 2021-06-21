@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react';
+import { Helmet } from 'react-helmet-async';
 import Navigation from '../navigation/navigation';
 import Header from '../header/header';
+import { images } from '../../utils';
 import styles from './layout.module.scss';
 
 type Props = {
@@ -11,20 +13,31 @@ type Props = {
 
 const Layout = ({ children, title, subtitle }: Props) => {
   return (
-    <BaseLayout>
+    <BaseLayout subtitle={title}>
       <Header title={title} subtitle={subtitle} />
       {children}
     </BaseLayout>
   );
 };
 
-export const BaseLayout: React.FC = ({ children }) => {
+interface BaseLayoutProps {
+  children: ReactNode;
+  subtitle: string;
+}
+
+export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
   return (
-    <div className={styles.layout}>
-      <Navigation />
-      <div className={styles.container}>{children}</div>
-      <img className={styles.layoutTexture} src="/texture.png" alt="texture background" />
-    </div>
+    <>
+      <Helmet>
+        <title>{`API3 DAO | ${subtitle}`}</title>
+      </Helmet>
+
+      <div className={styles.layout}>
+        <Navigation />
+        <div className={styles.container}>{children}</div>
+        <img className={styles.layoutTexture} src={images.texture} alt="texture background" />
+      </div>
+    </>
   );
 };
 

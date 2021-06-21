@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useChainData } from '../../chain-data';
+import { images } from '../../utils';
 import classNames from 'classnames';
 import DashboardIcon from './dashboard-icon';
 import ProposalsIcon from './proposals-icon';
@@ -50,13 +51,13 @@ const MobileMenu = () => {
   return (
     <div className={styles.mobileMenuWrapper}>
       <div className={styles.menuIconWrapper}>
-        {provider && <img src="/connected.svg" alt="connected icon" />}
-        <img className={styles.menuIcon} onClick={() => setOpen(true)} src="/hamburger-menu.svg" alt="menu icon" />
+        {provider && <img src={images.connected} alt="connected icon" />}
+        <img className={styles.menuIcon} onClick={() => setOpen(true)} src={images.hamburgerMenu} alt="menu icon" />
       </div>
       <div className={classNames(styles.mobileMenu, { [styles.open]: open })}>
         <div className={styles.mobileMenuHeader}>
-          <img src="/api3-logo-dark.svg" alt="dark logo" />
-          <img className={styles.menuIcon} onClick={() => setOpen(false)} src="/menu-close.svg" alt="close icon" />
+          <img src={images.api3LogoDark} alt="dark logo" />
+          <img className={styles.menuIcon} onClick={() => setOpen(false)} src={images.menuClose} alt="close icon" />
         </div>
         <div className={styles.mobileMenuScrollWrap}>
           <div className={styles.mobileMenuContent}>
