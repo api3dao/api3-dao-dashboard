@@ -13,7 +13,7 @@ import globalStyles from '../../styles/global-styles.module.scss';
 const DesktopMenu = () => {
   const { pathname } = useLocation();
   return (
-    <div className={styles.menu}>
+    <div className={styles.menu} data-cy="desktop-menu">
       <NavLink
         activeClassName={styles.menuActiveItem}
         to="/dashboard"

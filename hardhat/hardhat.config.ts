@@ -22,7 +22,7 @@ task('accounts', 'Prints the list of accounts', async (_args, hre) => {
   const accounts = await hre.ethers.getSigners();
 
   for (const account of accounts) {
-    console.log(account.address);
+    console.info(account.address);
   }
 });
 
@@ -52,9 +52,9 @@ task('send-to-account', 'Sends ether or API3 tokens to a specified account')
     );
 
     await api3Token.transfer(receiver, tokens);
-    console.log(`Sent ${hre.ethers.utils.formatEther(tokens)} API3 tokens to address ${receiver}`);
+    console.info(`Sent ${hre.ethers.utils.formatEther(tokens)} API3 tokens to address ${receiver}`);
     await deployer.sendTransaction({ to: receiver, value: ether });
-    console.log(`Sent ${hre.ethers.utils.formatEther(ether)} ETH to address ${receiver}`);
+    console.info(`Sent ${hre.ethers.utils.formatEther(ether)} ETH to address ${receiver}`);
   });
 
 // See https://hardhat.org/config/

@@ -110,11 +110,11 @@ const PendingUnstakePanel = (props: Props) => {
         </Header>
       }
       content={
-        <div className={styles.pendingUnstakeContent}>
+        <div className={styles.pendingUnstakeContent} data-cy="pending-unstake">
           <p className={styles.pendingUnstakeTitle}>Pending API3 tokens unstaking</p>
           <div className={classNames(styles.pendingUnstakeRow, styles.amount)}>
             <p className={styles.pendingUnstakeName}>Amount</p>
-            <h5>{formatAndRoundApi3(amount)}</h5>
+            <h5 data-cy="amount">{formatAndRoundApi3(amount)}</h5>
           </div>
           <div className={classNames(styles.pendingUnstakeRow, { [globalStyles.tertiaryColor]: canUnstake })}>
             <p className={styles.pendingUnstakeName}>Cooldown</p>

@@ -28,6 +28,26 @@ describe('go', () => {
     const res = await go(errorFn);
     expect(res).toEqual([err, null]);
   });
+
+  it('resolves asynchronous functions which throws', async () => {
+    const err = new Error('Computer says no');
+    const errorFn = new Promise(() => {
+      throw err;
+    });
+    const res = await go(errorFn);
+    expect(res).toEqual([err, null]);
+  });
+
+  it('resolves on sync errors as well', async () => {
+    const obj = {} as any;
+    const res = await go(() => obj.nonExistingFunction());
+    expect(res).toEqual([new TypeError('obj.nonExistingFunction is not a function'), null]);
+  });
+
+  it('throws on sync usage without callback', async () => {
+    const obj = {} as any;
+    expect(() => go(obj.nonExistingFunction())).toThrow(new TypeError('obj.nonExistingFunction is not a function'));
+  });
 });
 
 test('getDays', () => {

@@ -3,7 +3,7 @@ import { EPOCH_LENGTH } from '../../src/contracts/helpers';
 
 async function main() {
   await ethers.provider.send('evm_increaseTime', [EPOCH_LENGTH]); // move the time to the next epoch
-  console.log(`NOTE: You may need to reset your metamask wallet after the command completes`);
+  console.info(`NOTE: You may need to reset your metamask wallet after the command completes`);
 }
 
 main()

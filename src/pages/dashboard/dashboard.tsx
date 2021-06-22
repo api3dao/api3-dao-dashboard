@@ -56,7 +56,7 @@ const Dashboard = () => {
       <p className={styles.dashboardHeader}>Staking Pool</p>
       <StakingPool />
       <div className={styles.borderedBoxesWrap}>
-        <div className={styles.stakingBoxWrap}>
+        <div className={styles.stakingBoxWrap} data-cy="balance-panel">
           <BorderedBox
             header={
               <Header>
@@ -70,13 +70,13 @@ const Dashboard = () => {
               <>
                 <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
                   <p className={styles.borderedBoxContentTitle}>total</p>
-                  <p className={globalStyles.textXLarge}>
+                  <p className={globalStyles.textXLarge} data-cy="balance">
                     {tokenBalances ? formatAndRoundApi3(tokenBalances.userTotal) : UNKNOWN_NUMBER}
                   </p>
                 </div>
                 <div className={globalStyles.textCenter}>
                   <p className={styles.borderedBoxContentTitle}>withdrawable</p>
-                  <p className={globalStyles.textXLarge}>
+                  <p className={globalStyles.textXLarge} data-cy="withdrawable">
                     {tokenBalances ? formatAndRoundApi3(tokenBalances.withdrawable) : UNKNOWN_NUMBER}
                   </p>
                 </div>
@@ -89,7 +89,7 @@ const Dashboard = () => {
             }
           />
         </div>
-        <div className={styles.stakingBoxWrap}>
+        <div className={styles.stakingBoxWrap} data-cy="staking-panel">
           <BorderedBox
             header={
               <Header>
@@ -103,13 +103,13 @@ const Dashboard = () => {
               <>
                 <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
                   <p className={styles.borderedBoxContentTitle}>staked</p>
-                  <p className={globalStyles.textXLarge}>
+                  <p className={globalStyles.textXLarge} data-cy="staked">
                     {data ? formatAndRoundApi3(data.userStaked) : UNKNOWN_NUMBER}
                   </p>
                 </div>
                 <div className={globalStyles.textCenter}>
                   <p className={styles.borderedBoxContentTitle}>unstaked</p>
-                  <p className={globalStyles.textXLarge}>
+                  <p className={globalStyles.textXLarge} data-cy="unstaked">
                     {tokenBalances ? formatAndRoundApi3(tokenBalances.withdrawable) : UNKNOWN_NUMBER}
                   </p>
                 </div>

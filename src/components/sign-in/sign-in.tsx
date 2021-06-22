@@ -33,7 +33,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
   };
 
   const connectedContent = (
-    <div className={styles.connectedStatus}>
+    <div className={styles.connectedStatus} data-cy="connected-status">
       <img src={dark ? images.connectedDark : images.connected} alt="connected icon" />
       <div className={classNames(styles.connectedStatusInfo, { [styles.dark]: dark })}>
         <p>{abbrStr(userAccount)}</p>
@@ -106,7 +106,9 @@ const SignIn = ({ dark, position }: Props) => {
     // NOTE: In case users closes the wallet connect modal there is no connection error, but the provider will be null
     if (connectionError || !web3ModalProvider) return;
 
-    const [requestAccountsError] = await go(web3ModalProvider.request({ method: 'eth_requestAccounts' }));
+    // Wrapped in callback to prevent synchronous error, because `request` property is not guaranteed to exist
+    // TODO: Should we call this in case of wallet connect?
+    const [requestAccountsError] = await go(() => web3ModalProvider.request({ method: 'eth_requestAccounts' }));
     // For example, user wants to connect via metamask, but declines connecting his account. We don't want to show toast
     // message in this case either.
     if (requestAccountsError) return;
