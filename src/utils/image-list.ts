@@ -3,7 +3,6 @@ export const images = {
   api3LogoDark: '/api3-logo-dark.svg',
   api3LogoWhite: '/api3-logo-white.svg',
   apiIcon: '/api-icon.svg',
-  arrowDown: '/arrow-down.svg',
   arrowDropdown: '/arrow-dropdown.svg',
   arrowDropdownDark: '/arrow-dropdown-dark.svg',
   arrowRight: '/arrow-right.svg',
@@ -28,6 +27,7 @@ export const images = {
   votedAgainst: '/voted-against.svg',
   votedFor: '/voted-for.svg',
   warning: '/warning.svg',
+  unsupportedNetwork: '/unsupported-network.svg',
 };
 
 // We only want to 'preload' certain images that will definitely be displayed immediately.

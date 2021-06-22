@@ -13,7 +13,6 @@ import {
   getMinutes,
   getSeconds,
   go,
-  images,
   isUserRejection,
   messages,
 } from '../../../utils';
@@ -106,12 +105,11 @@ const PendingUnstakePanel = (props: Props) => {
     <BorderedBox
       header={
         <Header alignCenter>
-          <img src={images.arrowDown} alt="arrow down" />
+          <p className={styles.pendingUnstakeTitle}>Pending API3 tokens unstaking</p>
         </Header>
       }
       content={
         <div className={styles.pendingUnstakeContent} data-cy="pending-unstake">
-          <p className={styles.pendingUnstakeTitle}>Pending API3 tokens unstaking</p>
           <div className={classNames(styles.pendingUnstakeRow, styles.amount)}>
             <p className={styles.pendingUnstakeName}>Amount</p>
             <h5 data-cy="amount">{formatAndRoundApi3(amount)}</h5>

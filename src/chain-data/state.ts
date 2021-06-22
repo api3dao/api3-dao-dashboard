@@ -82,7 +82,8 @@ export interface Proposals {
 
 export type TransactionType =
   | 'approve-deposit'
-  | 'deposit'
+  | 'deposit-only'
+  | 'deposit-and-stake'
   | 'stake'
   | 'initiate-unstake'
   | 'unstake'

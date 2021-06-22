@@ -2,21 +2,24 @@ import { BigNumber } from 'ethers';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Proposal } from '../../../chain-data';
+import { Proposal, useChainData } from '../../../chain-data';
 import { images } from '../../../utils';
 import { encodeProposalTypeAndId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../vote-slider/vote-slider';
 import Timer, { DATE_FORMAT } from '../../../components/timer/timer';
+import Button from '../../../components/button/button';
 import Tooltip from '../../../components/tooltip/tooltip';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag/tag';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
 import ProposalStatus from './proposal-status/proposal-status';
+import { connectWallet } from '../../../components/sign-in/sign-in';
 
 interface Props {
-  // Proposals should be sorted by priority (the topmost proposal in the list has index 0)
-  proposals: Proposal[];
+  // Proposals should be sorted by priority (the topmost proposal in the list has index 0). Or undefined if user is not
+  // logged in.
+  proposals: Proposal[] | undefined;
 }
 
 interface ProposalProps {
@@ -56,10 +59,20 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
 
 const ProposalList = (props: Props) => {
   const { proposals } = props;
+  const { setChainData } = useChainData();
 
   return (
     <>
-      {proposals.map((p) => {
+      {!proposals && (
+        <p className={styles.noProposals}>
+          You need to be connected to view proposals{' '}
+          <Button type="link" onClick={connectWallet(setChainData)}>
+            Connect your wallet
+          </Button>
+        </p>
+      )}
+      {proposals?.length === 0 && <p className={styles.noProposals}>There are no active proposals</p>}
+      {proposals?.map((p) => {
         const votingSliderData = voteSliderSelector(p);
         const navlink = {
           base: p.open ? 'proposals' : 'history',
