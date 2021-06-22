@@ -3,6 +3,7 @@ import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
 import { Modal } from '../../components/modal/modal';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
+import TooltipChecklist from '../../components/tooltip/tooltip-checklist';
 import Treasury from '../proposal-commons/treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useActiveProposals } from '../../logic/proposals/hooks';
@@ -11,12 +12,12 @@ import ProposalList from '../proposal-commons/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import { openProposalsSelector, canCreateNewProposalSelector } from '../../logic/proposals/selectors';
-import styles from './proposals.module.scss';
 import Delegation from './delegation';
 import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
 import { notifications } from '../../components/notifications/notifications';
-import { go, isUserRejection, messages } from '../../utils';
+import { go, images, isUserRejection, messages } from '../../utils';
+import styles from './proposals.module.scss';
 
 const Proposals = () => {
   // TODO: Retrieve only "userVotingPower" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
@@ -34,6 +35,19 @@ const Proposals = () => {
 
   const sortedProposals = openProposalsSelector(proposals);
   const canCreateNewProposal = canCreateNewProposalSelector(delegation, dashboardState);
+
+  const newProposalChecklist = [
+    {
+      alt: 'Voted cooldown',
+      checked: false,
+      label: "You haven't voted in the last 7 days.",
+    },
+    {
+      alt: 'Sufficient voting power',
+      checked: true,
+      label: 'You need at least 0.5% of the total vote representation to post a proposal.',
+    },
+  ];
 
   const onCreateProposal = async (formData: NewProposalFormData) => {
     if (!api3Token || !api3Voting || !api3Agent) return null;
@@ -75,9 +89,14 @@ const Proposals = () => {
         header={
           <Header>
             <h5>Proposals</h5>
-            <Button onClick={() => setOpenNewProposalModal(true)} size="large" disabled={!canCreateNewProposal}>
-              + New proposal
-            </Button>
+            <div>
+              <Button onClick={() => setOpenNewProposalModal(true)} size="large" disabled={!canCreateNewProposal}>
+                + New proposal
+              </Button>
+              <TooltipChecklist items={newProposalChecklist}>
+                <img src={images.help} alt="Delgation Help" className={styles.help} />
+              </TooltipChecklist>
+            </div>
           </Header>
         }
         content={<ProposalList proposals={sortedProposals} />}
