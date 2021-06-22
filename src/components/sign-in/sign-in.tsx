@@ -79,8 +79,8 @@ const ConnectedStatus = ({ dark, position }: Props) => {
 
 export const connectWallet = (setChainData: SettableChainData['setChainData']) => async () => {
   const web3Modal = new Web3Modal({
-    // If true, it the provider will be cached in local storage and there will be no modal
-    // asking on re-login and the same provider will be used.
+    // If true, the provider will be cached in local storage and there will be no modal asking on re-login and the same
+    // provider will be used.
     cacheProvider: false,
     disableInjectedProvider: false,
     providerOptions: {
