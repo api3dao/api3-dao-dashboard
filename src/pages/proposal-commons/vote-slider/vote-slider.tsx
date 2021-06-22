@@ -3,12 +3,12 @@ import { ProposalStatus } from '../../../logic/proposals/selectors';
 import { images } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './vote-slider.module.scss';
+import { VOTER_STATES } from '../../../chain-data';
+import VoteStatus from '../vote-status';
 
 interface IconProp {
   large?: boolean;
 }
-
-const VOTER_STATES = { 0: 'Unvoted', 1: 'Voted For', 2: 'Voted Against' } as const;
 
 export const NegativeVoteIcon = ({ large }: IconProp) => (
   <img className={classNames(styles.voteIcon, { [styles.large]: large })} src={images.closePink} alt="rejected icon" />
@@ -57,12 +57,12 @@ const VoteSlider = (props: Props) => {
           <div className={styles.bar}>
             <div className={styles.acceptanceQuorum} style={{ left: `${minAcceptanceQuorum}%` }}></div>
             <div
-              className={classNames(styles.for, { grayOut: !open && proposalStatus === 'Rejected' })}
+              className={classNames(styles.for, { [styles.grayOut]: !open && proposalStatus === 'Rejected' })}
               style={{ width: formatPercentage(forPercentage) }}
             ></div>
             <div
               className={classNames(styles.against, {
-                grayOut: !open && (proposalStatus === 'Execute' || proposalStatus === 'Executed'),
+                [styles.grayOut]: !open && (proposalStatus === 'Execute' || proposalStatus === 'Executed'),
               })}
               style={{ width: formatPercentage(againstPercentage) }}
             ></div>
@@ -74,23 +74,7 @@ const VoteSlider = (props: Props) => {
             })}
           >
             <span className={globalStyles.secondaryColor}>{formatPercentage(forPercentage)}</span>
-            <div className={classNames({ [styles.large]: isLarge })}>
-              {isLarge && voterState !== 0 && (
-                <img
-                  className={styles.icon}
-                  src={`${voterState === 1 ? '/voted-for.svg' : '/voted-against.svg'}`}
-                  alt="voter state icon"
-                />
-              )}
-              <span
-                className={classNames({
-                  [styles.votedAgainst]: VOTER_STATES[voterState] === 'Voted Against',
-                  [styles.votedFor]: VOTER_STATES[voterState] === 'Voted For',
-                })}
-              >
-                {VOTER_STATES[voterState]}
-              </span>
-            </div>
+            {!isLarge && <VoteStatus voterState={voterState} />}
             <span className={globalStyles.secondaryColor}>{formatPercentage(againstPercentage)}</span>
           </div>
         </div>
