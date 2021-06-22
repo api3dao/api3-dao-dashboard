@@ -3,7 +3,6 @@ import { abbrStr } from '../../../chain-data/helpers';
 import DelegateVotesForm from '../forms/delegate/delegate-form';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import { useChainData } from '../../../chain-data';
-import styles from './delegation.module.scss';
 import Button from '../../../components/button/button';
 import { Modal } from '../../../components/modal/modal';
 import { delegationCooldownOverSelector } from '../../../logic/proposals/selectors';
@@ -11,8 +10,10 @@ import ChooseDelegateAction from '../forms/choose-delegate-action/choose-delegat
 import { useApi3Pool } from '../../../contracts';
 import { go, isUserRejection } from '../../../utils';
 import * as notifications from '../../../components/notifications/notifications';
-import { messages } from '../../../utils/messages';
+import { images, messages } from '../../../utils';
 import { useLoadDashboardData } from '../../../logic/dashboard';
+import TooltipChecklist from '../../../components/tooltip/tooltip-checklist';
+import styles from './delegation.module.scss';
 
 const Delegation = () => {
   // TODO: Retrieve only "userStaked" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
@@ -29,6 +30,25 @@ const Delegation = () => {
   const canDelegate = delegationCooldownOver && (dashboardState?.userStaked.gt(0) ?? false);
   const canUndelegate = delegationCooldownOver;
 
+  // TODO: how are these checked values calculated?
+  const delegateChecklistItems = [
+    {
+      alt: 'Undelegate cooldown',
+      checked: delegationCooldownOver,
+      label: 'You undelegated your last delegation more than 7 days ago.',
+    },
+    {
+      alt: 'Voted cooldown',
+      checked: delegationCooldownOver,
+      label: "You haven't voted in the last 7 days.",
+    },
+    {
+      alt: 'Initiated proposal cooldown',
+      checked: delegationCooldownOver,
+      label: "You haven't made any proposals within the last 7 days.",
+    },
+  ];
+
   return (
     <>
       {delegation?.delegate ? (
@@ -44,6 +64,9 @@ const Delegation = () => {
           >
             Update delegation
           </Button>
+          <TooltipChecklist items={delegateChecklistItems}>
+            <img src={images.help} alt="Delgation Help" className={styles.help} />
+          </TooltipChecklist>
           <Modal open={openChooseDelegateActionModal} onClose={() => setOpenChooseDelegateActionModal(false)}>
             <ChooseDelegateAction
               canUpdateDelegation={canDelegate}
@@ -87,6 +110,9 @@ const Delegation = () => {
           >
             Delegate
           </Button>
+          <TooltipChecklist items={delegateChecklistItems}>
+            <img src={images.help} alt="Delgation Help" className={styles.help} />
+          </TooltipChecklist>
         </div>
       )}
       <Modal open={openDelegationModal} onClose={() => setOpenDelegationModal(false)}>
