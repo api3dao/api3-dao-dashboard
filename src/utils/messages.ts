@@ -79,6 +79,11 @@ export const transactionMessages: { [key in TransactionType]: PendingTransaction
     success: 'Voting power undelegated successfully!',
     error: 'Voting power undelegation failed',
   },
+  'new-vote': {
+    start: 'Submitting new proposal...',
+    success: 'New proposal submitted successfully!',
+    error: 'New proposal submission failed',
+  },
   'vote-for': {
     start: 'Voting for proposal...',
     success: 'Vote for proposal cast successfully!',

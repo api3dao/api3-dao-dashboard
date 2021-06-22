@@ -90,6 +90,7 @@ export type TransactionType =
   | 'withdraw'
   | 'delegate'
   | 'undelegate'
+  | 'new-vote'
   | 'vote-for'
   | 'vote-against'
   | 'execute';

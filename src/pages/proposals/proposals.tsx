@@ -15,10 +15,12 @@ import styles from './proposals.module.scss';
 import Delegation from './delegation';
 import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
+import { notifications } from '../../components/notifications/notifications';
+import { go, isUserRejection, messages } from '../../utils';
 
 const Proposals = () => {
   // TODO: Retrieve only "userVotingPower" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
-  const { proposals, delegation, dashboardState } = useChainData();
+  const { proposals, delegation, dashboardState, transactions, setChainData } = useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
   const api3Agent = useApi3AgentAddresses();
@@ -37,12 +39,27 @@ const Proposals = () => {
     if (!api3Token || !api3Voting || !api3Agent) return null;
 
     // NOTE: For some reason only this 'ugly' version is available on the contract
-    await api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](
-      encodeEvmScript(formData, api3Agent),
-      encodeMetadata(formData),
-      true,
-      true
+    const [err, tx] = await go(
+      api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](
+        encodeEvmScript(formData, api3Agent),
+        encodeMetadata(formData),
+        true,
+        true
+      )
     );
+
+    if (err) {
+      if (isUserRejection(err)) {
+        notifications.info({ message: messages.TX_GENERIC_REJECTED });
+        return;
+      }
+      notifications.error({ message: messages.TX_GENERIC_ERROR });
+      return;
+    }
+
+    if (tx) {
+      setChainData('Save new vote transaction', { transactions: [...transactions, { type: 'new-vote', tx }] });
+    }
 
     setOpenNewProposalModal(false);
   };
