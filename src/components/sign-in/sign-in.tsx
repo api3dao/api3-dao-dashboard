@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
 import classNames from 'classnames';
-import { initialChainData, getNetworkData, useChainData } from '../../chain-data';
+import { initialChainData, getNetworkData, useChainData, SettableChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import { go } from '../../utils/generic';
 import Button from '../../components/button/button';
@@ -77,53 +77,53 @@ const ConnectedStatus = ({ dark, position }: Props) => {
   );
 };
 
+export const connectWallet = (setChainData: SettableChainData['setChainData']) => async () => {
+  const web3Modal = new Web3Modal({
+    // If true, the provider will be cached in local storage and there will be no modal asking on re-login and the same
+    // provider will be used.
+    cacheProvider: false,
+    disableInjectedProvider: false,
+    providerOptions: {
+      walletconnect: {
+        package: WalletConnectProvider,
+        options: {
+          // This is actually the default value in WalletConnectProvider, but I'd rather be explicit about this
+          bridge: 'https://bridge.walletconnect.org',
+          rpc: WALLET_CONNECT_RPC_PROVIDERS,
+        },
+      },
+    },
+  });
+
+  // Enable session (connection), this triggers QR Code modal in case of wallet connect
+  const [connectionError, web3ModalProvider] = await go(web3Modal.connect());
+  // Connection error will often be caused by user declining to connect (e.g. close the modal) so we don't show any
+  // toast message to the user.
+  // NOTE: In case users closes the wallet connect modal there is no connection error, but the provider will be null
+  if (connectionError || !web3ModalProvider) return;
+
+  // Wrapped in callback to prevent synchronous error, because `request` property is not guaranteed to exist
+  // TODO: Should we call this in case of wallet connect?
+  const [requestAccountsError] = await go(() => web3ModalProvider.request({ method: 'eth_requestAccounts' }));
+  // For example, user wants to connect via metamask, but declines connecting his account. We don't want to show toast
+  // message in this case either.
+  if (requestAccountsError) return;
+
+  // https://github.com/ethers-io/ethers.js/discussions/1480
+  // NOTE: You can access the underlying 'web3ModalProvider' using the 'provider' property
+  const externalProvider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
+  const [networkDataError, data] = await go(getNetworkData(externalProvider));
+  if (networkDataError) {
+    notifications.error({ message: messages.FAILED_TO_LOAD_CHAIN_DATA });
+    return;
+  }
+
+  setChainData('User connected', { ...data });
+};
+
 const SignIn = ({ dark, position }: Props) => {
   const { setChainData, provider, networkName } = useChainData();
   useProviderSubscriptions(provider);
-
-  const onWalletConnect = async () => {
-    const web3Modal = new Web3Modal({
-      // If true, it the provider will be cached in local storage and there will be no modal
-      // asking on re-login and the same provider will be used.
-      cacheProvider: false,
-      disableInjectedProvider: false,
-      providerOptions: {
-        walletconnect: {
-          package: WalletConnectProvider,
-          options: {
-            // This is actually the default value in WalletConnectProvider, but I'd rather be explicit about this
-            bridge: 'https://bridge.walletconnect.org',
-            rpc: WALLET_CONNECT_RPC_PROVIDERS,
-          },
-        },
-      },
-    });
-
-    // Enable session (connection), this triggers QR Code modal in case of wallet connect
-    const [connectionError, web3ModalProvider] = await go(web3Modal.connect());
-    // Connection error will often be caused by user declining to connect (e.g. close the modal) so we don't show any
-    // toast message to the user.
-    // NOTE: In case users closes the wallet connect modal there is no connection error, but the provider will be null
-    if (connectionError || !web3ModalProvider) return;
-
-    // Wrapped in callback to prevent synchronous error, because `request` property is not guaranteed to exist
-    // TODO: Should we call this in case of wallet connect?
-    const [requestAccountsError] = await go(() => web3ModalProvider.request({ method: 'eth_requestAccounts' }));
-    // For example, user wants to connect via metamask, but declines connecting his account. We don't want to show toast
-    // message in this case either.
-    if (requestAccountsError) return;
-
-    // https://github.com/ethers-io/ethers.js/discussions/1480
-    // NOTE: You can access the underlying 'web3ModalProvider' using the 'provider' property
-    const externalProvider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
-    const [networkDataError, data] = await go(getNetworkData(externalProvider));
-    if (networkDataError) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_CHAIN_DATA });
-      return;
-    }
-
-    setChainData('User connected', { ...data });
-  };
 
   const isSignedIn = !!provider;
   const supportedNetworks = SUPPORTED_NETWORKS.filter((name) => {
@@ -138,8 +138,11 @@ const SignIn = ({ dark, position }: Props) => {
       {!provider && (
         <Button
           type={dark ? 'secondary' : 'primary'}
-          onClick={onWalletConnect}
-          className={classNames({ [styles.mobileMenuButton]: dark })}
+          onClick={connectWallet(setChainData)}
+          className={classNames({
+            [styles.mobileMenuButton]: dark,
+            [styles.fullWidthMobile]: position === 'navigation',
+          })}
         >
           Connect Wallet
         </Button>
@@ -147,6 +150,7 @@ const SignIn = ({ dark, position }: Props) => {
       {provider && <ConnectedStatus dark={dark} position={position} />}
       <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
         <div className={globalStyles.textCenter}>
+          <img className={styles.unsupportedNetworkIcon} src={images.unsupportedNetwork} alt="network not supported" />
           <h5>Unsupported chain!</h5>
 
           <p className={globalStyles.mtXl}>Supported networks are: {supportedNetworks}</p>
