@@ -12,10 +12,10 @@ const VoteStatus = (props: Props) => {
 
   return (
     <div className={classNames({ [styles.wrapperLarge]: large })}>
-      {large && voterState !== 0 && (
+      {large && VOTER_STATES[voterState] !== 'Unvoted' && (
         <img
           className={styles.icon}
-          src={`${voterState === 1 ? '/voted-for.svg' : '/voted-against.svg'}`}
+          src={`${VOTER_STATES[voterState] === 'Voted For' ? '/voted-for.svg' : '/voted-against.svg'}`}
           alt="voter state icon"
         />
       )}

@@ -2,15 +2,9 @@
 
 The implementation of the DAO dashboard.
 
-## Ropsten token faucet
+## Instructions for testing on Ropsten
 
-To get some testnet tokens use [this
-faucet](https://ropsten.etherscan.io/address/0xBfE1e6BDd1B93d9593B3a7cBE17068ED41ef83c2#writeContract). All you need to
-do is:
-
-1. Click `Connect to Web3` and connect your wallet
-2. Click `4. withdraw` and make a transaction
-3. You will receive some ropsten tokens
+Follow [these instructions](https://docs.google.com/document/d/1nBjlOYGGs2TVQC9LsYBH4uR4wYS-pLlBLFV3NXP9qQc).
 
 ## Development instructions
 
