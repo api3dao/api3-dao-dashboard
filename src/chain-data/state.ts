@@ -34,6 +34,7 @@ export interface ProposalMetadata {
   description: string;
 }
 
+export const VOTER_STATES = { 0: 'Unvoted', 1: 'Voted For', 2: 'Voted Against' } as const;
 export type VoterState = 0 | 1 | 2; // Absent, Yea, Nay
 export type ProposalType = 'primary' | 'secondary';
 

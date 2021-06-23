@@ -16,7 +16,6 @@ import {
   isGoSuccess,
   GO_RESULT_INDEX,
   GO_ERROR_INDEX,
-  formatAndRoundApi3,
   UNKNOWN_NUMBER,
 } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
@@ -126,7 +125,7 @@ const TokenDepositForm = (props: Props) => {
         <div className={styles.tokenFormBalance}>
           Your balance:{' '}
           <span className={globalStyles.pointer} onClick={handleSetMax}>
-            {walletBalance ? formatAndRoundApi3(walletBalance) : UNKNOWN_NUMBER}
+            {walletBalance ? formatApi3(walletBalance) : UNKNOWN_NUMBER}
           </span>
         </div>
       </div>

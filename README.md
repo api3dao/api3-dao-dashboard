@@ -1,28 +1,29 @@
 # api3-dao-dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The implementation of the DAO dashboard.
 
-## Instructions
+## Instructions for testing on Ropsten
+
+Follow [these instructions](https://docs.google.com/document/d/1nBjlOYGGs2TVQC9LsYBH4uR4wYS-pLlBLFV3NXP9qQc).
+
+## Development instructions
 
 To install dependencies, run `yarn`. This will also compile the DAO contracts and generate
 [TypeChain](https://github.com/ethereum-ts/TypeChain) wrappers to be used in the client application.
 
-1. To run the hardhat _(local blockchain simulator)_ use: `yarn eth:node`.
+1. To run the hardhat _(local blockchain simulator)_ use: `yarn eth:node`
 2. To deploy the DAO contracts see [contract deployments instructions](#contract-deployments)
-3. In a separate terminal, start a development server with `yarn start`.
-4. Run `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account.
+3. In a separate terminal, start a development server with `yarn start`
+4. Run `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
 
-MetaMask doesn't handle localhost development, particularly that the chain is reset after on every `yarn eth:node`. If
-that happens, you can [reset the
-account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
+_(Optionally, you can just run `yarn start` and connect to ropsten directly)_
 
-> If you need some testnet tokens, ask [@siegrift](https://github.com/Siegrift) to send you some. Creating simple faucet
-> for this is tracked under https://github.com/api3dao/api3-dao-dashboard/issues/16
+> MetaMask doesn't handle localhost development ideally. Particularly, that the chain is reset after on every `yarn eth:node` command. In case you have problems making a transaction, try to [reset the
+> account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
 
-## Contract deployments
+### Contract deployments
 
 Currently supported networks are `localhost` and `ropsten` _(the `mainnet` network will be supported a bit later)_.
-Deployments for other networks can be added if needed later.
 
 Unfortunately, aragon DAO contracts are not deployed easily. The easiest solution is to compile [using the script
 created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js).
@@ -59,20 +60,18 @@ Follow these steps to deploy to localhost:
 
 Deployment file for localhost deployment is ignored, however deployment addresses of all other networks is saved for
 checked in git and available for public. Because, we can't conditionally and synchronously import ES modules, we include
-`localhost-dao.example.json` as a placeholder for `localhost-dao.json` deployment output.
+`localhost-dao.example.json` as a placeholder for `localhost-dao.json` deployment output. We take care of creating this
+file in `yarn postinstall` script, so you don't need to create it manually.
 
-If you clone this repository, you'll se an error because `localhost-dao.json` will be missing. You can fix this by
-creating a copy of `localhost-dao.example.json` and naming it `localhost-dao.json`.
-
-### Deployments for other networks
+#### Deployments for other networks
 
 Deployments for other networks work similarly and there are similar command to `deploy:rpc` for other networks. However
 you might need to do additional steps and configuration before executing the deploy command. When adding deployment for
-other networks check out `contracts/network.json` on what needs to be added.
+other networks check out `contracts/network.json` on what code needs to be added for in the DAO dashboard.
 
 See: https://github.com/api3dao/api3-dao/issues/217 for more information.
 
-### Testnet and mainnet deployments are not automatic
+#### Testnet and mainnet deployments are not automatic
 
 It's important to mention that all deployed (hosted) applications will connect to the contracts specified in
 `contract-deployments/<chain-name>-dao.json`. This means, that you need to redeploy the contracts manually before
@@ -85,9 +84,9 @@ We use [Fleek](https://fleek.co/) to host the application on IPFS. The hosting w
 - Every PR against `main` branch will be deployed as github action and you can find the IPFS hash in the "fleek deploy
   check" details.
 - The current version of app in `main` branch will be deployed as staging on the following URL:
-  https://api3-dao-dashboard-staging.on.fleek.co/. The app will be redeployed after every merged request automatically.
+  https://api3-dao-dashboard-staging.on.fleek.co/. The app will be redeployed after every merged request automatically
 - Every push to `production` branch will trigger a production deploy. The app can be found on this URL:
-  api3-dao-dashboard.on.fleek.co/
+  https://api3-dao-dashboard.on.fleek.co/
 
 Apart from that, we are using [environment
 variables](https://create-react-app.dev/docs/adding-custom-environment-variables/), specifically `REACT_APP_NODE_ENV` to
@@ -119,7 +118,7 @@ services:
     container_name: verdaccio
     image: verdaccio/verdaccio
     ports:
-      - "4873:4873"
+      - '4873:4873'
 
   app:
     image: fleek/create-react-app
@@ -131,6 +130,7 @@ services:
     volumes:
       - './:/workspace'
 ```
+
 and run `docker-compose run --rm app`, which will create a `./build` directory.
 
 Then, (after installing `ipfs`) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build (`sudo` because `build` will likely be owned by root).

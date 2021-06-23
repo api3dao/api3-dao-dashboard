@@ -10,7 +10,6 @@ import ProposalList from '../proposal-commons/proposal-list';
 import styles from './history.module.scss';
 import classNames from 'classnames';
 import { useHistory } from 'react-router';
-import Treasury from '../proposal-commons/treasury/treasury';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import { useHistoryProposals } from '../../logic/proposals/hooks/history-proposals';
 
@@ -40,7 +39,6 @@ const History = () => {
     <BaseLayout subtitle="History">
       <div className={styles.header}>
         <Header title="History"></Header>
-        <Treasury className={styles.treasury} />
       </div>
 
       <BorderedBox

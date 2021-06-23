@@ -66,35 +66,6 @@ $border-radius: 100px;
   font-weight: 500;
 }
 
-.status {
-  text-transform: capitalize;
-
-  &.failing {
-    color: $pink-color;
-  }
-
-  &.passing {
-    color: $green-color;
-  }
-}
-
-.votedAgainst {
-  color: $pink-color;
-}
-
-.votedFor {
-  color: $green-color;
-}
-
-.large {
-  margin-top: $space-xxl;
-}
-
-.icon {
-  margin: 0 $space-sm;
-  height: 25px;
-}
-
 .voteIcon {
   height: 8px;
   margin-top: 5px;
