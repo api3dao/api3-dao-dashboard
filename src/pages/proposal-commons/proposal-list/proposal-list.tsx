@@ -64,12 +64,12 @@ const ProposalList = (props: Props) => {
   return (
     <>
       {!proposals && (
-        <p className={styles.noProposals}>
+        <div className={styles.noProposals}>
           You need to be connected to view proposals{' '}
           <Button type="link" onClick={connectWallet(setChainData)}>
             Connect your wallet
           </Button>
-        </p>
+        </div>
       )}
       {proposals?.length === 0 && <p className={styles.noProposals}>There are no active proposals</p>}
       {proposals?.map((p) => {
