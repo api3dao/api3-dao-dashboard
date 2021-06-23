@@ -11,12 +11,16 @@ import { encodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logi
 import ProposalList from '../proposal-commons/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
-import { openProposalsSelector, canCreateNewProposalSelector } from '../../logic/proposals/selectors';
+import {
+  openProposalsSelector,
+  canCreateNewProposalSelector,
+  votingPowerThresholdSelector,
+} from '../../logic/proposals/selectors';
 import Delegation from './delegation';
 import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
 import { notifications } from '../../components/notifications/notifications';
-import { go, images, isUserRejection, messages } from '../../utils';
+import { formatApi3, go, images, isUserRejection, messages } from '../../utils';
 import styles from './proposals.module.scss';
 
 const Proposals = () => {
@@ -34,18 +38,19 @@ const Proposals = () => {
   useTreasuryAndDelegation();
 
   const sortedProposals = openProposalsSelector(proposals);
-  const canCreateNewProposal = canCreateNewProposalSelector(delegation, dashboardState);
+  const createNewProposal = canCreateNewProposalSelector(delegation, dashboardState);
+  const powerThresholdPercent = formatApi3(votingPowerThresholdSelector(delegation));
 
   const newProposalChecklist = [
     {
       alt: 'Voted cooldown',
-      checked: false,
+      checked: createNewProposal?.epochOver ?? false,
       label: "You haven't voted in the last 7 days.",
     },
     {
       alt: 'Sufficient voting power',
-      checked: true,
-      label: 'You need at least 0.5% of the total vote representation to post a proposal.',
+      checked: createNewProposal?.hasEnoughVotingPower ?? false,
+      label: `You need at least ${powerThresholdPercent}% of the total vote representation to post a proposal.`,
     },
   ];
 
@@ -90,11 +95,15 @@ const Proposals = () => {
           <Header>
             <h5>Proposals</h5>
             <div>
-              <Button onClick={() => setOpenNewProposalModal(true)} size="large" disabled={!canCreateNewProposal}>
+              <Button
+                onClick={() => setOpenNewProposalModal(true)}
+                size="large"
+                disabled={!createNewProposal?.canCreateNewProposal}
+              >
                 + New proposal
               </Button>
               <TooltipChecklist items={newProposalChecklist}>
-                <img src={images.help} alt="Delgation Help" className={styles.help} />
+                <img src={images.help} alt="new proposal help" className={styles.help} />
               </TooltipChecklist>
             </div>
           </Header>

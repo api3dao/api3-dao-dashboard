@@ -90,7 +90,7 @@ export const delegationCooldownOverSelector = (delegation: Delegation | null) =>
 };
 
 export const canCreateNewProposalSelector = (delegation: Delegation | null, dashboardState: DashboardState | null) => {
-  if (!delegation || !dashboardState) return false;
+  if (!delegation || !dashboardState) return;
 
   const now = new Date();
   const epochOver = isAfter(now, addSeconds(delegation.lastProposalTimestamp, EPOCH_LENGTH));
@@ -98,9 +98,17 @@ export const canCreateNewProposalSelector = (delegation: Delegation | null, dash
     dashboardState.totalShares.mul(delegation.proposalVotingPowerThreshold).div(HUNDRED_PERCENT)
   );
 
-  return epochOver && hasEnoughVotingPower;
+  const canCreateNewProposal = epochOver && hasEnoughVotingPower;
+  return { epochOver, hasEnoughVotingPower, canCreateNewProposal };
 };
 
 export const canVoteSelector = (proposal: Proposal) => {
   return proposal.open && proposal.userVotingPowerAt.gt(0);
+};
+
+// Default to 0.1% of the voting power, although the DAO might vote to change this later
+const DEFAULT_VOTING_POWER_THRESHOLD = BigNumber.from(10).pow(17);
+
+export const votingPowerThresholdSelector = (delegation: Delegation | null): BigNumber => {
+  return delegation?.proposalVotingPowerThreshold.mul(100) ?? DEFAULT_VOTING_POWER_THRESHOLD;
 };

@@ -7,7 +7,7 @@ import 'rc-tooltip/assets/bootstrap_white.css';
 
 type Props = {
   children: ReactElement;
-  content: string | any;
+  content: ReactElement;
 };
 
 const Tooltip = ({ children, content }: Props) => {
