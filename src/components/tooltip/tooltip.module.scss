@@ -1,43 +1,10 @@
 @import '../../styles/variables.module.scss';
 
-.tooltipWrapper {
-  position: relative;
-}
-
 .tooltip {
-  background: linear-gradient(76.31deg, #f3f3f3 36.47%, #c3c4c3 99.02%);
-  box-shadow: 0px 9px 28px 8px rgba(0, 0, 0, 0.05), 0px 6px 16px rgba(0, 0, 0, 0.08),
-    0px 3px 6px -4px rgba(0, 0, 0, 0.12);
-  min-width: 200px;
-  position: absolute;
-  right: 0;
-  background-color: $primary-color;
-  color: $black-color;
-  font-size: $text-xsmall;
-  line-height: 18px;
-  padding: 10px $space-sm;
-  margin-top: $space-sm;
-  border-radius: 2px;
-  box-shadow: $tooltip-shadow;
-  box-sizing: border-box;
-  z-index: 10;
-
-  &:before {
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    position: absolute;
-    border-right: 6px solid transparent;
-    border-left: 6px solid transparent;
-    border-bottom: 6px solid $primary-color;
-    top: -6px;
-    right: $space-md;
-  }
+  font-size: $text-small !important;
 }
 
 .tooltipChecklist {
-  font-size: $text-small;
   padding: $space-sm;
 
   .tooltipItem:not(:last-child) {

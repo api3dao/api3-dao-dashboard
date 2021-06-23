@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { ReactElement } from 'react';
 import Tooltip from './tooltip';
 import { images } from '../../utils';
 import styles from './tooltip.module.scss';
 
 interface Props {
-  children: ReactNode;
+  children: ReactElement;
   items: {
     alt: string;
     checked: boolean;
