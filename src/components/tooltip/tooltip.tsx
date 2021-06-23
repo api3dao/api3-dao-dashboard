@@ -7,10 +7,10 @@ import 'rc-tooltip/assets/bootstrap_white.css';
 
 type Props = {
   children: ReactElement;
-  content: ReactElement | string;
+  overlay: ReactElement | string;
 };
 
-const Tooltip = ({ children, content }: Props) => {
+const Tooltip = ({ children, overlay }: Props) => {
   // NOTE: rc-tooltip requires us to override default styles directly using objects
   // https://github.com/react-component/tooltip#props
   const overlayStyle = {
@@ -23,7 +23,7 @@ const Tooltip = ({ children, content }: Props) => {
 
   return (
     <RCTooltip
-      overlay={content}
+      overlay={overlay}
       placement="bottom"
       overlayClassName={styles.tooltip}
       overlayStyle={overlayStyle}

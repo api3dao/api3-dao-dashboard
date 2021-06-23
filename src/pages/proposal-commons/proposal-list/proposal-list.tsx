@@ -44,7 +44,7 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
       <p className={styles.proposalItemVoteId}>#{voteIdFormat(proposal.voteId)}</p>
       <ProposalStatus proposal={proposal} />
       <div className={styles.proposalItemTag}>
-        <Tooltip content={tooltipContent}>
+        <Tooltip overlay={tooltipContent}>
           <Tag type={proposal.type}>
             <span className={globalStyles.capitalize}>{proposal.type}</span>
           </Tag>

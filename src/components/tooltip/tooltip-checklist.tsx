@@ -24,7 +24,7 @@ const TooltipChecklist = ({ children, items }: Props) => {
     </div>
   );
 
-  return <Tooltip content={content}>{children}</Tooltip>;
+  return <Tooltip overlay={content}>{children}</Tooltip>;
 };
 
 export default TooltipChecklist;
