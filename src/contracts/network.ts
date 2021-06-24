@@ -1,15 +1,15 @@
 import { ethers } from 'ethers';
 import localhostDao from '../contract-deployments/localhost-dao.json';
-import ropstenDao from '../contract-deployments/ropsten-dao.json';
+import rinkebyDao from '../contract-deployments/rinkeby-dao.json';
 
-export const SUPPORTED_NETWORKS = ['localhost', 'ropsten'];
+export const SUPPORTED_NETWORKS = ['localhost', 'rinkeby'];
 
 export const getDaoAddresses = (networkName: string) => {
   switch (networkName) {
     case 'localhost':
       return localhostDao;
-    case 'ropsten':
-      return ropstenDao;
+    case 'rinkeby':
+      return rinkebyDao;
     default:
       return null;
   }
@@ -42,6 +42,6 @@ export const getEtherscanAddressUrl = (chainId: number | undefined, address: str
 };
 
 export const WALLET_CONNECT_RPC_PROVIDERS = {
-  3: process.env.REACT_APP_ROPSTEN_PROVIDER_URL,
+  4: process.env.REACT_APP_RINKEBY_PROVIDER_URL,
   31337: 'http://127.0.0.1:8545/',
 };
