@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, ethers, Signer } from 'ethers';
 import type ContractsAddresses from '../contract-deployments/localhost-dao.json';
 
 export interface PendingUnstake {
@@ -98,11 +98,15 @@ export type TransactionType =
   | 'execute';
 
 export interface ChainData {
+  // TODO: move the following fields to a separate interface called GenericChainData
   provider: ethers.providers.Web3Provider | null;
   userAccount: string;
+  availableAccounts: string[]; // NOTE: Contains multiple values only when connected to hardhat node
+  signer: Signer | null;
   networkName: string;
   chainId: undefined | number;
   contracts: typeof ContractsAddresses | null;
+
   dashboardState: DashboardState | null;
   proposals: Proposals | null;
   treasuries: Treasury[];
@@ -120,6 +124,8 @@ export interface SettableChainData extends ChainData {
 export const initialChainData: ChainData = {
   provider: null,
   userAccount: '',
+  availableAccounts: [],
+  signer: null,
   networkName: '',
   chainId: undefined,
   contracts: null,

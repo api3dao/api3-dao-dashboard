@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/react';
 import './index.scss';
 import App from './app';
+import { mockLocalhostWeb3Provider } from './chain-data';
 
 if (process.env.REACT_APP_SENTRY_DSN && process.env.REACT_APP_NODE_ENV) {
   Sentry.init({
@@ -21,6 +22,10 @@ if (process.env.REACT_APP_SENTRY_DSN && process.env.REACT_APP_NODE_ENV) {
       return event;
     },
   });
+}
+
+if (process.env.REACT_APP_NODE_ENV === 'development' && (window as any).ethereum === undefined) {
+  mockLocalhostWeb3Provider(window);
 }
 
 ReactDOM.render(

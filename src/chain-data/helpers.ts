@@ -1,8 +1,8 @@
 import produce from 'immer';
-import { ethers } from 'ethers';
+import { ethers, providers } from 'ethers';
 import { notifications } from '../components/notifications/notifications';
 import { getDaoAddresses, getEtherscanTransactionUrl } from '../contracts';
-import { initialChainData } from './state';
+import { ChainData, initialChainData } from './state';
 import { go, GO_RESULT_INDEX, isGoSuccess } from '../utils';
 
 export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => void) => {
@@ -20,7 +20,12 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
   // If the user has disconnected
   if (!provider) return initialChainData;
 
-  const goResponse = await go(provider.getSigner().getAddress());
+  const goResponse = await go(async () => {
+    return {
+      allAccounts: await provider.listAccounts(),
+      currentAccount: await provider.getSigner().getAddress(),
+    };
+  });
   // Happens when the user locks his metamask account
   if (!isGoSuccess(goResponse)) return initialChainData;
 
@@ -32,14 +37,17 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
   // message to the user if required and in "connected to" status panel.
   if (networkName === 'unknown') networkName = 'localhost';
 
-  const newData = {
-    userAccount: goResponse[GO_RESULT_INDEX],
+  const networdData: Partial<ChainData> = {
+    provider,
+    userAccount: goResponse[GO_RESULT_INDEX].currentAccount,
+    signer: provider.getSigner(),
+    availableAccounts: goResponse[GO_RESULT_INDEX].allAccounts,
     networkName: networkName,
     chainId: network.chainId,
     contracts: getDaoAddresses(networkName),
   };
 
-  return { ...newData, provider };
+  return networdData;
 };
 
 export const abbrStr = (str: string) => {
@@ -110,4 +118,17 @@ export const displayPendingTransaction = async (
       return;
     }
   }
+};
+
+// Injects a mocked ethers provider set to make RPC calls to node running on localhost
+export const mockLocalhostWeb3Provider = (window: Window) => {
+  const ethersProvider = new providers.JsonRpcProvider('http://localhost:8545');
+
+  // The request `request` function is defined when we use Metamask, so we mock it
+  (ethersProvider as any).request = ({ method, params }: any) => {
+    if (method === 'eth_requestAccounts') method = 'eth_accounts';
+    return ethersProvider.send(method, params);
+  };
+  // Simulate injected metamask metamask provider
+  (window as any).ethereum = ethersProvider;
 };

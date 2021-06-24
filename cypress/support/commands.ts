@@ -73,3 +73,9 @@ Cypress.Commands.add('login', () => {
 Cypress.Commands.add('dataCy', (value) => {
   cy.get(`[data-cy=${value}]`);
 });
+
+Cypress.Commands.add('switchAccount', (index: number) => {
+  cy.dataCy('connected-status').filter(':visible').click();
+  cy.findAllByText('Change account').filter(':visible').click();
+  cy.dataCy('available-accounts').children().eq(index).click();
+});

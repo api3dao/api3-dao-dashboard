@@ -11,33 +11,33 @@ import {
 import { initialChainData } from '../chain-data/state';
 
 export const useApi3Pool = () => {
-  const { provider, contracts } = useChainData();
+  const { provider, contracts, signer } = useChainData();
 
   return useMemo(() => {
-    if (!provider || !contracts) return null;
-    return Api3PoolFactory.connect(contracts.api3Pool, provider.getSigner());
-  }, [provider, contracts]);
+    if (!provider || !contracts || !signer) return null;
+    return Api3PoolFactory.connect(contracts.api3Pool, signer);
+  }, [provider, contracts, signer]);
 };
 
 export const useApi3Token = () => {
-  const { provider, contracts } = useChainData();
+  const { provider, contracts, signer } = useChainData();
 
   return useMemo(() => {
-    if (!provider || !contracts) return null;
-    return Api3TokenFactory.connect(contracts.api3Token, provider.getSigner());
-  }, [provider, contracts]);
+    if (!provider || !contracts || !signer) return null;
+    return Api3TokenFactory.connect(contracts.api3Token, signer);
+  }, [provider, contracts, signer]);
 };
 
 export const useApi3Voting = () => {
-  const { provider, contracts } = useChainData();
+  const { provider, contracts, signer } = useChainData();
 
   return useMemo(() => {
-    if (!provider || !contracts) return null;
+    if (!provider || !contracts || !signer) return null;
     return {
-      primary: Api3VotingFactory.connect(contracts.votingAppPrimary, provider.getSigner()),
-      secondary: Api3VotingFactory.connect(contracts.votingAppSecondary, provider.getSigner()),
+      primary: Api3VotingFactory.connect(contracts.votingAppPrimary, signer),
+      secondary: Api3VotingFactory.connect(contracts.votingAppSecondary, signer),
     };
-  }, [provider, contracts]);
+  }, [provider, contracts, signer]);
 };
 
 export interface Api3Agent {
@@ -58,13 +58,13 @@ export const useApi3AgentAddresses = (): Api3Agent | null => {
 };
 
 export const useConvenience = () => {
-  const { provider, contracts } = useChainData();
+  const { provider, contracts, signer } = useChainData();
 
   return useMemo(() => {
-    if (!provider || !contracts) return null;
+    if (!provider || !contracts || !signer) return null;
 
-    return ConvenienceFactory.connect(contracts.convenience, provider.getSigner());
-  }, [provider, contracts]);
+    return ConvenienceFactory.connect(contracts.convenience, signer);
+  }, [provider, contracts, signer]);
 };
 
 /**
