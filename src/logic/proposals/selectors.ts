@@ -6,7 +6,7 @@ import { BigNumber } from 'ethers';
 
 export type ProposalStatus = 'Passing' | 'Failing' | 'Executed' | 'Execute' | 'Rejected';
 export const voteSliderSelector = (proposal: Proposal) => {
-  const minAcceptanceQuorum = proposal.minAcceptQuorum.toNumber();
+  const minAcceptanceQuorum = proposal.minAcceptQuorum;
   const forPercentage = computePercentage(proposal.yea, proposal.votingPower, true);
   const againstPercentage = computePercentage(proposal.nay, proposal.votingPower, true);
 

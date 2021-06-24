@@ -7,7 +7,7 @@ import { blockTimestampToDate } from '../../../utils';
 import { HUNDRED_PERCENT } from '../../../contracts';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 
-const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT);
+const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNumber();
 
 export const getProposals = async (
   api3Voting: Api3Voting,

@@ -46,8 +46,8 @@ export interface Proposal {
   voterState: VoterState;
   open: boolean;
   executed: boolean;
-  supportRequired: BigNumber;
-  minAcceptQuorum: BigNumber;
+  supportRequired: number;
+  minAcceptQuorum: number;
   yea: BigNumber;
   nay: BigNumber;
   votingPower: BigNumber;

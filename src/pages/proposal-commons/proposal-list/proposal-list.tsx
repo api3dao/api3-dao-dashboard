@@ -34,8 +34,8 @@ const voteIdFormat = (voteId: BigNumber) => {
 const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
   const tooltipContent =
     proposal.type === 'primary'
-      ? 'Primary proposals require an absolute majority to execute.'
-      : 'Secondary proposals need 15% to execute.';
+      ? `Primary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`
+      : `Secondary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`;
 
   return (
     <div
