@@ -4,6 +4,7 @@ import { Proposal, ProposalType, useChainData } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout/layout';
 import { Modal } from '../../../components/modal/modal';
 import VoteSlider from '../vote-slider/vote-slider';
+import VoteStatus from '../vote-status';
 import Timer from '../../../components/timer/timer';
 import Button from '../../../components/button/button';
 import Tag from '../../../components/tag/tag';
@@ -97,6 +98,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
       <ProposalStatus proposal={proposal} large />
       <div className={styles.proposalDetailsVoteSection}>
         <VoteSlider {...voteSliderData} size="large" />
+        <VoteStatus voterState={voteSliderData.voterState} large />
         <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
           Vote
         </Button>

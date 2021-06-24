@@ -3579,9 +3579,9 @@ anymatch@^3.0.3, anymatch@~3.1.1:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-"api3-dao@git+https://github.com/api3dao/api3-dao.git#0bc9ee4a4a29828f4b034e1e03005f5cdb27f9e5":
+"api3-dao@git+https://github.com/api3dao/api3-dao.git#3dc7da19c84f1b8b46fe12668558ebd9fdf2657a":
   version "0.1.0"
-  resolved "git+https://github.com/api3dao/api3-dao.git#0bc9ee4a4a29828f4b034e1e03005f5cdb27f9e5"
+  resolved "git+https://github.com/api3dao/api3-dao.git#3dc7da19c84f1b8b46fe12668558ebd9fdf2657a"
 
 aproba@^1.0.3, aproba@^1.1.1:
   version "1.2.0"

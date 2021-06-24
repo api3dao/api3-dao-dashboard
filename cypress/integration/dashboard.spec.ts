@@ -25,6 +25,18 @@ describe('dashboard', () => {
     cy.createChainSnapshot('user-staked');
   });
 
+  it('can deposit and stake', () => {
+    cy.useChainSnapshot('user-staked');
+
+    cy.findByText('+ Deposit').click();
+    cy.get('input').type('200');
+    cy.findByText('Deposit and stake').click();
+
+    // Assert balances
+    cy.dataCy('balance').should('have.text', '700.0');
+    cy.dataCy('staked').should('have.text', '300.0');
+  });
+
   it('user can unstake', () => {
     cy.useChainSnapshot('user-staked');
 

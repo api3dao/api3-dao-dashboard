@@ -6,7 +6,7 @@ import { BigNumber } from 'ethers';
 
 export type ProposalStatus = 'Passing' | 'Failing' | 'Executed' | 'Execute' | 'Rejected';
 export const voteSliderSelector = (proposal: Proposal) => {
-  const minAcceptanceQuorum = proposal.minAcceptQuorum.toNumber();
+  const minAcceptanceQuorum = proposal.minAcceptQuorum;
   const forPercentage = computePercentage(proposal.yea, proposal.votingPower, true);
   const againstPercentage = computePercentage(proposal.nay, proposal.votingPower, true);
 
@@ -56,8 +56,10 @@ export const openProposalIdsSelector = (proposals: Proposals | null) => {
 };
 
 export const openProposalsSelector = (proposals: Proposals | null) => {
-  const primaryProposals = Object.values(proposals?.primary || {});
-  const secondaryProposals = Object.values(proposals?.secondary || {});
+  if (!proposals) return;
+
+  const primaryProposals = Object.values(proposals.primary);
+  const secondaryProposals = Object.values(proposals.secondary);
 
   return [...primaryProposals, ...secondaryProposals]
     .filter((p) => p.open)
@@ -66,8 +68,10 @@ export const openProposalsSelector = (proposals: Proposals | null) => {
 
 export type OptionalProposalType = ProposalType | null;
 export const historyProposalsSelector = (proposals: Proposals | null, type: OptionalProposalType) => {
-  const primaryProposals = Object.values(proposals?.primary || {});
-  const secondaryProposals = Object.values(proposals?.secondary || {});
+  if (!proposals) return;
+
+  const primaryProposals = Object.values(proposals.primary);
+  const secondaryProposals = Object.values(proposals.secondary);
 
   let allProposals: Proposal[];
   if (type === 'primary') {

@@ -34,6 +34,7 @@ export interface ProposalMetadata {
   description: string;
 }
 
+export const VOTER_STATES = { 0: 'Unvoted', 1: 'Voted For', 2: 'Voted Against' } as const;
 export type VoterState = 0 | 1 | 2; // Absent, Yea, Nay
 export type ProposalType = 'primary' | 'secondary';
 
@@ -45,8 +46,8 @@ export interface Proposal {
   voterState: VoterState;
   open: boolean;
   executed: boolean;
-  supportRequired: BigNumber;
-  minAcceptQuorum: BigNumber;
+  supportRequired: number;
+  minAcceptQuorum: number;
   yea: BigNumber;
   nay: BigNumber;
   votingPower: BigNumber;
@@ -82,7 +83,8 @@ export interface Proposals {
 
 export type TransactionType =
   | 'approve-deposit'
-  | 'deposit'
+  | 'deposit-only'
+  | 'deposit-and-stake'
   | 'stake'
   | 'initiate-unstake'
   | 'unstake'

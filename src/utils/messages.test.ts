@@ -36,10 +36,15 @@ test('transactionMessages', () => {
       success: 'API3 token allowance approved!',
       error: 'API3 token allowance failed',
     },
-    deposit: {
+    'deposit-only': {
       start: 'Depositing API3 tokens...',
       success: 'API3 tokens deposited successfully!',
       error: 'API3 token deposit failed',
+    },
+    'deposit-and-stake': {
+      start: 'Depositing and staking API3 tokens...',
+      success: 'API3 tokens deposited and staked successfully!',
+      error: 'API3 token deposit and stake failed',
     },
     stake: {
       start: 'Staking API3 tokens...',

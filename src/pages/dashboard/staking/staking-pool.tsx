@@ -29,7 +29,7 @@ const StakingPool = () => {
             <p className={styles.stakingAnnualApy}>{currentApyText}</p>
           </div>
           <div className={styles.stakingTableCell}>
-            <p className={globalStyles.secondaryColor}>Annual rewards (APY)</p>
+            <p className={globalStyles.secondaryColor}>Annual Rewards (APY)</p>
           </div>
         </div>
         <div className={styles.stakingTableRow}>
