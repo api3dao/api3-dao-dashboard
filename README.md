@@ -21,7 +21,8 @@ To install dependencies, run `yarn`. This will also compile the DAO contracts an
 3. In a separate terminal, start a development server with `yarn start`
 4. Run `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
 
-_(Optionally, you can just run `yarn start` and connect to testnet directly)_
+_(If connecting to a public testnet like Ropsten or Rinkeby, you can simply run `yarn start` and switch your Metamask
+network)_
 
 > MetaMask doesn't handle localhost development ideally. Particularly, that the chain is reset after on every `yarn eth:node` command. In case you have problems making a transaction, try to [reset the
 > account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
