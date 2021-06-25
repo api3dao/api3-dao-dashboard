@@ -11,16 +11,17 @@ interface ModalProps {
   onClose: () => void;
   hideCloseButton?: true;
   size?: 'small' | 'medium' | 'large';
+  closeOnAccountChange?: false;
 }
 
 export const Modal = (props: ModalProps) => {
-  const { onClose, open, hideCloseButton, children, size = 'medium' } = props;
+  const { onClose, open, hideCloseButton = false, children, size = 'medium', closeOnAccountChange = true } = props;
 
   // It's possible for the user to have a "permissioned" modal open while on one account,
   // then switch to another account that does not have the same permissions. As a blanket
   // fix, close any open modals when the selected account changes.
   useOnAccountOrNetworkChange(() => {
-    if (open) onClose();
+    if (open && closeOnAccountChange) onClose();
   });
 
   if (!open) return null;
