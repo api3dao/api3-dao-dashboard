@@ -14,7 +14,6 @@ import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/us
 import {
   openProposalsSelector,
   canCreateNewProposalSelector,
-  genesisEpochOverSelector,
   votingPowerThresholdSelector,
 } from '../../logic/proposals/selectors';
 import Delegation from './delegation';
