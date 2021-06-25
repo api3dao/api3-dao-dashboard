@@ -86,18 +86,23 @@ export const historyProposalsSelector = (proposals: Proposals | null, type: Opti
 };
 
 export const delegationCooldownOverSelector = (delegation: Delegation | null) => {
-  // Make the buttons disabled until delegation is loaded
   if (!delegation) return false;
 
   const now = new Date();
   return isAfter(now, addSeconds(delegation.lastDelegationUpdateTimestamp, EPOCH_LENGTH));
 };
 
+export const proposalCooldownOverSelector = (delegation: Delegation | null) => {
+  if (!delegation) return false;
+
+  const now = new Date();
+  return isAfter(now, addSeconds(delegation.lastProposalTimestamp, EPOCH_LENGTH));
+};
+
 export const canCreateNewProposalSelector = (delegation: Delegation | null, dashboardState: DashboardState | null) => {
   if (!delegation || !dashboardState) return;
 
-  const now = new Date();
-  const epochOver = isAfter(now, addSeconds(delegation.lastProposalTimestamp, EPOCH_LENGTH));
+  const epochOver = proposalCooldownOverSelector(delegation);
   const hasEnoughVotingPower = delegation.userVotingPower.gte(
     dashboardState.totalShares.mul(delegation.proposalVotingPowerThreshold).div(HUNDRED_PERCENT)
   );

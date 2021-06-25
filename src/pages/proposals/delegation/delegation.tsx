@@ -5,7 +5,7 @@ import globalStyles from '../../../styles/global-styles.module.scss';
 import { useChainData } from '../../../chain-data';
 import Button from '../../../components/button/button';
 import { Modal } from '../../../components/modal/modal';
-import { delegationCooldownOverSelector } from '../../../logic/proposals/selectors';
+import { delegationCooldownOverSelector, proposalCooldownOverSelector } from '../../../logic/proposals/selectors';
 import ChooseDelegateAction from '../forms/choose-delegate-action/choose-delegate-action';
 import { useApi3Pool } from '../../../contracts';
 import { go, isUserRejection } from '../../../utils';
@@ -27,24 +27,28 @@ const Delegation = () => {
 
   // TODO: Merge into bigger selector
   const delegationCooldownOver = delegationCooldownOverSelector(delegation);
-  const canDelegate = delegationCooldownOver && (dashboardState?.userStaked.gt(0) ?? false);
+  const hasStakedTokens = dashboardState?.userStaked.gt(0) ?? false
+  const proposalCooldownOver = proposalCooldownOverSelector(delegation);
+
+  const canDelegate = delegationCooldownOver && hasStakedTokens;
   const canUndelegate = delegationCooldownOver;
 
   // TODO: how are these checked values calculated?
   const delegateChecklistItems = [
     {
-      alt: 'Undelegate cooldown',
-      checked: delegationCooldownOver,
-      label: 'You undelegated your last delegation more than 7 days ago.',
+      checked: hasStakedTokens,
+      label: "You have staked API3 tokens",
     },
     {
-      alt: 'Voted cooldown',
       checked: delegationCooldownOver,
+      label: "You haven't updated delegation in the last 7 days",
+    },
+    {
+      checked: true,
       label: "You haven't voted in the last 7 days.",
     },
     {
-      alt: 'Initiated proposal cooldown',
-      checked: delegationCooldownOver,
+      checked: proposalCooldownOver,
       label: "You haven't made any proposals within the last 7 days.",
     },
   ];

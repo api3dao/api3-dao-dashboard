@@ -6,7 +6,6 @@ import styles from './tooltip.module.scss';
 interface Props {
   children: ReactElement;
   items: {
-    alt: string;
     checked: boolean;
     label: string;
   }[];
@@ -17,7 +16,10 @@ const TooltipChecklist = ({ children, items }: Props) => {
     <div className={styles.tooltipChecklist}>
       {items.map((item, i) => (
         <div key={i} className={styles.tooltipItem}>
-          <img src={item.checked ? images.checkboxFilled : images.checkboxEmpty} alt={item.alt} />
+          <img
+            src={item.checked ? images.checkboxFilled : images.checkboxEmpty}
+            alt={item.checked ? 'checked' : 'unchecked'}
+          />
           <span>{item.label}</span>
         </div>
       ))}

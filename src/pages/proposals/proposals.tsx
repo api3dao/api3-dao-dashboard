@@ -39,18 +39,16 @@ const Proposals = () => {
 
   const sortedProposals = openProposalsSelector(proposals);
   const createNewProposal = canCreateNewProposalSelector(delegation, dashboardState);
-  const powerThresholdPercent = formatApi3(votingPowerThresholdSelector(delegation));
+  const votingThresholdPercent = votingPowerThresholdSelector(delegation);
 
   const newProposalChecklist = [
     {
-      alt: 'Voted cooldown',
       checked: createNewProposal?.epochOver ?? false,
       label: "You haven't voted in the last 7 days.",
     },
     {
-      alt: 'Sufficient voting power',
       checked: createNewProposal?.hasEnoughVotingPower ?? false,
-      label: `You need at least ${powerThresholdPercent}% of the total vote representation to post a proposal.`,
+      label: `You need at least ${formatApi3(votingThresholdPercent)}% of the total vote representation to post a proposal.`,
     },
   ];
 
