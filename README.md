@@ -2,9 +2,14 @@
 
 The implementation of the DAO dashboard.
 
-## Instructions for testing on Ropsten
+## Instructions for testing on Rinkeby
 
-Follow [these instructions](https://docs.google.com/document/d/1nBjlOYGGs2TVQC9LsYBH4uR4wYS-pLlBLFV3NXP9qQc).
+1. Install Metamask (https://metamask.io/download)
+2. Create a wallet, connect to the Rinkeby network
+3. Get some Rinkeby ETH from https://faucet.rinkeby.io/
+4. Go to the API3 token faucet at https://rinkeby.etherscan.io/address/0xd8eC2c4158a0Cb65Dd42E2d1C1da8EA11975Ba22#writeContract
+5. Click “Connect to Web3”
+6. Click “4. withdraw” and Write. Make the transaction. Each time you do this you will receive 1000 API3.
 
 ## Development instructions
 
@@ -16,14 +21,15 @@ To install dependencies, run `yarn`. This will also compile the DAO contracts an
 3. In a separate terminal, start a development server with `yarn start`
 4. Run `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
 
-_(Optionally, you can just run `yarn start` and connect to ropsten directly)_
+_(If connecting to a public testnet like Ropsten or Rinkeby, you can simply run `yarn start` and switch your Metamask
+network)_
 
 > MetaMask doesn't handle localhost development ideally. Particularly, that the chain is reset after on every `yarn eth:node` command. In case you have problems making a transaction, try to [reset the
 > account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
 
 ### Contract deployments
 
-Currently supported networks are `localhost` and `ropsten` _(the `mainnet` network will be supported a bit later)_.
+Currently supported networks are `localhost` and `rinkeby` _(the `mainnet` network will be supported a bit later)_.
 
 Unfortunately, aragon DAO contracts are not deployed easily. The easiest solution is to compile [using the script
 created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js).
@@ -126,7 +132,7 @@ services:
     working_dir: /workspace/build
     environment:
       - REACT_APP_NODE_ENV=staging
-      - REACT_APP_ROPSTEN_PROVIDER_URL=https://ropsten.infura.io/v3/...
+      - REACT_APP_RINKEBY_PROVIDER_URL=https://rinkeby.infura.io/v3/...
     volumes:
       - './:/workspace'
 ```

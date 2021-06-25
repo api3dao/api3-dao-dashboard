@@ -8,8 +8,8 @@ dotenv.config({ path: '../.env' });
 // Invalid default values, just to silence hardhat configuration checks.
 // (They throw on invalid network configuration - but not everyone needs to care about these)
 const DEFAULT_VALUES = {
-  ROPSTEN_DEPLOYER_PRIVATE_KEY: '3a9dc87d9c854849084cb47aa4f2471b9530e0f09a2b3fb3066b1a242ddef185',
-  ROPSTEN_PROVIDER_URL: 'https://www.google.com/',
+  RINKEBY_DEPLOYER_PRIVATE_KEY: '3a9dc87d9c854849084cb47aa4f2471b9530e0f09a2b3fb3066b1a242ddef185',
+  RINKEBY_PROVIDER_URL: 'https://www.google.com/',
 };
 
 const fromEnvVariables = (key: string) => {
@@ -64,9 +64,9 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {},
     // NOTE: Non local networks are only needed for hardhat tasks
-    ropsten: {
-      url: fromEnvVariables('ROPSTEN_PROVIDER_URL'),
-      accounts: [fromEnvVariables('ROPSTEN_DEPLOYER_PRIVATE_KEY')],
+    rinkeby: {
+      url: fromEnvVariables('RINKEBY_PROVIDER_URL'),
+      accounts: [fromEnvVariables('RINKEBY_DEPLOYER_PRIVATE_KEY')],
     },
   },
   paths: {
