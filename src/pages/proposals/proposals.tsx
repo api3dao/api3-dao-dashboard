@@ -64,6 +64,7 @@ const Proposals = () => {
     },
   ];
 
+  // The button should always be in sync with the checklist
   const canCreateNewProposal = newProposalChecklistItems.every((item) => item.checked);
 
   const onCreateProposal = async (formData: NewProposalFormData) => {

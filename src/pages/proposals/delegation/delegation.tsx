@@ -45,7 +45,7 @@ const Delegation = () => {
     },
   ];
 
-  // The list of checklist items should always be in sync with the button
+  // The button should always be in sync with the checklist
   const canDelegate = delegateChecklistItems.every((item) => item.checked);
   const canUndelegate = delegationCooldownOver;
 
