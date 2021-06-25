@@ -27,12 +27,14 @@ export const voteSliderSelector = (proposal: Proposal) => {
     }
   };
 
-  const voterState = proposal.delegateAt ? proposal.delegateState : proposal.voterState;
+  const wasDelegated = proposal.delegateAt !== null;
+  const voterState = wasDelegated ? proposal.delegateState : proposal.voterState;
 
   return {
     minAcceptanceQuorum,
     forPercentage,
     againstPercentage,
+    wasDelegated,
     voterState,
     proposalStatus: computeProposalStatus(),
     open: proposal.open,

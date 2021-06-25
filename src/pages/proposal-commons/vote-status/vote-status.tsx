@@ -1,17 +1,24 @@
 import classNames from 'classnames';
 import styles from './vote-status.module.scss';
+import globalStyles from './../../../styles/global-styles.module.scss';
 import { VOTER_STATES } from '../../../chain-data';
 
 interface Props {
   voterState: keyof typeof VOTER_STATES;
+  wasDelegated: boolean;
   large?: true;
 }
 
+export const formatVoteStatus = (voterState: keyof typeof VOTER_STATES, wasDelegated: boolean) => {
+  if (VOTER_STATES[voterState] === 'Unvoted') return 'Unvoted';
+  return [VOTER_STATES[voterState], wasDelegated && '(by delegate)'].filter(Boolean).join(' ');
+};
+
 const VoteStatus = (props: Props) => {
-  const { voterState, large } = props;
+  const { voterState, wasDelegated, large } = props;
 
   return (
-    <div className={classNames({ [styles.wrapperLarge]: large })}>
+    <div className={classNames({ [styles.wrapperLarge]: large }, globalStyles.textCenter)}>
       {large && VOTER_STATES[voterState] !== 'Unvoted' && (
         <img
           className={styles.icon}
@@ -26,7 +33,7 @@ const VoteStatus = (props: Props) => {
           [styles.votedFor]: VOTER_STATES[voterState] === 'Voted For',
         })}
       >
-        {VOTER_STATES[voterState]}
+        {formatVoteStatus(voterState, wasDelegated)}
       </span>
     </div>
   );

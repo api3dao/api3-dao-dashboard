@@ -77,7 +77,6 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   }
 
   const voteSliderData = voteSliderSelector(proposal);
-  const voterState = voteSliderData.voterState;
   const canVote = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
   const urlTargetAddress = getEtherscanAddressUrl(chainId, evmScriptData.targetAddress);
@@ -99,18 +98,17 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
       <ProposalStatus proposal={proposal} large />
       <div className={styles.proposalDetailsVoteSection}>
         <VoteSlider {...voteSliderData} size="large" />
-        <VoteStatus voterState={voterState} large />
+        <VoteStatus voterState={voteSliderData.voterState} wasDelegated={voteSliderData.wasDelegated} large />
         <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
           Vote
         </Button>
         {proposal.delegateAt && (
           <p className={styles.voteButtonHelperText}>
-            {VOTER_STATES[voterState] === 'Unvoted'
+            {VOTER_STATES[voteSliderData.voterState] === 'Unvoted'
               ? 'Your voting power is delegated.'
               : 'Your delegate voted for you.'}
           </p>
         )}
-        <div></div>
         <Modal open={voteModalOpen} onClose={() => setVoteModalOpen(false)}>
           <VoteForm
             voteId={proposal.voteId.toString()}
