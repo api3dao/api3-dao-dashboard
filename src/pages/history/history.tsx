@@ -67,7 +67,7 @@ const History = () => {
             </div>
           </div>
         }
-        content={<ProposalList proposals={proposalsToShow} />}
+        content={<ProposalList proposals={proposalsToShow} type="past" />}
         noMobileBorders
       />
     </BaseLayout>
