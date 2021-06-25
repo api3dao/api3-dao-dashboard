@@ -100,7 +100,9 @@ export type TransactionType =
   | 'new-vote'
   | 'vote-for'
   | 'vote-against'
-  | 'execute';
+  | 'execute'
+  | 'update-timelock-status'
+  | 'withdraw-to-pool';
 
 export interface ChainData {
   // TODO: move the following fields to a separate interface called GenericChainData

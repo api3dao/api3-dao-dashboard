@@ -107,4 +107,14 @@ export const transactionMessages: { [key in TransactionType]: PendingTransaction
     success: 'Successfully executed proposal!',
     error: 'Proposal execution failed',
   },
+  'update-timelock-status': {
+    start: 'Updating timelock status...',
+    success: 'Successfully updated timelock status!',
+    error: 'Timelock update failed',
+  },
+  'withdraw-to-pool': {
+    start: 'Withdrawing to pool...',
+    success: 'Successfully withdrawn to pool!',
+    error: 'Withdrawal to pool failed',
+  },
 };
