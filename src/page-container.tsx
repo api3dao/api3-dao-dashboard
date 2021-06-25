@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/react';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
-import { images, preloadImageList } from '../utils';
-import { useTransactionNotifications } from '../contracts';
+import { images, preloadImageList } from './utils';
+import { useTransactionNotifications } from './contracts';
 
 interface Props {
   children: JSX.Element;
