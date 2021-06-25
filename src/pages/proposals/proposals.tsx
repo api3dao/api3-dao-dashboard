@@ -80,7 +80,7 @@ const Proposals = () => {
             </Button>
           </Header>
         }
-        content={<ProposalList proposals={sortedProposals} />}
+        content={<ProposalList proposals={sortedProposals} type="active" />}
         noMobileBorders
       />
       <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)} size="large">

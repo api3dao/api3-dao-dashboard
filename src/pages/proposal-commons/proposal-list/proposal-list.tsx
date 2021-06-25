@@ -20,6 +20,7 @@ interface Props {
   // Proposals should be sorted by priority (the topmost proposal in the list has index 0). Or undefined if user is not
   // logged in.
   proposals: Proposal[] | undefined;
+  type: 'active' | 'past';
 }
 
 interface ProposalProps {
@@ -58,7 +59,7 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
 };
 
 const ProposalList = (props: Props) => {
-  const { proposals } = props;
+  const { proposals, type } = props;
   const { setChainData } = useChainData();
 
   return (
@@ -71,7 +72,7 @@ const ProposalList = (props: Props) => {
           </Button>
         </div>
       )}
-      {proposals?.length === 0 && <p className={styles.noProposals}>There are no active proposals</p>}
+      {proposals?.length === 0 && <p className={styles.noProposals}>There are no {type} proposals</p>}
       {proposals?.map((p) => {
         const votingSliderData = voteSliderSelector(p);
         const navlink = {
