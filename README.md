@@ -7,8 +7,7 @@ The implementation of the DAO dashboard.
 1. Install Metamask (https://metamask.io/download)
 2. Create a wallet, connect to the Rinkeby network
 3. Get some Rinkeby ETH from https://faucet.rinkeby.io/
-4. Go to the API3 token faucet
-   (TODO: link)
+4. Go to the API3 token faucet at https://rinkeby.etherscan.io/address/0xd8eC2c4158a0Cb65Dd42E2d1C1da8EA11975Ba22#writeContract
 5. Click “Connect to Web3”
 6. Click “4. withdraw” and Write. Make the transaction. Each time you do this you will receive 1000 API3.
 
