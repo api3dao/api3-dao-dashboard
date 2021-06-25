@@ -25,6 +25,7 @@ test('messages', () => {
     REDELEGATION_IS_FORBIDDEN: expect.anything(), // REDELEGATION_IS_FORBIDDEN is a function
 
     FAILED_TO_LOAD_PROPOSALS: 'Unable to load proposals',
+    FAILED_TO_LOAD_GENESIS_EPOCH: 'Unable to load the current epoch',
     INVALID_PROPOSAL_FORMAT: 'This proposal was not created through the DAO dashboard and cannot to be displayed',
   });
 });
