@@ -9,6 +9,7 @@ import {
   HUNDRED_PERCENT,
   totalStakedPercentage,
   min,
+  max,
 } from './helpers';
 
 const createPercentage = (numerator: number, denominator: number) => HUNDRED_PERCENT.mul(numerator).div(denominator);
@@ -81,4 +82,12 @@ test('min', () => {
   const c = BigNumber.from(300);
   expect(min(b, a, c).toString()).toBe('100');
   expect(min(c, b).toString()).toBe('200');
+});
+
+test('max', () => {
+  const a = BigNumber.from(100);
+  const b = BigNumber.from(200);
+  const c = BigNumber.from(300);
+  expect(max(b, a, c).toString()).toBe('300');
+  expect(max(a, b).toString()).toBe('200');
 });
