@@ -104,7 +104,7 @@ export const canCreateNewProposalSelector = (
   dashboardState: DashboardState | null,
   isGenesisEpoch: boolean | null
 ) => {
-  if (!delegation || !dashboardState || isGenesisEpoch === null) return;
+  if (!delegation || !dashboardState) return;
 
   const genesisEpochOver = genesisEpochOverSelector(isGenesisEpoch);
 
