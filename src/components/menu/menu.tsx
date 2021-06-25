@@ -14,18 +14,14 @@ const DesktopMenu = () => {
   const { pathname } = useLocation();
   return (
     <div className={styles.menu} data-cy="desktop-menu">
-      <NavLink
-        activeClassName={styles.menuActiveItem}
-        to="/dashboard"
-        isActive={() => ['/', '/dashboard', '/dashboard/'].includes(pathname)}
-      >
+      <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
           <DashboardIcon />
           <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Staking</p>
         </div>
       </NavLink>
-      <NavLink activeClassName={styles.menuActiveItem} to="/proposals">
+      <NavLink activeClassName={styles.menuActiveItem} to="/governance">
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
           <ProposalsIcon />
@@ -61,17 +57,13 @@ const MobileMenu = () => {
         </div>
         <div className={styles.mobileMenuScrollWrap}>
           <div className={styles.mobileMenuContent}>
-            <NavLink
-              activeClassName={styles.menuActiveItem}
-              to="/dashboard"
-              isActive={() => ['/', '/dashboard', '/dashboard/'].includes(pathname)}
-            >
+            <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
               <div className={styles.menuMobileItem}>
                 <DashboardIcon />
                 <p className={styles.menuMobileItemText}>Staking</p>
               </div>
             </NavLink>
-            <NavLink activeClassName={styles.menuActiveItem} to="/proposals">
+            <NavLink activeClassName={styles.menuActiveItem} to="/governance">
               <div className={styles.menuMobileItem}>
                 <ProposalsIcon />
                 <p className={styles.menuMobileItemText}>Governance</p>
