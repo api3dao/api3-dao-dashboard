@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { ProposalType, updateImmutablyCurried, useChainData, VoterState } from '../../../chain-data';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
-import { isGoSuccess, go, GO_RESULT_INDEX } from '../../../utils';
+import { isGoSuccess, go, GO_RESULT_INDEX, GO_ERROR_INDEX } from '../../../utils';
 import { getProposals } from './get-proposals';
 import { BigNumber } from 'ethers';
 import { notifications } from '../../../components/notifications/notifications';
@@ -39,7 +39,10 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
 
     const goStartVoteFilters = await go(votingApp.queryFilter(startVoteFilter));
     if (!isGoSuccess(goStartVoteFilters)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
+      notifications.error({
+        message: messages.FAILED_TO_LOAD_PROPOSALS,
+        errorOrMessage: goStartVoteFilters[GO_ERROR_INDEX],
+      });
       return;
     }
     // There will only be one StartEvent response for the given filter
@@ -53,14 +56,20 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
 
     const goOpenVoteIds = await go(convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
     if (!isGoSuccess(goOpenVoteIds)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
+      notifications.error({
+        message: messages.FAILED_TO_LOAD_PROPOSALS,
+        errorOrMessage: goOpenVoteIds[GO_ERROR_INDEX],
+      });
       return;
     }
     const openVoteIds = goOpenVoteIds[GO_RESULT_INDEX];
 
     const goLoadProposal = await go(getProposals(votingApp, convenience, userAccount, [startVote], openVoteIds, type));
     if (!isGoSuccess(goLoadProposal)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
+      notifications.error({
+        message: messages.FAILED_TO_LOAD_PROPOSALS,
+        errorOrMessage: goLoadProposal[GO_ERROR_INDEX],
+      });
       return;
     }
     const loadedProposals = goLoadProposal[GO_RESULT_INDEX];
@@ -84,7 +93,7 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
 
     const goVotingData = await go(convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, [id]));
     if (!isGoSuccess(goVotingData)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS });
+      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: goVotingData[GO_ERROR_INDEX] });
       return;
     }
     const rawVotingData = goVotingData[GO_RESULT_INDEX];

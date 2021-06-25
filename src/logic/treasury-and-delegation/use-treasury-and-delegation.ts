@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Treasury, useChainData } from '../../chain-data';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../contracts/hooks';
-import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, assertGoSuccess } from '../../utils';
+import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, assertGoSuccess, GO_ERROR_INDEX } from '../../utils';
 import { isZeroAddress } from '../../contracts';
 import * as notifications from '../../components/notifications/notifications';
 import { messages } from '../../utils/messages';
@@ -46,7 +46,10 @@ export const useTreasuryAndDelegation = () => {
 
     const goResponse = await go(loadTreasuryAndDelegation);
     if (!isGoSuccess(goResponse)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_TREASURY_AND_DELEGATION });
+      notifications.error({
+        message: messages.FAILED_TO_LOAD_TREASURY_AND_DELEGATION,
+        errorOrMessage: goResponse[GO_ERROR_INDEX],
+      });
       return;
     }
 

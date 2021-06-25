@@ -114,7 +114,7 @@ export const connectWallet = (setChainData: SettableChainData['setChainData']) =
   const externalProvider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
   const [networkDataError, data] = await go(getNetworkData(externalProvider));
   if (networkDataError) {
-    notifications.error({ message: messages.FAILED_TO_LOAD_CHAIN_DATA });
+    notifications.error({ message: messages.FAILED_TO_LOAD_CHAIN_DATA, errorOrMessage: networkDataError });
     return;
   }
 

@@ -15,13 +15,13 @@ export const useLoadDashboardData = () => {
 
     const [stakingDataErr, stakingData] = await go(convenience.getUserStakingData(userAccount));
     if (stakingDataErr || !stakingData) {
-      notifications.error({ message: messages.LOAD_DASHBOARD_ERROR });
+      notifications.error({ message: messages.LOAD_DASHBOARD_ERROR, errorOrMessage: stakingDataErr! });
       return;
     }
 
     const [allowanceErr, allowance] = await go(api3Token.allowance(userAccount, api3Pool.address));
     if (allowanceErr || !allowance) {
-      notifications.error({ message: messages.LOAD_DASHBOARD_ERROR });
+      notifications.error({ message: messages.LOAD_DASHBOARD_ERROR, errorOrMessage: allowanceErr! });
       return;
     }
 
