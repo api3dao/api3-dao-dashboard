@@ -7,7 +7,7 @@ import { useApi3Pool } from '../../../../contracts';
 import globalStyles from '../../../../styles/global-styles.module.scss';
 import styles from './delegate.module.scss';
 import { utils, constants } from 'ethers';
-import { go, GO_RESULT_INDEX, isGoSuccess, isUserRejection } from '../../../../utils';
+import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, isGoSuccess, isUserRejection } from '../../../../utils';
 import * as notifications from '../../../../components/notifications/notifications';
 import { messages } from '../../../../utils/messages';
 
@@ -39,7 +39,7 @@ const DelegateVotesForm = (props: Props) => {
 
     const goDelegate = await go(api3Pool.userDelegate(delegationAddress));
     if (!isGoSuccess(goDelegate)) {
-      notifications.error({ message: messages.UNABLE_TO_LOAD_DELEGATE });
+      notifications.error({ message: messages.UNABLE_TO_LOAD_DELEGATE, errorOrMessage: goDelegate[GO_ERROR_INDEX] });
       return;
     }
 
@@ -55,7 +55,7 @@ const DelegateVotesForm = (props: Props) => {
         notifications.info({ message: messages.TX_GENERIC_REJECTED });
         return;
       }
-      notifications.error({ message: messages.TX_GENERIC_ERROR });
+      notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: error });
     }
 
     if (tx) {

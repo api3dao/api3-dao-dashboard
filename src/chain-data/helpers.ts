@@ -92,7 +92,7 @@ export const displayPendingTransaction = async (
 
       // A receipt with status 0 means the transaction failed
       if (ethersError.receipt?.status === 0) {
-        notifications.error({ url, message: messages.error });
+        notifications.error({ url, message: messages.error, errorOrMessage: messages.error });
         return;
       }
     }
@@ -101,7 +101,7 @@ export const displayPendingTransaction = async (
   if (receipt) {
     // A receipt with status 0 means the transaction failed and 1 indicates success
     if (receipt.status === 0) {
-      notifications.error({ url, message: messages.error });
+      notifications.error({ url, message: messages.error, errorOrMessage: messages.error });
       return;
     }
 

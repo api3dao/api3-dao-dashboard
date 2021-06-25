@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './react-toastify-overrides.scss';
 // Use these classes to style content
 import styles from './notifications.module.scss';
+import * as Sentry from '@sentry/browser';
 
 const THROTTLE_MS = 500;
 
@@ -25,6 +26,11 @@ interface ToastProps {
   title?: string;
   message: string;
   url?: string;
+}
+
+interface ErrorToastProps extends ToastProps {
+  errorOrMessage: Error | string;
+  skipSentry?: boolean;
 }
 
 interface ToastPropsWithType extends ToastProps {
@@ -82,8 +88,19 @@ export const warning = throttle(
 );
 
 export const error = throttle(
-  (props: ToastProps, overrides?: ToastOptions) => {
-    return toast.info(<CustomToast {...props} type="error" />, { ...BASE_OPTIONS, ...overrides });
+  (props: ErrorToastProps, overrides?: ToastOptions) => {
+    const { skipSentry = false, errorOrMessage, ...other } = props;
+    if (!skipSentry) {
+      if (typeof errorOrMessage === 'string') Sentry.captureMessage(errorOrMessage);
+      else Sentry.captureException(errorOrMessage);
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      // Prefixing the error message with ad-hoc string for better backwards search
+      console.error('[DEV: Caught error]:', errorOrMessage);
+    }
+
+    return toast.info(<CustomToast {...other} type="error" />, { ...BASE_OPTIONS, ...overrides });
   },
   THROTTLE_MS,
   { trailing: false }
