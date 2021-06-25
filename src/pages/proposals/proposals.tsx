@@ -6,7 +6,7 @@ import BorderedBox, { Header } from '../../components/bordered-box/bordered-box'
 import TooltipChecklist from '../../components/tooltip/tooltip-checklist';
 import Treasury from '../proposal-commons/treasury/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
-import { useActiveProposals } from '../../logic/proposals/hooks';
+import { useActiveProposals, useLoadGenesisEpoch } from '../../logic/proposals/hooks';
 import { encodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from '../proposal-commons/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
@@ -14,6 +14,7 @@ import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/us
 import {
   openProposalsSelector,
   canCreateNewProposalSelector,
+  genesisEpochOverSelector,
   votingPowerThresholdSelector,
 } from '../../logic/proposals/selectors';
 import Delegation from './delegation';
@@ -25,7 +26,8 @@ import styles from './proposals.module.scss';
 
 const Proposals = () => {
   // TODO: Retrieve only "userVotingPower" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
-  const { proposals, delegation, dashboardState, transactions, setChainData } = useChainData();
+  const chainData = useChainData();
+  const { proposals, delegation, dashboardState, transactions, setChainData } = chainData;
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
   const api3Agent = useApi3AgentAddresses();
@@ -33,24 +35,36 @@ const Proposals = () => {
   const [openNewProposalModal, setOpenNewProposalModal] = useState(false);
 
   useLoadDashboardData();
+  useLoadGenesisEpoch();
 
   useActiveProposals();
   useTreasuryAndDelegation();
 
   const sortedProposals = openProposalsSelector(proposals);
+  const isGenesisEpochOver = genesisEpochOverSelector(chainData);
   const createNewProposal = canCreateNewProposalSelector(delegation, dashboardState);
   const votingThresholdPercent = votingPowerThresholdSelector(delegation);
 
-  const newProposalChecklist = [
+  const newProposalChecklistItems = [
     {
-      checked: createNewProposal?.epochOver ?? false,
+      checked: createNewProposal?.lastProposalEpochOver ?? false,
       label: "You haven't voted in the last 7 days.",
     },
     {
       checked: createNewProposal?.hasEnoughVotingPower ?? false,
-      label: `You need at least ${formatApi3(votingThresholdPercent)}% of the total vote representation to post a proposal.`,
+      label: votingThresholdPercent
+        ? `You need at least ${formatApi3(
+            votingThresholdPercent
+          )}% of the total vote representation to post a proposal.`
+        : 'You need to have enough voting power.',
+    },
+    {
+      checked: isGenesisEpochOver,
+      label: 'The genesis epoch has completed.',
     },
   ];
+
+  const canCreateNewProposal = newProposalChecklistItems.every((item) => item.checked);
 
   const onCreateProposal = async (formData: NewProposalFormData) => {
     if (!api3Token || !api3Voting || !api3Agent) return null;
@@ -93,14 +107,10 @@ const Proposals = () => {
           <Header>
             <h5>Proposals</h5>
             <div>
-              <Button
-                onClick={() => setOpenNewProposalModal(true)}
-                size="large"
-                disabled={!createNewProposal?.canCreateNewProposal}
-              >
+              <Button onClick={() => setOpenNewProposalModal(true)} size="large" disabled={!canCreateNewProposal}>
                 + New proposal
               </Button>
-              <TooltipChecklist items={newProposalChecklist}>
+              <TooltipChecklist items={newProposalChecklistItems}>
                 <img src={images.help} alt="new proposal help" className={styles.help} />
               </TooltipChecklist>
             </div>

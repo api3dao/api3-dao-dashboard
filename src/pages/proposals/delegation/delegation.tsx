@@ -27,31 +27,27 @@ const Delegation = () => {
 
   // TODO: Merge into bigger selector
   const delegationCooldownOver = delegationCooldownOverSelector(delegation);
-  const hasStakedTokens = dashboardState?.userStaked.gt(0) ?? false
+  const hasStakedTokens = dashboardState?.userStaked.gt(0) ?? false;
   const proposalCooldownOver = proposalCooldownOverSelector(delegation);
 
-  const canDelegate = delegationCooldownOver && hasStakedTokens;
-  const canUndelegate = delegationCooldownOver;
-
-  // TODO: how are these checked values calculated?
   const delegateChecklistItems = [
     {
       checked: hasStakedTokens,
-      label: "You have staked API3 tokens",
+      label: 'You have staked API3 tokens',
     },
     {
       checked: delegationCooldownOver,
       label: "You haven't updated delegation in the last 7 days",
     },
     {
-      checked: true,
-      label: "You haven't voted in the last 7 days.",
-    },
-    {
       checked: proposalCooldownOver,
       label: "You haven't made any proposals within the last 7 days.",
     },
   ];
+
+  // The list of checklist items should always be in sync with the button
+  const canDelegate = delegateChecklistItems.every((item) => item.checked);
+  const canUndelegate = delegationCooldownOver;
 
   return (
     <>

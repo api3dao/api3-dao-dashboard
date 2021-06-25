@@ -1,4 +1,4 @@
-import { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '../../chain-data';
+import { ChainData, DashboardState, Delegation, Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage, EPOCH_LENGTH } from '../../contracts';
 import { addSeconds, isAfter } from 'date-fns';
 import { HUNDRED_PERCENT } from '../../contracts';
@@ -102,22 +102,24 @@ export const proposalCooldownOverSelector = (delegation: Delegation | null) => {
 export const canCreateNewProposalSelector = (delegation: Delegation | null, dashboardState: DashboardState | null) => {
   if (!delegation || !dashboardState) return;
 
-  const epochOver = proposalCooldownOverSelector(delegation);
+  const lastProposalEpochOver = proposalCooldownOverSelector(delegation);
   const hasEnoughVotingPower = delegation.userVotingPower.gte(
     dashboardState.totalShares.mul(delegation.proposalVotingPowerThreshold).div(HUNDRED_PERCENT)
   );
 
-  const canCreateNewProposal = epochOver && hasEnoughVotingPower;
-  return { epochOver, hasEnoughVotingPower, canCreateNewProposal };
+  return { lastProposalEpochOver, hasEnoughVotingPower };
+};
+
+export const genesisEpochOverSelector = (chainData: ChainData) => {
+  if (chainData.isGenesisEpoch === null) return false;
+  return !chainData.isGenesisEpoch;
 };
 
 export const canVoteSelector = (proposal: Proposal) => {
   return proposal.open && proposal.userVotingPowerAt.gt(0);
 };
 
-// Default to 0.1% of the voting power, although the DAO might vote to change this later
-const DEFAULT_VOTING_POWER_THRESHOLD = BigNumber.from(10).pow(17);
-
-export const votingPowerThresholdSelector = (delegation: Delegation | null): BigNumber => {
-  return delegation?.proposalVotingPowerThreshold.mul(100) ?? DEFAULT_VOTING_POWER_THRESHOLD;
+export const votingPowerThresholdSelector = (delegation: Delegation | null) => {
+  if (!delegation) return null;
+  return delegation.proposalVotingPowerThreshold.mul(100);
 };
