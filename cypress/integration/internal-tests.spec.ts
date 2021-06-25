@@ -1,4 +1,4 @@
-import { abbrStr, ethersProvider } from '../support/common';
+import { abbrStr, ACCOUNTS, ethersProvider } from '../support/common';
 
 it('snapshots reverts are destructive (later snapshots are destroyed)', async () => {
   const s1 = await ethersProvider.send('evm_snapshot', []);
@@ -31,9 +31,7 @@ it('multiple login command work without errors', () => {
 it('can switch account', () => {
   cy.login();
 
-  cy.wrap(ethersProvider.listAccounts()).then((accounts: any) => {
-    cy.dataCy('account').filter(':visible').should('have.text', abbrStr(accounts[0]));
-    cy.switchAccount(2);
-    cy.dataCy('account').filter(':visible').should('have.text', abbrStr(accounts[2]));
-  });
+  cy.dataCy('account').filter(':visible').should('have.text', abbrStr(ACCOUNTS[0]));
+  cy.switchAccount(2);
+  cy.dataCy('account').filter(':visible').should('have.text', abbrStr(ACCOUNTS[2]));
 });
