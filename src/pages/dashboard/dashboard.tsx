@@ -110,7 +110,7 @@ const Dashboard = () => {
                 <div className={globalStyles.textCenter}>
                   <p className={styles.borderedBoxContentTitle}>unstaked</p>
                   <p className={globalStyles.textXLarge} data-cy="unstaked">
-                    {tokenBalances ? formatAndRoundApi3(tokenBalances.withdrawable) : UNKNOWN_NUMBER}
+                    {data ? formatAndRoundApi3(data.userUnstaked) : UNKNOWN_NUMBER}
                   </p>
                 </div>
               </>
