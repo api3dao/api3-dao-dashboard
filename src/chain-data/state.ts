@@ -44,6 +44,8 @@ export interface Proposal {
   metadata: ProposalMetadata;
   startDate: Date;
   voterState: VoterState;
+  delegateAt: string | null;
+  delegateState: VoterState;
   open: boolean;
   executed: boolean;
   supportRequired: number;

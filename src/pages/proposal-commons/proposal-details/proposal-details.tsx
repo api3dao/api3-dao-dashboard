@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import { Proposal, ProposalType, useChainData } from '../../../chain-data';
+import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout/layout';
 import { Modal } from '../../../components/modal/modal';
 import VoteSlider from '../vote-slider/vote-slider';
@@ -77,6 +77,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   }
 
   const voteSliderData = voteSliderSelector(proposal);
+  const voterState = voteSliderData.voterState;
   const canVote = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
   const urlTargetAddress = getEtherscanAddressUrl(chainId, evmScriptData.targetAddress);
@@ -98,10 +99,18 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
       <ProposalStatus proposal={proposal} large />
       <div className={styles.proposalDetailsVoteSection}>
         <VoteSlider {...voteSliderData} size="large" />
-        <VoteStatus voterState={voteSliderData.voterState} large />
+        <VoteStatus voterState={voterState} large />
         <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
           Vote
         </Button>
+        {proposal.delegateAt && (
+          <p className={styles.voteButtonHelperText}>
+            {VOTER_STATES[voterState] === 'Unvoted'
+              ? 'Your voting power is delegated.'
+              : 'Your delegate voted for you.'}
+          </p>
+        )}
+        <div></div>
         <Modal open={voteModalOpen} onClose={() => setVoteModalOpen(false)}>
           <VoteForm
             voteId={proposal.voteId.toString()}
