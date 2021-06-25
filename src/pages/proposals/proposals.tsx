@@ -26,8 +26,7 @@ import styles from './proposals.module.scss';
 
 const Proposals = () => {
   // TODO: Retrieve only "userVotingPower" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
-  const chainData = useChainData();
-  const { proposals, delegation, dashboardState, transactions, setChainData } = chainData;
+  const { proposals, delegation, dashboardState, isGenesisEpoch, transactions, setChainData } = useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
   const api3Agent = useApi3AgentAddresses();
@@ -41,8 +40,7 @@ const Proposals = () => {
   useTreasuryAndDelegation();
 
   const sortedProposals = openProposalsSelector(proposals);
-  const isGenesisEpochOver = genesisEpochOverSelector(chainData);
-  const createNewProposal = canCreateNewProposalSelector(delegation, dashboardState);
+  const createNewProposal = canCreateNewProposalSelector(delegation, dashboardState, isGenesisEpoch);
   const votingThresholdPercent = votingPowerThresholdSelector(delegation);
 
   const newProposalChecklistItems = [
@@ -59,7 +57,7 @@ const Proposals = () => {
         : 'You need to have enough voting power.',
     },
     {
-      checked: isGenesisEpochOver,
+      checked: createNewProposal?.genesisEpochOver ?? false,
       label: 'The genesis epoch has completed.',
     },
   ];

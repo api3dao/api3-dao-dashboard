@@ -99,20 +99,26 @@ export const proposalCooldownOverSelector = (delegation: Delegation | null) => {
   return isAfter(now, addSeconds(delegation.lastProposalTimestamp, EPOCH_LENGTH));
 };
 
-export const canCreateNewProposalSelector = (delegation: Delegation | null, dashboardState: DashboardState | null) => {
-  if (!delegation || !dashboardState) return;
+export const canCreateNewProposalSelector = (
+  delegation: Delegation | null,
+  dashboardState: DashboardState | null,
+  isGenesisEpoch: boolean | null
+) => {
+  if (!delegation || !dashboardState || isGenesisEpoch === null) return;
+
+  const genesisEpochOver = genesisEpochOverSelector(isGenesisEpoch);
 
   const lastProposalEpochOver = proposalCooldownOverSelector(delegation);
   const hasEnoughVotingPower = delegation.userVotingPower.gte(
     dashboardState.totalShares.mul(delegation.proposalVotingPowerThreshold).div(HUNDRED_PERCENT)
   );
 
-  return { lastProposalEpochOver, hasEnoughVotingPower };
+  return { lastProposalEpochOver, hasEnoughVotingPower, genesisEpochOver };
 };
 
-export const genesisEpochOverSelector = (chainData: ChainData) => {
-  if (chainData.isGenesisEpoch === null) return false;
-  return !chainData.isGenesisEpoch;
+export const genesisEpochOverSelector = (isGenesisEpoch: boolean | null) => {
+  if (isGenesisEpoch === null) return false;
+  return !isGenesisEpoch;
 };
 
 export const canVoteSelector = (proposal: Proposal) => {
