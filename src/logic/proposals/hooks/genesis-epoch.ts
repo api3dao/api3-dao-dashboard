@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useChainData } from '../../../chain-data';
 import { useApi3Pool, usePossibleChainDataUpdate } from '../../../contracts';
 import { notifications } from '../../../components/notifications/notifications';
@@ -24,10 +24,6 @@ export const useLoadGenesisEpoch = () => {
     const isGenesisEpoch = goResponse[GO_RESULT_INDEX];
     setChainData('Load isGenesisEpoch', { isGenesisEpoch });
   }, [api3Pool, setChainData]);
-
-  useEffect(() => {
-    loadIsGenesisEpoch();
-  }, [loadIsGenesisEpoch]);
 
   usePossibleChainDataUpdate(loadIsGenesisEpoch);
 };

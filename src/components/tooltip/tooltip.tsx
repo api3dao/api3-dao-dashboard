@@ -13,10 +13,6 @@ type Props = {
 const Tooltip = ({ children, overlay }: Props) => {
   // NOTE: rc-tooltip requires us to override default styles directly using objects
   // https://github.com/react-component/tooltip#props
-  const overlayStyle = {
-    opacity: '1',
-  };
-
   const overlayInnerStyle = {
     background: 'linear-gradient(76.31deg, #f3f3f3 36.47%, #c3c4c3 99.02%)',
   };
@@ -26,7 +22,6 @@ const Tooltip = ({ children, overlay }: Props) => {
       overlay={overlay}
       placement="bottom"
       overlayClassName={styles.tooltip}
-      overlayStyle={overlayStyle}
       overlayInnerStyle={overlayInnerStyle}
     >
       {children}

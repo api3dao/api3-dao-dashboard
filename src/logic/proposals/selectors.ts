@@ -99,10 +99,24 @@ export const proposalCooldownOverSelector = (delegation: Delegation | null) => {
   return isAfter(now, addSeconds(delegation.lastProposalTimestamp, EPOCH_LENGTH));
 };
 
+export const canDelegateSelector = (delegation: Delegation | null, dashboardState: DashboardState | null) => {
+  if (!delegation || !dashboardState) return;
+
+  const delegationCooldownOver = delegationCooldownOverSelector(delegation);
+  const hasStakedTokens = dashboardState?.userStaked.gt(0) ?? false;
+  return { delegationCooldownOver, hasStakedTokens };
+};
+
+export const canUndelegateSelector = (delegation: Delegation | null) => {
+  if (!delegation) return;
+  const delegationCooldownOver = delegationCooldownOverSelector(delegation);
+  return { delegationCooldownOver };
+};
+
 export const canCreateNewProposalSelector = (
   delegation: Delegation | null,
   dashboardState: DashboardState | null,
-  isGenesisEpoch: boolean | null
+  isGenesisEpoch: boolean | undefined
 ) => {
   if (!delegation || !dashboardState) return;
 
@@ -116,8 +130,8 @@ export const canCreateNewProposalSelector = (
   return { lastProposalEpochOver, hasEnoughVotingPower, genesisEpochOver };
 };
 
-export const genesisEpochOverSelector = (isGenesisEpoch: boolean | null) => {
-  if (isGenesisEpoch === null) return false;
+export const genesisEpochOverSelector = (isGenesisEpoch: boolean | undefined) => {
+  if (isGenesisEpoch === undefined) return false;
   return !isGenesisEpoch;
 };
 

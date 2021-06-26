@@ -5,7 +5,7 @@ import globalStyles from '../../../styles/global-styles.module.scss';
 import { useChainData } from '../../../chain-data';
 import Button from '../../../components/button/button';
 import { Modal } from '../../../components/modal/modal';
-import { delegationCooldownOverSelector, proposalCooldownOverSelector } from '../../../logic/proposals/selectors';
+import { canDelegateSelector, canUndelegateSelector } from '../../../logic/proposals/selectors';
 import ChooseDelegateAction from '../forms/choose-delegate-action/choose-delegate-action';
 import { useApi3Pool } from '../../../contracts';
 import { go, isUserRejection } from '../../../utils';
@@ -25,29 +25,23 @@ const Delegation = () => {
   const [openDelegationModal, setOpenDelegationModal] = useState(false);
   const [openChooseDelegateActionModal, setOpenChooseDelegateActionModal] = useState(false);
 
-  // TODO: Merge into bigger selector
-  const delegationCooldownOver = delegationCooldownOverSelector(delegation);
-  const hasStakedTokens = dashboardState?.userStaked.gt(0) ?? false;
-  const proposalCooldownOver = proposalCooldownOverSelector(delegation);
+  const canDelegate = canDelegateSelector(delegation, dashboardState);
+  const canUndelegate = canUndelegateSelector(delegation);
 
   const delegateChecklistItems = [
     {
-      checked: hasStakedTokens,
+      checked: canDelegate?.hasStakedTokens ?? false,
       label: 'You have staked API3 tokens',
     },
     {
-      checked: delegationCooldownOver,
+      checked: canDelegate?.delegationCooldownOver ?? false,
       label: "You haven't updated delegation in the last 7 days",
-    },
-    {
-      checked: proposalCooldownOver,
-      label: "You haven't made any proposals within the last 7 days.",
     },
   ];
 
   // The button should always be in sync with the checklist
-  const canDelegate = delegateChecklistItems.every((item) => item.checked);
-  const canUndelegate = delegationCooldownOver;
+  const delegateable = delegateChecklistItems.every((item) => item.checked);
+  const undelegateable = canUndelegate?.delegationCooldownOver ?? false;
 
   return (
     <>
@@ -60,7 +54,7 @@ const Delegation = () => {
             className={styles.proposalsLink}
             type="text"
             onClick={() => setOpenChooseDelegateActionModal(true)}
-            disabled={!canDelegate && !canUndelegate}
+            disabled={!delegateable && !undelegateable}
           >
             Update delegation
           </Button>
@@ -69,8 +63,8 @@ const Delegation = () => {
           </TooltipChecklist>
           <Modal open={openChooseDelegateActionModal} onClose={() => setOpenChooseDelegateActionModal(false)}>
             <ChooseDelegateAction
-              canUpdateDelegation={canDelegate}
-              canUndelegate={canUndelegate}
+              canUpdateDelegation={delegateable}
+              canUndelegate={undelegateable}
               onUndelegate={async () => {
                 if (!api3Pool) return;
 
@@ -106,7 +100,7 @@ const Delegation = () => {
             className={styles.proposalsLink}
             type="text"
             onClick={() => setOpenDelegationModal(true)}
-            disabled={!canDelegate}
+            disabled={!delegateable}
           >
             Delegate
           </Button>

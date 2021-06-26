@@ -57,7 +57,7 @@ const Proposals = () => {
     },
     {
       checked: createNewProposal?.genesisEpochOver ?? false,
-      label: 'The genesis epoch has completed.',
+      label: 'The genesis epoch is over.',
     },
   ];
 

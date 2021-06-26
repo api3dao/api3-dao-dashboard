@@ -104,7 +104,7 @@ export interface ChainData {
   chainId: undefined | number;
   contracts: typeof ContractsAddresses | null;
   dashboardState: DashboardState | null;
-  isGenesisEpoch: boolean | null;
+  isGenesisEpoch: boolean | undefined;
   proposals: Proposals | null;
   treasuries: Treasury[];
   delegation: Delegation | null;
@@ -125,7 +125,7 @@ export const initialChainData: ChainData = {
   chainId: undefined,
   contracts: null,
   dashboardState: null,
-  isGenesisEpoch: null,
+  isGenesisEpoch: undefined,
   proposals: null,
   treasuries: [],
   delegation: null,
