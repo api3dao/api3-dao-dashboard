@@ -110,7 +110,7 @@ const Dashboard = () => {
                 <div className={globalStyles.textCenter}>
                   <p className={styles.borderedBoxContentTitle}>unstaked</p>
                   <p className={globalStyles.textXLarge} data-cy="unstaked">
-                    {tokenBalances ? formatAndRoundApi3(tokenBalances.withdrawable) : UNKNOWN_NUMBER}
+                    {data ? formatAndRoundApi3(data.userUnstaked) : UNKNOWN_NUMBER}
                   </p>
                 </div>
               </>
@@ -191,8 +191,7 @@ const Dashboard = () => {
             title={`Are you sure you would like to unstake ${inputValue} tokens?`}
             onConfirm={async (parsedValue: BigNumber) => {
               if (!api3Pool || !data) return;
-              const userShares = parsedValue.mul(data.totalShares).div(data.totalStake);
-              const tx = await api3Pool.scheduleUnstake(userShares);
+              const tx = await api3Pool.scheduleUnstake(parsedValue);
               setChainData('Save initiate unstake transaction', {
                 transactions: [...transactions, { type: 'initiate-unstake', tx }],
               });

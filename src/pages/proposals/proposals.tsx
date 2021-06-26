@@ -82,7 +82,7 @@ const Proposals = () => {
         notifications.info({ message: messages.TX_GENERIC_REJECTED });
         return;
       }
-      notifications.error({ message: messages.TX_GENERIC_ERROR });
+      notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: err });
       return;
     }
 
@@ -114,7 +114,7 @@ const Proposals = () => {
             </div>
           </Header>
         }
-        content={<ProposalList proposals={sortedProposals} />}
+        content={<ProposalList proposals={sortedProposals} type="active" />}
         noMobileBorders
       />
       <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)} size="large">

@@ -5,9 +5,11 @@ import {
   calculateAnnualMintedTokens,
   calculateApy,
   min,
+  max,
   totalStakedPercentage,
 } from '../../contracts';
 import { ConvenienceDashboardData } from '../../chain-data';
+import { BigNumber } from 'ethers';
 
 export const tokenBalancesSelector = (dashboardData: ConvenienceDashboardData | null) => {
   if (!dashboardData) return null;
@@ -16,7 +18,7 @@ export const tokenBalancesSelector = (dashboardData: ConvenienceDashboardData | 
   const userTotal = userStaked.add(userUnstaked);
 
   const unlocked = userTotal.sub(userLocked).sub(userVesting);
-  const withdrawable = min(unlocked, userUnstaked);
+  const withdrawable = max(min(unlocked, userUnstaked), BigNumber.from(0));
 
   return { unlocked, userTotal, withdrawable };
 };

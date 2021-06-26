@@ -74,7 +74,7 @@ const Delegation = () => {
                     notifications.info({ message: messages.TX_GENERIC_REJECTED });
                     return;
                   }
-                  notifications.error({ message: messages.TX_GENERIC_ERROR });
+                  notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: error });
                   return;
                 }
 

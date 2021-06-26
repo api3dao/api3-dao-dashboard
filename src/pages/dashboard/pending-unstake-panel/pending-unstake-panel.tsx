@@ -75,7 +75,7 @@ const PendingUnstakePanel = (props: Props) => {
         notifications.info({ message: messages.TX_GENERIC_REJECTED });
         return;
       }
-      notifications.error({ message: messages.TX_GENERIC_ERROR });
+      notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: err });
       return;
     }
     if (tx) {
@@ -91,7 +91,7 @@ const PendingUnstakePanel = (props: Props) => {
         notifications.info({ message: messages.TX_GENERIC_REJECTED });
         return;
       }
-      notifications.error({ message: messages.TX_GENERIC_ERROR });
+      notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: err });
       return;
     }
     if (tx) {

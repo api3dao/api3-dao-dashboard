@@ -3,6 +3,9 @@ import { BigNumber, constants } from 'ethers';
 export const min = (first: BigNumber, ...others: BigNumber[]) =>
   others.reduce((min, n) => (min.lt(n) ? min : n), first);
 
+export const max = (first: BigNumber, ...others: BigNumber[]) =>
+  others.reduce((max, n) => (max.gt(n) ? max : n), first);
+
 // NOTE: Used to make sure BigNumber.div will not lose too much precision. Bigger value means more precision.
 const precision = 100_000_000;
 
