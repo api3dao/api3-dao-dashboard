@@ -17,7 +17,10 @@ export const useLoadGenesisEpoch = () => {
 
     const goResponse = await go(api3Pool.isGenesisEpoch());
     if (!isGoSuccess(goResponse)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_GENESIS_EPOCH });
+      notifications.error({
+        message: messages.FAILED_TO_LOAD_GENESIS_EPOCH,
+        errorOrMessage: messages.FAILED_TO_LOAD_GENESIS_EPOCH,
+      });
       return;
     }
 
