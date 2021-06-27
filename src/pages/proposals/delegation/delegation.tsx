@@ -25,23 +25,23 @@ const Delegation = () => {
   const [openDelegationModal, setOpenDelegationModal] = useState(false);
   const [openChooseDelegateActionModal, setOpenChooseDelegateActionModal] = useState(false);
 
-  const canDelegate = canDelegateSelector(delegation, dashboardState);
-  const canUndelegate = canUndelegateSelector(delegation);
+  const delegate = canDelegateSelector(delegation, dashboardState);
+  const undelegate = canUndelegateSelector(delegation);
 
   const delegateChecklistItems = [
     {
-      checked: canDelegate?.hasStakedTokens ?? false,
+      checked: delegate?.hasStakedTokens ?? false,
       label: 'You have staked API3 tokens',
     },
     {
-      checked: canDelegate?.delegationCooldownOver ?? false,
+      checked: delegate?.delegationCooldownOver ?? false,
       label: "You haven't updated delegation in the last 7 days",
     },
   ];
 
   // The button should always be in sync with the checklist
-  const delegateable = delegateChecklistItems.every((item) => item.checked);
-  const undelegateable = canUndelegate?.delegationCooldownOver ?? false;
+  const canDelegate = delegateChecklistItems.every((item) => item.checked);
+  const canUndelegate = undelegate?.delegationCooldownOver ?? false;
 
   return (
     <>
@@ -54,7 +54,7 @@ const Delegation = () => {
             className={styles.proposalsLink}
             type="text"
             onClick={() => setOpenChooseDelegateActionModal(true)}
-            disabled={!delegateable && !undelegateable}
+            disabled={!canDelegate && !canUndelegate}
           >
             Update delegation
           </Button>
@@ -63,8 +63,8 @@ const Delegation = () => {
           </TooltipChecklist>
           <Modal open={openChooseDelegateActionModal} onClose={() => setOpenChooseDelegateActionModal(false)}>
             <ChooseDelegateAction
-              canUpdateDelegation={delegateable}
-              canUndelegate={undelegateable}
+              canUpdateDelegation={canDelegate}
+              canUndelegate={canUndelegate}
               onUndelegate={async () => {
                 if (!api3Pool) return;
 
@@ -100,7 +100,7 @@ const Delegation = () => {
             className={styles.proposalsLink}
             type="text"
             onClick={() => setOpenDelegationModal(true)}
-            disabled={!delegateable}
+            disabled={!canDelegate}
           >
             Delegate
           </Button>

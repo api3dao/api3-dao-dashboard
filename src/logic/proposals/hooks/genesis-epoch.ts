@@ -5,8 +5,8 @@ import { notifications } from '../../../components/notifications/notifications';
 import { go, isGoSuccess, GO_RESULT_INDEX, messages } from '../../../utils';
 
 /**
- * Hook which loads the isGenesisEpoch boolean from the Api3Pool contract. Certain actions
- * cannot be performed by the user until the genesis epoch has passed.
+ * Hook which loads the isGenesisEpoch boolean from the Api3Pool contract. Creating a
+ * new proposal cannot be performed by the user until the genesis epoch has passed.
  */
 export const useLoadGenesisEpoch = () => {
   const api3Pool = useApi3Pool();
