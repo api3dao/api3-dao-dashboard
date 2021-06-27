@@ -11,37 +11,24 @@
   width: 100%;
   display: flex;
   align-items: flex-start;
-  padding: $space-xl;
+  padding: $space-lg;
   box-sizing: border-box;
 
   &.url {
-    padding: $space-lg;
-  }
-
-  @media (max-width: $max-sm) {
-    padding: $space-lg;
+    padding-bottom: $space-md;
   }
 }
 
 .notificationContent {
   flex: 1;
-  margin-left: $space-md;
-}
-
-.notificationTitle {
-  font-size: 16px;
-  line-height: 24px;
-  margin-bottom: $space-xxs;
-
-  &:first-letter {
-    text-transform: uppercase;
-  }
+  margin-left: $space-sm;
+  margin-top: $space-xxs;
 }
 
 .closeButton {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: $space-sm;
+  right: $space-sm;
 }
 
 .notificationButton {
