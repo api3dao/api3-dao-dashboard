@@ -127,7 +127,14 @@
 .noProposals {
   color: $tertiary-color;
   text-align: center;
-  margin: 15vh;
-  transform: translateY(-50%);
+  margin: 15vh $space-lg;
   font-size: $text-small;
+
+  & > * {
+    margin-right: $space-xs;
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
 }
