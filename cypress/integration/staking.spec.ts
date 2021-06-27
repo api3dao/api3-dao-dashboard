@@ -2,7 +2,7 @@
 
 import { EPOCH_LENGTH } from '../support/common';
 
-describe('dashboard', () => {
+describe('staking', () => {
   before(() => {
     cy.resetBlockchain().login();
 
