@@ -35,7 +35,6 @@ export const useTreasuryAndDelegation = () => {
       return {
         delegation: {
           proposalVotingPowerThreshold: data.proposalVotingPowerThreshold,
-          // NOTE: userVotingPower includes delegated voting power
           userVotingPower: data.userVotingPower,
           delegatedVotingPower: data.delegatedToUser,
           delegate: isZeroAddress(data.delegate) ? null : data.delegate,
