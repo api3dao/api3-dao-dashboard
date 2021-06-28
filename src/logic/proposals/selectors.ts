@@ -132,7 +132,7 @@ export const canCreateNewProposalSelector = (
   );
 
   const totalVotingPowerPercentage = computePercentage(delegation.userVotingPower, dashboardState.totalShares, true);
-  const delegatedVotingPowerPercentage = delegation.userVotingPower.gt(0)
+  const delegatedVotingPowerPercentage = delegation.delegatedVotingPower.gt(0)
     ? computePercentage(delegation.delegatedVotingPower, dashboardState.totalShares, true)
     : null;
 
