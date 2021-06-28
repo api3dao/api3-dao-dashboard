@@ -8,7 +8,7 @@ const Navigation = () => {
   return (
     <div className={styles.navigation}>
       <div className={styles.navigationMenu}>
-        <Link to="/dashboard">
+        <Link to="/">
           <img src={images.api3LogoWhite} alt="logo" height="36" width="116" />
         </Link>
         <Menu />
