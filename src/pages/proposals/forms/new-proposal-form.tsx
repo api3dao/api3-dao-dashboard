@@ -139,7 +139,7 @@ const NewProposalForm = (props: Props) => {
 
       <ProposalFormItem
         name={<label htmlFor="target-address">Target contract address</label>}
-        tooltip="The address of the contract you want to have called."
+        tooltip="The address of the contract you want to be called when the proposal is executed."
       >
         <Input id="target-address" value={targetAddress} onChange={(e) => setTargetAddress(e.target.value)} block />
         {errors.targetAddress && <p className={styles.error}>{errors.targetAddress}</p>}
