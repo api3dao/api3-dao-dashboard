@@ -6,6 +6,7 @@
 
 .overlayWrapper {
   padding: $space-sm;
+  max-width: $max-sm;
 }
 
 .tooltipChecklist {
@@ -15,10 +16,9 @@
 }
 
 .tooltipItem {
-  white-space: nowrap;
-
   img {
     height: 15px;
+    margin-top: -1px;
     vertical-align: middle;
   }
 

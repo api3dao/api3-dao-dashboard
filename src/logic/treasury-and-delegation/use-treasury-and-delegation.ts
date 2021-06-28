@@ -36,6 +36,7 @@ export const useTreasuryAndDelegation = () => {
         delegation: {
           proposalVotingPowerThreshold: data.proposalVotingPowerThreshold,
           userVotingPower: data.userVotingPower,
+          delegatedVotingPower: data.delegatedToUser,
           delegate: isZeroAddress(data.delegate) ? null : data.delegate,
           lastDelegationUpdateTimestamp: blockTimestampToDate(data.lastDelegationUpdateTimestamp),
           lastProposalTimestamp: blockTimestampToDate(data.lastProposalTimestamp),

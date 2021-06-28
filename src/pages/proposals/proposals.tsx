@@ -20,7 +20,7 @@ import Delegation from './delegation';
 import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
 import { notifications } from '../../components/notifications/notifications';
-import { formatApi3, go, images, isUserRejection, messages } from '../../utils';
+import { formatApi3, go, images, isUserRejection, messages, round } from '../../utils';
 import styles from './proposals.module.scss';
 
 const Proposals = () => {
@@ -42,6 +42,14 @@ const Proposals = () => {
   const createNewProposal = canCreateNewProposalSelector(delegation, dashboardState, isGenesisEpoch);
   const votingThresholdPercent = votingPowerThresholdSelector(delegation);
 
+  const thresholdPowerText = votingThresholdPercent ? formatApi3(votingThresholdPercent) : null;
+  const votingPowerText = createNewProposal?.totalVotingPowerPercentage
+    ? round(createNewProposal.totalVotingPowerPercentage, 2)
+    : null;
+  const delegatedPowerText = createNewProposal?.delegatedVotingPowerPercentage
+    ? ` (${round(createNewProposal.delegatedVotingPowerPercentage, 2)}% delegated)`
+    : '';
+
   const newProposalChecklistItems = [
     {
       checked: createNewProposal?.lastProposalEpochOver ?? false,
@@ -49,11 +57,10 @@ const Proposals = () => {
     },
     {
       checked: createNewProposal?.hasEnoughVotingPower ?? false,
-      label: votingThresholdPercent
-        ? `You need at least ${formatApi3(
-            votingThresholdPercent
-          )}% of the total vote representation to post a proposal.`
-        : 'You need to have enough voting power.',
+      label:
+        thresholdPowerText && votingPowerText
+          ? `You need at least ${thresholdPowerText}% of the total vote representation to post a proposal. You represent ${votingPowerText}% of the total voting power${delegatedPowerText}.`
+          : 'You need to have enough voting power.',
     },
     {
       checked: createNewProposal?.genesisEpochOver ?? false,
