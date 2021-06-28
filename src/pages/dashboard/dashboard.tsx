@@ -3,12 +3,13 @@ import { useState } from 'react';
 import { useChainData } from '../../chain-data';
 import { useApi3Pool } from '../../contracts';
 import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
-import { formatAndRoundApi3, UNKNOWN_NUMBER } from '../../utils';
+import { formatAndRoundApi3, images, UNKNOWN_NUMBER } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
 import { Modal } from '../../components/modal/modal';
 import Button from '../../components/button/button';
+import Tooltip from '../../components/tooltip/tooltip';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
 import Slider from '../../components/slider/slider';
@@ -94,9 +95,14 @@ const Dashboard = () => {
             header={
               <Header>
                 <h5>Staking</h5>
-                <Button onClick={() => setOpenModal('stake')} disabled={!canStake}>
-                  + Stake
-                </Button>
+                <div>
+                  <Button onClick={() => setOpenModal('stake')} disabled={!canStake}>
+                    + Stake
+                  </Button>
+                  <Tooltip overlay="You need to deposit API3 tokens before staking">
+                    <img src={images.help} alt="new proposal help" className={styles.help} />
+                  </Tooltip>
+                </div>
               </Header>
             }
             content={

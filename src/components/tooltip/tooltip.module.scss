@@ -4,9 +4,11 @@
   font-size: $text-small !important;
 }
 
-.tooltipChecklist {
+.overlayWrapper {
   padding: $space-sm;
+}
 
+.tooltipChecklist {
   .tooltipItem:not(:last-child) {
     margin-bottom: $space-xs;
   }

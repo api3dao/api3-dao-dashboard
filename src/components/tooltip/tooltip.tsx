@@ -14,13 +14,15 @@ const Tooltip = ({ children, overlay }: Props) => {
   // NOTE: rc-tooltip requires us to override default styles directly using objects
   // https://github.com/react-component/tooltip#props
   const overlayInnerStyle = {
+    alignItems: 'center',
     background: 'linear-gradient(76.31deg, #f3f3f3 36.47%, #c3c4c3 99.02%)',
+    display: 'flex',
   };
 
   // NOTE: rc-tooltip can be debugged by setting a 'visible' (boolean) prop
   return (
     <RCTooltip
-      overlay={overlay}
+      overlay={<div className={styles.overlayWrapper}>{overlay}</div>}
       placement="bottom"
       overlayClassName={styles.tooltip}
       overlayInnerStyle={overlayInnerStyle}
