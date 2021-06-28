@@ -32,7 +32,7 @@ export const messages = {
   FAILED_TO_LOAD_PROPOSALS: 'Unable to load proposals',
   FAILED_TO_LOAD_GENESIS_EPOCH: 'Unable to load the current epoch',
   INVALID_PROPOSAL_FORMAT: 'This proposal was not created through the DAO dashboard and cannot to be displayed',
-  NO_SUCH_PROPOSAL: `Proposal with such id doesn't exist`,
+  PROPOSAL_NOT_FOUND: `Proposal not found`,
 };
 
 // TODO: these messages should change depending on the final designs

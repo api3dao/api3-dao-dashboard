@@ -50,8 +50,8 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
     const goStartVote = goStartVoteFilters[GO_RESULT_INDEX][0];
     if (!goStartVote) {
       notifications.error({
-        message: messages.NO_SUCH_PROPOSAL,
-        errorOrMessage: messages.NO_SUCH_PROPOSAL,
+        message: messages.PROPOSAL_NOT_FOUND,
+        errorOrMessage: messages.PROPOSAL_NOT_FOUND,
       });
       return;
     }
