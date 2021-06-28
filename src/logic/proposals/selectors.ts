@@ -152,8 +152,3 @@ export const votingPowerThresholdSelector = (delegation: Delegation | null) => {
   if (!delegation) return null;
   return delegation.proposalVotingPowerThreshold.mul(100);
 };
-
-export const votingPowerThresholdSelector = (delegation: Delegation | null) => {
-  if (!delegation) return null;
-  return delegation.proposalVotingPowerThreshold.mul(100);
-};
