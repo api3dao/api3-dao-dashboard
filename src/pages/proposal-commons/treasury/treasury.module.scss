@@ -18,12 +18,24 @@
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: $space-xs 0;
+}
+
+.label {
+  color: $secondary-color;
+  text-transform: capitalize;
 }
 
 .treasuryMenuItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.copy {
+  margin-left: $space-sm;
+  transition: transform 0.1s;
+  &:hover {
+    transform: scale(1.1);
+  }
 }

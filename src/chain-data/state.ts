@@ -37,6 +37,7 @@ export interface ProposalMetadata {
 export const VOTER_STATES = { 0: 'Unvoted', 1: 'Voted For', 2: 'Voted Against' } as const;
 export type VoterState = 0 | 1 | 2; // Absent, Yea, Nay
 export type ProposalType = 'primary' | 'secondary';
+export type TreasuryType = 'primary' | 'secondary';
 
 export interface Proposal {
   voteId: ethers.BigNumber;

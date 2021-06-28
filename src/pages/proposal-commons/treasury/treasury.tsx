@@ -3,14 +3,22 @@ import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../../components/dr
 import { FormattedTreasury, useTreasuries } from './hooks';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './treasury.module.scss';
+import { images } from '../../../utils';
+import { getEtherscanAddressUrl, useApi3AgentAddresses } from '../../../contracts';
+import { TreasuryType, useChainData } from '../../../chain-data';
+import Tooltip from '../../../components/tooltip/tooltip';
 
 interface TreasuryDropdownProps {
   data: FormattedTreasury[];
-  type: 'Primary' | 'Secondary';
+  type: TreasuryType;
 }
 
 const TreasuryDropdown = (props: TreasuryDropdownProps) => {
   const { data, type } = props;
+  const { chainId } = useChainData();
+  const agentAddresses = useApi3AgentAddresses();
+  const etherscanExplainer = `Etherscan link for the ${type} DAO agent`;
+  const agentAddress = agentAddresses?.[type];
 
   return (
     <Dropdown
@@ -28,7 +36,26 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
       }
     >
       <div className={styles.treasuryButton}>
-        <p className={`${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.medium}`}>{type}</p>
+        <p
+          className={`${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.medium} ${styles.label}`}
+        >
+          {type}
+        </p>
+        {agentAddress && (
+          <span className={classNames(styles.copy, globalStyles.textSmall)}>
+            <Tooltip overlay={etherscanExplainer}>
+              <a href={getEtherscanAddressUrl(chainId, agentAddress)} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={images.externalLink}
+                  alt={etherscanExplainer}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent the dropdown from expanding
+                  }}
+                />
+              </a>
+            </Tooltip>
+          </span>
+        )}
       </div>
     </Dropdown>
   );
@@ -49,8 +76,8 @@ const Treasury = (props: TreasuryProps) => {
       >
         Treasury
       </p>
-      <TreasuryDropdown data={primary} type="Primary" />
-      <TreasuryDropdown data={secondary} type="Secondary" />
+      <TreasuryDropdown data={primary} type="primary" />
+      <TreasuryDropdown data={secondary} type="secondary" />
     </div>
   );
 };
