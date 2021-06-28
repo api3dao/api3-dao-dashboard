@@ -14,6 +14,7 @@ const DesktopMenu = () => {
   const { pathname } = useLocation();
   return (
     <div className={styles.menu} data-cy="desktop-menu">
+      {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
       <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
@@ -57,6 +58,7 @@ const MobileMenu = () => {
         </div>
         <div className={styles.mobileMenuScrollWrap}>
           <div className={styles.mobileMenuContent}>
+            {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
             <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
               <div className={styles.menuMobileItem}>
                 <DashboardIcon />
