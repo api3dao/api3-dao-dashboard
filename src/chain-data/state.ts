@@ -104,6 +104,11 @@ export type TransactionType =
   | 'update-timelock-status'
   | 'withdraw-to-pool';
 
+interface Vesting {
+  amountVested: BigNumber;
+  remainingToWithdraw: BigNumber;
+}
+
 export interface ChainData {
   // TODO: move the following fields to a separate interface called GenericChainData
   provider: ethers.providers.Web3Provider | null;
@@ -120,6 +125,7 @@ export interface ChainData {
   treasuries: Treasury[];
   delegation: Delegation | null;
   transactions: { type: TransactionType; tx: ethers.ContractTransaction }[];
+  vesting: Vesting | null;
 }
 
 export interface SettableChainData extends ChainData {
@@ -143,6 +149,7 @@ export const initialChainData: ChainData = {
   treasuries: [],
   delegation: null,
   transactions: [],
+  vesting: null,
 };
 
 export const initialSettableChainData: SettableChainData = { ...initialChainData, setChainData: () => {} };

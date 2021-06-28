@@ -3,13 +3,19 @@ import Button from '../../components/button/button';
 import Layout from '../../components/layout/layout';
 import { notifications } from '../../components/notifications/notifications';
 import { useApi3Pool, useTimelockManager } from '../../contracts';
+import { useLoadVestingData } from '../../logic/vesting/hooks';
 import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, isGoSuccess, isUserRejection, messages } from '../../utils';
 import styles from './vesting.module.scss';
 
 const Vesting = () => {
-  const { userAccount, setChainData } = useChainData();
+  const { userAccount, setChainData, vesting } = useChainData();
   const timelockManager = useTimelockManager();
   const api3Pool = useApi3Pool();
+
+  useLoadVestingData();
+
+  const canUpdateTimelockStatus = vesting?.amountVested.gt(0) ?? false;
+  const canWithdrawToPool = vesting?.remainingToWithdraw.gt(0) ?? false;
 
   return (
     <Layout title="Vesting">
@@ -30,11 +36,11 @@ const Vesting = () => {
                 notifications.info({ message: messages.TX_GENERIC_REJECTED });
                 return;
               }
-              notifications.error({ message: messages.TX_GENERIC_ERROR });
+              notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: goResponse[GO_ERROR_INDEX] });
               return;
             }
           }}
-          disabled={!timelockManager}
+          disabled={!canUpdateTimelockStatus}
         >
           Update timelock status
         </Button>
@@ -53,11 +59,11 @@ const Vesting = () => {
                 notifications.info({ message: messages.TX_GENERIC_REJECTED });
                 return;
               }
-              notifications.error({ message: messages.TX_GENERIC_ERROR });
+              notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: goResponse[GO_ERROR_INDEX] });
               return;
             }
           }}
-          disabled={!timelockManager}
+          disabled={!canWithdrawToPool}
         >
           Withdraw to pool
         </Button>
