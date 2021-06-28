@@ -17,6 +17,7 @@ const Tooltip = ({ children, overlay }: Props) => {
     background: 'linear-gradient(76.31deg, #f3f3f3 36.47%, #c3c4c3 99.02%)',
   };
 
+  // NOTE: rc-tooltip can be debugged by setting a 'visible' (boolean) prop
   return (
     <RCTooltip
       overlay={overlay}
