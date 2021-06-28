@@ -1,5 +1,6 @@
 import { ChangeEventHandler, ReactNode } from 'react';
 import classNames from 'classnames';
+import { images } from '../../utils';
 import styles from './radio-button.module.scss';
 
 type Props = {
@@ -9,10 +10,10 @@ type Props = {
   checked: boolean;
   name: string;
   color: 'white' | 'pink' | 'green';
-  checkIcon?: boolean;
+  checkbox?: boolean;
 };
 
-const RadioButton = ({ label, onChange, onClick, checked, name, color, checkIcon }: Props) => {
+const RadioButton = ({ label, onChange, onClick, checked, name, color, checkbox }: Props) => {
   return (
     <div className={styles.radioButtonWrapper}>
       <label
@@ -21,7 +22,7 @@ const RadioButton = ({ label, onChange, onClick, checked, name, color, checkIcon
           [styles.white]: color === 'white',
           [styles.pink]: color === 'pink',
           [styles.green]: color === 'green',
-          [styles.icon]: checkIcon,
+          [styles.icon]: checkbox,
         })}
       >
         {label}
@@ -34,8 +35,8 @@ const RadioButton = ({ label, onChange, onClick, checked, name, color, checkIcon
           name={name}
           readOnly={Boolean(onClick)}
         />
-        <span className={classNames(styles.radioButtonCheckmark, { [styles.checkIcon]: checkIcon })}>
-          {checkIcon && <img src="/check-black.svg" alt="check icon" />}
+        <span className={classNames(styles.radioButtonCheckmark, { [styles.checkbox]: checkbox })}>
+          {checkbox && <img src={images.checkBlack} alt="check icon" />}
         </span>
       </label>
     </div>

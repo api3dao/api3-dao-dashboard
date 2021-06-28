@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BaseLayout } from '../../components/layout/layout';
 import Header from '../../components/header/header';
 import { useQueryParams } from '../../utils';
@@ -13,10 +13,8 @@ import { useHistory } from 'react-router';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import { useHistoryProposals } from '../../logic/proposals/hooks/history-proposals';
 
-type FilterChoice = 'primary' | 'secondary' | 'both';
-
 const getValidatedProposalType = (typeFromUrl: string | null): OptionalProposalType => {
-  if (typeFromUrl && ['primary', 'secondary'].includes(typeFromUrl)) return typeFromUrl as ProposalType;
+  if (typeFromUrl && ['primary', 'secondary', 'none'].includes(typeFromUrl)) return typeFromUrl as ProposalType;
   else return null;
 };
 
@@ -26,22 +24,24 @@ const History = () => {
   const history = useHistory();
   const proposalType = getValidatedProposalType(params.get('type'));
   const proposalsToShow = historyProposalsSelector(allProposals, proposalType);
-  const [checked, setChecked] = useState<FilterChoice>('both');
+  const [checkedPrimary, setCheckedPrimary] = useState(true);
+  const [checkedSecondary, setCheckedSecondary] = useState(true);
 
   // TODO: Implement pagination for history proposals
   useHistoryProposals();
   useTreasuryAndDelegation();
 
-  const applyHistoryFilter = (type: ProposalType) => {
-    // TODO: I find these tab logic confusing, maybe reiterate? See https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622624192006000
-    if (!proposalType || proposalType === type) {
-      setChecked(type);
-      history.replace(`/history?type=${type}`);
+  useEffect(() => {
+    if (checkedPrimary && !checkedSecondary) {
+      history.replace(`/history?type=primary`);
+    } else if (checkedSecondary && !checkedPrimary) {
+      history.replace(`/history?type=secondary`);
+    } else if (!checkedPrimary && !checkedSecondary) {
+      history.replace(`/history?type=none`);
     } else {
-      setChecked('both');
       history.replace(`/history`);
     }
-  };
+  }, [history, checkedPrimary, checkedSecondary]);
 
   return (
     <BaseLayout subtitle="History">
@@ -55,19 +55,19 @@ const History = () => {
             <h5>Past proposals</h5>
             <div className={styles.radioButtons}>
               <RadioButton
-                onClick={() => applyHistoryFilter('primary')}
+                onClick={() => setCheckedPrimary(!checkedPrimary)}
                 label="primary"
-                checked={checked === 'primary' || checked === 'both'}
+                checked={checkedPrimary}
                 color="white"
-                checkIcon
+                checkbox
                 name="primary"
               />
               <RadioButton
-                onClick={() => applyHistoryFilter('secondary')}
+                onClick={() => setCheckedSecondary(!checkedSecondary)}
                 label="secondary"
-                checked={checked === 'secondary' || checked === 'both'}
+                checked={checkedSecondary}
                 color="white"
-                checkIcon
+                checkbox
                 name="secondary"
               />
             </div>
