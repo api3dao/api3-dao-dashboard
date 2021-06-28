@@ -15,13 +15,10 @@ function App() {
       <PageContainer>
         <Router>
           <Switch>
-            <Route path="/dashboard" exact>
-              <Dashboard />
-            </Route>
             <Route path="/proposals/:typeAndId" exact>
               <ProposalDetails />
             </Route>
-            <Route path="/proposals" exact>
+            <Route path="/governance" exact>
               <Proposals />
             </Route>
             <Route path="/history/:typeAndId" exact>

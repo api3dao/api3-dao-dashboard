@@ -19,10 +19,10 @@
 .wrapperLarge {
   display: flex;
   justify-content: center;
-  margin-top: $space-xxl;
+  margin: $space-xxl 0;
 }
 
 .icon {
-  margin: 0 $space-sm;
+  margin-right: $space-sm;
   height: 25px;
 }

@@ -19,6 +19,7 @@ const Tooltip = ({ children, overlay }: Props) => {
     display: 'flex',
   };
 
+  // NOTE: rc-tooltip can be debugged by setting a 'visible' (boolean) prop
   return (
     <RCTooltip
       overlay={<div className={styles.overlayWrapper}>{overlay}</div>}

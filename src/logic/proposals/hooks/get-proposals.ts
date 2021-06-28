@@ -4,7 +4,7 @@ import { Api3Voting, Convenience } from '../../../generated-contracts';
 import { Proposal } from '../../../chain-data';
 import { decodeMetadata } from '../encoding';
 import { blockTimestampToDate } from '../../../utils';
-import { HUNDRED_PERCENT } from '../../../contracts';
+import { HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 
 const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNumber();
@@ -52,6 +52,8 @@ export const getProposals = async (
       script: staticVoteData.script[i]!,
       userVotingPowerAt: staticVoteData.userVotingPowerAt[i]!,
 
+      delegateAt: isZeroAddress(dynamicVoteData.delegateAt[i]!) ? null : dynamicVoteData.delegateAt[i]!,
+      delegateState: dynamicVoteData.delegateState[i] as VoterState,
       voterState: dynamicVoteData.voterState[i] as VoterState,
       executed: dynamicVoteData.executed[i]!,
       yea: dynamicVoteData.yea[i]!,

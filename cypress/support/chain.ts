@@ -3,6 +3,8 @@ import { ethersProvider } from './common';
 // Name of the file which will hold the information to be persisted between tests
 const CYPRESS_SHARED_FILE = 'cypress-shared.json';
 
+const SNAPSHOT_REVERT_ERROR_MESSAGE = `Snapshot revert failed. Please restart hardhat node, remove ${CYPRESS_SHARED_FILE} and try again`;
+
 // Make sure the file is created and if not create empty JSON file
 before(() => {
   cy.task('readFileMaybe', CYPRESS_SHARED_FILE).then((textOrNull: unknown) => {
@@ -26,7 +28,9 @@ const restoreAndSaveBlockchainSnapshot = () => {
     // Restore blockchain snapshot if we have one
     if (json.evmSnapshotId) {
       // Expect the snapshot revert to succeed
-      expect(await ethersProvider.send('evm_revert', [json.evmSnapshotId])).to.equal(true);
+      expect(await ethersProvider.send('evm_revert', [json.evmSnapshotId]), SNAPSHOT_REVERT_ERROR_MESSAGE).to.equal(
+        true
+      );
     }
 
     // Save the current (or restored) state of the blockchain
@@ -77,7 +81,7 @@ Cypress.Commands.add('useChainSnapshot', (name: string) => {
     if (!custom[name]) throw new Error(`No snapshot named ${name}. Make sure you call 'createSnapshot' beforehand.`);
     const oldSnapshotId = custom[name];
     // Expect the snapshot revert to succeed
-    expect(await ethersProvider.send('evm_revert', [oldSnapshotId])).to.equal(true);
+    expect(await ethersProvider.send('evm_revert', [oldSnapshotId]), SNAPSHOT_REVERT_ERROR_MESSAGE).to.equal(true);
 
     const newSnapshotId = await ethersProvider.send('evm_snapshot', []);
     const newState = { ...json, customSnapshots: { ...custom, [name]: newSnapshotId } } as SharedState;

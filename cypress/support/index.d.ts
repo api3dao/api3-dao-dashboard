@@ -10,5 +10,6 @@ declare namespace Cypress {
     dataCy(value: string): Chainable<Element>;
     resetBlockchain(): Chainable<void>;
     resetClock(): Chainable<void>;
+    switchAccount(index: number): Chainable<void>;
   }
 }

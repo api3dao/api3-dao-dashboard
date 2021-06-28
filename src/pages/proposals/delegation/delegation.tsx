@@ -47,7 +47,7 @@ const Delegation = () => {
     <>
       {delegation?.delegate ? (
         <div>
-          <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`}>
+          <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`} data-cy="delegated-to">
             Delegated to: {abbrStr(delegation.delegate)}
           </p>
           <Button
