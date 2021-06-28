@@ -15,6 +15,7 @@ export const images = {
   connectedDark: '/connected-dark.svg',
   dropdown: '/dropdown.svg',
   error: '/error.svg',
+  externalLink: '/external-link.svg',
   hamburgerMenu: '/hamburger-menu.svg',
   help: '/help.svg',
   info: '/info.svg',
