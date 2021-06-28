@@ -63,6 +63,7 @@ export interface Proposal {
 export interface Delegation {
   proposalVotingPowerThreshold: BigNumber;
   userVotingPower: BigNumber;
+  delegatedVotingPower: BigNumber;
   delegate: string | null;
   lastDelegationUpdateTimestamp: Date;
   lastProposalTimestamp: Date;

@@ -131,7 +131,18 @@ export const canCreateNewProposalSelector = (
     dashboardState.totalShares.mul(delegation.proposalVotingPowerThreshold).div(HUNDRED_PERCENT)
   );
 
-  return { lastProposalEpochOver, hasEnoughVotingPower, genesisEpochOver };
+  const totalVotingPowerPercentage = computePercentage(delegation.userVotingPower, dashboardState.totalShares, true);
+  const delegatedVotingPowerPercentage = delegation.userVotingPower.gt(0)
+    ? computePercentage(delegation.delegatedVotingPower, dashboardState.totalShares, true)
+    : null;
+
+  return {
+    lastProposalEpochOver,
+    hasEnoughVotingPower,
+    genesisEpochOver,
+    totalVotingPowerPercentage,
+    delegatedVotingPowerPercentage,
+  };
 };
 
 export const genesisEpochOverSelector = (isGenesisEpoch: boolean | undefined) => {
