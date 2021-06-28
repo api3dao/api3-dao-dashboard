@@ -45,8 +45,18 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
       });
       return;
     }
-    // There will only be one StartEvent response for the given filter
-    const ethersArgs = goStartVoteFilters[GO_RESULT_INDEX][0]!.args;
+
+    // There will only be at most one StartEvent response for the given filter
+    const goStartVote = goStartVoteFilters[GO_RESULT_INDEX][0];
+    if (!goStartVote) {
+      notifications.error({
+        message: messages.PROPOSAL_NOT_FOUND,
+        errorOrMessage: messages.PROPOSAL_NOT_FOUND,
+      });
+      return;
+    }
+
+    const ethersArgs = goStartVote.args;
     const startVote: StartVoteProposal = {
       // Removing ethers array-ish response format
       creator: ethersArgs.creator,

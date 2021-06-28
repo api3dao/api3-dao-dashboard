@@ -8,7 +8,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  color: $secondary-color;
+  color: $tertiary-color;
   padding-left: 43px;
   margin-bottom: $space-lg;
   cursor: pointer;
@@ -30,7 +30,7 @@
     }
 
     &.white {
-      color: $tertiary-color;
+      color: $primary-color;
       .radioButtonCheckmark:after {
         background-color: $button-color;
       }
