@@ -17,7 +17,7 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
   const { data, type } = props;
   const { chainId } = useChainData();
   const agentAddresses = useApi3AgentAddresses();
-  const copyButtonExplainer = `Etherscan link for the ${type} DAO agent`;
+  const etherscanExplainer = `Etherscan link for the ${type} DAO agent`;
   const agentAddress = agentAddresses?.[type];
 
   return (
@@ -43,13 +43,13 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
         </p>
         {agentAddress && (
           <span className={classNames(styles.copy, globalStyles.textSmall)}>
-            <Tooltip overlay={copyButtonExplainer}>
+            <Tooltip overlay={etherscanExplainer}>
               <a href={getEtherscanAddressUrl(chainId, agentAddress)} target="_blank" rel="noopener noreferrer">
                 <img
                   src={images.externalLink}
-                  alt={copyButtonExplainer}
+                  alt={etherscanExplainer}
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent the dropdown to expand
+                    e.stopPropagation(); // Prevent the dropdown from expanding
                   }}
                 />
               </a>
