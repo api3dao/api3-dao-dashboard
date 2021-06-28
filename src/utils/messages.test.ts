@@ -2,7 +2,7 @@ import { messages, transactionMessages } from './messages';
 
 test('messages', () => {
   expect(messages).toEqual({
-    LOAD_DASHBOARD_ERROR: 'Failed to load latest dashboard data',
+    FAILED_TO_LOAD_DASHBOARD_DATA: 'Failed to load latest dashboard data',
 
     TX_APPROVAL_REJECTED: 'API3 token approval transaction rejected',
     TX_APPROVAL_ERROR: 'Failed to approve API3 token allowance. Please try again',
@@ -25,6 +25,7 @@ test('messages', () => {
     REDELEGATION_IS_FORBIDDEN: expect.anything(), // REDELEGATION_IS_FORBIDDEN is a function
 
     FAILED_TO_LOAD_PROPOSALS: 'Unable to load proposals',
+    FAILED_TO_LOAD_GENESIS_EPOCH: 'Unable to load the current epoch',
     INVALID_PROPOSAL_FORMAT: 'This proposal was not created through the DAO dashboard and cannot to be displayed',
   });
 });

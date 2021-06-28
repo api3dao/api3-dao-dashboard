@@ -1,21 +1,32 @@
-import { ReactNode, useState } from 'react';
+import { ReactElement } from 'react';
+import RCTooltip from 'rc-tooltip';
+// Additional styles that require access to CSS variables
 import styles from './tooltip.module.scss';
+// NOTE: This is required for basic tooltip styling
+import 'rc-tooltip/assets/bootstrap_white.css';
 
 type Props = {
-  children: ReactNode;
-  content: string | ReactNode;
+  children: ReactElement;
+  overlay: ReactElement | string;
 };
 
-const Tooltip = ({ children, content }: Props) => {
-  const [hover, setHover] = useState(false);
+const Tooltip = ({ children, overlay }: Props) => {
+  // NOTE: rc-tooltip requires us to override default styles directly using objects
+  // https://github.com/react-component/tooltip#props
+  const overlayInnerStyle = {
+    background: 'linear-gradient(76.31deg, #f3f3f3 36.47%, #c3c4c3 99.02%)',
+  };
 
+  // NOTE: rc-tooltip can be debugged by setting a 'visible' (boolean) prop
   return (
-    <>
-      <span className={styles.tooltipWrapper} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-        {children}
-        {hover && <div className={styles.tooltip}>{content}</div>}
-      </span>
-    </>
+    <RCTooltip
+      overlay={overlay}
+      placement="bottom"
+      overlayClassName={styles.tooltip}
+      overlayInnerStyle={overlayInnerStyle}
+    >
+      {children}
+    </RCTooltip>
   );
 };
 

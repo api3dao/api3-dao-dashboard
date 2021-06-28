@@ -1,7 +1,8 @@
 import { PendingTransactionMessages, TransactionType } from '../chain-data';
 
 export const messages = {
-  LOAD_DASHBOARD_ERROR: 'Failed to load latest dashboard data',
+  // Dashboard errors
+  FAILED_TO_LOAD_DASHBOARD_DATA: 'Failed to load latest dashboard data',
 
   // Transaction messages
   TX_APPROVAL_REJECTED: 'API3 token approval transaction rejected',
@@ -29,6 +30,7 @@ export const messages = {
 
   // Proposals errors
   FAILED_TO_LOAD_PROPOSALS: 'Unable to load proposals',
+  FAILED_TO_LOAD_GENESIS_EPOCH: 'Unable to load the current epoch',
   INVALID_PROPOSAL_FORMAT: 'This proposal was not created through the DAO dashboard and cannot to be displayed',
 };
 

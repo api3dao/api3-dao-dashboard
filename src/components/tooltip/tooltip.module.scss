@@ -1,34 +1,26 @@
 @import '../../styles/variables.module.scss';
 
-.tooltipWrapper {
-  position: relative;
+.tooltip {
+  font-size: $text-small !important;
 }
 
-.tooltip {
-  min-width: 200px;
-  position: absolute;
-  right: 0;
-  background-color: $primary-color;
-  color: $black-color;
-  font-size: $text-xsmall;
-  line-height: 18px;
-  padding: 10px $space-sm;
-  margin-top: $space-sm;
-  border-radius: 2px;
-  box-shadow: $tooltip-shadow;
-  box-sizing: border-box;
-  z-index: 10;
+.tooltipChecklist {
+  padding: $space-sm;
 
-  &:before {
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    position: absolute;
-    border-right: 6px solid transparent;
-    border-left: 6px solid transparent;
-    border-bottom: 6px solid $primary-color;
-    top: -6px;
-    right: $space-md;
+  .tooltipItem:not(:last-child) {
+    margin-bottom: $space-xs;
+  }
+}
+
+.tooltipItem {
+  white-space: nowrap;
+
+  img {
+    height: 15px;
+    vertical-align: middle;
+  }
+
+  span {
+    margin-left: $space-sm;
   }
 }
