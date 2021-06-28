@@ -94,7 +94,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-input-autosize": "^2.2.0",
     "@types/react-router-dom": "^5.1.7",
-    "api3-dao": "git+https://github.com/api3dao/api3-dao.git#5f55109e88fd2672c480cabd65bff6bb3c11b1bf",
+    "api3-dao": "git+https://github.com/api3dao/api3-dao.git#85603266a3a189ccedf41b2d2f33e5911314d2f7",
     "chai": "^4.3.4",
     "cypress": "^7.5.0",
     "dotenv": "^10.0.0",
