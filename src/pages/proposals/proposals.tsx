@@ -45,7 +45,7 @@ const Proposals = () => {
   const newProposalChecklistItems = [
     {
       checked: createNewProposal?.lastProposalEpochOver ?? false,
-      label: "You haven't voted in the last 7 days.",
+      label: "You haven't created a proposal in the last 7 days.",
     },
     {
       checked: createNewProposal?.hasEnoughVotingPower ?? false,
