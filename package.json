@@ -17,6 +17,7 @@
     "generate-contracts": "yarn typechain --target ethers-v5 --outDir ./src/generated-contracts './hardhat/artifacts/contracts/**/!(*.dbg).json'",
     "lint": "eslint --ext js,ts,tsx src",
     "postinstall": "yarn fix-contract-imports && yarn eth:compile-contracts && yarn generate-contracts && yarn fix-scss-ts",
+    "postuninstall": "yarn fix-contract-imports && yarn fix-scss-ts",
     "prepare": "husky install",
     "send-to-account": "cd hardhat && npx hardhat send-to-account --address",
     "start": "BROWSER=none react-scripts start",

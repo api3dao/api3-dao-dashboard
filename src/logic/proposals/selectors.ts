@@ -1,4 +1,4 @@
-import { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '../../chain-data';
+import { DashboardState, Delegation, Proposal, Proposals, ProposalType, VOTER_STATES } from '../../chain-data';
 import { computePercentage, EPOCH_LENGTH } from '../../contracts';
 import { addSeconds, isAfter } from 'date-fns';
 import { HUNDRED_PERCENT } from '../../contracts';
@@ -27,11 +27,15 @@ export const voteSliderSelector = (proposal: Proposal) => {
     }
   };
 
+  const wasDelegated = proposal.delegateAt !== null;
+  const voterState = wasDelegated ? proposal.delegateState : proposal.voterState;
+
   return {
     minAcceptanceQuorum,
     forPercentage,
     againstPercentage,
-    voterState: proposal.voterState,
+    wasDelegated,
+    voterState,
     proposalStatus: computeProposalStatus(),
     open: proposal.open,
   };
@@ -106,5 +110,10 @@ export const canCreateNewProposalSelector = (delegation: Delegation | null, dash
 };
 
 export const canVoteSelector = (proposal: Proposal) => {
-  return proposal.open && proposal.userVotingPowerAt.gt(0);
+  return (
+    proposal.open &&
+    proposal.userVotingPowerAt.gt(0) &&
+    !proposal.delegateAt &&
+    VOTER_STATES[proposal.voterState] === 'Unvoted'
+  );
 };

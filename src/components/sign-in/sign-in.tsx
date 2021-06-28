@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
@@ -20,7 +21,20 @@ type Props = {
 };
 
 const ConnectedStatus = ({ dark, position }: Props) => {
-  const { provider, setChainData, networkName, userAccount } = useChainData();
+  const { provider, setChainData, networkName, userAccount, availableAccounts } = useChainData();
+
+  const [changeAccountOpen, setChangeAccountOpen] = useState(false);
+  const openModal = () => setChangeAccountOpen(true);
+  const closeModal = () => setChangeAccountOpen(false);
+
+  const onAccountChange = (account: string) => async () => {
+    if (!provider) return;
+
+    setChainData('Change user account', {
+      userAccount: account,
+      signer: provider.getSigner(account),
+    });
+  };
 
   const onDisconnect = () => {
     if (provider) {
@@ -36,7 +50,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
     <div className={styles.connectedStatus} data-cy="connected-status">
       <img src={dark ? images.connectedDark : images.connected} alt="connected icon" />
       <div className={classNames(styles.connectedStatusInfo, { [styles.dark]: dark })}>
-        <p>{abbrStr(userAccount)}</p>
+        <p data-cy="account">{abbrStr(userAccount)}</p>
         <p className={globalStyles.textXSmall}>Connected to {networkName}</p>
       </div>
     </div>
@@ -52,6 +66,15 @@ const ConnectedStatus = ({ dark, position }: Props) => {
       {position === 'mobileMenu' ? (
         <>
           {connectedContent}
+          {availableAccounts.length > 1 && (
+            <Button
+              type="secondary"
+              onClick={openModal}
+              className={classNames({ [styles.mobileMenuButton]: position === 'mobileMenu' })}
+            >
+              Change account
+            </Button>
+          )}
           <Button
             type="secondary"
             onClick={onDisconnect}
@@ -65,6 +88,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
           menu={
             <DropdownMenu position={dark ? 'top' : 'bottom'}>
               <DropdownMenuItem onClick={onDisconnect}>Disconnect Wallet</DropdownMenuItem>
+              {availableAccounts.length > 1 && <DropdownMenuItem onClick={openModal}>Change account</DropdownMenuItem>}
             </DropdownMenu>
           }
           icon={<img src={dark ? images.arrowDropdownDark : images.arrowDropdown} alt="dropdown icon" />}
@@ -72,6 +96,23 @@ const ConnectedStatus = ({ dark, position }: Props) => {
         >
           {connectedContent}
         </Dropdown>
+      )}
+
+      {availableAccounts.length > 1 && (
+        <GenericModal open={changeAccountOpen} onClose={closeModal}>
+          <ul className={styles.availableAccounts} data-cy="available-accounts">
+            {availableAccounts.map((account) => (
+              <Button
+                key={account}
+                type="text"
+                className={styles.availableAccountButton}
+                onClick={onAccountChange(account)}
+              >
+                {account}
+              </Button>
+            ))}
+          </ul>
+        </GenericModal>
       )}
     </div>
   );

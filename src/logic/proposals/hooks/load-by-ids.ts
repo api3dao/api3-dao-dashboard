@@ -7,6 +7,7 @@ import { BigNumber } from 'ethers';
 import { notifications } from '../../../components/notifications/notifications';
 import { messages } from '../../../utils/messages';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
+import { isZeroAddress } from '../../../contracts';
 
 interface DynamicVotingData {
   id: BigNumber;
@@ -14,8 +15,7 @@ interface DynamicVotingData {
   yea: BigNumber;
   nay: BigNumber;
   voterState: number;
-  // TODO: The following two are useless for proposals and it will be messy to update delegation from these hooks
-  delegateAt: string;
+  delegateAt: string | null;
   delegateState: number;
 }
 
@@ -100,7 +100,7 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
     const votingData: DynamicVotingData = {
       id: id,
       // The rawVotingData is an object with fields that are single element arrays
-      delegateAt: rawVotingData.delegateAt[0]!,
+      delegateAt: isZeroAddress(rawVotingData.delegateAt[0]!) ? null : rawVotingData.delegateAt[0]!,
       delegateState: rawVotingData.delegateState[0]!,
       executed: rawVotingData.executed[0]!,
       nay: rawVotingData.nay[0]!,
@@ -123,6 +123,8 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
           nay: votingData.nay,
           executed: votingData.executed,
           voterState: votingData.voterState as VoterState,
+          delegateAt: votingData.delegateAt,
+          delegateState: votingData.delegateState as VoterState,
         };
       })
     );

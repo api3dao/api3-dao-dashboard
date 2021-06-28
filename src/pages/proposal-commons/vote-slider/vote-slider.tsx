@@ -27,6 +27,7 @@ interface Props {
   againstPercentage: number;
   open: boolean;
   proposalStatus: ProposalStatus;
+  wasDelegated: boolean;
   size?: 'normal' | 'large';
 }
 
@@ -38,6 +39,7 @@ const VoteSlider = (props: Props) => {
     againstPercentage,
     size = 'normal',
     open,
+    wasDelegated,
     proposalStatus,
   } = props;
 
@@ -74,7 +76,7 @@ const VoteSlider = (props: Props) => {
             })}
           >
             <span className={globalStyles.secondaryColor}>{formatPercentage(forPercentage)}</span>
-            {!isLarge && <VoteStatus voterState={voterState} />}
+            {!isLarge && <VoteStatus voterState={voterState} wasDelegated={wasDelegated} />}
             <span className={globalStyles.secondaryColor}>{formatPercentage(againstPercentage)}</span>
           </div>
         </div>

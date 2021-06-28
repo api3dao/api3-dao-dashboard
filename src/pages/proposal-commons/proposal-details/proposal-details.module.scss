@@ -87,3 +87,9 @@
 .multiline {
   white-space: pre-wrap;
 }
+
+.voteButtonHelperText {
+  color: $error-color;
+  font-size: $text-small;
+  margin-top: $space-md;
+}
