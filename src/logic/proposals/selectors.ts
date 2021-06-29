@@ -151,12 +151,11 @@ export const genesisEpochOverSelector = (isGenesisEpoch: boolean | undefined) =>
 };
 
 export const canVoteSelector = (proposal: Proposal) => {
-  return (
-    proposal.open &&
-    proposal.userVotingPowerAt.gt(0) &&
-    !proposal.delegateAt &&
-    VOTER_STATES[proposal.voterState] === 'Unvoted'
-  );
+  return {
+    isOpen: proposal.open,
+    hasEnoughVotingPower: proposal.userVotingPowerAt.gt(0),
+    isNotDelegated: !proposal.delegateAt,
+  };
 };
 
 export const votingPowerThresholdSelector = (delegation: Delegation | null) => {

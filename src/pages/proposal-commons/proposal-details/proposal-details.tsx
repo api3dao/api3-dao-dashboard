@@ -1,5 +1,7 @@
+import { BigNumber, utils } from 'ethers';
 import { useState } from 'react';
 import { useParams } from 'react-router';
+import classNames from 'classnames';
 import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout/layout';
 import { Modal } from '../../../components/modal/modal';
@@ -8,6 +10,7 @@ import VoteStatus from '../vote-status';
 import Timer from '../../../components/timer/timer';
 import Button from '../../../components/button/button';
 import Tag from '../../../components/tag/tag';
+import TooltipChecklist from '../../../components/tooltip/tooltip-checklist';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import { getEtherscanAddressUrl, useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndId, decodeEvmScript } from '../../../logic/proposals/encoding';
@@ -17,11 +20,9 @@ import VoteForm from './vote-form/vote-form';
 import ProposalStatus from '../proposal-list/proposal-status';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
-import classNames from 'classnames';
-import { BigNumber, utils } from 'ethers';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
 import NotFoundPage from '../../not-found';
-import { messages } from '../../../utils';
+import { images, messages } from '../../../utils';
 
 interface ProposalDetailsContentProps {
   type: ProposalType;
@@ -77,9 +78,26 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   }
 
   const voteSliderData = voteSliderSelector(proposal);
-  const canVote = canVoteSelector(proposal);
+  const canVoteData = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
   const urlTargetAddress = getEtherscanAddressUrl(chainId, evmScriptData.targetAddress);
+
+  const canVoteChecklist = [
+    {
+      checked: canVoteData.hasEnoughVotingPower,
+      label: 'You have staked API3 tokens',
+    },
+    {
+      checked: canVoteData.isOpen,
+      label: 'The proposal is open for voting',
+    },
+    {
+      checked: canVoteData.isNotDelegated,
+      label: 'Your voting power has not been delegated to another address',
+    },
+  ];
+
+  const canVote = canVoteChecklist.every((item) => item.checked);
 
   return (
     <div>
@@ -99,9 +117,14 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
       <div className={styles.proposalDetailsVoteSection}>
         <VoteSlider {...voteSliderData} size="large" />
         <VoteStatus voterState={voteSliderData.voterState} wasDelegated={voteSliderData.wasDelegated} large />
-        <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
-          Vote
-        </Button>
+        <div>
+          <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
+            Vote
+          </Button>
+          <TooltipChecklist items={canVoteChecklist}>
+            <img src={images.help} alt="voting help" className={styles.help} />
+          </TooltipChecklist>
+        </div>
         {proposal.delegateAt && (
           <p className={styles.voteButtonHelperText}>
             {VOTER_STATES[voteSliderData.voterState] === 'Unvoted'

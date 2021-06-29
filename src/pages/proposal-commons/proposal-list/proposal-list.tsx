@@ -49,9 +49,11 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
       <ProposalStatus proposal={proposal} />
       <div className={styles.proposalItemTag}>
         <Tooltip overlay={tooltipContent}>
-          <Tag type={proposal.type}>
-            <span className={globalStyles.capitalize}>{proposal.type}</span>
-          </Tag>
+          <span>
+            <Tag type={proposal.type}>
+              <span className={globalStyles.capitalize}>{proposal.type}</span>
+            </Tag>
+          </span>
         </Tooltip>
       </div>
     </div>

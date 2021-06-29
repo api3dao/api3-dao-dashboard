@@ -1,5 +1,10 @@
 @import '../../../styles/variables.module.scss';
 
+.help {
+  margin-left: $space-md;
+  vertical-align: middle;
+}
+
 .proposalDetailsSubheader {
   display: flex;
   align-items: center;
