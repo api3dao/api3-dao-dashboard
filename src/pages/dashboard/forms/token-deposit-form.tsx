@@ -38,7 +38,7 @@ const TokenDepositForm = (props: Props) => {
   const [error, setError] = useState('');
 
   // The input field should catch any bad inputs, but just in case, try parse and display any errors
-  const [parseErr, inputBigNum] = goSync(() => parseApi3(inputValue));
+  const [parseErr, parsedInput] = goSync(() => parseApi3(inputValue));
 
   const handleApprove = async () => {
     if (!api3Pool || !api3Token) return;
@@ -62,15 +62,15 @@ const TokenDepositForm = (props: Props) => {
   const handleDeposit = (type: 'deposit-only' | 'deposit-and-stake') => async () => {
     if (!api3Pool || !userAccount) return;
 
-    if (!inputValue || inputValue === '0') {
-      setError(messages.VALIDATION_INPUT_ZERO);
-      return;
-    }
-    if (parseErr || !inputBigNum) {
+    if (parseErr || !parsedInput) {
       setError(messages.VALIDATION_INPUT_PARSE);
       return;
     }
-    if (inputBigNum.gt(walletBalance)) {
+    if (parsedInput.lte(0)) {
+      setError(messages.VALIDATION_INPUT_ZERO);
+      return;
+    }
+    if (parsedInput.gt(walletBalance)) {
       setError(messages.VALIDATION_DEPOSIT_TOO_HIGH);
       return;
     }
@@ -78,7 +78,7 @@ const TokenDepositForm = (props: Props) => {
     setError('');
 
     const methodName = type === 'deposit-only' ? 'depositRegular' : 'depositAndStake';
-    const goResponse = await go(api3Pool[methodName](parseApi3(inputValue)));
+    const goResponse = await go(api3Pool[methodName](parsedInput));
     if (isGoSuccess(goResponse)) {
       const tx = goResponse[GO_RESULT_INDEX];
       setChainData(`Save "${type}" transaction`, { transactions: [...transactions, { type, tx }] });
@@ -100,8 +100,8 @@ const TokenDepositForm = (props: Props) => {
     return null;
   }
 
-  const approvalRequired = !parseErr && !!inputBigNum && inputBigNum.gt(allowance);
-  const canDeposit = !parseErr && !!inputBigNum && !approvalRequired && inputBigNum.gt(0);
+  const approvalRequired = !parseErr && !!parsedInput && parsedInput.gt(allowance);
+  const canDeposit = !parseErr && !!parsedInput && !approvalRequired && parsedInput.gt(0);
 
   return (
     <>
