@@ -1,0 +1,7 @@
+@import '../../styles/variables.module.scss';
+
+.wrapper {
+  & > * {
+    margin: $space-sm;
+  }
+}
