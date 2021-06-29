@@ -1,4 +1,4 @@
-import { DashboardState, Delegation, Proposal, Proposals, ProposalType, VOTER_STATES } from '../../chain-data';
+import { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage, EPOCH_LENGTH } from '../../contracts';
 import { addSeconds, isAfter } from 'date-fns';
 import { HUNDRED_PERCENT } from '../../contracts';
