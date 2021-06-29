@@ -40,12 +40,17 @@ export const encodeEvmScript = (formData: NewProposalFormData, api3Agent: Api3Ag
   // Extract the parameter types from the target function signature
   const parameterTypes = formData.targetSignature
     .substring(formData.targetSignature.indexOf('(') + 1, formData.targetSignature.indexOf(')'))
-    .split(',');
+    .split(',')
+    // Function can have zero arguments, in that case we want the array to be empty
+    .filter((s) => s.length > 0);
   // Encode the parameters using the parameter types
   const encodedTargetParameters = utils.defaultAbiCoder.encode(parameterTypes, targetParameters);
   function encodeFunctionSignature(functionFragment: any) {
     return utils.hexDataSlice(utils.keccak256(utils.toUtf8Bytes(functionFragment)), 0, 4);
   }
+  console.log('xx');
+  const iface = new utils.Interface(JSON.stringify(['function ' + formData.targetSignature]));
+  console.log('cccc', iface.format(utils.FormatTypes.json));
   const encodedExecuteSignature = encodeFunctionSignature('execute(address,uint256,bytes)');
   // Build the call data that the EVMScript will use
   const callData =

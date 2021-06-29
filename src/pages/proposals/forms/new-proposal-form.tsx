@@ -82,6 +82,7 @@ const NewProposalForm = (props: Props) => {
 
     const [encodeError] = goSync(() => encodeEvmScript(formData, api3Agent));
     if (encodeError) {
+      console.log(encodeError);
       newErrors.parameters = 'Ensure parameters match target contract signature';
       foundErrors = true;
     }
