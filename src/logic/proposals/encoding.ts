@@ -107,7 +107,7 @@ export const encodeEvmScript = (formData: NewProposalFormData, api3Agent: Api3Ag
     return parsed;
   });
   if (!isGoSuccess(goValue)) {
-    return errorFn({ field: 'targetValue', value: 'Please enter valid non negative ETH amount' });
+    return errorFn({ field: 'targetValue', value: 'Please enter valid non-negative ETH amount' });
   }
   const targetValue = goValue[GO_RESULT_INDEX];
 

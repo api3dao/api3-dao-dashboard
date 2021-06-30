@@ -160,7 +160,7 @@ describe('EVM script', () => {
     });
     expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
       field: 'targetValue',
-      value: 'Please enter valid non negative ETH amount',
+      value: 'Please enter valid non-negative ETH amount',
     });
   });
 
