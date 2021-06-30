@@ -118,7 +118,7 @@ const NewProposalForm = (props: Props) => {
       </ProposalFormItem>
 
       <ProposalFormItem
-        name={<label htmlFor="description">description</label>}
+        name={<label htmlFor="description">Description</label>}
         tooltip="Description of the proposal that will be displayed with its details."
       >
         <Textarea

@@ -136,6 +136,16 @@ describe('EVM script', () => {
       });
     });
 
+    it('empty address', () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.targetAddress = '';
+      });
+      expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
+        field: 'targetAddress',
+        value: 'Please specify a valid account address',
+      });
+    });
+
     it('zero address is fine', () => {
       const invalidData = updateImmutably(newFormData, (data) => {
         data.targetAddress = constants.AddressZero;

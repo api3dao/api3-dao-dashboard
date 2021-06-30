@@ -52,7 +52,7 @@ describe('staking', () => {
     cy.dataCy('amount').should('have.text', '20.0');
 
     // Travel to the future and unstake
-    cy.increaseTime(EPOCH_LENGTH + 60 * 60); // add 1 hour to be sure unstake time passed
+    cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // add 1 hour to be sure unstake time passed
     cy.findAllByText('Unstake').should('have.length', 2);
     cy.findAllByText('Unstake').first().click();
 
