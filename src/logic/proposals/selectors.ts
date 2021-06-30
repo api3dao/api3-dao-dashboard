@@ -1,4 +1,4 @@
-import { DashboardState, Delegation, Proposal, Proposals, ProposalType, VOTER_STATES } from '../../chain-data';
+import { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage, EPOCH_LENGTH } from '../../contracts';
 import { addSeconds, isAfter } from 'date-fns';
 import { HUNDRED_PERCENT } from '../../contracts';
@@ -151,12 +151,11 @@ export const genesisEpochOverSelector = (isGenesisEpoch: boolean | undefined) =>
 };
 
 export const canVoteSelector = (proposal: Proposal) => {
-  return (
-    proposal.open &&
-    proposal.userVotingPowerAt.gt(0) &&
-    !proposal.delegateAt &&
-    VOTER_STATES[proposal.voterState] === 'Unvoted'
-  );
+  return {
+    isOpen: proposal.open,
+    hasEnoughVotingPower: proposal.userVotingPowerAt.gt(0),
+    isNotDelegated: !proposal.delegateAt,
+  };
 };
 
 export const votingPowerThresholdSelector = (delegation: Delegation | null) => {

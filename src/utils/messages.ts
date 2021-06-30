@@ -13,7 +13,7 @@ export const messages = {
   TX_GENERIC_ERROR: 'An error has occurred. Please try again',
 
   // Validation messages
-  VALIDATION_INPUT_ZERO: 'Please ensure you have entered a non-zero amount',
+  VALIDATION_INPUT_ZERO: 'Please ensure you have entered a positive, non-zero amount',
   VALIDATION_INPUT_PARSE: 'Unable to parse input amount',
   VALIDATION_DEPOSIT_TOO_HIGH: 'Deposit value cannot be higher than the available balance',
   VALIDATION_INPUT_TOO_HIGH: 'Input amount cannot be higher than the available balance',

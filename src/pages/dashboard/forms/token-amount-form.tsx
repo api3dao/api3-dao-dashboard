@@ -24,26 +24,26 @@ const TokenAmountForm = (props: Props) => {
   const { action, onConfirm, maxValue, onChange, onClose, inputValue, closeOnConfirm = true } = props;
 
   // The input field should catch any bad inputs, but just in case, try parse and display any errors
-  const [parseErr, inputBigNum] = goSync(() => parseApi3(inputValue));
+  const [parseErr, parsedInput] = goSync(() => parseApi3(inputValue));
 
   const handleAction = async () => {
-    if (!inputValue || inputValue === '0') {
-      setError(messages.VALIDATION_INPUT_ZERO);
-      return;
-    }
-    if (parseErr || !inputBigNum) {
+    if (parseErr || !parsedInput) {
       setError(messages.VALIDATION_INPUT_PARSE);
       return;
     }
+    if (parsedInput.lte(0)) {
+      setError(messages.VALIDATION_INPUT_ZERO);
+      return;
+    }
     if (maxValue) {
-      if (inputBigNum.gt(maxValue)) {
+      if (parsedInput.gt(maxValue)) {
         setError(messages.VALIDATION_INPUT_TOO_HIGH);
         return;
       }
     }
     setError('');
 
-    const [err] = await go(onConfirm(inputBigNum));
+    const [err] = await go(onConfirm(parsedInput));
     if (err) {
       if (isUserRejection(err)) {
         notifications.info({ message: messages.TX_GENERIC_REJECTED });

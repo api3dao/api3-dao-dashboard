@@ -1,15 +1,16 @@
 import { useState } from 'react';
+import classNames from 'classnames';
 import Button from '../../../../components/button/button';
 import Input from '../../../../components/input/input';
 import { ModalFooter, ModalHeader } from '../../../../components/modal/modal';
 import { useChainData } from '../../../../chain-data';
 import { useApi3Pool } from '../../../../contracts';
-import globalStyles from '../../../../styles/global-styles.module.scss';
-import styles from './delegate.module.scss';
 import { utils, constants } from 'ethers';
 import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, isGoSuccess, isUserRejection } from '../../../../utils';
 import * as notifications from '../../../../components/notifications/notifications';
 import { messages } from '../../../../utils/messages';
+import globalStyles from '../../../../styles/global-styles.module.scss';
+import styles from './delegate.module.scss';
 
 interface Props {
   onClose: () => void;
@@ -81,6 +82,10 @@ const DelegateVotesForm = (props: Props) => {
           }}
           autoFocus
         />
+
+        <div className={classNames(globalStyles.textNormal, styles.subtext)}>
+          You will not be able to vote on proposals while your votes are delegated. Your delegate can vote for you.
+        </div>
       </div>
 
       <ModalFooter>
