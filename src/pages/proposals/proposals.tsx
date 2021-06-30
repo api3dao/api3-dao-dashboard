@@ -62,11 +62,12 @@ const Proposals = () => {
           ? `You need at least ${thresholdPowerText}% of the total vote representation to post a proposal. You represent ${votingPowerText}% of the total voting power${delegatedPowerText}.`
           : 'You need to have enough voting power.',
     },
-    {
-      checked: createNewProposal?.genesisEpochOver ?? false,
-      label: 'The genesis epoch is over.',
-    },
   ];
+
+  // Only display this message during the genesis epoch
+  if (createNewProposal?.genesisEpochOver) {
+    newProposalChecklistItems.unshift({ checked: false, label: 'The genesis epoch is over.' });
+  }
 
   // The button should always be in sync with the checklist
   const canCreateNewProposal = newProposalChecklistItems.every((item) => item.checked);
