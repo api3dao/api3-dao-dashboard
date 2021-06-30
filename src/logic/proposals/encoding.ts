@@ -1,7 +1,7 @@
 import { BigNumber, utils } from 'ethers';
 import { ProposalMetadata, ProposalType } from '../../chain-data';
 import { Api3Agent } from '../../contracts';
-import { goSync, GO_RESULT_INDEX, isGoSuccess } from '../../utils';
+import { errorFn, GoResult, goSync, GO_RESULT_INDEX, isGoSuccess, successFn } from '../../utils';
 
 /**
  * NOTE: Aragon contracts are flexible but this makes it a bit harder to work with it's contracts. We have created a
@@ -33,41 +33,116 @@ export const decodeMetadata = (metadata: string): ProposalMetadata | null => {
   return { version: tokens[0]!, targetSignature: tokens[1]!, title: tokens[2]!, description: tokens[3]! };
 };
 
-export const encodeEvmScript = (formData: NewProposalFormData, api3Agent: Api3Agent) => {
-  // We expect data to be validated at this point
-  const targetParameters = JSON.parse(formData.parameters);
+function encodeFunctionSignature(functionFragment: any) {
+  return utils.hexDataSlice(utils.keccak256(utils.toUtf8Bytes(functionFragment)), 0, 4);
+}
 
-  // Extract the parameter types from the target function signature
-  const parameterTypes = formData.targetSignature
-    .substring(formData.targetSignature.indexOf('(') + 1, formData.targetSignature.indexOf(')'))
-    .split(',');
-  // Encode the parameters using the parameter types
-  const encodedTargetParameters = utils.defaultAbiCoder.encode(parameterTypes, targetParameters);
-  function encodeFunctionSignature(functionFragment: any) {
-    return utils.hexDataSlice(utils.keccak256(utils.toUtf8Bytes(functionFragment)), 0, 4);
+type EncodedEvmScriptError = {
+  field:
+    | keyof Pick<NewProposalFormData, 'parameters' | 'targetSignature' | 'targetValue' | 'targetAddress'>
+    | 'generic';
+  value: string;
+};
+type EncodedEvmScript = GoResult<string, EncodedEvmScriptError>;
+
+export const encodeEvmScript = (formData: NewProposalFormData, api3Agent: Api3Agent): EncodedEvmScript => {
+  const goJsonParams = goSync(() => {
+    const json = JSON.parse(formData.parameters);
+    if (!Array.isArray(json)) throw new Error('Parameters must be an array');
+    return json;
+  });
+  if (!isGoSuccess(goJsonParams)) {
+    return errorFn({ field: 'parameters', value: 'Make sure parameters is a valid JSON array' });
   }
-  const encodedExecuteSignature = encodeFunctionSignature('execute(address,uint256,bytes)');
-  // Build the call data that the EVMScript will use
-  const callData =
-    encodedExecuteSignature +
-    utils.defaultAbiCoder
-      .encode(
-        ['address', 'uint256', 'bytes'],
-        [
-          formData.targetAddress,
-          utils.parseEther(formData.targetValue),
-          encodeFunctionSignature(formData.targetSignature) + encodedTargetParameters.substring(2),
-        ]
-      )
-      .substring(2);
-  // Calculate the length of the call data (in bytes) because that also goes in the EVMScript
-  const callDataLengthInBytes = utils.hexZeroPad(BigNumber.from(callData.substring(2).length / 2).toHexString(), 4);
-  // See the EVMScript layout in
-  // https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
-  const evmScript =
-    '0x00000001' + api3Agent[formData.type].substring(2) + callDataLengthInBytes.substring(2) + callData.substring(2);
+  const targetParameters = goJsonParams[GO_RESULT_INDEX];
 
-  return evmScript;
+  const goTargetSignature = goSync(() => utils.FunctionFragment.from(formData.targetSignature));
+  if (!isGoSuccess(goTargetSignature)) {
+    return errorFn({ field: 'targetSignature', value: 'Please specify a valid contract signature' });
+  }
+  const targetSignature = formData.targetSignature;
+
+  const goExtractParameters = goSync(() => {
+    // Extract the parameter types from the target function signature
+    const parameterTypes = targetSignature
+      .substring(targetSignature.indexOf('(') + 1, targetSignature.indexOf(')'))
+      .split(',')
+      // Function can have zero arguments, in that case we want the array to be empty
+      .filter((s) => s.length > 0);
+
+    if (parameterTypes.length !== targetParameters.length) {
+      throw new Error();
+    }
+
+    return parameterTypes;
+  });
+  if (!isGoSuccess(goExtractParameters)) {
+    return errorFn({ field: 'parameters', value: 'Please specify the correct number of function arguments' });
+  }
+  const parameterTypes = goExtractParameters[GO_RESULT_INDEX];
+
+  const goEncodeParameters = goSync(() => {
+    // Encode the parameters using the parameter types
+    return utils.defaultAbiCoder.encode(parameterTypes, targetParameters);
+  });
+  if (!isGoSuccess(goEncodeParameters)) {
+    return errorFn({
+      field: 'parameters',
+      // NOTE: Unfortunately, when checking for valid contract signature ethers will check only the formatting issues
+      // and will not catch for example a typo "unit256" instead of "uint256". We will catch this here when we try to
+      // encode the parameter types and values.
+      value: 'Ensure parameters match target contract signature',
+    });
+  }
+  const encodedTargetParameters = goEncodeParameters[GO_RESULT_INDEX];
+
+  const targetAddress = formData.targetAddress;
+  if (!utils.isAddress(targetAddress)) {
+    return errorFn({ field: 'targetAddress', value: 'Please specify a valid account address' });
+  }
+
+  const goValue = goSync(() => {
+    const parsed = utils.parseEther(formData.targetValue);
+    if (parsed.lt(0)) throw new Error();
+    return parsed;
+  });
+  if (!isGoSuccess(goValue)) {
+    return errorFn({ field: 'targetValue', value: 'Please enter valid non-negative ETH amount' });
+  }
+  const targetValue = goValue[GO_RESULT_INDEX];
+
+  const goBuildEvmScript = goSync(() => {
+    const encodedExecuteSignature = encodeFunctionSignature('execute(address,uint256,bytes)');
+    // Build the call data that the EVMScript will use
+    const callData =
+      encodedExecuteSignature +
+      utils.defaultAbiCoder
+        .encode(
+          ['address', 'uint256', 'bytes'],
+          [targetAddress, targetValue, encodeFunctionSignature(targetSignature) + encodedTargetParameters.substring(2)]
+        )
+        .substring(2);
+    // Calculate the length of the call data (in bytes) because that also goes in the EVMScript
+    const callDataLengthInBytes = utils.hexZeroPad(BigNumber.from(callData.substring(2).length / 2).toHexString(), 4);
+    // See the EVMScript layout in
+    // https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
+    const evmScript = [
+      '0x00000001',
+      api3Agent[formData.type].substring(2),
+      callDataLengthInBytes.substring(2),
+      callData.substring(2),
+    ].join('');
+
+    return evmScript;
+  });
+  if (!isGoSuccess(goBuildEvmScript)) {
+    return errorFn({
+      field: 'generic',
+      value: 'Unable to encode the EVM script. Please check that all form fields are correct',
+    });
+  }
+
+  return successFn(goBuildEvmScript[GO_RESULT_INDEX]);
 };
 
 export interface DecodedEvmScript {

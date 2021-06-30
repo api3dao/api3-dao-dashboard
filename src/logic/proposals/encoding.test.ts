@@ -1,5 +1,6 @@
-import { BigNumber, utils } from 'ethers';
+import { BigNumber, constants, utils } from 'ethers';
 import { updateImmutably } from '../../chain-data';
+import { GO_ERROR_INDEX, GO_RESULT_INDEX } from '../../utils';
 import {
   decodeEvmScript,
   decodeMetadata,
@@ -55,21 +56,119 @@ describe('metadata', () => {
 
 describe('EVM script', () => {
   test('correct encoding', () => {
-    expect(encodeEvmScript(newFormData, api3Agent)).toBeDefined();
+    const encoded = encodeEvmScript(newFormData, api3Agent);
+    expect(encoded[GO_ERROR_INDEX]).toBeNull();
+    expect(encoded[GO_RESULT_INDEX]).toBeDefined();
   });
 
-  test('encoding incorrect params', () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
-      data.parameters = JSON.stringify([123, 'arg1']);
+  describe('encoding incorrect params', () => {
+    it('incorrect parameter values', () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.parameters = JSON.stringify([123, 'arg1']); // they are in the wrong order
+      });
+      expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
+        field: 'parameters',
+        value: 'Ensure parameters match target contract signature',
+      });
     });
-    expect(() => encodeEvmScript(invalidData, api3Agent)).toThrow();
+
+    it('wrong shape', () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.parameters = JSON.stringify({ param: 'value' });
+      });
+      expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
+        field: 'parameters',
+        value: 'Make sure parameters is a valid JSON array',
+      });
+    });
+
+    it('empty parameters', () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.parameters = '';
+      });
+      expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
+        field: 'parameters',
+        value: 'Make sure parameters is a valid JSON array',
+      });
+    });
+
+    it('wrong number of parameters', () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.parameters = JSON.stringify(['arg1']);
+      });
+      expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
+        field: 'parameters',
+        value: 'Please specify the correct number of function arguments',
+      });
+    });
+  });
+
+  describe('encoding invalid target signature', () => {
+    it('detects parameter type typo', () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.targetSignature = 'functionName(string,unit256)';
+      });
+      expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
+        field: 'parameters',
+        value: 'Ensure parameters match target contract signature',
+      });
+    });
+
+    it('detects when the function is unnecessarily quoted', () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.targetSignature = '"functionName(string,unit256)"';
+      });
+      expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
+        field: 'targetSignature',
+        value: 'Please specify a valid contract signature',
+      });
+    });
+  });
+
+  describe('address validation', () => {
+    it('checks for valid account address', () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.targetAddress = 'surely-not-an-address';
+      });
+      expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
+        field: 'targetAddress',
+        value: 'Please specify a valid account address',
+      });
+    });
+
+    it('empty address', () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.targetAddress = '';
+      });
+      expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
+        field: 'targetAddress',
+        value: 'Please specify a valid account address',
+      });
+    });
+
+    it('zero address is fine', () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.targetAddress = constants.AddressZero;
+      });
+      expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toBe(null);
+    });
+  });
+
+  it('checks for positive ETH amount', () => {
+    const invalidData = updateImmutably(newFormData, (data) => {
+      data.targetValue = '-0.12345';
+    });
+    expect(encodeEvmScript(invalidData, api3Agent)[GO_ERROR_INDEX]).toEqual({
+      field: 'targetValue',
+      value: 'Please enter valid non-negative ETH amount',
+    });
   });
 
   test('decoding', () => {
     const encoded = encodeEvmScript(newFormData, api3Agent);
     const metadata = decodeMetadata(encodeMetadata(newFormData));
 
-    expect(decodeEvmScript(encoded, metadata!)).toEqual({
+    expect(decodeEvmScript(encoded[GO_RESULT_INDEX]!, metadata!)).toEqual({
       targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
       value: utils.parseEther('12'),
       rawParameters: expect.anything(),

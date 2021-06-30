@@ -3,7 +3,7 @@
 // https://docs.cypress.io/guides/tooling/typescript-support.html#Types-for-custom-commands
 declare namespace Cypress {
   interface Chainable {
-    increaseTime(timeInSeconds: number): Chainable<void>;
+    increaseTimeAndRelogin(timeInSeconds: number): Chainable<void>;
     login(): Chainable<void>;
     createChainSnapshot(name: string): Chainable<void>;
     useChainSnapshot(name: string): Chainable<void>;

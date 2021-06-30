@@ -1,5 +1,4 @@
 import { useState, ReactNode } from 'react';
-import { utils } from 'ethers';
 import { ProposalType } from '../../../chain-data';
 import Button from '../../../components/button/button';
 import RadioButton from '../../../components/radio-button/radio-button';
@@ -9,8 +8,9 @@ import Tooltip from '../../../components/tooltip/tooltip';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import { encodeEvmScript, NewProposalFormData } from '../../../logic/proposals/encoding';
 import { Api3Agent } from '../../../contracts';
-import { filterAlphanumerical, goSync, images } from '../../../utils';
+import { filterAlphanumerical, GO_ERROR_INDEX, images, isGoSuccess } from '../../../utils';
 import styles from './new-proposal-form.module.scss';
+import classNames from 'classnames';
 
 interface ProposalFormItemProps {
   children: ReactNode;
@@ -51,7 +51,10 @@ const NewProposalForm = (props: Props) => {
     title: '',
     description: '',
     targetAddress: '',
+    targetSignature: '',
     parameters: '',
+    generic: '',
+    targetValue: '',
   };
   const [errors, setErrors] = useState(initialErrorsState);
 
@@ -69,20 +72,10 @@ const NewProposalForm = (props: Props) => {
       foundErrors = true;
     }
 
-    if (!utils.isAddress(targetAddress)) {
-      newErrors.targetAddress = 'Please specify a valid account address';
-      foundErrors = true;
-    }
-
-    const [jsonParseError] = goSync(() => JSON.parse(formData.parameters));
-    if (jsonParseError) {
-      newErrors.parameters = 'Make sure parameters are in valid JSON format';
-      foundErrors = true;
-    }
-
-    const [encodeError] = goSync(() => encodeEvmScript(formData, api3Agent));
-    if (encodeError) {
-      newErrors.parameters = 'Ensure parameters match target contract signature';
+    const goEncodeEvmScript = encodeEvmScript(formData, api3Agent);
+    if (!isGoSuccess(goEncodeEvmScript)) {
+      const { field, value } = goEncodeEvmScript[GO_ERROR_INDEX];
+      newErrors[field] = value;
       foundErrors = true;
     }
 
@@ -125,7 +118,7 @@ const NewProposalForm = (props: Props) => {
       </ProposalFormItem>
 
       <ProposalFormItem
-        name={<label htmlFor="description">description</label>}
+        name={<label htmlFor="description">Description</label>}
         tooltip="Description of the proposal that will be displayed with its details."
       >
         <Textarea
@@ -155,6 +148,7 @@ const NewProposalForm = (props: Props) => {
           onChange={(e) => setTargetSignature(e.target.value)}
           block
         />
+        {errors.targetSignature && <p className={styles.error}>{errors.targetSignature}</p>}
       </ProposalFormItem>
 
       <ProposalFormItem
@@ -168,6 +162,7 @@ const NewProposalForm = (props: Props) => {
           onChange={(e) => setTargetValue(e.target.value)}
           block
         />
+        {errors.targetValue && <p className={styles.error}>{errors.targetValue}</p>}
       </ProposalFormItem>
 
       <ProposalFormItem
@@ -205,6 +200,7 @@ const NewProposalForm = (props: Props) => {
         >
           Create
         </Button>
+        {errors.generic && <p className={classNames(styles.error, styles.marginTopMd)}>{errors.generic}</p>}
       </ModalFooter>
     </>
   );

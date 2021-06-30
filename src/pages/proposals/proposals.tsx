@@ -20,7 +20,7 @@ import Delegation from './delegation';
 import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
 import { notifications } from '../../components/notifications/notifications';
-import { formatApi3, go, images, isUserRejection, messages, round } from '../../utils';
+import { formatApi3, go, GO_RESULT_INDEX, images, isGoSuccess, isUserRejection, messages, round } from '../../utils';
 import styles from './proposals.module.scss';
 
 const Proposals = () => {
@@ -74,10 +74,14 @@ const Proposals = () => {
   const onCreateProposal = async (formData: NewProposalFormData) => {
     if (!api3Token || !api3Voting || !api3Agent) return null;
 
+    const goEncodeEvmScript = encodeEvmScript(formData, api3Agent);
+    // Should not happen, because user will not be allowed to press the create proposal button if there are errors
+    if (!isGoSuccess(goEncodeEvmScript)) return null;
+
     // NOTE: For some reason only this 'ugly' version is available on the contract
     const [err, tx] = await go(
       api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](
-        encodeEvmScript(formData, api3Agent),
+        goEncodeEvmScript[GO_RESULT_INDEX],
         encodeMetadata(formData),
         true,
         true
