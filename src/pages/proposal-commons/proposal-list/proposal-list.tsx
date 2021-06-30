@@ -76,7 +76,7 @@ const ProposalList = (props: Props) => {
       {proposals?.map((p) => {
         const votingSliderData = voteSliderSelector(p);
         const navlink = {
-          base: p.open ? 'proposals' : 'history',
+          base: p.open ? 'governance' : 'history',
           typeAndId: encodeProposalTypeAndId(p.type, voteIdFormat(p.voteId)),
         };
 
