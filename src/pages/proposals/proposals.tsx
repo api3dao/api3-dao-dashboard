@@ -129,11 +129,7 @@ const Proposals = () => {
         noMobileBorders
       />
       <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)} size="large">
-        <NewProposalForm
-          onClose={() => setOpenNewProposalModal(false)}
-          onConfirm={onCreateProposal}
-          api3Agent={api3Agent!}
-        />
+        <NewProposalForm onConfirm={onCreateProposal} />
       </Modal>
     </Layout>
   );

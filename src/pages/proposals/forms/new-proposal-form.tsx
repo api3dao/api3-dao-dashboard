@@ -6,9 +6,9 @@ import Input from '../../../components/input/input';
 import Textarea from '../../../components/textarea/textarea';
 import Tooltip from '../../../components/tooltip/tooltip';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
-import { encodeEvmScript, NewProposalFormData } from '../../../logic/proposals/encoding';
-import { Api3Agent } from '../../../contracts';
-import { filterAlphanumerical, GO_ERROR_INDEX, images, isGoSuccess } from '../../../utils';
+import { encodeEvmScript, encodeMetadata, NewProposalFormData } from '../../../logic/proposals/encoding';
+import { useApi3AgentAddresses, useApi3Voting } from '../../../contracts';
+import { filterAlphanumerical, go, GO_ERROR_INDEX, GO_RESULT_INDEX, images, isGoSuccess } from '../../../utils';
 import styles from './new-proposal-form.module.scss';
 import classNames from 'classnames';
 
@@ -31,13 +31,14 @@ const ProposalFormItem = ({ children, name, tooltip }: ProposalFormItemProps) =>
 );
 
 interface Props {
-  onClose: () => void;
   onConfirm: (formData: NewProposalFormData) => void;
-  api3Agent: Api3Agent;
 }
 
 const NewProposalForm = (props: Props) => {
-  const { onConfirm, api3Agent } = props;
+  const { onConfirm } = props;
+  // We expect the account to be connected to a valid chain if this modal is opened
+  const api3Agent = useApi3AgentAddresses()!;
+  const api3Voting = useApi3Voting()!;
 
   const [type, setType] = useState<ProposalType>('primary');
   const [title, setTitle] = useState('');
@@ -58,7 +59,7 @@ const NewProposalForm = (props: Props) => {
   };
   const [errors, setErrors] = useState(initialErrorsState);
 
-  const validateForm = (formData: NewProposalFormData) => {
+  const validateForm = async (formData: NewProposalFormData) => {
     const newErrors = { ...initialErrorsState };
     let foundErrors = false;
 
@@ -77,6 +78,22 @@ const NewProposalForm = (props: Props) => {
       const { field, value } = goEncodeEvmScript[GO_ERROR_INDEX];
       newErrors[field] = value;
       foundErrors = true;
+    }
+
+    if (isGoSuccess(goEncodeEvmScript)) {
+      // NOTE: For some reason only this 'ugly' version is available on the contract
+      const goTryNewVoteTx = await go(
+        api3Voting[formData.type].callStatic['newVote(bytes,string,bool,bool)'](
+          goEncodeEvmScript[GO_RESULT_INDEX],
+          encodeMetadata(formData),
+          true,
+          true
+        )
+      );
+      if (!isGoSuccess(goTryNewVoteTx)) {
+        newErrors.generic = 'Unable to create such proposal because the transaction would revert';
+        foundErrors = true;
+      }
     }
 
     setErrors(newErrors);
@@ -182,7 +199,7 @@ const NewProposalForm = (props: Props) => {
         <Button
           type="secondary"
           size="large"
-          onClick={() => {
+          onClick={async () => {
             const formData = {
               type,
               description,
@@ -193,7 +210,8 @@ const NewProposalForm = (props: Props) => {
               title,
             };
 
-            if (!validateForm(formData)) {
+            const foundErrors = await validateForm(formData);
+            if (!foundErrors) {
               onConfirm(formData);
             }
           }}

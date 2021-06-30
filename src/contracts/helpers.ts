@@ -56,4 +56,5 @@ export const isZeroAddress = (address: string) => address === constants.AddressZ
 // export const EPOCH_LENGTH = 7 * 24 * 60 * 60;
 
 // Temporary value for user tests
-export const EPOCH_LENGTH = 60 * 60;
+// export const EPOCH_LENGTH = 60 * 60;
+export const EPOCH_LENGTH = 60;
