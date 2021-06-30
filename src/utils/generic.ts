@@ -9,13 +9,13 @@ type ErrorWithCode = Error & { code?: number };
 export const isUserRejection = (err: ErrorWithCode) => err.code === 4001 || err.code === 4100;
 
 export type GoResultSuccess<T> = [null, T];
-export type GoResultError = [Error, null];
-export type GoResult<T> = GoResultSuccess<T> | GoResultError;
+export type GoResultError<E = Error> = [E, null];
+export type GoResult<T, E = Error> = GoResultSuccess<T> | GoResultError<E>;
 export const GO_ERROR_INDEX = 0;
 export const GO_RESULT_INDEX = 1;
 
-const successFn = <T>(value: T): [null, T] => [null, value];
-const errorFn = (err: Error): [Error, null] => [err, null];
+export const successFn = <T>(value: T): [null, T] => [null, value];
+export const errorFn = <E = Error>(err: E): [E, null] => [err, null];
 
 export const goSync = <T>(fn: () => T): GoResult<T> => {
   try {
@@ -37,7 +37,7 @@ export const go = async <T>(fn: Promise<T> | (() => Promise<T>)): Promise<GoResu
   }
 };
 
-export const isGoSuccess = <T>(result: GoResult<T>): result is GoResultSuccess<T> => !result[GO_ERROR_INDEX];
+export const isGoSuccess = <T, E>(result: GoResult<T, E>): result is GoResultSuccess<T> => !result[GO_ERROR_INDEX];
 
 export const rethrowError = (error: Error) => {
   throw error;
