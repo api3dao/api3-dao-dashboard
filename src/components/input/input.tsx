@@ -15,9 +15,18 @@ type Props = {
   id?: string;
   block?: boolean;
   autoFocus?: boolean;
+  allowNegative?: boolean;
 };
 
-const Input = ({ size = 'normal', type = 'text', block, autosize, disabled, ...componentProps }: Props) => {
+const Input = ({
+  size = 'normal',
+  type = 'text',
+  block,
+  autosize,
+  disabled,
+  allowNegative,
+  ...componentProps
+}: Props) => {
   const CustomNumberInput = useCallback(
     (props: any) => {
       return (
@@ -69,6 +78,7 @@ const Input = ({ size = 'normal', type = 'text', block, autosize, disabled, ...c
           })}
           {...componentProps}
           customInput={AutosizeInput}
+          allowNegative={allowNegative || false}
           decimalScale={18}
         />
       )}
