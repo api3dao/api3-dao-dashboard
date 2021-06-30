@@ -36,6 +36,8 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
   // to localhost. The network name is needed to display the "Unsupported Network"
   // message to the user if required and in "connected to" status panel.
   if (networkName === 'unknown') networkName = 'localhost';
+  // Convert "homestead" to mainnet for convenience
+  if (networkName === 'homestead') networkName = 'mainnet';
 
   const networdData: Partial<ChainData> = {
     provider,
