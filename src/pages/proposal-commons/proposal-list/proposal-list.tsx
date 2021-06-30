@@ -38,6 +38,8 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
       ? `Primary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`
       : `Secondary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`;
 
+  const proposalId = `#${voteIdFormat(proposal.voteId)} ${proposal.type}`;
+
   return (
     <div
       className={classNames(styles.proposalItemBox, {
@@ -45,12 +47,11 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
         [styles.mobile]: device === 'mobile',
       })}
     >
-      <p className={styles.proposalItemVoteId}>#{voteIdFormat(proposal.voteId)}</p>
       <ProposalStatus proposal={proposal} />
       <div className={styles.proposalItemTag}>
         <Tooltip overlay={tooltipContent}>
           <Tag type={proposal.type}>
-            <span className={globalStyles.capitalize}>{proposal.type}</span>
+            <span className={globalStyles.capitalize}>{proposalId}</span>
           </Tag>
         </Tooltip>
       </div>
@@ -76,7 +77,7 @@ const ProposalList = (props: Props) => {
       {proposals?.map((p) => {
         const votingSliderData = voteSliderSelector(p);
         const navlink = {
-          base: p.open ? 'proposals' : 'history',
+          base: p.open ? 'governance' : 'history',
           typeAndId: encodeProposalTypeAndId(p.type, voteIdFormat(p.voteId)),
         };
 

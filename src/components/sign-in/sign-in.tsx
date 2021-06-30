@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
@@ -171,7 +171,7 @@ const SignIn = ({ dark, position }: Props) => {
     // Disable localhost network on non-development environment
     if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
     else return true;
-  }).join(', ');
+  });
   const isSupportedNetwork = !isSignedIn || supportedNetworks.includes(networkName);
 
   return (
@@ -194,12 +194,22 @@ const SignIn = ({ dark, position }: Props) => {
           <img className={styles.unsupportedNetworkIcon} src={images.unsupportedNetwork} alt="network not supported" />
           <h5>Unsupported chain!</h5>
 
-          <p className={globalStyles.mtXl}>Supported networks are: {supportedNetworks}</p>
+          <p className={globalStyles.mtXl}>
+            Supported networks:{' '}
+            {supportedNetworks
+              .map((network) => <b>{network}</b>)
+              .map((Component, i) => (
+                <Fragment key={i}>
+                  {i !== 0 && ', '}
+                  {Component}
+                </Fragment>
+              ))}
+          </p>
           <p className={globalStyles.mtXl}>
             Current network: <b>{networkName}</b>
           </p>
 
-          <p className={globalStyles.mtXl}>Please use your wallet and connect to one of the supported networks</p>
+          <p className={globalStyles.mtXl}>Please connect your wallet to a supported network.</p>
         </div>
       </GenericModal>
     </>

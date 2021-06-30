@@ -110,7 +110,7 @@ const Proposals = () => {
       <BorderedBox
         header={
           <Header>
-            <h5>Proposals</h5>
+            <h5>Active proposals</h5>
             <div>
               <Button onClick={() => setOpenNewProposalModal(true)} size="large" disabled={!canCreateNewProposal}>
                 + New proposal

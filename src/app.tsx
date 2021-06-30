@@ -16,7 +16,7 @@ function App() {
       <PageContainer>
         <Router>
           <Switch>
-            <Route path="/proposals/:typeAndId" exact>
+            <Route path="/governance/:typeAndId" exact>
               <ProposalDetails />
             </Route>
             <Route path="/governance" exact>
