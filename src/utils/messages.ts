@@ -33,6 +33,9 @@ export const messages = {
   FAILED_TO_LOAD_GENESIS_EPOCH: 'Unable to load the current epoch',
   INVALID_PROPOSAL_FORMAT: 'This proposal was not created through the DAO dashboard and cannot to be displayed',
   PROPOSAL_NOT_FOUND: `Proposal not found`,
+
+  // Vesting errors
+  FAILED_TO_LOAD_VESTING_DATA: 'Failed to load vesting data',
 };
 
 // TODO: these messages should change depending on the final designs
@@ -106,5 +109,15 @@ export const transactionMessages: { [key in TransactionType]: PendingTransaction
     start: 'Executing proposal...',
     success: 'Successfully executed proposal!',
     error: 'Proposal execution failed',
+  },
+  'update-timelock-status': {
+    start: 'Updating timelock status...',
+    success: 'Successfully updated timelock status!',
+    error: 'Timelock update failed',
+  },
+  'withdraw-to-pool': {
+    start: 'Withdrawing to pool...',
+    success: 'Successfully withdrawn to pool!',
+    error: 'Withdrawal to pool failed',
   },
 };

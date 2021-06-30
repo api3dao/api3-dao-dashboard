@@ -7,6 +7,7 @@ import {
   Api3Token__factory as Api3TokenFactory,
   Api3Voting__factory as Api3VotingFactory,
   Convenience__factory as ConvenienceFactory,
+  TimelockManager__factory as TimelockManagerFactory,
 } from '../generated-contracts';
 import { initialChainData } from '../chain-data/state';
 
@@ -65,6 +66,16 @@ export const useConvenience = () => {
 
     return ConvenienceFactory.connect(contracts.convenience, signer);
   }, [provider, contracts, signer]);
+};
+
+export const useTimelockManager = () => {
+  const { provider, contracts } = useChainData();
+
+  return useMemo(() => {
+    if (!provider || !contracts) return null;
+
+    return TimelockManagerFactory.connect(contracts.timelockManager, provider.getSigner());
+  }, [provider, contracts]);
 };
 
 /**

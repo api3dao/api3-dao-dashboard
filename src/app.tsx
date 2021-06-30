@@ -6,6 +6,7 @@ import Proposals from './pages/proposals';
 import ProposalDetails from './pages/proposal-commons/proposal-details';
 import HistoryDetails from './pages/history-details';
 import History from './pages/history';
+import Vesting from './pages/vesting';
 import './styles/variables.module.scss';
 import NotFoundPage from './pages/not-found';
 
@@ -15,7 +16,7 @@ function App() {
       <PageContainer>
         <Router>
           <Switch>
-            <Route path="/proposals/:typeAndId" exact>
+            <Route path="/governance/:typeAndId" exact>
               <ProposalDetails />
             </Route>
             <Route path="/governance" exact>
@@ -26,6 +27,9 @@ function App() {
             </Route>
             <Route path="/history" exact>
               <History />
+            </Route>
+            <Route path="/vesting" exact>
+              <Vesting />
             </Route>
             <Route path="/" exact>
               <Dashboard />

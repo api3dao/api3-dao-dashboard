@@ -44,7 +44,7 @@ const History = () => {
       <BorderedBox
         header={
           <div className={styles.borderBoxHeader}>
-            <h5>Proposals</h5>
+            <h5>Past proposals</h5>
             <div>
               <Button
                 onClick={() => applyHistoryFilter('primary')}
