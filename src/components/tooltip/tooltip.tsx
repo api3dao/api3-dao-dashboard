@@ -26,6 +26,7 @@ const Tooltip = ({ children, overlay }: Props) => {
       placement="bottom"
       overlayClassName={styles.tooltip}
       overlayInnerStyle={overlayInnerStyle}
+      mouseEnterDelay={0.2}
     >
       {children}
     </RCTooltip>
