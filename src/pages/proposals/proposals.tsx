@@ -43,9 +43,11 @@ const Proposals = () => {
   const votingThresholdPercent = votingPowerThresholdSelector(delegation);
 
   const thresholdPowerText = votingThresholdPercent ? formatApi3(votingThresholdPercent) : null;
-  const votingPowerText = createNewProposal?.totalVotingPowerPercentage
+
+  const votingPower = createNewProposal?.totalVotingPowerPercentage
     ? round(createNewProposal.totalVotingPowerPercentage, 2)
-    : null;
+    : 0;
+
   const delegatedPowerText = createNewProposal?.delegatedVotingPowerPercentage
     ? ` (${round(createNewProposal.delegatedVotingPowerPercentage, 2)}% delegated)`
     : '';
@@ -57,10 +59,9 @@ const Proposals = () => {
     },
     {
       checked: createNewProposal?.hasEnoughVotingPower ?? false,
-      label:
-        thresholdPowerText && votingPowerText
-          ? `You need at least ${thresholdPowerText}% of the total vote representation to post a proposal. You represent ${votingPowerText}% of the total voting power${delegatedPowerText}.`
-          : 'You need to have enough voting power.',
+      label: thresholdPowerText
+        ? `You need at least ${thresholdPowerText}% of the total vote representation to post a proposal. You represent ${votingPower}% of the total voting power${delegatedPowerText}.`
+        : 'You need to have enough voting power.',
     },
   ];
 
