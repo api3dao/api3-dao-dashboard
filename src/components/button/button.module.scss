@@ -69,6 +69,13 @@
     text-decoration: underline;
     padding: 0;
   }
+
+  &.textLink {
+    color: $secondary-color;
+    border: 0;
+    text-decoration: none;
+    padding: 0;
+  }
 }
 
 .buttonUnderline {

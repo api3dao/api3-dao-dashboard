@@ -105,7 +105,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   return (
     <div>
       <div className={styles.proposalDetailsSubheader}>
-        <Button onClick={() => history.goBack()} type="text" btnClassName={styles.back}>
+        <Button onClick={() => history.goBack()} type="text-link">
           <img src={images.arrowLeft} alt="back" />
           Back
         </Button>
