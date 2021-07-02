@@ -1,10 +1,11 @@
-// Images list here will also be preloaded in the document head
+// Images list here will also be prefetched in the document head
 export const images = {
   api3LogoDark: '/api3-logo-dark.svg',
   api3LogoWhite: '/api3-logo-white.svg',
   apiIcon: '/api-icon.svg',
   arrowDropdown: '/arrow-dropdown.svg',
   arrowDropdownDark: '/arrow-dropdown-dark.svg',
+  arrowLeft: '/arrow-left.svg',
   arrowRight: '/arrow-right.svg',
   checkboxEmpty: '/checkbox-empty.svg',
   checkboxFilled: '/checkbox-filled.svg',

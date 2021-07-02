@@ -31,3 +31,10 @@ export const useIsMount = () => {
 export const useQueryParams = () => {
   return new URLSearchParams(useLocation().search);
 };
+
+export const useScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+};

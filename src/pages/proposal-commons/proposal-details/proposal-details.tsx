@@ -1,6 +1,7 @@
 import { BigNumber, utils } from 'ethers';
 import { useState } from 'react';
 import { useParams } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import classNames from 'classnames';
 import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout/layout';
@@ -22,7 +23,7 @@ import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
 import NotFoundPage from '../../not-found';
-import { images, messages } from '../../../utils';
+import { images, messages, useScrollToTop } from '../../../utils';
 
 interface ProposalDetailsContentProps {
   type: ProposalType;
@@ -50,6 +51,7 @@ interface RouterParameters {
 }
 
 const ProposalDetailsPage = () => {
+  useScrollToTop();
   const { typeAndId } = useParams<RouterParameters>();
   const decoded = decodeProposalTypeAndId(typeAndId);
 
@@ -62,6 +64,7 @@ interface ProposalDetailsProps {
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
+  const history = useHistory();
   const { chainId } = useChainData();
   const { proposal } = props;
   const [voteModalOpen, setVoteModalOpen] = useState(false);
@@ -85,15 +88,15 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const canVoteChecklist = [
     {
       checked: canVoteData.hasEnoughVotingPower,
-      label: 'You have staked API3 tokens',
+      label: 'You have staked API3 tokens.',
     },
     {
       checked: canVoteData.isOpen,
-      label: 'The proposal is open for voting',
+      label: 'The proposal is open for voting.',
     },
     {
       checked: canVoteData.isNotDelegated,
-      label: 'Your voting power has not been delegated to another address',
+      label: 'Your voting power has not been delegated to another address.',
     },
   ];
 
@@ -102,13 +105,20 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   return (
     <div>
       <div className={styles.proposalDetailsSubheader}>
-        <p className={`${globalStyles.tertiaryColor} ${globalStyles.medium}`}>#{proposal.voteId.toString()}</p>
-        <Tag type={proposal.type}>
-          <span className={globalStyles.capitalize}>{proposal.type}</span>
-        </Tag>
+        <Button onClick={() => history.goBack()} type="text" btnClassName={styles.back}>
+          <img src={images.arrowLeft} alt="back" />
+          Back
+        </Button>
       </div>
       <div className={styles.proposalDetailsHeader}>
-        <p className={styles.proposalDetailsTitle}>{proposal.metadata.title}</p>
+        <div className={styles.proposalDetailsTitle}>
+          <p>{proposal.metadata.title}</p>
+          <Tag type={proposal.type}>
+            <span className={globalStyles.capitalize}>
+              #{proposal.voteId.toString()} {proposal.type}
+            </span>
+          </Tag>
+        </div>
         <div className={styles.proposalDetailsTimer}>
           <Timer size="large" deadline={proposal.deadline} showDeadline />
         </div>

@@ -5,6 +5,11 @@
   vertical-align: middle;
 }
 
+.back {
+  color: $secondary-color;
+  text-decoration: none !important;
+}
+
 .proposalDetailsSubheader {
   display: flex;
   align-items: center;
