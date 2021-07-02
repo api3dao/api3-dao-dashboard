@@ -31,6 +31,7 @@ const History = () => {
   useHistoryProposals();
   useTreasuryAndDelegation();
 
+  // useEffect is used because useState behaves asynchronously using onClick handler
   useEffect(() => {
     if (checkedPrimary && !checkedSecondary) {
       history.replace(`/history?type=primary`);
