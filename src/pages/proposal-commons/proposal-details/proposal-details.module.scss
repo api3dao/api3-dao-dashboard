@@ -1,5 +1,10 @@
 @import '../../../styles/variables.module.scss';
 
+.backBtn {
+  color: $secondary-color;
+  text-decoration: none !important;
+}
+
 .proposalDetailsSubheader {
   display: flex;
   align-items: center;
