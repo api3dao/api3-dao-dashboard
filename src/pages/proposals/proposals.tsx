@@ -66,7 +66,7 @@ const Proposals = () => {
   ];
 
   // Only display this message during the genesis epoch
-  if (createNewProposal?.genesisEpochOver) {
+  if (!createNewProposal?.genesisEpochOver) {
     newProposalChecklistItems.unshift({ checked: false, label: 'The genesis epoch is over.' });
   }
 
