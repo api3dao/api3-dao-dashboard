@@ -110,19 +110,23 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
           Back
         </Button>
       </div>
+
       <div className={styles.proposalDetailsHeader}>
-        <div className={styles.proposalDetailsTitle}>
-          <p>{proposal.metadata.title}</p>
-          <Tag type={proposal.type}>
-            <span className={globalStyles.capitalize}>
-              #{proposal.voteId.toString()} {proposal.type}
-            </span>
-          </Tag>
+        <div>
+          <h4 className={styles.proposalDetailsTitle}>{proposal.metadata.title}</h4>
+          <div className={styles.proposalTag}>
+            <Tag type={proposal.type}>
+              <span className={globalStyles.capitalize}>
+                #{proposal.voteId.toString()} {proposal.type}
+              </span>
+            </Tag>
+          </div>
         </div>
         <div className={styles.proposalDetailsTimer}>
           <Timer size="large" deadline={proposal.deadline} showDeadline />
         </div>
       </div>
+
       <ProposalStatus proposal={proposal} large />
       <div className={styles.proposalDetailsVoteSection}>
         <VoteSlider {...voteSliderData} size="large" />
