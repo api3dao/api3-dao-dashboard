@@ -40,7 +40,7 @@ const DelegateVotesForm = (props: Props) => {
 
     const goDelegate = await go(api3Pool.userDelegate(delegationAddress));
     if (!isGoSuccess(goDelegate)) {
-      notifications.error({ message: messages.UNABLE_TO_LOAD_DELEGATE, errorOrMessage: goDelegate[GO_ERROR_INDEX] });
+      notifications.error({ message: messages.FAILED_TO_LOAD_DELEGATE, errorOrMessage: goDelegate[GO_ERROR_INDEX] });
       return;
     }
 
