@@ -59,7 +59,7 @@ const Delegation = () => {
             Update delegation
           </Button>
           <TooltipChecklist items={delegateChecklistItems}>
-            <img src={images.help} alt="delegation help" className={styles.help} />
+            <img src={images.help} alt="delegation help" className={globalStyles.helpIcon} />
           </TooltipChecklist>
           <Modal open={openChooseDelegateActionModal} onClose={() => setOpenChooseDelegateActionModal(false)}>
             <ChooseDelegateAction
@@ -105,7 +105,7 @@ const Delegation = () => {
             Delegate
           </Button>
           <TooltipChecklist items={delegateChecklistItems}>
-            <img src={images.help} alt="delegation help" className={styles.help} />
+            <img src={images.help} alt="delegation help" className={globalStyles.helpIcon} />
           </TooltipChecklist>
         </div>
       )}

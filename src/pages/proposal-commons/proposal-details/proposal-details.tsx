@@ -132,7 +132,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             Vote
           </Button>
           <TooltipChecklist items={canVoteChecklist}>
-            <img src={images.help} alt="voting help" className={styles.help} />
+            <img src={images.help} alt="voting help" className={globalStyles.helpIcon} />
           </TooltipChecklist>
         </div>
         {proposal.delegateAt && (

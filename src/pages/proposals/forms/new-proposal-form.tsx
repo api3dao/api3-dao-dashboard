@@ -10,6 +10,7 @@ import { encodeEvmScript, NewProposalFormData } from '../../../logic/proposals/e
 import { Api3Agent } from '../../../contracts';
 import { filterAlphanumerical, GO_ERROR_INDEX, images, isGoSuccess } from '../../../utils';
 import styles from './new-proposal-form.module.scss';
+import globalStyles from '../../../styles/global-styles.module.scss';
 import classNames from 'classnames';
 
 interface ProposalFormItemProps {
@@ -23,7 +24,7 @@ const ProposalFormItem = ({ children, name, tooltip }: ProposalFormItemProps) =>
     <div className={styles.newProposalFormName}>
       {name}
       <Tooltip overlay={tooltip}>
-        <img src={images.help} alt="help" className={styles.help} />
+        <img src={images.help} alt="help" className={globalStyles.helpIcon} />
       </Tooltip>
     </div>
     <div className={styles.newProposalFormInput}>{children}</div>

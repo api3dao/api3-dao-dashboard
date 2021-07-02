@@ -100,7 +100,7 @@ const Dashboard = () => {
                     + Stake
                   </Button>
                   <Tooltip overlay="You need to deposit API3 tokens before staking">
-                    <img src={images.help} alt="new proposal help" className={styles.help} />
+                    <img src={images.help} alt="new proposal help" className={globalStyles.helpIcon} />
                   </Tooltip>
                 </div>
               </Header>
