@@ -3,7 +3,6 @@ import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
 import { images, preloadImageList } from './utils';
 import { useTransactionNotifications } from './contracts';
-import WelcomeModal from './welcome-modal';
 
 interface Props {
   children: JSX.Element;
@@ -31,7 +30,6 @@ const PageContainer = (props: Props) => {
         </Helmet>
 
         <ToastContainer />
-        <WelcomeModal />
 
         {props.children}
       </HelmetProvider>

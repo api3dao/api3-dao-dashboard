@@ -1,5 +1,9 @@
 @import '../../styles/variables.module.scss';
 
+$footer-height: 120px;
+$footer-height-media-md: 200px;
+$footer-height-media-sm: 280px;
+
 .layout {
   background: $background-gradient;
   min-height: 100vh;
@@ -34,6 +38,52 @@
 
 .layoutTexture {
   position: absolute;
-  bottom: 0;
+  bottom: $footer-height;
   right: 0;
+
+  @media (max-width: $max-md) {
+    bottom: $footer-height-media-md;
+  }
+
+  @media (max-width: $max-sm) {
+    bottom: $footer-height-media-sm;
+  }
+}
+
+.footer {
+  height: $footer-height;
+  display: flex;
+
+  @media (max-width: $max-md) {
+    height: $footer-height-media-md;
+  }
+
+  @media (max-width: $max-sm) {
+    height: $footer-height-media-sm;
+  }
+
+  &Content {
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 20vw;
+    font-size: $text-small;
+
+    @media (max-width: $max-sm) {
+      flex-direction: column;
+    }
+  }
+}
+
+.externalLinkButton {
+  button {
+    color: $secondary-color;
+  }
+}
+
+.linkSeparator {
+  @media (max-width: $max-lg) {
+    display: none; // Hide the link separators in smaller resolutions
+  }
 }
