@@ -25,15 +25,7 @@ const UnstakeBanner = (props: Props) => {
 
   const handleUnstakeAndWithdraw = async () => {
     if (!api3Pool) return;
-    const [err, tx] = await go(api3Pool.unstakeAndWithdraw());
-    if (err) {
-      if (isUserRejection(err!)) {
-        notifications.info({ message: messages.TX_GENERIC_REJECTED });
-        return;
-      }
-      notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: err });
-      return;
-    }
+    const tx = await handleTransactionError(api3Pool.unstakeAndWithdraw());
     if (tx) {
       setChainData('Save unstake and Withdraw transaction', {
         transactions: [...transactions, { type: 'unstake-withdraw', tx }],
