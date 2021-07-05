@@ -140,8 +140,8 @@ const useReloadHistoryProposals = () => {
 
     const goResponse = await go(loadProposals());
     if (!isGoSuccess(goResponse)) {
-      // TODO: error handling
-      console.error('Unable to reload history proposals', goResponse[GO_ERROR_INDEX]);
+      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: goResponse[GO_ERROR_INDEX] });
+      return;
     }
   }, [api3Voting, convenience, userAccount, setChainData]);
 

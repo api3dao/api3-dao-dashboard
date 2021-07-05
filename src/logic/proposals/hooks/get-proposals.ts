@@ -4,7 +4,7 @@ import { Api3Voting, Convenience } from '../../../generated-contracts';
 import { Proposal } from '../../../chain-data';
 import { decodeMetadata } from '../encoding';
 import { blockTimestampToDate } from '../../../utils';
-import { HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
+import { EPOCH_LENGTH, HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 
 const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNumber();
@@ -28,9 +28,7 @@ export const getProposals = async (
     };
   });
 
-  // TODO: load this just once for all proposals and save to state
-  const votingTime = await api3Voting.voteTime();
-
+  const votingTime = EPOCH_LENGTH;
   const voteIdsToLoad = startVotesInfo.map((log) => log.voteId);
   const openVoteIdsStr = openVoteIds.map((id) => id.toString());
   const staticVoteData = await convenience.getStaticVoteData(VOTING_APP_IDS[type], userAccount, voteIdsToLoad);

@@ -80,8 +80,8 @@ const Proposals = () => {
     // Should not happen, because user will not be allowed to press the create proposal button if there are errors
     if (!isGoSuccess(goEncodeEvmScript)) return null;
 
-    // NOTE: For some reason only this 'ugly' version is available on the contract
     const [err, tx] = await go(
+      // NOTE: For some reason only this 'ugly' version is available on the contract
       api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](
         goEncodeEvmScript[GO_RESULT_INDEX],
         encodeMetadata(formData),

@@ -5,6 +5,8 @@ import { NegativeVoteIcon, PositiveVoteIcon } from '../../vote-slider/vote-slide
 import Button from '../../../../components/button/button';
 import styles from './proposal-status.module.scss';
 import { useApi3Voting } from '../../../../contracts';
+import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, isGoSuccess, isUserRejection, messages } from '../../../../utils';
+import { notifications } from '../../../../components/notifications/notifications';
 
 interface Props {
   proposal: Proposal;
@@ -47,11 +49,21 @@ const ProposalStatus = (props: Props) => {
           className={styles.execute}
           onClick={async () => {
             if (!voting) return;
-            const tx = await voting[proposal.type].executeVote(proposal.voteId);
+            const goTransaction = await go(voting[proposal.type].executeVote(proposal.voteId));
+            if (!isGoSuccess(goTransaction)) {
+              if (isUserRejection(goTransaction[GO_ERROR_INDEX])) {
+                notifications.info({ message: messages.TX_GENERIC_REJECTED });
+                return;
+              }
+              notifications.error({
+                message: messages.TX_GENERIC_ERROR,
+                errorOrMessage: goTransaction[GO_ERROR_INDEX],
+              });
+              return;
+            }
             setChainData('Save execute transaction', (state) => ({
-              transactions: [...state.transactions, { type: 'execute', tx }],
+              transactions: [...state.transactions, { type: 'execute', tx: goTransaction[GO_RESULT_INDEX] }],
             }));
-            await voting[proposal.type].executeVote(proposal.voteId);
           }}
           disabled={!voting}
         >

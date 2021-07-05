@@ -24,14 +24,13 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
     return {
       allAccounts: await provider.listAccounts(),
       currentAccount: await provider.getSigner().getAddress(),
+      network: await provider.getNetwork(),
     };
   });
   // Happens when the user locks his metamask account
   if (!isGoSuccess(goResponse)) return initialChainData;
 
-  const network = await provider.getNetwork();
-
-  let networkName = network.name;
+  let networkName = goResponse[GO_RESULT_INDEX].network.name;
   // NOTE: The localhost doesn't have a name, so set any unknown networks
   // to localhost. The network name is needed to display the "Unsupported Network"
   // message to the user if required and in "connected to" status panel.
@@ -45,7 +44,7 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
     signer: provider.getSigner(),
     availableAccounts: goResponse[GO_RESULT_INDEX].allAccounts,
     networkName: networkName,
-    chainId: network.chainId,
+    chainId: goResponse[GO_RESULT_INDEX].network.chainId,
     contracts: getDaoAddresses(networkName),
   };
 
