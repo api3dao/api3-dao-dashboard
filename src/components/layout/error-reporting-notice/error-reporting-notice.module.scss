@@ -5,7 +5,8 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  position: sticky;
+  position: absolute;
+  width: 100%;
   bottom: 0;
   height: 120px;
   background: $black-color;
