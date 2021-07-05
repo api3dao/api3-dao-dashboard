@@ -6,27 +6,26 @@ import Button from '../../../components/button/button';
 import { formatApi3, goSync, parseApi3, messages } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
-import { handleTransactionError } from '../../../utils';
 
 interface Props {
   title: string;
   action: 'Withdraw' | 'Stake' | 'Initiate Unstaking';
-  onConfirm: (parsedInput: BigNumber) => Promise<any>;
-  onClose: () => void;
+  onConfirm: (parsedInput: BigNumber) => void;
   onChange: (input: string) => void;
   inputValue: string;
   maxValue?: BigNumber;
-  closeOnConfirm?: boolean;
 }
 
 const TokenAmountForm = (props: Props) => {
   const [error, setError] = useState('');
-  const { action, onConfirm, maxValue, onChange, onClose, inputValue, closeOnConfirm = true } = props;
+  const { action, onConfirm, maxValue, onChange, inputValue } = props;
 
   // The input field should catch any bad inputs, but just in case, try parse and display any errors
   const [parseErr, parsedInput] = goSync(() => parseApi3(inputValue));
 
   const handleAction = async () => {
+    setError('');
+
     if (parseErr || !parsedInput) {
       return setError(messages.VALIDATION_INPUT_PARSE);
     }
@@ -38,12 +37,8 @@ const TokenAmountForm = (props: Props) => {
         return setError(messages.VALIDATION_INPUT_TOO_HIGH);
       }
     }
-    setError('');
 
-    await handleTransactionError(onConfirm(parsedInput));
-    if (closeOnConfirm) {
-      onClose();
-    }
+    onConfirm(parsedInput);
   };
 
   const handleSetMax = () => maxValue && onChange(formatApi3(maxValue.toString(), false));

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useChainData } from '../../chain-data';
 import { useApi3Pool } from '../../contracts';
 import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
-import { formatAndRoundApi3, images, UNKNOWN_NUMBER } from '../../utils';
+import { formatAndRoundApi3, handleTransactionError, images, UNKNOWN_NUMBER } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout/layout';
@@ -149,12 +149,15 @@ const Dashboard = () => {
           action="Withdraw"
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
-            const tx = await api3Pool.withdrawRegular(parsedValue);
-            setChainData('Save withdraw transaction', { transactions: [...transactions, { type: 'withdraw', tx }] });
+
+            const tx = await handleTransactionError(api3Pool.withdrawRegular(parsedValue));
+            if (tx) {
+              setChainData('Save withdraw transaction', { transactions: [...transactions, { type: 'withdraw', tx }] });
+            }
+            closeModal();
           }}
           inputValue={inputValue}
           onChange={setInputValue}
-          onClose={closeModal}
           maxValue={tokenBalances?.withdrawable}
         />
       </Modal>
@@ -164,12 +167,15 @@ const Dashboard = () => {
           action="Stake"
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
-            const tx = await api3Pool.stake(parsedValue);
-            setChainData('Save stake transaction', { transactions: [...transactions, { type: 'stake', tx }] });
+
+            const tx = await handleTransactionError(api3Pool.stake(parsedValue));
+            if (tx) {
+              setChainData('Save stake transaction', { transactions: [...transactions, { type: 'stake', tx }] });
+            }
+            closeModal();
           }}
           inputValue={inputValue}
           onChange={setInputValue}
-          onClose={closeModal}
           maxValue={data?.userUnstaked}
         />
       </Modal>
@@ -177,17 +183,13 @@ const Dashboard = () => {
         <TokenAmountForm
           title="How many tokens would you like to unstake?"
           action="Initiate Unstaking"
-          onConfirm={async (value) => {
+          onConfirm={(value) => {
+            // NOTE: We are explicitely not closing modal, because it triggers the confirmation modal
             setConfirmUnstakeAmount(value);
             setOpenModal('confirm-unstake');
           }}
           inputValue={inputValue}
           onChange={setInputValue}
-          onClose={() => {
-            setConfirmUnstakeAmount(null);
-            closeModal();
-          }}
-          closeOnConfirm={false}
           maxValue={data?.userStaked}
         />
       </Modal>
@@ -197,10 +199,14 @@ const Dashboard = () => {
             title={`Are you sure you would like to unstake ${inputValue} tokens?`}
             onConfirm={async (parsedValue: BigNumber) => {
               if (!api3Pool || !data) return;
-              const tx = await api3Pool.scheduleUnstake(parsedValue);
-              setChainData('Save initiate unstake transaction', {
-                transactions: [...transactions, { type: 'initiate-unstake', tx }],
-              });
+
+              const tx = await handleTransactionError(api3Pool.scheduleUnstake(parsedValue));
+              if (tx) {
+                setChainData('Save initiate unstake transaction', {
+                  transactions: [...transactions, { type: 'initiate-unstake', tx }],
+                });
+              }
+              closeModal();
             }}
             amount={confirmUnstakeAmount}
             onClose={closeModal}
