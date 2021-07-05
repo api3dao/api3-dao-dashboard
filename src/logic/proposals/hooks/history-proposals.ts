@@ -62,8 +62,10 @@ const useLoadHistoryProposals = () => {
       };
     });
     if (!isGoSuccess(goResponse)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: goResponse[GO_ERROR_INDEX] });
-      return;
+      return notifications.error({
+        message: messages.FAILED_TO_LOAD_PROPOSALS,
+        errorOrMessage: goResponse[GO_ERROR_INDEX],
+      });
     }
     const proposals = goResponse[GO_RESULT_INDEX];
 
@@ -71,8 +73,7 @@ const useLoadHistoryProposals = () => {
       'Load history proposals',
       updateImmutablyCurried((state) => {
         if (!state.proposals) {
-          state.proposals = proposals;
-          return;
+          return (state.proposals = proposals);
         }
 
         state.proposals.primary = { ...state.proposals.primary, ...proposals.primary };
@@ -140,8 +141,10 @@ const useReloadHistoryProposals = () => {
 
     const goResponse = await go(loadProposals());
     if (!isGoSuccess(goResponse)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: goResponse[GO_ERROR_INDEX] });
-      return;
+      return notifications.error({
+        message: messages.FAILED_TO_LOAD_PROPOSALS,
+        errorOrMessage: goResponse[GO_ERROR_INDEX],
+      });
     }
   }, [api3Voting, convenience, userAccount, setChainData]);
 

@@ -28,17 +28,14 @@ const TokenAmountForm = (props: Props) => {
 
   const handleAction = async () => {
     if (parseErr || !parsedInput) {
-      setError(messages.VALIDATION_INPUT_PARSE);
-      return;
+      return setError(messages.VALIDATION_INPUT_PARSE);
     }
     if (parsedInput.lte(0)) {
-      setError(messages.VALIDATION_INPUT_ZERO);
-      return;
+      return setError(messages.VALIDATION_INPUT_ZERO);
     }
     if (maxValue) {
       if (parsedInput.gt(maxValue)) {
-        setError(messages.VALIDATION_INPUT_TOO_HIGH);
-        return;
+        return setError(messages.VALIDATION_INPUT_TOO_HIGH);
       }
     }
     setError('');

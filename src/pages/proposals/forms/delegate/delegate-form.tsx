@@ -30,25 +30,24 @@ const DelegateVotesForm = (props: Props) => {
     if (!api3Pool) return;
 
     if (!utils.isAddress(delegationAddress) || delegationAddress === constants.AddressZero) {
-      setError(messages.INVALID_DELEGATE_ADDRESS);
-      return;
+      return setError(messages.INVALID_DELEGATE_ADDRESS);
     }
 
     if (delegationAddress === userAccount) {
-      setError(messages.DELEGATE_IS_YOURSELF);
-      return;
+      return setError(messages.DELEGATE_IS_YOURSELF);
     }
 
     const goDelegate = await go(api3Pool.userDelegate(delegationAddress));
     if (!isGoSuccess(goDelegate)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_DELEGATE, errorOrMessage: goDelegate[GO_ERROR_INDEX] });
-      return;
+      return notifications.error({
+        message: messages.FAILED_TO_LOAD_DELEGATE,
+        errorOrMessage: goDelegate[GO_ERROR_INDEX],
+      });
     }
 
     const targetDelegate = goDelegate[GO_RESULT_INDEX];
     if (targetDelegate !== constants.AddressZero) {
-      setError(messages.REDELEGATION_IS_FORBIDDEN(targetDelegate));
-      return;
+      return setError(messages.REDELEGATION_IS_FORBIDDEN(targetDelegate));
     }
 
     const tx = await handleTransactionError(api3Pool.delegateVotingPower(delegationAddress));

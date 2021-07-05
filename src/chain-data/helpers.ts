@@ -88,21 +88,18 @@ export const displayPendingTransaction = async (
       // The user "cancelled" the transaction. i.e. it was resent with the same
       // nonce, but higher gas price, value as 0 and data as 0x
       if (ethersError.cancelled) {
-        notifications.success({ message: 'Transaction cancelled successfully' });
-        return;
+        return notifications.success({ message: 'Transaction cancelled successfully' });
       }
 
       // The user "sped up" their transaction by resending it with a higher gas price
       if (ethersError.replacement && ethersError.replacement.hash) {
         const replacementTxUrl = getEtherscanTransactionUrl(ethersError.replacement);
-        notifications.success({ url: replacementTxUrl, message: messages.success });
-        return;
+        return notifications.success({ url: replacementTxUrl, message: messages.success });
       }
 
       // A receipt with status 0 means the transaction failed
       if (ethersError.receipt?.status === 0) {
-        notifications.error({ url, message: messages.error, errorOrMessage: messages.error });
-        return;
+        return notifications.error({ url, message: messages.error, errorOrMessage: messages.error });
       }
     }
   }
@@ -110,13 +107,11 @@ export const displayPendingTransaction = async (
   if (receipt) {
     // A receipt with status 0 means the transaction failed and 1 indicates success
     if (receipt.status === 0) {
-      notifications.error({ url, message: messages.error, errorOrMessage: messages.error });
-      return;
+      return notifications.error({ url, message: messages.error, errorOrMessage: messages.error });
     }
 
     if (receipt.status === 1) {
-      notifications.success({ url, message: messages.success });
-      return;
+      return notifications.success({ url, message: messages.success });
     }
   }
 };

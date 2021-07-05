@@ -14,21 +14,19 @@ export const useLoadVestingData = () => {
 
     const goVestingData = await go(api3Pool.getUser(userAccount));
     if (!isGoSuccess(goVestingData)) {
-      notifications.error({
+      return notifications.error({
         message: messages.FAILED_TO_LOAD_VESTING_DATA,
         errorOrMessage: goVestingData[GO_ERROR_INDEX],
       });
-      return;
     }
     const vestingData = goVestingData[GO_RESULT_INDEX];
 
     const goTimelock = await go(timelockManager.getTimelock(userAccount));
     if (!isGoSuccess(goTimelock)) {
-      notifications.error({
+      return notifications.error({
         message: messages.FAILED_TO_LOAD_VESTING_DATA,
         errorOrMessage: goTimelock[GO_ERROR_INDEX],
       });
-      return;
     }
     const timelock = goTimelock[GO_RESULT_INDEX];
 

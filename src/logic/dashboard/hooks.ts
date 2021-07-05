@@ -15,18 +15,19 @@ export const useLoadDashboardData = () => {
 
     const goStakingData = await go(convenience.getUserStakingData(userAccount));
     if (!isGoSuccess(goStakingData)) {
-      notifications.error({
+      return notifications.error({
         message: messages.FAILED_TO_LOAD_CHAIN_DATA,
         errorOrMessage: goStakingData[GO_ERROR_INDEX],
       });
-      return;
     }
     const stakingData = goStakingData[GO_RESULT_INDEX];
 
     const goAllowance = await go(api3Token.allowance(userAccount, api3Pool.address));
     if (!isGoSuccess(goAllowance)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_CHAIN_DATA, errorOrMessage: goAllowance[GO_ERROR_INDEX] });
-      return;
+      return notifications.error({
+        message: messages.FAILED_TO_LOAD_CHAIN_DATA,
+        errorOrMessage: goAllowance[GO_ERROR_INDEX],
+      });
     }
     const allowance = goAllowance[GO_RESULT_INDEX];
 

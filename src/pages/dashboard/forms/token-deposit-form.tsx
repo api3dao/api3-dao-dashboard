@@ -51,11 +51,9 @@ const TokenDepositForm = (props: Props) => {
       setChainData('Save deposit approval', { transactions: [...transactions, { type: 'approve-deposit', tx }] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
-        notifications.info({ message: messages.TX_APPROVAL_REJECTED });
-        return;
+        return notifications.info({ message: messages.TX_APPROVAL_REJECTED });
       }
-      setError(messages.TX_APPROVAL_ERROR);
-      return;
+      return setError(messages.TX_APPROVAL_ERROR);
     }
   };
 
@@ -63,16 +61,13 @@ const TokenDepositForm = (props: Props) => {
     if (!api3Pool || !userAccount) return;
 
     if (parseErr || !parsedInput) {
-      setError(messages.VALIDATION_INPUT_PARSE);
-      return;
+      return setError(messages.VALIDATION_INPUT_PARSE);
     }
     if (parsedInput.lte(0)) {
-      setError(messages.VALIDATION_INPUT_ZERO);
-      return;
+      return setError(messages.VALIDATION_INPUT_ZERO);
     }
     if (parsedInput.gt(walletBalance)) {
-      setError(messages.VALIDATION_DEPOSIT_TOO_HIGH);
-      return;
+      return setError(messages.VALIDATION_DEPOSIT_TOO_HIGH);
     }
 
     setError('');
@@ -84,11 +79,9 @@ const TokenDepositForm = (props: Props) => {
       setChainData(`Save "${type}" transaction`, { transactions: [...transactions, { type, tx }] });
     } else {
       if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
-        notifications.info({ message: messages.TX_DEPOSIT_REJECTED });
-        return;
+        return notifications.info({ message: messages.TX_DEPOSIT_REJECTED });
       }
-      setError(messages.TX_DEPOSIT_ERROR);
-      return;
+      return setError(messages.TX_DEPOSIT_ERROR);
     }
 
     props.onClose();
