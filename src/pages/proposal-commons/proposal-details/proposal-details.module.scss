@@ -1,8 +1,10 @@
 @import '../../../styles/variables.module.scss';
 
-.help {
-  margin-left: $space-md;
-  vertical-align: middle;
+.backBtn {
+  button {
+    color: $secondary-color;
+    text-decoration: none !important;
+  }
 }
 
 .proposalDetailsSubheader {
@@ -31,11 +33,17 @@
   line-height: $lh-heading-4;
   font-weight: 600;
   margin-right: $space-xl;
+  margin-bottom: $space-lg;
 
   @media (max-width: $max-md) {
     font-size: $heading-5;
     line-height: $lh-heading-5;
     margin-right: 0;
+  }
+}
+
+.proposalTag {
+  @media (max-width: $max-md) {
     margin-bottom: $space-xl;
   }
 }

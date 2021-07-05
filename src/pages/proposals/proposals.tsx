@@ -20,6 +20,7 @@ import Delegation from './delegation';
 import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
 import { formatApi3, GO_RESULT_INDEX, handleTransactionError, images, isGoSuccess, round } from '../../utils';
+import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposals.module.scss';
 
 const Proposals = () => {
@@ -111,7 +112,7 @@ const Proposals = () => {
                 + New proposal
               </Button>
               <TooltipChecklist items={newProposalChecklistItems}>
-                <img src={images.help} alt="new proposal help" className={styles.help} />
+                <img src={images.help} alt="new proposal help" className={globalStyles.helpIcon} />
               </TooltipChecklist>
             </div>
           </Header>
