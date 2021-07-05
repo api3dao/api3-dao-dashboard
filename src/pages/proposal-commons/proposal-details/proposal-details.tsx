@@ -23,7 +23,7 @@ import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
 import NotFoundPage from '../../not-found';
-import { images, messages, useScrollToTop } from '../../../utils';
+import { handleTransactionError, images, messages, useScrollToTop } from '../../../utils';
 
 interface ProposalDetailsContentProps {
   type: ProposalType;
@@ -151,10 +151,15 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             voteId={proposal.voteId.toString()}
             onConfirm={async (choice) => {
               setVoteModalOpen(false);
-              // TODO: handle error
-              const tx = await voting[proposal.type].vote(proposal.voteId, choice === 'for', true);
+              const tx = await handleTransactionError(
+                voting[proposal.type].vote(proposal.voteId, choice === 'for', true)
+              );
               const type = choice === 'for' ? 'vote-for' : 'vote-against';
-              setChainData('Save vote transaction', { transactions: [...transactions, { tx, type }] });
+              if (tx) {
+                setChainData('Save vote transaction', {
+                  transactions: [...transactions, { tx, type }],
+                });
+              }
             }}
           />
         </Modal>

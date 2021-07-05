@@ -5,6 +5,7 @@ import { NegativeVoteIcon, PositiveVoteIcon } from '../../vote-slider/vote-slide
 import Button from '../../../../components/button/button';
 import styles from './proposal-status.module.scss';
 import { useApi3Voting } from '../../../../contracts';
+import { handleTransactionError } from '../../../../utils';
 
 interface Props {
   proposal: Proposal;
@@ -47,11 +48,12 @@ const ProposalStatus = (props: Props) => {
           className={styles.execute}
           onClick={async () => {
             if (!voting) return;
-            const tx = await voting[proposal.type].executeVote(proposal.voteId);
-            setChainData('Save execute transaction', (state) => ({
-              transactions: [...state.transactions, { type: 'execute', tx }],
-            }));
-            await voting[proposal.type].executeVote(proposal.voteId);
+            const tx = await handleTransactionError(voting[proposal.type].executeVote(proposal.voteId));
+            if (tx) {
+              setChainData('Save execute transaction', (state) => ({
+                transactions: [...state.transactions, { type: 'execute', tx }],
+              }));
+            }
           }}
           disabled={!voting}
         >

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { BaseLayout } from '../../components/layout/layout';
 import Header from '../../components/header/header';
 import { useQueryParams } from '../../utils';
@@ -5,16 +6,15 @@ import { ProposalType } from '../../chain-data/state';
 import { historyProposalsSelector, OptionalProposalType } from '../../logic/proposals/selectors';
 import { useChainData } from '../../chain-data';
 import BorderedBox from '../../components/bordered-box/bordered-box';
-import Button from '../../components/button/button';
+import RadioButton from '../../components/radio-button/radio-button';
 import ProposalList from '../proposal-commons/proposal-list';
 import styles from './history.module.scss';
-import classNames from 'classnames';
 import { useHistory } from 'react-router';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import { useHistoryProposals } from '../../logic/proposals/hooks/history-proposals';
 
 const getValidatedProposalType = (typeFromUrl: string | null): OptionalProposalType => {
-  if (typeFromUrl && ['primary', 'secondary'].includes(typeFromUrl)) return typeFromUrl as ProposalType;
+  if (typeFromUrl && ['primary', 'secondary', 'none'].includes(typeFromUrl)) return typeFromUrl as ProposalType;
   else return null;
 };
 
@@ -24,16 +24,25 @@ const History = () => {
   const history = useHistory();
   const proposalType = getValidatedProposalType(params.get('type'));
   const proposalsToShow = historyProposalsSelector(allProposals, proposalType);
+  const [checkedPrimary, setCheckedPrimary] = useState(true);
+  const [checkedSecondary, setCheckedSecondary] = useState(true);
 
   // TODO: Implement pagination for history proposals
   useHistoryProposals();
   useTreasuryAndDelegation();
 
-  const applyHistoryFilter = (type: ProposalType) => {
-    // TODO: I find these tab logic confusing, maybe reiterate? See https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622624192006000
-    if (!proposalType || proposalType === type) history.replace(`/history?type=${type}`);
-    else history.replace(`/history`);
-  };
+  // useEffect is used because useState behaves asynchronously using onClick handler
+  useEffect(() => {
+    if (checkedPrimary && !checkedSecondary) {
+      history.replace(`/history?type=primary`);
+    } else if (checkedSecondary && !checkedPrimary) {
+      history.replace(`/history?type=secondary`);
+    } else if (!checkedPrimary && !checkedSecondary) {
+      history.replace(`/history?type=none`);
+    } else {
+      history.replace(`/history`);
+    }
+  }, [history, checkedPrimary, checkedSecondary]);
 
   return (
     <BaseLayout subtitle="History">
@@ -45,25 +54,23 @@ const History = () => {
         header={
           <div className={styles.borderBoxHeader}>
             <h5>Past proposals</h5>
-            <div>
-              <Button
-                onClick={() => applyHistoryFilter('primary')}
-                type="text"
-                className={classNames(styles.filterButton, {
-                  [styles.active]: !proposalType || proposalType === 'primary',
-                })}
-              >
-                Primary
-              </Button>
-              <Button
-                onClick={() => applyHistoryFilter('secondary')}
-                type="text"
-                className={classNames(styles.filterButton, {
-                  [styles.active]: !proposalType || proposalType === 'secondary',
-                })}
-              >
-                Secondary
-              </Button>
+            <div className={styles.radioButtons}>
+              <RadioButton
+                onChange={() => setCheckedPrimary(!checkedPrimary)}
+                label="primary"
+                checked={checkedPrimary}
+                color="white"
+                type="checkbox"
+                name="primary"
+              />
+              <RadioButton
+                onChange={() => setCheckedSecondary(!checkedSecondary)}
+                label="secondary"
+                checked={checkedSecondary}
+                color="white"
+                type="checkbox"
+                name="secondary"
+              />
             </div>
           </div>
         }

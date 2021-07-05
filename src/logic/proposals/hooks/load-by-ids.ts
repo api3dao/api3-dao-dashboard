@@ -39,21 +39,19 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
 
     const goStartVoteFilters = await go(votingApp.queryFilter(startVoteFilter));
     if (!isGoSuccess(goStartVoteFilters)) {
-      notifications.error({
+      return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
         errorOrMessage: goStartVoteFilters[GO_ERROR_INDEX],
       });
-      return;
     }
 
     // There will only be at most one StartEvent response for the given filter
     const goStartVote = goStartVoteFilters[GO_RESULT_INDEX][0];
     if (!goStartVote) {
-      notifications.error({
+      return notifications.error({
         message: messages.PROPOSAL_NOT_FOUND,
         errorOrMessage: messages.PROPOSAL_NOT_FOUND,
       });
-      return;
     }
 
     const ethersArgs = goStartVote.args;
@@ -66,21 +64,19 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
 
     const goOpenVoteIds = await go(convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
     if (!isGoSuccess(goOpenVoteIds)) {
-      notifications.error({
+      return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
         errorOrMessage: goOpenVoteIds[GO_ERROR_INDEX],
       });
-      return;
     }
     const openVoteIds = goOpenVoteIds[GO_RESULT_INDEX];
 
     const goLoadProposal = await go(getProposals(votingApp, convenience, userAccount, [startVote], openVoteIds, type));
     if (!isGoSuccess(goLoadProposal)) {
-      notifications.error({
+      return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
         errorOrMessage: goLoadProposal[GO_ERROR_INDEX],
       });
-      return;
     }
     const loadedProposals = goLoadProposal[GO_RESULT_INDEX];
 
@@ -103,8 +99,10 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
 
     const goVotingData = await go(convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, [id]));
     if (!isGoSuccess(goVotingData)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: goVotingData[GO_ERROR_INDEX] });
-      return;
+      return notifications.error({
+        message: messages.FAILED_TO_LOAD_PROPOSALS,
+        errorOrMessage: goVotingData[GO_ERROR_INDEX],
+      });
     }
     const rawVotingData = goVotingData[GO_RESULT_INDEX];
     const votingData: DynamicVotingData = {

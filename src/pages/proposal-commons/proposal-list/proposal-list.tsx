@@ -69,7 +69,7 @@ const ProposalList = (props: Props) => {
     <>
       {!proposals && (
         <div className={styles.noProposals}>
-          You need to be connected to view proposals{' '}
+          <span>You need to be connected to view proposals</span>
           <Button type="link" onClick={connectWallet(setChainData)}>
             Connect your wallet
           </Button>

@@ -82,6 +82,8 @@ export const historyProposalsSelector = (proposals: Proposals | null, type: Opti
     allProposals = primaryProposals;
   } else if (type === 'secondary') {
     allProposals = secondaryProposals;
+  } else if (type === 'none') {
+    allProposals = [];
   } else {
     allProposals = [...primaryProposals, ...secondaryProposals];
   }
