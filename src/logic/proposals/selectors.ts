@@ -67,7 +67,7 @@ export const openProposalsSelector = (proposals: Proposals | null) => {
 
   return [...primaryProposals, ...secondaryProposals]
     .filter((p) => p.open)
-    .sort((p1, p2) => (p1.startDateRaw.lt(p2.startDateRaw) ? -1 : 1));
+    .sort((p1, p2) => (p1.startDateRaw.gt(p2.startDateRaw) ? -1 : 1));
 };
 
 export type OptionalProposalType = ProposalType | null;
@@ -88,7 +88,7 @@ export const historyProposalsSelector = (proposals: Proposals | null, type: Opti
     allProposals = [...primaryProposals, ...secondaryProposals];
   }
 
-  return allProposals.filter((p) => !p.open).sort((p1, p2) => (p1.startDateRaw.lt(p2.startDateRaw) ? -1 : 1));
+  return allProposals.filter((p) => !p.open).sort((p1, p2) => (p1.startDateRaw.gt(p2.startDateRaw) ? -1 : 1));
 };
 
 export const delegationCooldownOverSelector = (delegation: Delegation | null) => {
