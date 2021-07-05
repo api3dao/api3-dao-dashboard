@@ -72,9 +72,12 @@ const Treasury = (props: TreasuryProps) => {
   return (
     <div className={classNames(styles.treasury, className)}>
       <p
-        className={`${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.uppercase} ${globalStyles.textRight}`}
+        className={`${styles.label} ${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.uppercase} ${globalStyles.textRight}`}
       >
         Treasury
+        <Tooltip overlay="The DAO treasury is divided between the primary and secondary agent contracts. To move funds from a particular agent, you need to use the respective proposal type (primary proposal to use primary agent funds, and vice versa).">
+          <img src={images.help} alt="treasury help" className={globalStyles.helpIcon} />
+        </Tooltip>
       </p>
       <TreasuryDropdown data={primary} type="primary" />
       <TreasuryDropdown data={secondary} type="secondary" />
