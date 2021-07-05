@@ -53,11 +53,11 @@ const History = () => {
       <BorderedBox
         header={
           <div className={styles.borderBoxHeader}>
-            <h5>Past proposals</h5>
+            <h5>Past Proposals</h5>
             <div className={styles.radioButtons}>
               <RadioButton
                 onChange={() => setCheckedPrimary(!checkedPrimary)}
-                label="primary"
+                label="Primary"
                 checked={checkedPrimary}
                 color="white"
                 type="checkbox"
@@ -65,7 +65,7 @@ const History = () => {
               />
               <RadioButton
                 onChange={() => setCheckedSecondary(!checkedSecondary)}
-                label="secondary"
+                label="Secondary"
                 checked={checkedSecondary}
                 color="white"
                 type="checkbox"

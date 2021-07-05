@@ -30,11 +30,11 @@ const Delegation = () => {
   const delegateChecklistItems = [
     {
       checked: delegate?.hasStakedTokens ?? false,
-      label: 'You have staked API3 tokens',
+      label: 'You have staked API3 tokens.',
     },
     {
       checked: delegate?.delegationCooldownOver ?? false,
-      label: "You haven't updated delegation in the last 7 days",
+      label: "You haven't updated delegation in the last 7 days.",
     },
   ];
 

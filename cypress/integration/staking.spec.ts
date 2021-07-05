@@ -30,7 +30,7 @@ describe('staking', () => {
 
     cy.findByText('+ Deposit').click();
     cy.get('input').type('200');
-    cy.findByText('Deposit and stake').click();
+    cy.findByText('Deposit and Stake').click();
 
     // Assert balances
     cy.dataCy('balance').should('have.text', '700.0');

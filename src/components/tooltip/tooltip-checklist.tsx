@@ -7,7 +7,7 @@ interface Props {
   children: ReactElement;
   items: {
     checked: boolean;
-    label: string;
+    label: ReactElement | string;
   }[];
 }
 
@@ -20,7 +20,7 @@ const TooltipChecklist = ({ children, items }: Props) => {
             src={item.checked ? images.checkboxFilled : images.checkboxEmpty}
             alt={item.checked ? 'checked' : 'unchecked'}
           />
-          <span>{item.label}</span>
+          <div className={item.checked ? styles.labelChecked : styles.labelUnchecked}>{item.label}</div>
         </div>
       ))}
     </div>

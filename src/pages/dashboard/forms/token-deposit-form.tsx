@@ -132,16 +132,16 @@ const TokenDepositForm = (props: Props) => {
           ) : (
             <Button
               type="link"
-              onClick={handleDeposit('deposit-and-stake')}
               className={styles.tokenAmountFormApprove}
+              onClick={handleDeposit('deposit-only')}
               disabled={!canDeposit}
             >
-              Deposit and stake
+              Deposit
             </Button>
           )}
 
-          <Button type="secondary" onClick={handleDeposit('deposit-only')} disabled={!canDeposit}>
-            Deposit
+          <Button type="secondary" onClick={handleDeposit('deposit-and-stake')} disabled={!canDeposit}>
+            Deposit and Stake
           </Button>
         </div>
 
