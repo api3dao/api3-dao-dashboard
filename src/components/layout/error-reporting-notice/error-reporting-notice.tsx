@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ERROR_REPORTING_CONSENT_KEY_NAME, images, isErrorReportingAllowed } from '../../../utils';
 import Button from '../../button/button';
-import Link from '../../link';
+import ExternalLink from '../../external-link';
 import styles from './error-reporting-notice.module.scss';
 
 interface WelcomeModalContentProps {
@@ -31,11 +31,11 @@ const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
         />
         <div className={styles.content}>
           <div className={styles.notice}>
-            In order to provide the best services for you, we collected anonymized error reporting through{' '}
+            In order to provide the best services for you, we collect anonymized error data through{' '}
             <b>
-              <Link href="https://docs.sentry.io/platforms/javascript/configuration/integrations/default/">Sentry</Link>
+              <ExternalLink href="https://sentry.io/">Sentry</ExternalLink>
             </b>
-            . We do not gather IP or user agent information.
+            . We do not gather IP address or user agent information.
           </div>
           <div className={styles.checkboxWrapper}>
             <input

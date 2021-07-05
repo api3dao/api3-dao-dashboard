@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { ReactNode } from 'react';
-import styles from './link.module.scss';
+import styles from './external-link.module.scss';
 
 interface Props {
   className?: string;
@@ -8,7 +8,7 @@ interface Props {
   children: ReactNode;
 }
 
-const Link = (props: Props) => {
+const ExternalLink = (props: Props) => {
   const { className, href, children } = props;
 
   return (
@@ -18,4 +18,4 @@ const Link = (props: Props) => {
   );
 };
 
-export default Link;
+export default ExternalLink;

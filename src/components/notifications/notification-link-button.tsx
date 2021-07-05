@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import Link from '../link';
+import ExternalLink from '../external-link';
 import styles from './notifications.module.scss';
 
 type Props = {
@@ -9,9 +9,9 @@ type Props = {
 
 const NotificationLinkButton = ({ children, href }: Props) => {
   return (
-    <Link className={styles.notificationButton} href={href}>
+    <ExternalLink className={styles.notificationButton} href={href}>
       {children}
-    </Link>
+    </ExternalLink>
   );
 };
 

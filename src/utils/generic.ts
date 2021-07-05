@@ -90,7 +90,6 @@ export const isErrorReportingAllowed = (localStorageValue: string | null) => {
   return localStorageValue === Boolean(true).toString();
 };
 
-// TODO: test
 type InsertInBetweenValue<T, R> = (index: number, array: T[]) => R;
 export const insertInBetween = <T, ToInsert>(
   array: T[],

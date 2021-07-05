@@ -4,7 +4,7 @@ import Navigation from '../navigation/navigation';
 import Header from '../header/header';
 import { ERROR_REPORTING_CONSENT_KEY_NAME, images, insertInBetween } from '../../utils';
 import styles from './layout.module.scss';
-import Link from '../link';
+import ExternalLink from '../external-link';
 import Button from '../button/button';
 import ErrorReportingNotice from './error-reporting-notice';
 
@@ -41,8 +41,6 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
     { text: 'Github', href: 'https://github.com/api3dao/api3-dao-dashboard' },
   ];
 
-  console.log('showErrorReportingNotice', errorReportingNoticeOpen);
-
   return (
     <>
       <Helmet>
@@ -59,7 +57,7 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
             <div className={styles.footerContent}>
               {insertInBetween(
                 links.map((link) => {
-                  if (link.href) return <Link href={link.href}>{link.text}</Link>;
+                  if (link.href) return <ExternalLink href={link.href}>{link.text}</ExternalLink>;
                   else
                     return (
                       <Button type="text" className={styles.externalLinkButton} onClick={link.onClick}>
