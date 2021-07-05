@@ -6,14 +6,13 @@ import styles from './radio-button.module.scss';
 type Props = {
   label: ReactNode | string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
-  onClick?: () => void;
   checked: boolean;
   name: string;
+  type?: 'radio' | 'checkbox';
   color: 'white' | 'pink' | 'green';
-  checkbox?: boolean;
 };
 
-const RadioButton = ({ label, onChange, onClick, checked, name, color, checkbox }: Props) => {
+const RadioButton = ({ label, onChange, type = 'radio', checked, name, color }: Props) => {
   return (
     <div className={styles.radioButtonWrapper}>
       <label
@@ -22,21 +21,13 @@ const RadioButton = ({ label, onChange, onClick, checked, name, color, checkbox 
           [styles.white]: color === 'white',
           [styles.pink]: color === 'pink',
           [styles.green]: color === 'green',
-          [styles.icon]: checkbox,
+          [styles.icon]: type === 'checkbox',
         })}
       >
         {label}
-        <input
-          className={styles.radioButtonInput}
-          type="radio"
-          onClick={onClick}
-          onChange={onChange}
-          checked={checked}
-          name={name}
-          readOnly={Boolean(onClick)}
-        />
-        <span className={classNames(styles.radioButtonCheckmark, { [styles.checkbox]: checkbox })}>
-          {checkbox && <img src={images.checkBlack} alt="check icon" />}
+        <input className={styles.radioButtonInput} type={type} onChange={onChange} checked={checked} name={name} />
+        <span className={classNames(styles.radioButtonCheckmark, { [styles.checkbox]: type === 'checkbox' })}>
+          {type === 'checkbox' && <img src={images.checkBlack} alt="check icon" />}
         </span>
       </label>
     </div>

@@ -56,19 +56,19 @@ const History = () => {
             <h5>Past proposals</h5>
             <div className={styles.radioButtons}>
               <RadioButton
-                onClick={() => setCheckedPrimary(!checkedPrimary)}
+                onChange={() => setCheckedPrimary(!checkedPrimary)}
                 label="primary"
                 checked={checkedPrimary}
                 color="white"
-                checkbox
+                type="checkbox"
                 name="primary"
               />
               <RadioButton
-                onClick={() => setCheckedSecondary(!checkedSecondary)}
+                onChange={() => setCheckedSecondary(!checkedSecondary)}
                 label="secondary"
                 checked={checkedSecondary}
                 color="white"
-                checkbox
+                type="checkbox"
                 name="secondary"
               />
             </div>
