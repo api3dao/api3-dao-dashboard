@@ -1,7 +1,7 @@
 @import '../../styles/variables.module.scss';
 
-$footer-height: 50px;
-$footer-height-media-sm: 150px;
+$footer-height: 60px;
+$footer-height-media-sm: 180px;
 
 .layout {
   background: $black-color;
@@ -65,8 +65,7 @@ $footer-height-media-sm: 150px;
     flex: 1;
     justify-content: space-around;
     align-items: center;
-    padding: 0 20vw;
-    font-size: $text-small;
+    padding: 0 25vw;
 
     @media (max-width: $max-sm) {
       flex-direction: column;
