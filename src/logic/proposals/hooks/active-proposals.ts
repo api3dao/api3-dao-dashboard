@@ -83,7 +83,8 @@ const useLoadActiveProposals = () => {
       'Load active proposals',
       updateImmutablyCurried((state) => {
         if (!state.proposals) {
-          return (state.proposals = proposals);
+          state.proposals = proposals;
+          return;
         }
 
         state.proposals.primary = { ...state.proposals.primary, ...proposals.primary };

@@ -184,7 +184,7 @@ const Dashboard = () => {
           title="How many tokens would you like to unstake?"
           action="Initiate Unstaking"
           onConfirm={(value) => {
-            // NOTE: We are explicitely not closing modal, because it triggers the confirmation modal
+            // NOTE: We are explicitly not closing modal, because it triggers the confirmation modal
             setConfirmUnstakeAmount(value);
             setOpenModal('confirm-unstake');
           }}
