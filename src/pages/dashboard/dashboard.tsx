@@ -47,7 +47,7 @@ const Dashboard = () => {
 
   return (
     <Layout title="Staking">
-      {pendingUnstake?.canUnstake && <UnstakeBanner />}
+      {pendingUnstake?.canUnstake && <UnstakeBanner canUnstakeAndWithdraw={pendingUnstake.canUnstakeAndWithdraw} />}
       {!pendingUnstake?.canUnstake && shouldDisplayHowThisWorks && (
         <>
           <p className={styles.dashboardHeader}>How This Works</p>

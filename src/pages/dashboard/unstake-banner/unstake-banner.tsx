@@ -6,7 +6,12 @@ import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './unstake-banner.module.scss';
 import { handleTransactionError } from '../../../utils';
 
-const UnstakeBanner = () => {
+interface Props {
+  canUnstakeAndWithdraw: boolean;
+}
+
+const UnstakeBanner = (props: Props) => {
+  const { canUnstakeAndWithdraw } = props;
   const api3Pool = useApi3Pool();
   const { setChainData, transactions, userAccount } = useChainData();
 
@@ -18,6 +23,24 @@ const UnstakeBanner = () => {
     }
   };
 
+  const handleUnstakeAndWithdraw = async () => {
+    if (!api3Pool) return;
+    const [err, tx] = await go(api3Pool.unstakeAndWithdraw());
+    if (err) {
+      if (isUserRejection(err!)) {
+        notifications.info({ message: messages.TX_GENERIC_REJECTED });
+        return;
+      }
+      notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: err });
+      return;
+    }
+    if (tx) {
+      setChainData('Save unstake and Withdraw transaction', {
+        transactions: [...transactions, { type: 'unstake-withdraw', tx }],
+      });
+    }
+  };
+
   return (
     <div className={styles.unstakeBanner}>
       <div className={styles.unstakeBannerWrap}>
@@ -26,9 +49,14 @@ const UnstakeBanner = () => {
           <p className={globalStyles.bold}>Your tokens are ready to be unstaked.</p>
         </div>
       </div>
-      <Button size="large" onClick={handleUnstake}>
-        Unstake
-      </Button>
+      <div className={styles.buttonPanel}>
+        <Button type="link" onClick={handleUnstake}>
+          Unstake
+        </Button>
+        <Button onClick={handleUnstakeAndWithdraw} disabled={!canUnstakeAndWithdraw}>
+          Unstake and Withdraw
+        </Button>
+      </div>
     </div>
   );
 };

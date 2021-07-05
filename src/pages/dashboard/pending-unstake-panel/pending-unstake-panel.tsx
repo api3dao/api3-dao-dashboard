@@ -70,7 +70,7 @@ const PendingUnstakePanel = (props: Props) => {
     if (!api3Pool) return;
     const tx = await handleTransactionError(api3Pool.unstakeAndWithdraw());
     if (tx) {
-      setChainData('Save unstake & withdraw transaction', {
+      setChainData('Save unstake and Withdraw transaction', {
         transactions: [...transactions, { type: 'unstake-withdraw', tx }],
       });
     }
@@ -114,11 +114,11 @@ const PendingUnstakePanel = (props: Props) => {
             </div>
           </div>
           <div className={styles.pendingUnstakeActions}>
-            <Button type="link" onClick={handleUnstakeAndWithdraw} disabled={!canUnstakeAndWithdraw}>
-              Unstake & Withdraw
-            </Button>
-            <Button onClick={handleUnstake} disabled={!canUnstake}>
+            <Button type="link" onClick={handleUnstake} disabled={!canUnstake}>
               Unstake
+            </Button>
+            <Button onClick={handleUnstakeAndWithdraw} disabled={!canUnstakeAndWithdraw}>
+              Unstake and Withdraw
             </Button>
           </div>
         </div>
