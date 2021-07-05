@@ -2,7 +2,7 @@ import { ReactNode, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Navigation from '../navigation/navigation';
 import Header from '../header/header';
-import { images, insertInBetween } from '../../utils';
+import { ERROR_REPORTING_CONSENT_KEY_NAME, images, insertInBetween } from '../../utils';
 import styles from './layout.module.scss';
 import Link from '../link';
 import Button from '../button/button';
@@ -29,7 +29,9 @@ interface BaseLayoutProps {
 }
 
 export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
-  const [errorReportingNoticeOpen, setErrorReportingNoticeOpen] = useState(false);
+  const [errorReportingNoticeOpen, setErrorReportingNoticeOpen] = useState(
+    localStorage.getItem(ERROR_REPORTING_CONSENT_KEY_NAME) === null
+  );
 
   const links = [
     // TODO: Are these the correct URLs?
