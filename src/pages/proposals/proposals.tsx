@@ -19,8 +19,7 @@ import {
 import Delegation from './delegation';
 import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
-import { notifications } from '../../components/notifications/notifications';
-import { formatApi3, go, GO_RESULT_INDEX, images, isGoSuccess, isUserRejection, messages, round } from '../../utils';
+import { formatApi3, GO_RESULT_INDEX, handleTransactionError, images, isGoSuccess, round } from '../../utils';
 import styles from './proposals.module.scss';
 
 const Proposals = () => {
@@ -80,7 +79,7 @@ const Proposals = () => {
     // Should not happen, because user will not be allowed to press the create proposal button if there are errors
     if (!isGoSuccess(goEncodeEvmScript)) return null;
 
-    const [err, tx] = await go(
+    const tx = await handleTransactionError(
       // NOTE: For some reason only this 'ugly' version is available on the contract
       api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](
         goEncodeEvmScript[GO_RESULT_INDEX],
@@ -89,16 +88,6 @@ const Proposals = () => {
         true
       )
     );
-
-    if (err) {
-      if (isUserRejection(err)) {
-        notifications.info({ message: messages.TX_GENERIC_REJECTED });
-        return;
-      }
-      notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: err });
-      return;
-    }
-
     if (tx) {
       setChainData('Save new vote transaction', { transactions: [...transactions, { type: 'new-vote', tx }] });
     }

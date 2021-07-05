@@ -8,9 +8,8 @@ import { Modal } from '../../../components/modal/modal';
 import { canDelegateSelector, canUndelegateSelector } from '../../../logic/proposals/selectors';
 import ChooseDelegateAction from '../forms/choose-delegate-action/choose-delegate-action';
 import { useApi3Pool } from '../../../contracts';
-import { go, isUserRejection } from '../../../utils';
-import * as notifications from '../../../components/notifications/notifications';
-import { images, messages } from '../../../utils';
+import { handleTransactionError } from '../../../utils';
+import { images } from '../../../utils';
 import { useLoadDashboardData } from '../../../logic/dashboard';
 import TooltipChecklist from '../../../components/tooltip/tooltip-checklist';
 import styles from './delegation.module.scss';
@@ -68,16 +67,7 @@ const Delegation = () => {
               onUndelegate={async () => {
                 if (!api3Pool) return;
 
-                const [error, tx] = await go(api3Pool.undelegateVotingPower());
-                if (error) {
-                  if (isUserRejection(error)) {
-                    notifications.info({ message: messages.TX_GENERIC_REJECTED });
-                    return;
-                  }
-                  notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: error });
-                  return;
-                }
-
+                const tx = await handleTransactionError(api3Pool.undelegateVotingPower());
                 if (tx) {
                   setChainData('Save undelegate transaction', {
                     transactions: [...transactions, { type: 'undelegate', tx }],

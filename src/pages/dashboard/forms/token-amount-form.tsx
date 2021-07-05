@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import { notifications } from '../../../components/notifications/notifications';
-import { formatApi3, go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
+import { formatApi3, goSync, parseApi3, messages } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
+import { handleTransactionError } from '../../../utils';
 
 interface Props {
   title: string;
@@ -43,16 +43,7 @@ const TokenAmountForm = (props: Props) => {
     }
     setError('');
 
-    const [err] = await go(onConfirm(parsedInput));
-    if (err) {
-      if (isUserRejection(err)) {
-        notifications.info({ message: messages.TX_GENERIC_REJECTED });
-        return;
-      }
-      setError(messages.TX_GENERIC_ERROR);
-      return;
-    }
-
+    await handleTransactionError(onConfirm(parsedInput));
     if (closeOnConfirm) {
       onClose();
     }

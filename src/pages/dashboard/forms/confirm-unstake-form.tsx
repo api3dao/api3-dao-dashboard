@@ -2,9 +2,8 @@ import { BigNumber } from 'ethers';
 import { useState } from 'react';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Button from '../../../components/button/button';
-import { notifications } from '../../../components/notifications/notifications';
-import { go, isUserRejection, messages } from '../../../utils';
 import styles from './forms.module.scss';
+import { handleTransactionError } from '../../../utils';
 
 interface Props {
   title: string;
@@ -21,16 +20,7 @@ const ConfirmUnstakeForm = (props: Props) => {
   const handleAction = async () => {
     setError('');
 
-    const [err] = await go(onConfirm(amount));
-    if (err) {
-      if (isUserRejection(err)) {
-        notifications.info({ message: messages.TX_GENERIC_REJECTED });
-        return;
-      }
-      setError(messages.TX_GENERIC_ERROR);
-      return;
-    }
-
+    await handleTransactionError(onConfirm(amount));
     if (closeOnConfirm) {
       onClose();
     }

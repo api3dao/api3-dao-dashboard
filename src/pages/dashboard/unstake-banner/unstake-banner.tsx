@@ -1,10 +1,10 @@
 import { useApi3Pool } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
-import { go, images, isUserRejection, messages } from '../../../utils';
-import { notifications } from '../../../components/notifications/notifications';
+import { images } from '../../../utils';
 import Button from '../../../components/button/button';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './unstake-banner.module.scss';
+import { handleTransactionError } from '../../../utils';
 
 const UnstakeBanner = () => {
   const api3Pool = useApi3Pool();
@@ -12,15 +12,7 @@ const UnstakeBanner = () => {
 
   const handleUnstake = async () => {
     if (!api3Pool) return;
-    const [err, tx] = await go(api3Pool.unstake(userAccount));
-    if (err) {
-      if (isUserRejection(err!)) {
-        notifications.info({ message: messages.TX_GENERIC_REJECTED });
-        return;
-      }
-      notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: err });
-      return;
-    }
+    const tx = await handleTransactionError(api3Pool.unstake(userAccount));
     if (tx) {
       setChainData('Save unstake transaction', { transactions: [...transactions, { type: 'unstake', tx }] });
     }

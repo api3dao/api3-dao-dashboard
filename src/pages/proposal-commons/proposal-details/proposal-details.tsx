@@ -22,8 +22,7 @@ import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
 import NotFoundPage from '../../not-found';
-import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, images, isGoSuccess, isUserRejection, messages } from '../../../utils';
-import { notifications } from '../../../components/notifications/notifications';
+import { handleTransactionError, images, messages } from '../../../utils';
 
 interface ProposalDetailsContentProps {
   type: ProposalType;
@@ -138,22 +137,15 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             voteId={proposal.voteId.toString()}
             onConfirm={async (choice) => {
               setVoteModalOpen(false);
-              const goTransaction = await go(voting[proposal.type].vote(proposal.voteId, choice === 'for', true));
-              if (!isGoSuccess(goTransaction)) {
-                if (isUserRejection(goTransaction[GO_ERROR_INDEX])) {
-                  notifications.info({ message: messages.TX_GENERIC_REJECTED });
-                  return;
-                }
-                notifications.error({
-                  message: messages.TX_GENERIC_ERROR,
-                  errorOrMessage: goTransaction[GO_ERROR_INDEX],
-                });
-                return;
-              }
+              const tx = await handleTransactionError(
+                voting[proposal.type].vote(proposal.voteId, choice === 'for', true)
+              );
               const type = choice === 'for' ? 'vote-for' : 'vote-against';
-              setChainData('Save vote transaction', {
-                transactions: [...transactions, { tx: goTransaction[GO_RESULT_INDEX], type }],
-              });
+              if (tx) {
+                setChainData('Save vote transaction', {
+                  transactions: [...transactions, { tx, type }],
+                });
+              }
             }}
           />
         </Modal>
