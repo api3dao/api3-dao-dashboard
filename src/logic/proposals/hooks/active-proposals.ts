@@ -72,8 +72,10 @@ const useLoadActiveProposals = () => {
       };
     });
     if (!isGoSuccess(goResponse)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: goResponse[GO_ERROR_INDEX] });
-      return;
+      return notifications.error({
+        message: messages.FAILED_TO_LOAD_PROPOSALS,
+        errorOrMessage: goResponse[GO_ERROR_INDEX],
+      });
     }
     const proposals = goResponse[GO_RESULT_INDEX];
 

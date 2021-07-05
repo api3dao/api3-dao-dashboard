@@ -62,8 +62,10 @@ const useLoadHistoryProposals = () => {
       };
     });
     if (!isGoSuccess(goResponse)) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: goResponse[GO_ERROR_INDEX] });
-      return;
+      return notifications.error({
+        message: messages.FAILED_TO_LOAD_PROPOSALS,
+        errorOrMessage: goResponse[GO_ERROR_INDEX],
+      });
     }
     const proposals = goResponse[GO_RESULT_INDEX];
 
@@ -140,8 +142,10 @@ const useReloadHistoryProposals = () => {
 
     const goResponse = await go(loadProposals());
     if (!isGoSuccess(goResponse)) {
-      // TODO: error handling
-      console.error('Unable to reload history proposals', goResponse[GO_ERROR_INDEX]);
+      return notifications.error({
+        message: messages.FAILED_TO_LOAD_PROPOSALS,
+        errorOrMessage: goResponse[GO_ERROR_INDEX],
+      });
     }
   }, [api3Voting, convenience, userAccount, setChainData]);
 

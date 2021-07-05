@@ -5,19 +5,10 @@ import BorderedBox, { Header } from '../../../components/bordered-box/bordered-b
 import Button from '../../../components/button/button';
 import { useApi3Pool } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
-import { notifications } from '../../../components/notifications/notifications';
-import {
-  formatAndRoundApi3,
-  getDays,
-  getHours,
-  getMinutes,
-  getSeconds,
-  go,
-  isUserRejection,
-  messages,
-} from '../../../utils';
+import { formatAndRoundApi3, getDays, getHours, getMinutes, getSeconds } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './pending-unstake-panel.module.scss';
+import { handleTransactionError } from '../../../utils';
 
 interface Props {
   amount: BigNumber;
@@ -69,15 +60,7 @@ const PendingUnstakePanel = (props: Props) => {
 
   const handleUnstake = async () => {
     if (!api3Pool) return;
-    const [err, tx] = await go(api3Pool.unstake(userAccount));
-    if (err) {
-      if (isUserRejection(err!)) {
-        notifications.info({ message: messages.TX_GENERIC_REJECTED });
-        return;
-      }
-      notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: err });
-      return;
-    }
+    const tx = await handleTransactionError(api3Pool.unstake(userAccount));
     if (tx) {
       setChainData('Save unstake transaction', { transactions: [...transactions, { type: 'unstake', tx }] });
     }
@@ -85,15 +68,7 @@ const PendingUnstakePanel = (props: Props) => {
 
   const handleUnstakeAndWithdraw = async () => {
     if (!api3Pool) return;
-    const [err, tx] = await go(api3Pool.unstakeAndWithdraw());
-    if (err) {
-      if (isUserRejection(err!)) {
-        notifications.info({ message: messages.TX_GENERIC_REJECTED });
-        return;
-      }
-      notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: err });
-      return;
-    }
+    const tx = await handleTransactionError(api3Pool.unstakeAndWithdraw());
     if (tx) {
       setChainData('Save unstake & withdraw transaction', {
         transactions: [...transactions, { type: 'unstake-withdraw', tx }],

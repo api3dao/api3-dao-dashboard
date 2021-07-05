@@ -3,59 +3,42 @@ import { useState } from 'react';
 import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
 import Input from '../../../components/input/input';
 import Button from '../../../components/button/button';
-import { notifications } from '../../../components/notifications/notifications';
-import { formatApi3, go, goSync, isUserRejection, parseApi3, messages } from '../../../utils';
+import { formatApi3, goSync, parseApi3, messages } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
 
 interface Props {
   title: string;
   action: 'Withdraw' | 'Stake' | 'Initiate Unstaking';
-  onConfirm: (parsedInput: BigNumber) => Promise<any>;
-  onClose: () => void;
+  onConfirm: (parsedInput: BigNumber) => void;
   onChange: (input: string) => void;
   inputValue: string;
   maxValue?: BigNumber;
-  closeOnConfirm?: boolean;
 }
 
 const TokenAmountForm = (props: Props) => {
   const [error, setError] = useState('');
-  const { action, onConfirm, maxValue, onChange, onClose, inputValue, closeOnConfirm = true } = props;
+  const { action, onConfirm, maxValue, onChange, inputValue } = props;
 
   // The input field should catch any bad inputs, but just in case, try parse and display any errors
   const [parseErr, parsedInput] = goSync(() => parseApi3(inputValue));
 
   const handleAction = async () => {
+    setError('');
+
     if (parseErr || !parsedInput) {
-      setError(messages.VALIDATION_INPUT_PARSE);
-      return;
+      return setError(messages.VALIDATION_INPUT_PARSE);
     }
     if (parsedInput.lte(0)) {
-      setError(messages.VALIDATION_INPUT_ZERO);
-      return;
+      return setError(messages.VALIDATION_INPUT_ZERO);
     }
     if (maxValue) {
       if (parsedInput.gt(maxValue)) {
-        setError(messages.VALIDATION_INPUT_TOO_HIGH);
-        return;
+        return setError(messages.VALIDATION_INPUT_TOO_HIGH);
       }
     }
-    setError('');
 
-    const [err] = await go(onConfirm(parsedInput));
-    if (err) {
-      if (isUserRejection(err)) {
-        notifications.info({ message: messages.TX_GENERIC_REJECTED });
-        return;
-      }
-      setError(messages.TX_GENERIC_ERROR);
-      return;
-    }
-
-    if (closeOnConfirm) {
-      onClose();
-    }
+    onConfirm(parsedInput);
   };
 
   const handleSetMax = () => maxValue && onChange(formatApi3(maxValue.toString(), false));
