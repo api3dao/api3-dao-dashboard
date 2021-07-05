@@ -86,7 +86,7 @@ const NewProposalForm = (props: Props) => {
 
   return (
     <>
-      <ModalHeader>New proposal</ModalHeader>
+      <ModalHeader>New Proposal</ModalHeader>
 
       <ProposalFormItem
         name="proposal type"
@@ -132,7 +132,7 @@ const NewProposalForm = (props: Props) => {
       </ProposalFormItem>
 
       <ProposalFormItem
-        name={<label htmlFor="target-address">Target contract address</label>}
+        name={<label htmlFor="target-address">Target Contract Address</label>}
         tooltip="The address of the contract you want to be called when the proposal is executed."
       >
         <Input id="target-address" value={targetAddress} onChange={(e) => setTargetAddress(e.target.value)} block />
@@ -140,7 +140,7 @@ const NewProposalForm = (props: Props) => {
       </ProposalFormItem>
 
       <ProposalFormItem
-        name={<label htmlFor="target-signature">Target contract signature</label>}
+        name={<label htmlFor="target-signature">Target Contract Signature</label>}
         tooltip={`The signature of the function at the target contract you want to have called (e.g. "transfer(address,uint256)").`}
       >
         <Input

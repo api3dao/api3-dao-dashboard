@@ -5,7 +5,7 @@ import { ACCOUNTS, EPOCH_LENGTH } from '../support/common';
 it('new proposal form validation', () => {
   cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // skip the genesis epoch (add 1 hour just to be sure)
   cy.findAllByText('Governance').filter(':visible').click();
-  cy.findByText('+ New proposal').click();
+  cy.findByText('+ New Proposal').click();
 
   cy.findByText('Create').click();
   cy.findByText('Title must have at least one alphanumeric character').should('exist');
@@ -23,7 +23,7 @@ it('new proposal form validation', () => {
 
   // Expect contract signature error and let user fix it
   cy.findByText('Please specify a valid contract signature').should('exist');
-  cy.findByLabelText('Target contract signature').type('transfer(address, unit256)');
+  cy.findByLabelText('Target Contract Signature').type('transfer(address, unit256)');
   cy.findByText('Create').click();
 
   // Let user fix incorrect number of parameters
@@ -35,12 +35,12 @@ it('new proposal form validation', () => {
 
   // Catch the typo and let the user fix it
   cy.findByText('Ensure parameters match target contract signature').should('exist');
-  cy.findByLabelText('Target contract signature').type('{backspace}'.repeat(8) + 'uint256)');
+  cy.findByLabelText('Target Contract Signature').type('{backspace}'.repeat(8) + 'uint256)');
   cy.findByText('Create').click();
 
   // Fill target address and value
   cy.findByText('Please specify a valid account address').should('exist');
-  cy.findByLabelText('Target contract address').type(ACCOUNTS[1]);
+  cy.findByLabelText('Target Contract Address').type(ACCOUNTS[1]);
   cy.findByLabelText('ETH Value').type('-123456');
   cy.findByText('Create').click();
 

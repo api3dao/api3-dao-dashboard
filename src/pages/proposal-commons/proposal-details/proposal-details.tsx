@@ -188,7 +188,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               </p>
             </div>
             <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Target contract address</p>
+              <p className={globalStyles.bold}>Target Contract Address</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlTargetAddress ? (
                   <a href={urlTargetAddress} target="_blank" rel="noopener noreferrer">
@@ -200,7 +200,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               </p>
             </div>
             <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Target contract signature</p>
+              <p className={globalStyles.bold}>Target Contract Signature</p>
               <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
             </div>
             {evmScriptData.value.gt(0) && (
