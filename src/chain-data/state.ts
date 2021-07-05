@@ -59,6 +59,7 @@ export interface Proposal {
   type: ProposalType;
   script: string;
   userVotingPowerAt: BigNumber;
+  discussionUrl: string | null;
 }
 
 export interface Delegation {
