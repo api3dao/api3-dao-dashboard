@@ -1,6 +1,6 @@
 import { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '../../chain-data';
 import { computePercentage, EPOCH_LENGTH } from '../../contracts';
-import { addSeconds, isAfter } from 'date-fns';
+import { addSeconds, differenceInDays, isAfter } from 'date-fns';
 import { HUNDRED_PERCENT } from '../../contracts';
 import { BigNumber } from 'ethers';
 
@@ -144,6 +144,7 @@ export const canCreateNewProposalSelector = (
     genesisEpochOver,
     totalVotingPowerPercentage,
     delegatedVotingPowerPercentage,
+    lastProposalDeltaInDays: differenceInDays(Date.now(), delegation.lastProposalTimestamp),
   };
 };
 

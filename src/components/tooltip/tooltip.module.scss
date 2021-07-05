@@ -16,13 +16,24 @@
 }
 
 .tooltipItem {
-  img {
+  display: flex;
+  align-items: center;
+
+  & > img {
     height: 15px;
     margin-top: -1px;
     vertical-align: middle;
   }
 
-  span {
+  & > div {
     margin-left: $space-sm;
   }
+}
+
+.labelChecked {
+  color: $secondary-black-color;
+}
+
+.labelUnchecked {
+  color: $black-color;
 }

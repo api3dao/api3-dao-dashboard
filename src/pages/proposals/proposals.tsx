@@ -52,10 +52,22 @@ const Proposals = () => {
     ? ` (${round(createNewProposal.delegatedVotingPowerPercentage, 2)}% delegated)`
     : '';
 
+  const proposalCooldownChecklistOver = createNewProposal?.lastProposalEpochOver ?? false;
   const newProposalChecklistItems = [
     {
-      checked: createNewProposal?.lastProposalEpochOver ?? false,
-      label: "You haven't created a proposal in the last 7 days.",
+      checked: proposalCooldownChecklistOver,
+      label: (
+        <>
+          <div>You haven't created a proposal in the last 7 days.</div>
+          {createNewProposal && !proposalCooldownChecklistOver && (
+            <div className={styles.checklistHelperText}>
+              {createNewProposal.lastProposalDeltaInDays > 0
+                ? `Last proposal created ${createNewProposal.lastProposalDeltaInDays} days ago.`
+                : `Last proposal created in less than 24 hours.`}
+            </div>
+          )}
+        </>
+      ),
     },
     {
       checked: createNewProposal?.hasEnoughVotingPower ?? false,
