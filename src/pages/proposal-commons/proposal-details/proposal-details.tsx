@@ -92,7 +92,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
     },
     {
       checked: canVoteData.isOpen,
-      label: 'The proposal is open for voting.',
+      label: 'The proposal has not ended.',
     },
     {
       checked: canVoteData.isNotDelegated,
