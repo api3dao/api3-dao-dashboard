@@ -8,6 +8,7 @@ export const images = {
   arrowRight: '/arrow-right.svg',
   checkboxEmpty: '/checkbox-empty.svg',
   checkboxFilled: '/checkbox-filled.svg',
+  checkBlack: '/check-black.svg',
   checkGreen: '/check-green.svg',
   close: '/close.svg',
   closePink: '/close-pink.svg',

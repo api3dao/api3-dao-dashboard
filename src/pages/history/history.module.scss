@@ -31,3 +31,23 @@
   justify-content: space-between;
   transform: translateY(-50%);
 }
+
+.radioButtons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-left: $space-md;
+
+  & > * {
+    margin-right: $space-lg;
+
+    @media (max-width: $max-md) {
+      margin-right: $space-md;
+    }
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+}
