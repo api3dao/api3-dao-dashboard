@@ -5,6 +5,22 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  position: sticky;
+  bottom: 0;
+  height: 120px;
+  background: $black-color;
+
+  @media (max-width: $max-lg) {
+    height: 120px;
+  }
+
+  @media (max-width: $max-md) {
+    height: 230px;
+  }
+
+  @media (max-width: $max-sm) {
+    height: 300px;
+  }
 }
 
 .gradient {

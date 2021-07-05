@@ -1,8 +1,7 @@
 @import '../../styles/variables.module.scss';
 
-$footer-height: 120px;
-$footer-height-media-md: 200px;
-$footer-height-media-sm: 280px;
+$footer-height: 50px;
+$footer-height-media-sm: 150px;
 
 .layout {
   background: $black-color;
@@ -41,22 +40,21 @@ $footer-height-media-sm: 280px;
   bottom: $footer-height;
   right: 0;
 
-  @media (max-width: $max-md) {
-    bottom: $footer-height-media-md;
-  }
-
   @media (max-width: $max-sm) {
     bottom: $footer-height-media-sm;
   }
 }
 
 .footer {
-  height: $footer-height;
   display: flex;
-
-  @media (max-width: $max-md) {
-    height: $footer-height-media-md;
-  }
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  background: black;
+  z-index: 30;
+  height: $footer-height;
+  // TODO: This doesn't look nice when the error reporting notice is shown
+  border-top: 1px solid $green-color;
 
   @media (max-width: $max-sm) {
     height: $footer-height-media-sm;
@@ -85,5 +83,13 @@ $footer-height-media-sm: 280px;
 .linkSeparator {
   @media (max-width: $max-lg) {
     display: none; // Hide the link separators in smaller resolutions
+  }
+}
+
+.noUnderline {
+  text-decoration: none;
+
+  button {
+    text-decoration: none !important;
   }
 }

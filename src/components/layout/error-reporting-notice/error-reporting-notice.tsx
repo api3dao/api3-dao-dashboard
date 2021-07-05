@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ERROR_REPORTING_CONSENT_KEY_NAME, images, isErrorReportingAllowed } from '../../../utils';
+import { useRef, useState } from 'react';
+import { ERROR_REPORTING_CONSENT_KEY_NAME, images, isErrorReportingAllowed, useOnMountEffect } from '../../../utils';
 import Button from '../../button/button';
 import ExternalLink from '../../external-link';
 import styles from './error-reporting-notice.module.scss';
@@ -18,10 +18,16 @@ const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
     localStorage.setItem(ERROR_REPORTING_CONSENT_KEY_NAME, errorReportingEnabled.toString());
     onClose();
   };
+  const errorReportingRef = useRef<HTMLInputElement>(null);
+
+  // The error reporting notice is bigger than footer so we need to scroll to it
+  useOnMountEffect(() => {
+    errorReportingRef.current!.scrollIntoView();
+  });
 
   return (
     <>
-      <div className={styles.wrapper}>
+      <div id="error-reporting" className={styles.wrapper} ref={errorReportingRef}>
         <div className={styles.gradient}></div>
         <img
           className={styles.closeButton}

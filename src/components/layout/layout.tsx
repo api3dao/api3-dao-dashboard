@@ -7,6 +7,7 @@ import styles from './layout.module.scss';
 import ExternalLink from '../external-link';
 import Button from '../button/button';
 import ErrorReportingNotice from './error-reporting-notice';
+import classNames from 'classnames';
 
 type Props = {
   children: ReactNode;
@@ -57,10 +58,19 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
             <div className={styles.footerContent}>
               {insertInBetween(
                 links.map((link) => {
-                  if (link.href) return <ExternalLink href={link.href}>{link.text}</ExternalLink>;
+                  if (link.href)
+                    return (
+                      <ExternalLink href={link.href} className={styles.noUnderline}>
+                        {link.text}
+                      </ExternalLink>
+                    );
                   else
                     return (
-                      <Button type="text" className={styles.externalLinkButton} onClick={link.onClick}>
+                      <Button
+                        type="text"
+                        className={classNames(styles.externalLinkButton, styles.noUnderline)}
+                        onClick={link.onClick}
+                      >
                         {link.text}
                       </Button>
                     );
