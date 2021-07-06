@@ -1,7 +1,7 @@
 @import '../../styles/variables.module.scss';
 
 $footer-height: 70px;
-$footer-height-media-sm: 180px;
+$footer-height-media-sm: 200px;
 
 .layout {
   background: $black-color;
@@ -53,8 +53,7 @@ $footer-height-media-sm: 180px;
   background: black;
   z-index: 30;
   height: $footer-height;
-  // TODO: This doesn't look nice when the error reporting notice is shown
-  border-top: 1px solid $green-color;
+  border-top: 1px solid rgba($green-color, 0.5);
 
   @media (max-width: $max-sm) {
     height: $footer-height-media-sm;
@@ -64,12 +63,6 @@ $footer-height-media-sm: 180px;
     display: flex;
     flex: 1;
     justify-content: space-around;
-    align-items: center;
-    padding: 0 25vw;
-
-    @media (max-width: $max-sm) {
-      flex-direction: column;
-    }
   }
 }
 
@@ -80,7 +73,7 @@ $footer-height-media-sm: 180px;
 }
 
 .linkSeparator {
-  @media (max-width: $max-lg) {
+  @media (max-width: $max-sm) {
     display: none; // Hide the link separators in smaller resolutions
   }
 }
@@ -90,5 +83,24 @@ $footer-height-media-sm: 180px;
 
   button {
     text-decoration: none !important;
+  }
+}
+
+.linkSpacing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: $max-sm) {
+    flex-direction: column;
+
+    & > *:not(:last-child) {
+      margin-bottom: $space-lg;
+      margin-right: 0 !important; // override the spacing for horizontal layout
+    }
+  }
+
+  & > *:not(:last-child) {
+    margin-right: $space-md;
   }
 }

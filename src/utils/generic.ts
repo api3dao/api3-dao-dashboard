@@ -1,4 +1,5 @@
 import { BigNumber } from 'ethers';
+import { ReactElement } from 'react';
 
 export const blockTimestampToDate = (timestamp: BigNumber) => new Date(timestamp.mul(1000).toNumber());
 
@@ -91,7 +92,12 @@ export const isErrorReportingAllowed = (localStorageValue: string | null) => {
 };
 
 type InsertInBetweenValue<T, R> = (index: number, array: T[]) => R;
-export const insertInBetween = <T, ToInsert>(
+export const insertInBetween = <
+  T,
+  // NOTE: This could accept `any` type, but that would kill the inference when a function is supplied, so we need to
+  // list the non function values explicitely.
+  ToInsert extends InsertInBetweenValue<T, any> | string | ReactElement | null | undefined | number
+>(
   array: T[],
   toInsert: ToInsert
 ): ToInsert extends InsertInBetweenValue<T, infer R> ? Array<T | R> : Array<T | ToInsert> => {
