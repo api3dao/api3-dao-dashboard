@@ -29,7 +29,7 @@ interface ToastProps {
 
 interface ErrorToastProps extends ToastProps {
   errorOrMessage: Error | string;
-  skipSentry?: boolean;
+  sendToSentry?: boolean;
 }
 
 interface ToastPropsWithType extends ToastProps {
@@ -87,8 +87,8 @@ export const warning = throttle(
 
 export const error = throttle(
   (props: ErrorToastProps, overrides?: ToastOptions) => {
-    const { skipSentry = false, errorOrMessage, ...other } = props;
-    if (!skipSentry) {
+    const { sendToSentry = false, errorOrMessage, ...other } = props;
+    if (sendToSentry) {
       if (typeof errorOrMessage === 'string') Sentry.captureMessage(errorOrMessage);
       else Sentry.captureException(errorOrMessage);
     }
