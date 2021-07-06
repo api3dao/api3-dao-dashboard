@@ -175,6 +175,18 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             <p className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor)}>
               {proposal.metadata.description}
             </p>
+
+            <div className={styles.proposalDetailsItem}>
+              <p className={globalStyles.bold}>Discussion URL</p>
+              {proposal.discussionUrl ? (
+                <a href={proposal.discussionUrl} target="_blank" rel="noopener noreferrer">
+                  {proposal.discussionUrl}
+                </a>
+              ) : (
+                <p className={globalStyles.secondaryColor}>Discussion link has not been created yet</p>
+              )}
+            </div>
+
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Creator</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
