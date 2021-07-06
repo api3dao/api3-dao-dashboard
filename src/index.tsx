@@ -4,8 +4,10 @@ import * as Sentry from '@sentry/react';
 import './index.scss';
 import App from './app';
 import { mockLocalhostWeb3Provider } from './chain-data';
+import { ERROR_REPORTING_CONSENT_KEY_NAME, isErrorReportingAllowed } from './utils';
 
-if (process.env.REACT_APP_SENTRY_DSN && process.env.REACT_APP_NODE_ENV) {
+const errorReportingValue = localStorage.getItem(ERROR_REPORTING_CONSENT_KEY_NAME);
+if (isErrorReportingAllowed(errorReportingValue) && process.env.REACT_APP_SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
     environment: process.env.REACT_APP_NODE_ENV,

@@ -1,0 +1,10 @@
+@import '../../styles/variables.module.scss';
+
+.link {
+  font-size: $text-small;
+  line-height: $lh-small;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+}

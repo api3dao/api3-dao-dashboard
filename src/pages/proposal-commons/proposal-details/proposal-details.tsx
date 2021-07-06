@@ -24,6 +24,7 @@ import styles from './proposal-details.module.scss';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
 import NotFoundPage from '../../not-found';
 import { handleTransactionError, images, messages, useScrollToTop } from '../../../utils';
+import ExternalLink from '../../../components/external-link';
 
 interface ProposalDetailsContentProps {
   type: ProposalType;
@@ -190,22 +191,14 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Creator</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
-                {urlCreator ? (
-                  <a href={urlCreator} target="_blank" rel="noopener noreferrer">
-                    {proposal.creator}
-                  </a>
-                ) : (
-                  proposal.creator
-                )}
+                {urlCreator ? <ExternalLink href={urlCreator}>{proposal.creator}</ExternalLink> : proposal.creator}
               </p>
             </div>
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Target Contract Address</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlTargetAddress ? (
-                  <a href={urlTargetAddress} target="_blank" rel="noopener noreferrer">
-                    {evmScriptData.targetAddress}
-                  </a>
+                  <ExternalLink href={urlTargetAddress}>{evmScriptData.targetAddress}</ExternalLink>
                 ) : (
                   evmScriptData.targetAddress
                 )}

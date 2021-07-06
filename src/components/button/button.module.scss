@@ -18,7 +18,6 @@
   align-items: center;
   justify-content: center;
   color: $button-color;
-  font-weight: 500;
   border-width: 1px;
   border-style: solid;
   outline: none;
@@ -34,7 +33,6 @@
   }
 
   &.normal {
-    height: 51px;
     font-size: $text-small;
     line-height: $lh-small;
     padding: 17px $space-lg;
@@ -45,13 +43,11 @@
   }
 
   &.large {
-    height: 62px;
     font-size: $text-normal;
     line-height: 22px;
     padding: 20px 44px;
 
     @media (max-width: $max-md) {
-      height: 58px;
       font-size: $text-small;
       padding: $space-md $space-xl;
     }

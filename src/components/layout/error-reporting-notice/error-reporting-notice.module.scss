@@ -1,0 +1,108 @@
+@import '../../../styles/variables.module.scss';
+@import '../layout.module.scss';
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  height: 120px;
+  background: $black-color;
+
+  @media (max-width: $max-lg) {
+    height: 120px;
+  }
+
+  @media (max-width: $max-md) {
+    height: 230px;
+  }
+
+  @media (max-width: $max-sm) {
+    height: 300px;
+  }
+}
+
+.gradient {
+  background: linear-gradient(76.31deg, #7ce3cb 2.01%, #7963b2 99.02%);
+  height: 4px;
+}
+
+.closeButton {
+  height: 16px;
+  align-self: flex-end;
+  margin: 20px 16px;
+  position: absolute;
+  color: $secondary-color;
+  cursor: pointer;
+  transition: transform 0.35s;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+.content {
+  padding: 0 15vw;
+  display: flex;
+  font-size: $text-small;
+  align-items: center;
+  justify-content: space-around;
+  flex: 1;
+
+  @media (max-width: $max-sm) {
+    flex-direction: column;
+  }
+
+  & > *:not(:last-child) {
+    margin-right: $space-md;
+  }
+}
+
+.checkboxWrapper {
+  min-width: 160px; // Make sure the checkbox and its label are on a single line
+  display: flex;
+  align-items: center;
+
+  label {
+    cursor: pointer;
+  }
+
+  input {
+    $size: 16px;
+
+    width: $size;
+    height: $size;
+    margin-right: $space-xs;
+    appearance: none;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+    transition-duration: 0.3s;
+    background-color: $secondary-black-color;
+    cursor: pointer;
+  }
+
+  input:checked {
+    background-color: $green-color;
+  }
+
+  input:checked::before {
+    content: '\2713';
+    text-align: center;
+    color: $secondary-black-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  input:active {
+    border: 2px solid $secondary-black-color;
+  }
+}
+
+.notice {
+  max-width: 550px;
+}

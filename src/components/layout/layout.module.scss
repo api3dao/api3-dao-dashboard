@@ -1,7 +1,10 @@
 @import '../../styles/variables.module.scss';
 
+$footer-height: 70px;
+$footer-height-media-sm: 200px;
+
 .layout {
-  background: $background-gradient;
+  background: $black-color;
   min-height: 100vh;
   position: relative;
 }
@@ -34,6 +37,70 @@
 
 .layoutTexture {
   position: absolute;
-  bottom: 0;
+  bottom: $footer-height;
   right: 0;
+
+  @media (max-width: $max-sm) {
+    bottom: $footer-height-media-sm;
+  }
+}
+
+.footer {
+  display: flex;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  background: black;
+  z-index: 30;
+  height: $footer-height;
+  border-top: 1px solid rgba($green-color, 0.5);
+
+  @media (max-width: $max-sm) {
+    height: $footer-height-media-sm;
+  }
+
+  &Content {
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+  }
+}
+
+.externalLinkButton {
+  button {
+    color: $secondary-color;
+  }
+}
+
+.linkSeparator {
+  @media (max-width: $max-sm) {
+    display: none; // Hide the link separators in smaller resolutions
+  }
+}
+
+.noUnderline {
+  text-decoration: none;
+
+  button {
+    text-decoration: none !important;
+  }
+}
+
+.linkSpacing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: $max-sm) {
+    flex-direction: column;
+
+    & > *:not(:last-child) {
+      margin-bottom: $space-lg;
+      margin-right: 0 !important; // override the spacing for horizontal layout
+    }
+  }
+
+  & > *:not(:last-child) {
+    margin-right: $space-md;
+  }
 }

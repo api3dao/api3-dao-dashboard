@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import ExternalLink from '../external-link';
 import styles from './notifications.module.scss';
 
 type Props = {
@@ -8,9 +9,9 @@ type Props = {
 
 const NotificationLinkButton = ({ children, href }: Props) => {
   return (
-    <a className={styles.notificationButton} href={href} target="_blank" rel="noopener noreferrer">
+    <ExternalLink className={styles.notificationButton} href={href}>
       {children}
-    </a>
+    </ExternalLink>
   );
 };
 
