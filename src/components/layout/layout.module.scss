@@ -1,8 +1,5 @@
 @import '../../styles/variables.module.scss';
 
-$footer-height: 70px;
-$footer-height-media-sm: 200px;
-
 .layout {
   background: $black-color;
   min-height: 100vh;
@@ -13,11 +10,13 @@ $footer-height-media-sm: 200px;
   position: relative;
   z-index: 1;
   max-width: 1020px;
+  min-height: calc(100vh - #{$navigation-height} - #{$footer-height});
   margin: 0 auto;
   padding-top: $space-xxl;
   padding-right: $space-xxl;
   padding-left: 184px;
   padding-bottom: 2 * $space-xxl;
+  box-sizing: border-box;
 
   @media (max-width: $max-lg) {
     padding-left: 110px;
@@ -30,6 +29,7 @@ $footer-height-media-sm: 200px;
   }
 
   @media (max-width: $max-sm) {
+    min-height: calc(100vh - #{$navigation-height} - #{$footer-height-media-sm});
     padding: $space-lg;
     padding-bottom: $space-xxxl;
   }
