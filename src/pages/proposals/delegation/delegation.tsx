@@ -13,6 +13,7 @@ import { images } from '../../../utils';
 import { useLoadDashboardData } from '../../../logic/dashboard';
 import { TooltipChecklist } from '../../../components/tooltip';
 import styles from './delegation.module.scss';
+import classNames from 'classnames';
 
 const Delegation = () => {
   // TODO: Retrieve only "userStaked" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
@@ -46,7 +47,7 @@ const Delegation = () => {
     <>
       {delegation?.delegate ? (
         <div>
-          <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`} data-cy="delegated-to">
+          <p className={classNames(globalStyles.secondaryColor, globalStyles.bold)} data-cy="delegated-to">
             Delegated to: {abbrStr(delegation.delegate)}
           </p>
           <Button
@@ -85,7 +86,7 @@ const Delegation = () => {
         </div>
       ) : (
         <div>
-          <p className={`${globalStyles.secondaryColor} ${globalStyles.bold}`}>Undelegated</p>
+          <p className={classNames(globalStyles.secondaryColor, globalStyles.bold)}>Undelegated</p>
           <Button
             className={styles.proposalsLink}
             type="text"

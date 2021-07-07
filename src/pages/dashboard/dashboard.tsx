@@ -18,6 +18,7 @@ import UnstakeBanner from './unstake-banner/unstake-banner';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './dashboard.module.scss';
 import ConfirmUnstakeForm from './forms/confirm-unstake-form';
+import classNames from 'classnames';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
@@ -69,7 +70,7 @@ const Dashboard = () => {
             }
             content={
               <>
-                <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
+                <div className={classNames(globalStyles.textCenter, globalStyles.mbLg)}>
                   <p className={styles.borderedBoxContentTitle}>total</p>
                   <p className={globalStyles.textXLarge} data-cy="balance">
                     {tokenBalances ? formatAndRoundApi3(tokenBalances.userTotal) : UNKNOWN_NUMBER}
@@ -107,7 +108,7 @@ const Dashboard = () => {
             }
             content={
               <>
-                <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
+                <div className={classNames(globalStyles.textCenter, globalStyles.mbLg)}>
                   <p className={styles.borderedBoxContentTitle}>staked</p>
                   <p className={globalStyles.textXLarge} data-cy="staked">
                     {data ? formatAndRoundApi3(data.userStaked) : UNKNOWN_NUMBER}

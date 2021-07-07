@@ -26,8 +26,8 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
         <DropdownMenu>
           {data.map(({ name, amountAndSymbol }) => (
             <DropdownMenuItem className={styles.treasuryMenuItem} key={`${type}${name}`}>
-              <p className={`${globalStyles.textSmall} ${globalStyles.medium}`}>{name}</p>
-              <p className={`${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.medium}`}>
+              <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{name}</p>
+              <p className={classNames(globalStyles.secondaryColor, globalStyles.textSmall, globalStyles.medium)}>
                 {amountAndSymbol}
               </p>
             </DropdownMenuItem>
@@ -37,7 +37,7 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
     >
       <div className={styles.treasuryButton}>
         <p
-          className={`${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.medium} ${styles.label}`}
+          className={classNames(globalStyles.secondaryColor, globalStyles.textSmall, globalStyles.medium, styles.label)}
         >
           {type}
         </p>
@@ -72,7 +72,13 @@ const Treasury = (props: TreasuryProps) => {
   return (
     <div className={classNames(styles.treasury, className)}>
       <p
-        className={`${styles.label} ${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.uppercase} ${globalStyles.textRight}`}
+        className={classNames(
+          styles.label,
+          globalStyles.secondaryColor,
+          globalStyles.textSmall,
+          globalStyles.uppercase,
+          globalStyles.textRight
+        )}
       >
         Treasury
         <Tooltip overlay="The DAO treasury is divided between the primary and secondary agent contracts. To move funds from a particular agent, you need to use the respective proposal type (primary proposal to use primary agent funds, and vice versa).">

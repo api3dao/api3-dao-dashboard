@@ -93,22 +93,22 @@ const PendingUnstakePanel = (props: Props) => {
             <p className={styles.pendingUnstakeName}>Cooldown</p>
             <div className={styles.pendingUnstakeCountdown}>
               <div className={styles.pendingUnstakeCountdownItem}>
-                <p className={`${globalStyles.textSmall} ${globalStyles.medium}`}>{timerDays}</p>
+                <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerDays}</p>
                 <p className={styles.shortcut}>D</p>
               </div>
               <div className={styles.colon}>:</div>
               <div className={styles.pendingUnstakeCountdownItem}>
-                <p className={`${globalStyles.textSmall} ${globalStyles.medium}`}>{timerHours}</p>
+                <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerHours}</p>
                 <p className={styles.shortcut}>HR</p>
               </div>
               <div className={styles.colon}>:</div>
               <div className={styles.pendingUnstakeCountdownItem}>
-                <p className={`${globalStyles.textSmall} ${globalStyles.medium}`}>{timerMinutes}</p>
+                <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerMinutes}</p>
                 <p className={styles.shortcut}>MIN</p>
               </div>
               <div className={styles.colon}>:</div>
               <div className={styles.pendingUnstakeCountdownItem}>
-                <p className={`${globalStyles.textSmall} ${globalStyles.medium}`}>{timerSeconds}</p>
+                <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerSeconds}</p>
                 <p className={styles.shortcut}>SEC</p>
               </div>
             </div>
