@@ -30,7 +30,7 @@ jobs:
       - name: Lint
         run: yarn lint
       - name: Prepare config
-        run: yarn copy-localhost-deployment
+        run: node dev-scripts/copy-localhost-data.js
       - name: Compile
         run: yarn tsc
       - name: Test

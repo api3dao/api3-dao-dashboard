@@ -4,28 +4,25 @@
   "private": true,
   "homepage": ".",
   "scripts": {
-    "build": "yarn copy-localhost-deployment && react-scripts build",
-    "copy-localhost-deployment": "cd src/contract-deployments && cp localhost-dao.example.json localhost-dao.json",
+    "build": "node dev-scripts/copy-localhost-data.js && react-scripts build",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
     "eject": "react-scripts eject",
     "eth:compile-contracts": "cd hardhat && npx hardhat compile",
     "eth:node": "cd hardhat && npx hardhat node --network hardhat",
-    "eth:set-dao-apps:localhost": "cd hardhat && npx hardhat run scripts/set-dao-apps-in-pool",
     "eth:run-script": "cd hardhat && npx hardhat run",
-    "fix-contract-imports": "yarn replace-in-file @api3-dao/pool/contracts ../pool-contracts-symlink hardhat/contracts/voting-contracts-symlink/Api3Voting.sol && yarn replace-in-file @api3-dao/pool/contracts ../pool-contracts-symlink hardhat/contracts/convenience-contracts-symlink/Convenience.sol && yarn replace-in-file @api3-dao/api3-voting/interfaces ../voting-interfaces-symlink hardhat/contracts/convenience-contracts-symlink/Convenience.sol && yarn replace-in-file 0.6.12 0.8.4 $(find hardhat/contracts -type f -follow)",
-    "fix-scss-ts": "node scss-ts-hack.js",
-    "format": "prettier --write src/**/*.{js,jsx,ts,tsx,json,css,scss,md}",
-    "generate-contracts": "yarn typechain --target ethers-v5 --out-dir ./src/generated-contracts './hardhat/artifacts/contracts/**/!(*.dbg).json'",
-    "lint": "eslint --ext js,ts,tsx src",
-    "postinstall": "yarn fix-contract-imports && node fix-timelock-manager.js && yarn eth:compile-contracts && yarn generate-contracts && yarn fix-scss-ts",
-    "postuninstall": "yarn fix-contract-imports && node fix-timelock-manager.js && yarn fix-scss-ts",
+    "format": "prettier --write {src,dev-scripts}/**/*.{js,jsx,ts,tsx,json,css,scss,md}",
+    "lint": "eslint --ext js,ts,tsx src dev-scripts",
+    "fix-dev-issues": "node dev-scripts/prepare-dao-contracts.js && node dev-scripts/scss-ts-hack.js",
+    "postinstall": "yarn fix-dev-issues",
+    "postuninstall": "yarn fix-dev-issues",
     "prepare": "husky install",
     "send-to-account": "cd hardhat && npx hardhat send-to-account --address",
     "start": "BROWSER=none react-scripts start",
-    "test": "react-scripts test --watchAll=false",
     "test:watch": "react-scripts test",
-    "tsc": "tsc --project tsconfig.json",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "test": "react-scripts test --watchAll=false",
+    "tsc:watch": "tsc --project tsconfig.json --watch",
+    "tsc": "tsc --project tsconfig.json"
   },
   "husky": {
     "hooks": {
@@ -34,7 +31,7 @@
     }
   },
   "lint-staged": {
-    "{src,hardhat}/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+    "{src,hardhat,dev-scripts}/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
     ],
     "package.json": "sort-package-json"
@@ -98,6 +95,7 @@
     "@types/react-router-dom": "^5.1.7",
     "api3-dao": "git+https://github.com/api3dao/api3-dao.git#85603266a3a189ccedf41b2d2f33e5911314d2f7",
     "chai": "^4.3.4",
+    "chalk": "^4.1.1",
     "cypress": "^7.6.0",
     "cypress-plugin-tab": "^1.0.5",
     "dotenv": "^10.0.0",

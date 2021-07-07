@@ -12,34 +12,30 @@
  * somewhere else. These cases are unfortunately, out of scope.
  */
 const replace = require('replace-in-file');
+const chalk = require('chalk');
 
 const TEXT_TO_REMOVE = `
 declare module '*.module.scss' {
   const classes: { readonly [key: string]: string };
   export default classes;
 }
-`
+`;
 
 const main = async () => {
   const options = {
     files: './node_modules/react-scripts/lib/react-app.d.ts',
     from: TEXT_TO_REMOVE,
     to: '',
-    dry: false
+    dry: false,
   };
-  
-  try {
-    const results = await replace(options)
-    console.info('Replacement results:', results);
-  }
-  catch (error) {
-    console.error('Error occurred:', error);
-  }
-}
+
+  console.info(chalk.green('Fixing scss TS typings...'));
+  await replace(options);
+};
 
 main()
   .then(() => process.exit(0))
   .catch((error) => {
-    console.error(error);
+    console.error(chalk.red(`Error: ${error}`));
     process.exit(1);
   });
