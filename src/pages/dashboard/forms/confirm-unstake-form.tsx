@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
-import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
-import Button from '../../../components/button/button';
+import { ModalFooter, ModalHeader } from '../../../components/modal';
+import Button from '../../../components/button';
 import styles from './forms.module.scss';
 
 interface Props {

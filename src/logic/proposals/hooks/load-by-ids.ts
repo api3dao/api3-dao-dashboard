@@ -4,7 +4,7 @@ import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../..
 import { isGoSuccess, go, GO_RESULT_INDEX, GO_ERROR_INDEX } from '../../../utils';
 import { getProposals } from './get-proposals';
 import { BigNumber } from 'ethers';
-import { notifications } from '../../../components/notifications/notifications';
+import { notifications } from '../../../components/notifications';
 import { messages } from '../../../utils/messages';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 import { isZeroAddress } from '../../../contracts';

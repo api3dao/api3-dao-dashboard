@@ -3,7 +3,7 @@ import { Treasury, useChainData } from '../../chain-data';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../contracts/hooks';
 import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, assertGoSuccess, GO_ERROR_INDEX } from '../../utils';
 import { isZeroAddress } from '../../contracts';
-import * as notifications from '../../components/notifications/notifications';
+import * as notifications from '../../components/notifications';
 import { messages } from '../../utils/messages';
 
 export const useTreasuryAndDelegation = () => {

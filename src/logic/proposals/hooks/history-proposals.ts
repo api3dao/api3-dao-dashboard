@@ -6,7 +6,7 @@ import { isGoSuccess, go, GO_RESULT_INDEX, GO_ERROR_INDEX, messages } from '../.
 import keyBy from 'lodash/keyBy';
 import { getProposals } from './get-proposals';
 import { BigNumber } from 'ethers';
-import { notifications } from '../../../components/notifications/notifications';
+import { notifications } from '../../../components/notifications';
 import { VOTING_APP_IDS } from './commons';
 
 const fetchStartVoteEventsForHistoryProposals = async (votingApp: Api3Voting, openVoteIds: BigNumber[]) => {

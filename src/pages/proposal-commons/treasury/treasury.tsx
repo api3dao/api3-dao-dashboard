@@ -1,12 +1,12 @@
 import classNames from 'classnames';
-import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../../components/dropdown/dropdown';
+import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../../components/dropdown';
 import { FormattedTreasury, useTreasuries } from './hooks';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './treasury.module.scss';
 import { images } from '../../../utils';
 import { getEtherscanAddressUrl, useApi3AgentAddresses } from '../../../contracts';
 import { TreasuryType, useChainData } from '../../../chain-data';
-import Tooltip from '../../../components/tooltip/tooltip';
+import { Tooltip } from '../../../components/tooltip';
 
 interface TreasuryDropdownProps {
   data: FormattedTreasury[];

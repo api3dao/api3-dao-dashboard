@@ -1,11 +1,11 @@
 import { useState, ReactNode } from 'react';
 import { ProposalType } from '../../../chain-data';
-import Button from '../../../components/button/button';
+import Button from '../../../components/button';
 import RadioButton from '../../../components/radio-button/radio-button';
-import Input from '../../../components/input/input';
-import Textarea from '../../../components/textarea/textarea';
-import Tooltip from '../../../components/tooltip/tooltip';
-import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
+import Input from '../../../components/input';
+import Textarea from '../../../components/textarea';
+import { Tooltip } from '../../../components/tooltip';
+import { ModalFooter, ModalHeader } from '../../../components/modal';
 import { encodeEvmScript, NewProposalFormData } from '../../../logic/proposals/encoding';
 import { Api3Agent } from '../../../contracts';
 import { filterAlphanumerical, GO_ERROR_INDEX, images, isGoSuccess } from '../../../utils';

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useChainData } from '../../chain-data';
 import { useApi3Pool, usePossibleChainDataUpdate, useTimelockManager } from '../../contracts';
-import { notifications } from '../../components/notifications/notifications';
+import { notifications } from '../../components/notifications';
 import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, isGoSuccess, messages } from '../../utils';
 
 export const useLoadVestingData = () => {

@@ -15,7 +15,7 @@ import keyBy from 'lodash/keyBy';
 import chunk from 'lodash/chunk';
 import { getProposals } from './get-proposals';
 import { BigNumber } from 'ethers';
-import { notifications } from '../../../components/notifications/notifications';
+import { notifications } from '../../../components/notifications';
 import { openProposalIdsSelector, proposalDetailsSelector } from '../selectors';
 import { CHUNKS_SIZE, StartVoteProposal, VOTING_APP_IDS } from './commons';
 

@@ -6,12 +6,12 @@ import classNames from 'classnames';
 import { initialChainData, getNetworkData, useChainData, SettableChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import { go } from '../../utils/generic';
-import Button from '../../components/button/button';
-import { Modal as GenericModal } from '../../components/modal/modal';
-import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown/dropdown';
+import Button from '../../components/button';
+import { Modal as GenericModal } from '../../components/modal';
+import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown';
 import styles from './sign-in.module.scss';
 import globalStyles from '../../styles/global-styles.module.scss';
-import * as notifications from '../../components/notifications/notifications';
+import * as notifications from '../../components/notifications';
 import { images, messages } from '../../utils';
 import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscriptions } from '../../contracts';
 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import SignIn from '../sign-in/sign-in';
-import Menu from '../menu/menu';
+import Menu from '../menu';
 import { images } from '../../utils';
 import styles from './navigation.module.scss';
 

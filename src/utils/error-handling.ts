@@ -1,4 +1,4 @@
-import { notifications } from '../components/notifications/notifications';
+import { notifications } from '../components/notifications';
 import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, isGoSuccess, isUserRejection } from './generic';
 import { messages } from './messages';
 

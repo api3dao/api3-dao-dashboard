@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import Button from '../../components/button/button';
-import Layout from '../../components/layout/layout';
-import { Modal } from '../../components/modal/modal';
+import Button from '../../components/button';
+import Layout from '../../components/layout';
+import { Modal } from '../../components/modal';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
-import TooltipChecklist from '../../components/tooltip/tooltip-checklist';
-import Treasury from '../proposal-commons/treasury/treasury';
+import { TooltipChecklist } from '../../components/tooltip';
+import Treasury from '../proposal-commons/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useActiveProposals, useLoadGenesisEpoch } from '../../logic/proposals/hooks';
 import { encodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';

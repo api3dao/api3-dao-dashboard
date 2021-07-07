@@ -3,15 +3,15 @@ import { abbrStr } from '../../../chain-data/helpers';
 import DelegateVotesForm from '../forms/delegate/delegate-form';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import { useChainData } from '../../../chain-data';
-import Button from '../../../components/button/button';
-import { Modal } from '../../../components/modal/modal';
+import Button from '../../../components/button';
+import { Modal } from '../../../components/modal';
 import { canDelegateSelector, canUndelegateSelector } from '../../../logic/proposals/selectors';
 import ChooseDelegateAction from '../forms/choose-delegate-action/choose-delegate-action';
 import { useApi3Pool } from '../../../contracts';
 import { handleTransactionError } from '../../../utils';
 import { images } from '../../../utils';
 import { useLoadDashboardData } from '../../../logic/dashboard';
-import TooltipChecklist from '../../../components/tooltip/tooltip-checklist';
+import { TooltipChecklist } from '../../../components/tooltip';
 import styles from './delegation.module.scss';
 
 const Delegation = () => {

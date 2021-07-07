@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import classNames from 'classnames';
-import Button from '../../../../components/button/button';
-import Input from '../../../../components/input/input';
-import { ModalFooter, ModalHeader } from '../../../../components/modal/modal';
+import Button from '../../../../components/button';
+import Input from '../../../../components/input';
+import { ModalFooter, ModalHeader } from '../../../../components/modal';
 import { useChainData } from '../../../../chain-data';
 import { useApi3Pool } from '../../../../contracts';
 import { utils, constants } from 'ethers';
 import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, isGoSuccess } from '../../../../utils';
-import * as notifications from '../../../../components/notifications/notifications';
+import * as notifications from '../../../../components/notifications';
 import { messages } from '../../../../utils/messages';
 import globalStyles from '../../../../styles/global-styles.module.scss';
 import styles from './delegate.module.scss';

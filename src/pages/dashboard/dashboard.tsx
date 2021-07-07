@@ -6,13 +6,13 @@ import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } f
 import { formatAndRoundApi3, handleTransactionError, images, UNKNOWN_NUMBER } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
-import Layout from '../../components/layout/layout';
-import { Modal } from '../../components/modal/modal';
-import Button from '../../components/button/button';
-import Tooltip from '../../components/tooltip/tooltip';
+import Layout from '../../components/layout';
+import { Modal } from '../../components/modal';
+import Button from '../../components/button';
+import { Tooltip } from '../../components/tooltip';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
-import Slider from '../../components/slider/slider';
+import Slider from '../../components/slider';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import UnstakeBanner from './unstake-banner/unstake-banner';
 import globalStyles from '../../styles/global-styles.module.scss';

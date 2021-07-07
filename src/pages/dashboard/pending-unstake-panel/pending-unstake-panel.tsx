@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 import { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
-import Button from '../../../components/button/button';
+import Button from '../../../components/button';
 import { useApi3Pool } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
 import { formatAndRoundApi3, getDays, getHours, getMinutes, getSeconds } from '../../../utils';

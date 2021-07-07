@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { ethers, providers } from 'ethers';
-import { notifications } from '../components/notifications/notifications';
+import { notifications } from '../components/notifications';
 import { getDaoAddresses, getEtherscanTransactionUrl } from '../contracts';
 import { ChainData, initialChainData } from './state';
 import { go, GO_RESULT_INDEX, isGoSuccess } from '../utils';
@@ -13,8 +13,10 @@ export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => vo
   });
 };
 
-export const updateImmutablyCurried = <T>(updateCb: (immutableState: T) => void) => (state: T) =>
-  updateImmutably(state, updateCb);
+export const updateImmutablyCurried =
+  <T>(updateCb: (immutableState: T) => void) =>
+  (state: T) =>
+    updateImmutably(state, updateCb);
 
 export const getNetworkData = async (provider: ethers.providers.Web3Provider | null) => {
   // If the user has disconnected

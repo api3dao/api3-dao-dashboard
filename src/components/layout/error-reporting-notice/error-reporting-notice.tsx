@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { ERROR_REPORTING_CONSENT_KEY_NAME, images, isErrorReportingAllowed } from '../../../utils';
-import Button from '../../button/button';
+import Button from '../../button';
 import ExternalLink from '../../external-link';
 import styles from './error-reporting-notice.module.scss';
 

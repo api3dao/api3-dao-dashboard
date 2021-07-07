@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { BaseLayout } from '../../components/layout/layout';
-import Header from '../../components/header/header';
+import { BaseLayout } from '../../components/layout';
+import Header from '../../components/header';
 import { useQueryParams } from '../../utils';
 import { ProposalType } from '../../chain-data/state';
 import { historyProposalsSelector, OptionalProposalType } from '../../logic/proposals/selectors';

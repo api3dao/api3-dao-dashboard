@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useChainData } from '../../../chain-data';
 import { useApi3Pool, usePossibleChainDataUpdate } from '../../../contracts';
-import { notifications } from '../../../components/notifications/notifications';
+import { notifications } from '../../../components/notifications';
 import { go, isGoSuccess, GO_RESULT_INDEX, messages } from '../../../utils';
 
 /**

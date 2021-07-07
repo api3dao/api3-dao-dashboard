@@ -61,13 +61,8 @@ const RadialChart = ({ completionPercent }: Props) => {
 export default RadialChart;
 
 /* Following functions copied from:
- * https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle */ const describeArc = (
-  x: number,
-  y: number,
-  radius: number,
-  startAngle: number,
-  endAngle: number
-) => {
+ * https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle */
+const describeArc = (x: number, y: number, radius: number, startAngle: number, endAngle: number) => {
   const start = polarToCartesian(x, y, radius, endAngle),
     end = polarToCartesian(x, y, radius, startAngle),
     largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';

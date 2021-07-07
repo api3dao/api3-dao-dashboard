@@ -1,11 +1,11 @@
 import { ReactNode, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import Navigation from '../navigation/navigation';
-import Header from '../header/header';
+import Navigation from '../navigation';
+import Header from '../header';
 import { ERROR_REPORTING_CONSENT_KEY_NAME, images, insertInBetween } from '../../utils';
 import styles from './layout.module.scss';
 import ExternalLink from '../external-link';
-import Button from '../button/button';
+import Button from '../button';
 import ErrorReportingNotice from './error-reporting-notice';
 import classNames from 'classnames';
 
