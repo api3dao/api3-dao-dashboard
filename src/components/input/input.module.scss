@@ -32,6 +32,10 @@
     font-weight: 500;
     border-width: 0;
     outline: none;
+
+    &:focus {
+      box-shadow: none;
+    }
   }
 
   input {
@@ -76,7 +80,7 @@
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #030303 inset !important;
+    box-shadow: 0 0 0 30px #030303 inset !important;
   }
 
   input:-webkit-autofill {

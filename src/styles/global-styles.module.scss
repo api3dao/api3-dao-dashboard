@@ -13,6 +13,15 @@ input {
   margin: 0;
 }
 
+:focus {
+  box-shadow: $primary-color 0 0 2.5px 1.5px;
+
+  // https://css-tricks.com/the-focus-visible-trick/
+  &:not(:focus-visible) {
+    box-shadow: none;
+  }
+}
+
 h1,
 h2,
 h3,

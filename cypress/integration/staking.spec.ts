@@ -3,7 +3,7 @@
 import { EPOCH_LENGTH } from '../support/common';
 
 describe('staking', () => {
-  before(() => {
+  before('login, deposit and stake', () => {
     cy.resetBlockchain().login();
 
     // Approve and deposit

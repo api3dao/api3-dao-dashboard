@@ -3,12 +3,6 @@ import { ReactElement } from 'react';
 
 export const blockTimestampToDate = (timestamp: BigNumber) => new Date(timestamp.mul(1000).toNumber());
 
-type ErrorWithCode = Error & { code?: number };
-
-// The Error object was extended to add a "code" for Web3 providers
-// See: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#provider-errors
-export const isUserRejection = (err: ErrorWithCode) => err.code === 4001 || err.code === 4100;
-
 export type GoResultSuccess<T> = [null, T];
 export type GoResultError<E = Error> = [E, null];
 export type GoResult<T, E = Error> = GoResultSuccess<T> | GoResultError<E>;

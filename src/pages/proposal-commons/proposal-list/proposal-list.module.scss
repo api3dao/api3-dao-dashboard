@@ -122,6 +122,10 @@
   @media (max-width: $max-md) {
     display: none;
   }
+
+  a {
+    display: flex;
+  }
 }
 
 .noProposals {

@@ -15,5 +15,6 @@
 
 // NOTE: There is an annoying bug https://github.com/testing-library/cypress-testing-library/issues/172
 import '@testing-library/cypress/add-commands';
+import 'cypress-plugin-tab';
 import './chain';
 import './commands';

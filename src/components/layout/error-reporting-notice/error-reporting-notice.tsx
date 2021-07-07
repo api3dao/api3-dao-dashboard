@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { ERROR_REPORTING_CONSENT_KEY_NAME, images, isErrorReportingAllowed } from '../../../utils';
 import Button from '../../button';
 import ExternalLink from '../../external-link';
+import { triggerOnEnter } from '../../modal';
 import styles from './error-reporting-notice.module.scss';
 
 interface WelcomeModalContentProps {
@@ -19,17 +20,13 @@ const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
     onClose();
   };
   const errorReportingRef = useRef<HTMLInputElement>(null);
+  const toggleCheckbox = () => setErrorReportingEnabled((checked) => !checked);
 
   return (
+    // NOTE: Not using focus lock, because that would prevent user from signing in
     <>
-      <div id="error-reporting" className={styles.wrapper} ref={errorReportingRef}>
+      <div data-cy="error-reporting" className={styles.wrapper} ref={errorReportingRef}>
         <div className={styles.gradient}></div>
-        <img
-          className={styles.closeButton}
-          onClick={onErrorReportingNoticeConfirm}
-          src={images.close}
-          alt="confirm and close icon"
-        />
         <div className={styles.content}>
           <div className={styles.notice}>
             In order to provide the best services for you, we collect anonymized error data through{' '}
@@ -38,13 +35,14 @@ const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
             </b>
             . We do not gather IP address or user agent information.
           </div>
-          <div className={styles.checkboxWrapper}>
+          <div className={styles.checkboxWrapper} tabIndex={0} onKeyPress={triggerOnEnter(toggleCheckbox)}>
             <input
               type="checkbox"
               id="errorReporting"
               name="errorReporting"
               checked={errorReportingEnabled}
-              onChange={(e) => setErrorReportingEnabled(e.target.checked)}
+              onChange={toggleCheckbox}
+              tabIndex={-1}
             />
             <label htmlFor="errorReporting">Allow error reporting</label>
           </div>
@@ -52,6 +50,15 @@ const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
             Done
           </Button>
         </div>
+        <img
+          className={styles.closeButton}
+          onClick={onErrorReportingNoticeConfirm}
+          src={images.close}
+          alt="confirm and close icon"
+          tabIndex={0}
+          // This is not a regular "modal" and shouldn't be closed with ESC
+          onKeyPress={triggerOnEnter(onErrorReportingNoticeConfirm)}
+        />
       </div>
     </>
   );

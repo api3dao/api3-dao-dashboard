@@ -45,3 +45,7 @@
     transform: scale(1.1);
   }
 }
+
+.dropdownLink {
+  display: flex; // to properly draw box shadow when the link is focused
+}
