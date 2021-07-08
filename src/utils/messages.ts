@@ -22,7 +22,7 @@ export const messages = {
   // Delegation errors
   FAILED_TO_LOAD_DELEGATE:
     'Failed to verify that the intended delegate address is not already delegated. Please try again later.',
-  INVALID_DELEGATE_ADDRESS: 'Please delegate to a valid, non-zero address.',
+  INVALID_DELEGATE_ADDRESS: 'Please delegate to a valid, non-zero address or a valid ENS name.',
   DELEGATE_IS_YOURSELF: 'Voting power cannot be delegated to your connected address.',
   REDELEGATION_IS_FORBIDDEN: (targetDelegate: string) =>
     `Failed to delegate to address ${targetDelegate} because it is currently delegated to a different address.`,

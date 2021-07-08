@@ -29,10 +29,10 @@ interface DynamicVotingData {
 export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
-  const { userAccount, setChainData } = useChainData();
+  const { userAccount, setChainData, provider } = useChainData();
 
   const loadProposalsByIds = useCallback(async () => {
-    if (!api3Voting || !convenience) return;
+    if (!api3Voting || !convenience || !provider) return;
 
     const votingApp = api3Voting[type];
     const startVoteFilter = votingApp.filters.StartVote(id, null, null);
@@ -71,7 +71,7 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
     }
     const openVoteIds = goOpenVoteIds[GO_RESULT_INDEX];
 
-    const goLoadProposal = await go(getProposals(votingApp, convenience, userAccount, [startVote], openVoteIds, type));
+    const goLoadProposal = await go(getProposals(provider, convenience, userAccount, [startVote], openVoteIds, type));
     if (!isGoSuccess(goLoadProposal)) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
@@ -92,7 +92,7 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
         }
       })
     );
-  }, [api3Voting, convenience, userAccount, setChainData, type, id]);
+  }, [api3Voting, convenience, userAccount, setChainData, type, id, provider]);
 
   const reloadProposalsByIds = useCallback(async () => {
     if (!convenience) return;

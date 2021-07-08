@@ -1,16 +1,16 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 import { ProposalType, VoterState } from '../../../chain-data';
-import { Api3Voting, Convenience } from '../../../generated-contracts';
+import { Convenience } from '../../../generated-contracts';
 import { Proposal } from '../../../chain-data';
 import { decodeMetadata } from '../encoding';
-import { blockTimestampToDate } from '../../../utils';
+import { blockTimestampToDate, go, GO_RESULT_INDEX, isGoSuccess } from '../../../utils';
 import { EPOCH_LENGTH, HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 
 const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNumber();
 
 export const getProposals = async (
-  api3Voting: Api3Voting,
+  provider: providers.Web3Provider,
   convenience: Convenience,
   userAccount: string,
   startVoteProposals: StartVoteProposal[],
@@ -37,11 +37,16 @@ export const getProposals = async (
   const proposals: Proposal[] = [];
   for (let i = 0; i < validStartVoteProposals.length; i++) {
     const discussionUrl = staticVoteData.discussionUrl[i]!;
+    // NOTE: TS types for this are incorrect. The function returns null if the ENS record doesn't exist. Also, we wrap
+    // this in go, because we don't want the proposal fetching to throw in case of lookupAddress error (also ENS is not
+    // available on localhost).
+    const goLookupAddress = await go(provider.lookupAddress(startVotesInfo[i]!.creator));
 
     proposals.push({
       type,
       ...startVotesInfo[i]!,
       open: openVoteIdsStr.includes(startVotesInfo[i]!.voteId.toString()),
+      creatorName: isGoSuccess(goLookupAddress) ? goLookupAddress[GO_RESULT_INDEX] : null,
 
       startDate: blockTimestampToDate(staticVoteData.startDate[i]!),
       supportRequired: toPercent(staticVoteData.supportRequired[i]!),

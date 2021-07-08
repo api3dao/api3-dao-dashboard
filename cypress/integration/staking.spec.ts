@@ -8,14 +8,14 @@ describe('staking', () => {
 
     // Approve and deposit
     cy.findByText('+ Deposit').click();
-    cy.get('input').type('500');
+    cy.get('#modal').find('input').type('500');
     cy.findByText('Approve').click();
     cy.findByText('Deposit').click();
     cy.dataCy('balance').should('have.text', '500.0');
 
     // Stake
     cy.findByText('+ Stake').click();
-    cy.get('input').type('100');
+    cy.get('#modal').find('input').type('100');
     cy.findByText('Stake').click();
     cy.dataCy('unstaked').should('have.text', '400.0');
     cy.dataCy('withdrawable').should('have.text', '400.0');
@@ -29,7 +29,7 @@ describe('staking', () => {
     cy.useChainSnapshot('user-staked');
 
     cy.findByText('+ Deposit').click();
-    cy.get('input').type('200');
+    cy.get('#modal').find('input').type('200');
     cy.findByText('Deposit and Stake').click();
 
     // Assert balances
@@ -42,7 +42,7 @@ describe('staking', () => {
 
     // Schedule unstake
     cy.findByText('Initiate Unstake').click();
-    cy.get('input').type('20');
+    cy.get('#modal').find('input').type('20');
     cy.findByText('Initiate Unstaking').click();
     cy.findByText('Initiate Unstaking').click(); // confirm the unstake in the second modal
     cy.findByText('Pending API3 tokens unstaking').should('exist');
@@ -71,7 +71,7 @@ describe('staking', () => {
     cy.useChainSnapshot('user-staked');
 
     cy.findByText('Withdraw').click();
-    cy.get('input').type('50');
+    cy.get('#modal').find('input').type('50');
     cy.get('#modal').findByText('Withdraw').click();
     cy.dataCy('withdrawable').should('have.text', '350.0');
     cy.dataCy('unstaked').should('have.text', '350.0');

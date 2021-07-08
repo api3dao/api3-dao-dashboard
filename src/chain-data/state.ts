@@ -42,6 +42,7 @@ export type TreasuryType = 'primary' | 'secondary';
 export interface Proposal {
   voteId: ethers.BigNumber;
   creator: string;
+  creatorName: string | null;
   metadata: ProposalMetadata;
   startDate: Date;
   voterState: VoterState;
@@ -68,6 +69,7 @@ export interface Delegation {
   userVotingPower: BigNumber;
   delegatedVotingPower: BigNumber;
   delegate: string | null;
+  delegateName: string | null;
   lastDelegationUpdateTimestamp: Date;
   lastProposalTimestamp: Date;
 }
@@ -114,6 +116,7 @@ export interface ChainData {
   // TODO: move the following fields to a separate interface called GenericChainData
   provider: ethers.providers.Web3Provider | null;
   userAccount: string;
+  userAccountName: string | null;
   availableAccounts: string[]; // NOTE: Contains multiple values only when connected to hardhat node
   signer: Signer | null;
   networkName: string;
@@ -139,6 +142,7 @@ export interface SettableChainData extends ChainData {
 export const initialChainData: ChainData = {
   provider: null,
   userAccount: '',
+  userAccountName: null,
   availableAccounts: [],
   signer: null,
   networkName: '',
