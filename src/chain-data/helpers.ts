@@ -40,9 +40,13 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
   // Convert "homestead" to mainnet for convenience
   if (networkName === 'homestead') networkName = 'mainnet';
 
+  const userAccount = goResponse[GO_RESULT_INDEX].currentAccount;
+  const goUserAccountName = await go(provider.lookupAddress(userAccount));
+
   const networdData: Partial<ChainData> = {
     provider,
-    userAccount: goResponse[GO_RESULT_INDEX].currentAccount,
+    userAccount,
+    userAccountName: isGoSuccess(goUserAccountName) ? goUserAccountName[GO_RESULT_INDEX] : null,
     signer: provider.getSigner(),
     availableAccounts: goResponse[GO_RESULT_INDEX].allAccounts,
     networkName: networkName,

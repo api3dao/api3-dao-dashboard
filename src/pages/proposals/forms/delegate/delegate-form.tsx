@@ -15,29 +15,35 @@ import { handleTransactionError } from '../../../../utils';
 
 interface Props {
   onClose: () => void;
-  userAccount: string;
 }
 
 const DelegateVotesForm = (props: Props) => {
-  const { onClose, userAccount } = props;
-  const { setChainData, transactions } = useChainData();
+  const { onClose } = props;
+  const { setChainData, transactions, userAccount, provider } = useChainData();
 
   const [error, setError] = useState('');
   const [delegationAddress, setDelegationAddress] = useState('');
   const api3Pool = useApi3Pool();
 
   const onDelegate = async () => {
-    if (!api3Pool) return;
+    if (!api3Pool || !provider) return;
 
-    if (!utils.isAddress(delegationAddress) || delegationAddress === constants.AddressZero) {
+    const delegationTargetLookupName = await go(provider.resolveName(delegationAddress));
+    const delegationTarget = isGoSuccess(delegationTargetLookupName)
+      ? delegationTargetLookupName[GO_RESULT_INDEX]
+      : delegationAddress;
+
+    console.log(delegationTargetLookupName);
+
+    if (!utils.isAddress(delegationTarget) || delegationTarget === constants.AddressZero) {
       return setError(messages.INVALID_DELEGATE_ADDRESS);
     }
 
-    if (delegationAddress === userAccount) {
+    if (delegationTarget === userAccount) {
       return setError(messages.DELEGATE_IS_YOURSELF);
     }
 
-    const goDelegate = await go(api3Pool.userDelegate(delegationAddress));
+    const goDelegate = await go(api3Pool.userDelegate(delegationTarget));
     if (!isGoSuccess(goDelegate)) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_DELEGATE,
@@ -50,7 +56,7 @@ const DelegateVotesForm = (props: Props) => {
       return setError(messages.REDELEGATION_IS_FORBIDDEN(targetDelegate));
     }
 
-    const tx = await handleTransactionError(api3Pool.delegateVotingPower(delegationAddress));
+    const tx = await handleTransactionError(api3Pool.delegateVotingPower(delegationTarget));
     if (tx) {
       setChainData('Save delegate transaction', { transactions: [...transactions, { type: 'delegate', tx }] });
     }

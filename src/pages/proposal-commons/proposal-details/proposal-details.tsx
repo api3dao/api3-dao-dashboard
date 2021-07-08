@@ -191,7 +191,13 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Creator</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
-                {urlCreator ? <ExternalLink href={urlCreator}>{proposal.creator}</ExternalLink> : proposal.creator}
+                {urlCreator ? (
+                  <ExternalLink href={urlCreator}>
+                    {proposal.creatorName ? proposal.creatorName : proposal.creator}
+                  </ExternalLink>
+                ) : (
+                  proposal.creator
+                )}
               </p>
             </div>
             <div className={styles.proposalDetailsItem}>

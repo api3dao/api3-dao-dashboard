@@ -17,7 +17,7 @@ import classNames from 'classnames';
 
 const Delegation = () => {
   // TODO: Retrieve only "userStaked" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
-  const { delegation, dashboardState, setChainData, transactions, userAccount } = useChainData();
+  const { delegation, dashboardState, setChainData, transactions } = useChainData();
   const api3Pool = useApi3Pool();
 
   useLoadDashboardData();
@@ -48,7 +48,7 @@ const Delegation = () => {
       {delegation?.delegate ? (
         <div>
           <p className={classNames(globalStyles.secondaryColor, globalStyles.bold)} data-cy="delegated-to">
-            Delegated to: {abbrStr(delegation.delegate)}
+            Delegated to: {delegation.delegateName ? delegation.delegateName : abbrStr(delegation.delegate)}
           </p>
           <Button
             className={styles.proposalsLink}
@@ -101,7 +101,7 @@ const Delegation = () => {
         </div>
       )}
       <Modal open={openDelegationModal} onClose={() => setOpenDelegationModal(false)}>
-        <DelegateVotesForm onClose={() => setOpenDelegationModal(false)} userAccount={userAccount} />
+        <DelegateVotesForm onClose={() => setOpenDelegationModal(false)} />
       </Modal>
     </>
   );

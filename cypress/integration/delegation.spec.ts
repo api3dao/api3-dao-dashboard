@@ -6,7 +6,7 @@ describe('delegation', () => {
 
     // Approve, deposit and stake
     cy.findByText('+ Deposit').click();
-    cy.get('input').type('200');
+    cy.get('#modal').find('input').type('200');
     cy.findByText('Approve').click();
     cy.findByText('Deposit and Stake').click();
     cy.dataCy('staked').should('have.text', '200.0'); // Ensure transaction is mined
@@ -20,7 +20,7 @@ describe('delegation', () => {
     // Delegate to different account
     cy.findAllByText('Governance').filter(':visible').click();
     cy.findByText('Delegate').click();
-    cy.get('input').type(ACCOUNTS[1]);
+    cy.get('#modal').find('input').type(ACCOUNTS[1]);
     cy.get('#modal').findByText('Delegate').click();
 
     cy.dataCy('delegated-to').should('have.text', `Delegated to: ${abbrStr(ACCOUNTS[1])}`);

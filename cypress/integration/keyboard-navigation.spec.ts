@@ -9,11 +9,11 @@ const pressTabAndAssertFocusOutline = (selector: () => Cypress.Chainable<unknown
 
 describe('keyboard navigation and accessibility', () => {
   before('login', () => {
-    cy.visit('http://localhost:3000/#/');
-    closeErrorReportingNotice();
+    cy.resetBlockchain().visit('http://localhost:3000/#/');
   });
 
   it('tab key cycle works', () => {
+    closeErrorReportingNotice();
     pressTabAndAssertFocusOutline(() => cy.dataCy('api3-logo'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Staking').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Governance').filter(':visible').closest('a'));
@@ -58,12 +58,12 @@ describe('keyboard navigation and accessibility', () => {
 
       // Can deposit by pressing ENTER when button has focus
       cy.findByText('+ Deposit').click();
-      cy.get('input').type('123').tab(); // Tab over "Max" button
+      cy.get('#modal').find('input').type('123').tab(); // Tab over "Max" button
       pressTabAndAssertFocusOutline(() => cy.findByText('Approve'));
 
       // NOTE: There is a bug in cypress that focused elements cannot trigger "click" by pressing ENTER
       // See: https://github.com/cypress-io/cypress/issues/8267#issuecomment-743918524
-      cy.get('input').focus();
+      cy.get('#modal').find('input').focus();
       cy.findByText('Approve').type('{enter}'); // Approve
       cy.findByText('Deposit and Stake').should('not.be.disabled');
       cy.findByText('Deposit and Stake').type('{enter}');
