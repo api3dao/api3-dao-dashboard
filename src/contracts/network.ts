@@ -1,8 +1,20 @@
 import { ethers } from 'ethers';
 import localhostDao from '../contract-deployments/localhost-dao.json';
 import rinkebyDao from '../contract-deployments/rinkeby-dao.json';
+import mainnetDao from '../contract-deployments/mainnet-dao.json';
 
-export const SUPPORTED_NETWORKS = ['localhost', 'rinkeby'];
+export const SUPPORTED_NETWORKS = ['localhost', 'rinkeby', 'mainnet'];
+
+export const updateNetworkName = (networkName: string) => {
+  // NOTE: The localhost doesn't have a name, so set any unknown networks
+  // to localhost. The network name is needed to display the "Unsupported Network"
+  // message to the user if required and in "connected to" status panel.
+  if (networkName === 'unknown') return 'localhost';
+  // Convert "homestead" to mainnet for convenience
+  if (networkName === 'homestead') return 'mainnet';
+
+  return networkName;
+};
 
 export const getDaoAddresses = (networkName: string) => {
   switch (networkName) {
@@ -10,6 +22,8 @@ export const getDaoAddresses = (networkName: string) => {
       return localhostDao;
     case 'rinkeby':
       return rinkebyDao;
+    case 'mainnet':
+      return mainnetDao;
     default:
       return null;
   }
@@ -42,6 +56,7 @@ export const getEtherscanAddressUrl = (chainId: number | undefined, address: str
 };
 
 export const WALLET_CONNECT_RPC_PROVIDERS = {
+  1: process.env.REACT_APP_MAINNET_PROVIDER_URL,
   4: process.env.REACT_APP_RINKEBY_PROVIDER_URL,
   31337: 'http://127.0.0.1:8545/',
 };

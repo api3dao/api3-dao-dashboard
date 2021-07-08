@@ -29,7 +29,7 @@ network)_
 
 ### Contract deployments
 
-Currently supported networks are `localhost` and `rinkeby` _(the `mainnet` network will be supported a bit later)_.
+Currently supported networks are `localhost` and `rinkeby` and `mainnet`.
 
 Unfortunately, aragon DAO contracts are not deployed easily. The easiest solution is to compile [using the script
 created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js).
