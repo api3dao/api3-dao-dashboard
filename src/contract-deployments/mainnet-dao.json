@@ -1,0 +1,12 @@
+{
+  "api3Token": "0x0b38210ea11411557c13457D4dA7dC6ea731B88a",
+  "timelockManager": "0xFaef86994a37F1c8b2A5c73648F07dd4eFF02baA",
+  "api3Pool": "0x6dd655f10d4b9e242ae186d9050b68f725c76d76",
+  "convenience": "0x95087266018b9637aff3d76d4e0cad7e52c19636",
+  "dao": "0x593ea926ee9820a933488b6a288433c387d06dba",
+  "acl": "0x1e7ecc6d3b5b4cfdfc71cb7c3ea9ac4a55f4195a",
+  "votingAppPrimary": "0xdb6c812e439ce5c740570578681ea7aadba5170b",
+  "votingAppSecondary": "0x1c8058e72e4902b3431ef057e8d9a58a73f26372",
+  "agentAppPrimary": "0xd9f80bdb37e6bad114d747e60ce6d2aaf26704ae",
+  "agentAppSecondary": "0x556ecbb0311d350491ba0ec7e019c354d7723ce0"
+}

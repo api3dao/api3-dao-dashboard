@@ -53,7 +53,4 @@ export const computePercentage = (value: BigNumber, hundredPercent: BigNumber, h
 export const isZeroAddress = (address: string) => address === constants.AddressZero;
 
 // Hardcoded constant defined in https://github.com/api3dao/api3-dao/blob/develop/packages/pool/contracts/StateUtils.sol#L50
-// export const EPOCH_LENGTH = 7 * 24 * 60 * 60;
-
-// Temporary value for user tests
-export const EPOCH_LENGTH = 60 * 60;
+export const EPOCH_LENGTH = 7 * 24 * 60 * 60;

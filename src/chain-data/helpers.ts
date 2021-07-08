@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { ethers, providers } from 'ethers';
 import { notifications } from '../components/notifications';
-import { getDaoAddresses, getEtherscanTransactionUrl } from '../contracts';
+import { getDaoAddresses, getEtherscanTransactionUrl, updateNetworkName } from '../contracts';
 import { ChainData, initialChainData } from './state';
 import { go, GO_RESULT_INDEX, isGoSuccess } from '../utils';
 
@@ -32,18 +32,11 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
   // Happens when the user locks his metamask account
   if (!isGoSuccess(goResponse)) return initialChainData;
 
-  let networkName = goResponse[GO_RESULT_INDEX].network.name;
-  // NOTE: The localhost doesn't have a name, so set any unknown networks
-  // to localhost. The network name is needed to display the "Unsupported Network"
-  // message to the user if required and in "connected to" status panel.
-  if (networkName === 'unknown') networkName = 'localhost';
-  // Convert "homestead" to mainnet for convenience
-  if (networkName === 'homestead') networkName = 'mainnet';
-
+  const networkName = updateNetworkName(goResponse[GO_RESULT_INDEX].network.name);
   const userAccount = goResponse[GO_RESULT_INDEX].currentAccount;
   const goUserAccountName = await go(provider.lookupAddress(userAccount));
 
-  const networdData: Partial<ChainData> = {
+  const networkData: Partial<ChainData> = {
     provider,
     userAccount,
     userAccountName: isGoSuccess(goUserAccountName) ? goUserAccountName[GO_RESULT_INDEX] : null,
@@ -54,7 +47,7 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
     contracts: getDaoAddresses(networkName),
   };
 
-  return networdData;
+  return networkData;
 };
 
 export const abbrStr = (str: string) => {
