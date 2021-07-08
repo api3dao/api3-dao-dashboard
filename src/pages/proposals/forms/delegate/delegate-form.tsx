@@ -33,8 +33,6 @@ const DelegateVotesForm = (props: Props) => {
       ? delegationTargetLookupName[GO_RESULT_INDEX]
       : delegationAddress;
 
-    console.log(delegationTargetLookupName);
-
     if (!utils.isAddress(delegationTarget) || delegationTarget === constants.AddressZero) {
       return setError(messages.INVALID_DELEGATE_ADDRESS);
     }
