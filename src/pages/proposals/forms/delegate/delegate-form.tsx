@@ -28,9 +28,9 @@ const DelegateVotesForm = (props: Props) => {
   const onDelegate = async () => {
     if (!api3Pool || !provider) return;
 
-    const delegationTargetLookupName = await go(provider.resolveName(delegationAddress));
-    const delegationTarget = isGoSuccess(delegationTargetLookupName)
-      ? delegationTargetLookupName[GO_RESULT_INDEX]
+    const delegationTargetResolvedName = await go(provider.resolveName(delegationAddress));
+    const delegationTarget = isGoSuccess(delegationTargetResolvedName)
+      ? delegationTargetResolvedName[GO_RESULT_INDEX]
       : delegationAddress;
 
     if (!utils.isAddress(delegationTarget) || delegationTarget === constants.AddressZero) {
