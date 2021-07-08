@@ -70,7 +70,7 @@ const DelegateVotesForm = (props: Props) => {
         <Input
           type="text"
           autosize
-          placeholder="Enter address here"
+          placeholder="Enter address or ENS name here"
           value={delegationAddress}
           onChange={(e) => {
             setDelegationAddress(e.target.value);
