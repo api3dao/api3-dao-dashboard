@@ -131,7 +131,7 @@
 .noProposals {
   color: $tertiary-color;
   text-align: center;
-  margin: 15vh 15vw;
+  margin: 15vh $space-md;
   transform: translateY(-50%);
   font-size: $text-small;
 
