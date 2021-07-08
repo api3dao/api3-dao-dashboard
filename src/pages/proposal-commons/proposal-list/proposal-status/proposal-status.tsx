@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { Proposal, useChainData } from '../../../../chain-data';
 import { voteSliderSelector } from '../../../../logic/proposals/selectors';
 import { NegativeVoteIcon, PositiveVoteIcon } from '../../vote-slider/vote-slider';
-import Button from '../../../../components/button/button';
+import Button from '../../../../components/button';
 import styles from './proposal-status.module.scss';
 import { useApi3Voting } from '../../../../contracts';
 import { handleTransactionError } from '../../../../utils';

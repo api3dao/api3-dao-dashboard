@@ -1,7 +1,7 @@
 import { useApi3Pool } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
 import { images } from '../../../utils';
-import Button from '../../../components/button/button';
+import Button from '../../../components/button';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './unstake-banner.module.scss';
 import { handleTransactionError } from '../../../utils';

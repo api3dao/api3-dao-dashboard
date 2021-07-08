@@ -1,6 +1,6 @@
 import { useChainData } from '../../chain-data';
-import Button from '../../components/button/button';
-import Layout from '../../components/layout/layout';
+import Button from '../../components/button';
+import Layout from '../../components/layout';
 import { useApi3Pool, useTimelockManager } from '../../contracts';
 import { useLoadVestingData } from '../../logic/vesting/hooks';
 import { handleTransactionError } from '../../utils';

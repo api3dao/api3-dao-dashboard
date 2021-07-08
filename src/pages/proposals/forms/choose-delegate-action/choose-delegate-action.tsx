@@ -1,5 +1,5 @@
-import Button from '../../../../components/button/button';
-import { ModalFooter, ModalHeader } from '../../../../components/modal/modal';
+import Button from '../../../../components/button';
+import { ModalFooter, ModalHeader } from '../../../../components/modal';
 import styles from './choose-delegate-action.module.scss';
 
 interface Props {

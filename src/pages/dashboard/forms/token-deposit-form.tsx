@@ -2,10 +2,10 @@ import { BigNumber } from 'ethers';
 import { useState } from 'react';
 import { MAX_ALLOWANCE, useApi3Pool, useApi3Token } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
-import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
-import Input from '../../../components/input/input';
-import Button from '../../../components/button/button';
-import { notifications } from '../../../components/notifications/notifications';
+import { ModalFooter, ModalHeader } from '../../../components/modal';
+import Input from '../../../components/input';
+import Button from '../../../components/button';
+import { notifications } from '../../../components/notifications';
 import {
   go,
   goSync,

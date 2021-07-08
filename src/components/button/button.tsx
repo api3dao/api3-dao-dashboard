@@ -24,6 +24,7 @@ const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick
           [styles.large]: size === 'large' && type !== 'link',
         })}
         onClick={onClick}
+        disabled={disabled}
       >
         {children}
       </button>

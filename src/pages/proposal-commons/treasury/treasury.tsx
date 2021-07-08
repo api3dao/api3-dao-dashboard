@@ -1,12 +1,13 @@
 import classNames from 'classnames';
-import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../../components/dropdown/dropdown';
+import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../../components/dropdown';
 import { FormattedTreasury, useTreasuries } from './hooks';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './treasury.module.scss';
 import { images } from '../../../utils';
 import { getEtherscanAddressUrl, useApi3AgentAddresses } from '../../../contracts';
 import { TreasuryType, useChainData } from '../../../chain-data';
-import Tooltip from '../../../components/tooltip/tooltip';
+import { Tooltip } from '../../../components/tooltip';
+import ExternalLink from '../../../components/external-link';
 
 interface TreasuryDropdownProps {
   data: FormattedTreasury[];
@@ -26,8 +27,8 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
         <DropdownMenu>
           {data.map(({ name, amountAndSymbol }) => (
             <DropdownMenuItem className={styles.treasuryMenuItem} key={`${type}${name}`}>
-              <p className={`${globalStyles.textSmall} ${globalStyles.medium}`}>{name}</p>
-              <p className={`${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.medium}`}>
+              <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{name}</p>
+              <p className={classNames(globalStyles.secondaryColor, globalStyles.textSmall, globalStyles.medium)}>
                 {amountAndSymbol}
               </p>
             </DropdownMenuItem>
@@ -37,14 +38,14 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
     >
       <div className={styles.treasuryButton}>
         <p
-          className={`${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.medium} ${styles.label}`}
+          className={classNames(globalStyles.secondaryColor, globalStyles.textSmall, globalStyles.medium, styles.label)}
         >
           {type}
         </p>
         {agentAddress && (
           <span className={classNames(styles.copy, globalStyles.textSmall)}>
             <Tooltip overlay={etherscanExplainer}>
-              <a href={getEtherscanAddressUrl(chainId, agentAddress)} target="_blank" rel="noopener noreferrer">
+              <ExternalLink href={getEtherscanAddressUrl(chainId, agentAddress) ?? ''} className={styles.dropdownLink}>
                 <img
                   src={images.externalLink}
                   alt={etherscanExplainer}
@@ -52,7 +53,7 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
                     e.stopPropagation(); // Prevent the dropdown from expanding
                   }}
                 />
-              </a>
+              </ExternalLink>
             </Tooltip>
           </span>
         )}
@@ -72,7 +73,13 @@ const Treasury = (props: TreasuryProps) => {
   return (
     <div className={classNames(styles.treasury, className)}>
       <p
-        className={`${styles.label} ${globalStyles.secondaryColor} ${globalStyles.textSmall} ${globalStyles.uppercase} ${globalStyles.textRight}`}
+        className={classNames(
+          styles.label,
+          globalStyles.secondaryColor,
+          globalStyles.textSmall,
+          globalStyles.uppercase,
+          globalStyles.textRight
+        )}
       >
         Treasury
         <Tooltip overlay="The DAO treasury is divided between the primary and secondary agent contracts. To move funds from a particular agent, you need to use the respective proposal type (primary proposal to use primary agent funds, and vice versa).">

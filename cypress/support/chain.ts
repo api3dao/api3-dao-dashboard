@@ -6,7 +6,7 @@ const CYPRESS_SHARED_FILE = 'cypress-shared.json';
 const SNAPSHOT_REVERT_ERROR_MESSAGE = `Snapshot revert failed. Please restart hardhat node, remove ${CYPRESS_SHARED_FILE} and try again`;
 
 // Make sure the file is created and if not create empty JSON file
-before(() => {
+before('make sure cypress shared file exists', () => {
   cy.task('readFileMaybe', CYPRESS_SHARED_FILE).then((textOrNull: unknown) => {
     if (textOrNull === null) cy.writeFile(CYPRESS_SHARED_FILE, JSON.stringify({}));
   });
@@ -43,13 +43,13 @@ const restoreAndSaveBlockchainSnapshot = () => {
 // Before hook in a support file executes as the first thing when you run the tests. This will make sure the chain state
 // is saved before the tests are run. This works even when you restart the ETH node, because reverting to an invalid
 // snapshot is handled (RPC response is false).
-before(restoreAndSaveBlockchainSnapshot);
+before('restore blockchain state', restoreAndSaveBlockchainSnapshot);
 // Reset the blockchain state after tests and remove the shared file to preserve the original state of blockchain. This
 // makes sure that blockchain operations are reverted after the tests are done.
 //
 // NOTE: This callback might never get called, because of how cypress works. See:
 // https://docs.cypress.io/guides/references/best-practices#Using-after-or-afterEach-hooks
-after(() => {
+after('restore blockchain state', () => {
   restoreAndSaveBlockchainSnapshot();
   cy.exec('rm -rf cypress-shared.json');
 });

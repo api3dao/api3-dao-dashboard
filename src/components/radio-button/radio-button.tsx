@@ -1,11 +1,12 @@
-import { ChangeEventHandler, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import classNames from 'classnames';
 import { images } from '../../utils';
 import styles from './radio-button.module.scss';
+import { triggerOnEnter } from '../modal';
 
 type Props = {
   label: ReactNode | string;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onChange: () => void;
   checked: boolean;
   name: string;
   type?: 'radio' | 'checkbox';
@@ -14,7 +15,7 @@ type Props = {
 
 const RadioButton = ({ label, onChange, type = 'radio', checked, name, color }: Props) => {
   return (
-    <div className={styles.radioButtonWrapper}>
+    <div className={styles.radioButtonWrapper} tabIndex={0} onKeyPress={triggerOnEnter(onChange)}>
       <label
         className={classNames(styles.radioButton, {
           [styles.checked]: checked,
@@ -23,9 +24,18 @@ const RadioButton = ({ label, onChange, type = 'radio', checked, name, color }: 
           [styles.green]: color === 'green',
           [styles.icon]: type === 'checkbox',
         })}
+        htmlFor={name}
       >
         {label}
-        <input className={styles.radioButtonInput} type={type} onChange={onChange} checked={checked} name={name} />
+        <input
+          tabIndex={-1}
+          className={styles.radioButtonInput}
+          type={type}
+          onChange={onChange}
+          checked={checked}
+          name={name}
+          id={name}
+        />
         <span className={classNames(styles.radioButtonCheckmark, { [styles.checkbox]: type === 'checkbox' })}>
           {type === 'checkbox' && <img src={images.checkBlack} alt="check icon" />}
         </span>

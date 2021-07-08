@@ -1,8 +1,8 @@
 import { BigNumber } from 'ethers';
 import { useState } from 'react';
-import { ModalFooter, ModalHeader } from '../../../components/modal/modal';
-import Input from '../../../components/input/input';
-import Button from '../../../components/button/button';
+import { ModalFooter, ModalHeader } from '../../../components/modal';
+import Input from '../../../components/input';
+import Button from '../../../components/button';
 import { formatApi3, goSync, parseApi3, messages } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';

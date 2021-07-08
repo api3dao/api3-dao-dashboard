@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Button from '../../../../components/button/button';
+import Button from '../../../../components/button';
 import RadioButton from '../../../../components/radio-button/radio-button';
 import styles from './vote-form.module.scss';
 

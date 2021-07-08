@@ -1,7 +1,7 @@
 import { abbrStr, ACCOUNTS } from '../support/common';
 
 describe('delegation', () => {
-  before(() => {
+  before('login, deposit and stake', () => {
     cy.resetBlockchain().login();
 
     // Approve, deposit and stake

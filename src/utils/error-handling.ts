@@ -1,6 +1,12 @@
-import { notifications } from '../components/notifications/notifications';
-import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, isGoSuccess, isUserRejection } from './generic';
+import { notifications } from '../components/notifications';
+import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, isGoSuccess } from './generic';
 import { messages } from './messages';
+
+type ErrorWithCode = Error & { code?: number };
+
+// The Error object was extended to add a "code" for Web3 providers
+// See: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#provider-errors
+export const isUserRejection = (err: ErrorWithCode) => err.code === 4001 || err.code === 4100;
 
 export const handleTransactionError = async <T>(transaction: Promise<T>) => {
   const goTransaction = await go(transaction);

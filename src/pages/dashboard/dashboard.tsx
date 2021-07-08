@@ -6,18 +6,19 @@ import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } f
 import { formatAndRoundApi3, handleTransactionError, images, UNKNOWN_NUMBER } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
-import Layout from '../../components/layout/layout';
-import { Modal } from '../../components/modal/modal';
-import Button from '../../components/button/button';
-import Tooltip from '../../components/tooltip/tooltip';
+import Layout from '../../components/layout';
+import { Modal } from '../../components/modal';
+import Button from '../../components/button';
+import { Tooltip } from '../../components/tooltip';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
-import Slider from '../../components/slider/slider';
+import Slider from '../../components/slider';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import UnstakeBanner from './unstake-banner/unstake-banner';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './dashboard.module.scss';
 import ConfirmUnstakeForm from './forms/confirm-unstake-form';
+import classNames from 'classnames';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
@@ -69,7 +70,7 @@ const Dashboard = () => {
             }
             content={
               <>
-                <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
+                <div className={classNames(globalStyles.textCenter, globalStyles.mbLg)}>
                   <p className={styles.borderedBoxContentTitle}>total</p>
                   <p className={globalStyles.textXLarge} data-cy="balance">
                     {tokenBalances ? formatAndRoundApi3(tokenBalances.userTotal) : UNKNOWN_NUMBER}
@@ -107,7 +108,7 @@ const Dashboard = () => {
             }
             content={
               <>
-                <div className={`${globalStyles.textCenter} ${globalStyles.mbLg}`}>
+                <div className={classNames(globalStyles.textCenter, globalStyles.mbLg)}>
                   <p className={styles.borderedBoxContentTitle}>staked</p>
                   <p className={globalStyles.textXLarge} data-cy="staked">
                     {data ? formatAndRoundApi3(data.userStaked) : UNKNOWN_NUMBER}
