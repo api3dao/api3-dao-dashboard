@@ -3,6 +3,7 @@
 .header {
   position: relative;
   margin-bottom: 2.5 * $space-xxl;
+  pointer-events: none;
 
   @media (max-width: $max-md) {
     margin-bottom: $space-xxxl;
