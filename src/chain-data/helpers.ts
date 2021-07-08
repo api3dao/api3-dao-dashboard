@@ -32,11 +32,11 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
   // Happens when the user locks his metamask account
   if (!isGoSuccess(goResponse)) return initialChainData;
 
-  let networkName = updateNetworkName(goResponse[GO_RESULT_INDEX].network.name);
+  const networkName = updateNetworkName(goResponse[GO_RESULT_INDEX].network.name);
   const userAccount = goResponse[GO_RESULT_INDEX].currentAccount;
   const goUserAccountName = await go(provider.lookupAddress(userAccount));
 
-  const networdData: Partial<ChainData> = {
+  const networkData: Partial<ChainData> = {
     provider,
     userAccount,
     userAccountName: isGoSuccess(goUserAccountName) ? goUserAccountName[GO_RESULT_INDEX] : null,
@@ -47,7 +47,7 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
     contracts: getDaoAddresses(networkName),
   };
 
-  return networdData;
+  return networkData;
 };
 
 export const abbrStr = (str: string) => {
