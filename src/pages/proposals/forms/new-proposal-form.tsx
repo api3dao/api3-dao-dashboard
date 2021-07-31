@@ -95,14 +95,14 @@ const NewProposalForm = (props: Props) => {
         <div className={styles.newProposalFormRadioButtons}>
           <RadioButton
             label="Primary"
-            name="type"
+            name="primary"
             onChange={() => setType('primary')}
             checked={type === 'primary'}
             color="white"
           />
           <RadioButton
             label="Secondary"
-            name="type"
+            name="secondary"
             onChange={() => setType('secondary')}
             checked={type === 'secondary'}
             color="white"
