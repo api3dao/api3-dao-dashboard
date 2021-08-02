@@ -1,0 +1,7 @@
+{
+  "extends": ["react-app", "react-app/jest"],
+  "rules": {
+    "prefer-const": "error",
+    "no-console": ["error", { "allow": ["group", "groupEnd"] }]
+  }
+}

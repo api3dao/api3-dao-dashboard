@@ -13,6 +13,7 @@
     "eth:run-script": "cd hardhat && npx hardhat run",
     "format": "prettier --write {src,dev-scripts}/**/*.{js,jsx,ts,tsx,json,css,scss,md}",
     "lint": "eslint --ext js,ts,tsx src dev-scripts",
+    "lint:fix": "eslint --fix --ext js,ts,tsx src dev-scripts",
     "fix-dev-issues": "node dev-scripts/prepare-dao-contracts.js && node dev-scripts/scss-ts-hack.js",
     "postinstall": "yarn fix-dev-issues",
     "postuninstall": "yarn fix-dev-issues",
@@ -46,12 +47,6 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
     ]
   },
   "dependencies": {

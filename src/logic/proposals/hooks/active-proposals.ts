@@ -179,6 +179,7 @@ const useReloadActiveProposals = () => {
     const goResponse = await go(loadProposals());
     if (!isGoSuccess(goResponse)) {
       // TODO: error handling
+      // eslint-disable-next-line no-console
       console.error('Unable to reload active proposals', goResponse[GO_ERROR_INDEX]);
     }
   }, [api3Voting, convenience, userAccount, setChainData, proposals, provider]);

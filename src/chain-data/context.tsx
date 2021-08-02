@@ -14,6 +14,7 @@ const ChainDataContextProvider: React.FC = ({ children }) => {
 
         if (process.env.NODE_ENV === 'development') {
           console.group(reason);
+          // eslint-disable-next-line no-console
           console.info(updatedChainData);
           console.groupEnd();
         }
