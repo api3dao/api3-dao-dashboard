@@ -1,0 +1,7 @@
+{
+  "extends": ["../.eslintrc.json"],
+  "rules": {
+    "prefer-const": "error",
+    "no-console": ["error", { "allow": ["info", "error"] }]
+  }
+}
