@@ -107,8 +107,16 @@ branch:
 2. `git merge main`
 3. `git push`
 
-> Note: As of now it's possible to push directly to production, but this will change after
-> https://github.com/api3dao/api3-dao-dashboard/issues/5 is resolved.
+#### Updating the name servers
+
+The primary way to access the DAO dashboard is through the `api3.eth` ENS name, which points directly to the IPFS hash.
+Then, the user can either connect to mainnet on their Metamask and visit `api3.eth/` (the recommended way), or they can visit `https://api3.eth.link/` (this is reported to be down frequently, see [this](https://blog.cloudflare.com/cloudflare-distributed-web-resolver/) for more information).
+We have also forwarded `https://dao.api3.org` to the IPFS hash (using the `dweb.link` gateway), but we do not recommend using this unless necessary.
+
+After pushing to the production branch, verify the Fleek build (see below).
+Then, [point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
+Then, with the Cloudflare account that manages `api3.org`, [update the page rule](https://support.cloudflare.com/hc/en-us/articles/200172286-Configuring-URL-forwarding-or-redirects-with-Cloudflare-Page-Rules) to direct `dao.api3.org` to the URL pointing to the new deployment through the `dweb.link` gateway (you can get this URL from the [ENS dashboard](https://app.ens.domains/name/api3.eth)).
+`https://dao.api3.org` and `api3.eth/` will start forwarding to the new deployment instantly, while `https://api3.eth.link/` will have to wait for the DNS information to propagate (may take up to 2 hours).
 
 ### Verifying the Fleek build
 
@@ -140,7 +148,7 @@ services:
 and run `docker-compose run --rm app`, which will create a `./build` directory.
 
 Then, (after installing `ipfs`) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build (`sudo` because `build` will likely be owned by root).
-This should be the same as the IPFS hash as the one on the Fleek dashboard and what our ENS/IPNS is pointing towards.
+This should be the same as the IPFS hash as the one on the Fleek dashboard and what our ENS is pointing towards.
 
 ## Error Monitoring
 
