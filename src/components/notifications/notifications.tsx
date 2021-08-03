@@ -95,6 +95,7 @@ export const error = throttle(
 
     if (process.env.NODE_ENV === 'development') {
       // Prefixing the error message with ad-hoc string for better backwards search
+      // eslint-disable-next-line no-console
       console.error('[DEV: Caught error]:', errorOrMessage);
     }
 
