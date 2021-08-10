@@ -7,7 +7,7 @@ The implementation of the DAO dashboard.
 1. Install Metamask (https://metamask.io/download)
 2. Create a wallet, connect to the Rinkeby network
 3. Get some Rinkeby ETH from https://faucet.rinkeby.io/
-4. Go to the API3 token faucet at https://rinkeby.etherscan.io/address/0xd8eC2c4158a0Cb65Dd42E2d1C1da8EA11975Ba22#writeContract
+4. Go to the API3 token faucet at https://rinkeby.etherscan.io/address/0xd8eC2c4158a0Cb65Dd42E2d1C1da8EA11975Ba22#writeContract.
 5. Click “Connect to Web3”
 6. Click “4. withdraw” and Write. Make the transaction. Each time you do this you will receive 1000 API3.
 
@@ -17,7 +17,8 @@ To install dependencies, run `yarn`. This will also compile the DAO contracts an
 [TypeChain](https://github.com/ethereum-ts/TypeChain) wrappers to be used in the client application.
 
 1. To run the hardhat _(local blockchain simulator)_ use: `yarn eth:node`
-2. To deploy the DAO contracts see [contract deployments instructions](#contract-deployments)
+2. Run `yarn eth:prepare-dao-contracts-for-hardhat` and `yarn eth:deploy-dao-contracts-on-hardhat`. See [contract
+   deployments instructions](#contract-deployments) for more details
 3. In a separate terminal, start a development server with `yarn start`
 4. Run `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
 
@@ -32,35 +33,20 @@ network)_
 Currently supported networks are `localhost` and `rinkeby` and `mainnet`.
 
 Unfortunately, aragon DAO contracts are not deployed easily. The easiest solution is to compile [using the script
-created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js).
+created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js). However, when
+deploying to localhost you can use the scripts which automate this for you.
 
 ### Localhost deployment
 
-To make it possible to deploy to localhost, you'll need some initial preparation:
+There are essentially two scripts, `eth:prepare-dao-contracts-for-hardhat` and `eth:deploy-dao-contracts-on-hardhat`.
 
-1. Clone [api3-dao](https://github.com/api3dao/api3-dao) and `cd` into it.
-2. Run `npm run bootstrap`
+The former downloads the repository which contains the DAO contracts and installs all it's dependencies. You need to run
+this everytime the DAO contract dependencies change.
 
-Follow these steps to deploy to localhost:
+The latter assumes the repository is already initialized and it compiles and deploys the contracts on already running
+hardhat node.
 
-1. Run the localhost node `yarn eth:node`
-2. Navigate to the DAO contracts repo `cd api3-dao/packages/dao`
-3. Run `npm run deploy:rpc` - If you get `RangeError: Maximum call stack size exceeded`, check out the solution in
-   https://api3workspace.slack.com/archives/C020RCCC3EJ/p1621327622001300 (increase stack size limit)
-4. If everything goes well, your it will deploy bunch of contracts and print out JSON in following format:
-   ```json
-   {
-     "api3Token": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
-     "api3Pool": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
-     "convenience": "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
-     "votingAppPrimary": "0xc8f18fc8faf682ce4b27124a4ab7f976ab10292f",
-     "votingAppSecondary": "0xd78bc0f7cdbb88eba36eed08c1152f80fbebbbce",
-     "agentAppPrimary": "0x600214cfaf9f0734659f57656f31e4a11e833f40",
-     "agentAppSecondary": "0x71f1337dc27cd188b3c116b0b874311efe144a0a"
-   }
-   ```
-5. Paste that JSON into `src/contract-deployments/localhost-dao.json` inside this project
-6. The dashboard app is now ready to connect these deployed contracts
+You can see the implementation of those scripts if you prefer to deploy manually.
 
 #### Deployment file for localhost
 

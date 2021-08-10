@@ -6,6 +6,7 @@
  * is that the contract API should remain the same.
  */
 const chalk = require('chalk');
+const { join } = require('path');
 const replace = require('replace-in-file');
 const exec = require('util').promisify(require('child_process').exec);
 
@@ -66,7 +67,8 @@ const fixTimelockManagerIssues = async () => {
 const compileDaoContracts = async () => {
   console.info(chalk.green('Compiling contracts...'));
 
-  await execAndLog('yarn eth:compile-contracts');
+  const hardhatDir = join(__dirname, '../hardhat');
+  await execAndLog(`cd ${hardhatDir} && npx hardhat compile`);
 };
 
 const generateTypechainWrappers = async () => {

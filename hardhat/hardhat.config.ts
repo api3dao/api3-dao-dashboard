@@ -62,9 +62,7 @@ const config: HardhatUserConfig = {
   // https://hardhat.org/hardhat-network/#connecting-to-hardhat-network-from-wallets-and-other-software
   defaultNetwork: 'localhost',
   networks: {
-    hardhat: {
-      chainId: 1337,
-    },
+    hardhat: {},
     // NOTE: Non local networks are only needed for hardhat tasks
     rinkeby: {
       url: fromEnvVariables('RINKEBY_PROVIDER_URL'),
