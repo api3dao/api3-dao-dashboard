@@ -16,7 +16,8 @@ const PageContainer = (props: Props) => {
   // TODO: Implement a nicely designed error page/component for Sentry.ErrorBoundary fallback
   // See: https://docs.sentry.io/platforms/javascript/guides/react/components/errorboundary/
   return (
-    <Sentry.ErrorBoundary fallback="An error has occurred. Please refresh and try again.">
+    // Sentry.ErrorBoundary requires 'fallback' to be React component so we can't pass a string there
+    <Sentry.ErrorBoundary fallback={<>An error has occurred. Please refresh and try again.</>}>
       <HelmetProvider>
         {/* Helmet children can be overridden in components lower down the tree */}
         <Helmet>
