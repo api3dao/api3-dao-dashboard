@@ -5,43 +5,36 @@
  * NOTE: It doesn't really matter what hacks we do as we only this to generate the TS interfaces. The only requirement
  * is that the contract API should remain the same.
  */
-const chalk = require('chalk');
+const { bold, green } = require('chalk');
 const { join } = require('path');
-const replace = require('replace-in-file');
-const exec = require('util').promisify(require('child_process').exec);
+const { execAndLog, promiseWrapper, replaceAndLog } = require('./utils');
 
 // NOTE: Change this to true in case you need more information to debug issues
 const DEBUG = false;
 
-const execAndLog = async (command) => {
-  const { stdout, stderr } = await exec(command);
-  if (DEBUG) {
-    console.info(chalk.bold(`Command: "${command}"`));
-    console.info(`Stdout: ${stdout}`);
-    console.info(chalk.red(`Stderr: ${stderr}`));
-  }
-};
-
 const fixContractImports = async () => {
-  console.info(chalk.green('Fixing contract imports...'));
+  console.info(bold(green('Fixing contract imports...')));
 
   await execAndLog(
-    `yarn replace-in-file @api3-dao/pool/contracts ../pool-contracts-symlink hardhat/contracts/voting-contracts-symlink/Api3Voting.sol`
+    `yarn replace-in-file @api3-dao/pool/contracts ../pool-contracts-symlink hardhat/contracts/voting-contracts-symlink/Api3Voting.sol`,
+    DEBUG
   );
   await execAndLog(
-    'yarn replace-in-file @api3-dao/pool/contracts ../pool-contracts-symlink hardhat/contracts/convenience-contracts-symlink/Convenience.sol'
+    'yarn replace-in-file @api3-dao/pool/contracts ../pool-contracts-symlink hardhat/contracts/convenience-contracts-symlink/Convenience.sol',
+    DEBUG
   );
   await execAndLog(
-    'yarn replace-in-file @api3-dao/api3-voting/interfaces ../voting-interfaces-symlink hardhat/contracts/convenience-contracts-symlink/Convenience.sol'
+    'yarn replace-in-file @api3-dao/api3-voting/interfaces ../voting-interfaces-symlink hardhat/contracts/convenience-contracts-symlink/Convenience.sol',
+    DEBUG
   );
-  await execAndLog('yarn replace-in-file 0.6.12 0.8.4 $(find hardhat/contracts -type f -follow)');
+  await execAndLog('yarn replace-in-file 0.6.12 0.8.4 $(find hardhat/contracts -type f -follow)', DEBUG);
 };
 
 /**
  * Hacky script which makes sure the TimelockManager.sol can be compiled by hardhat.
  */
 const fixTimelockManagerIssues = async () => {
-  console.info(chalk.green('Fixing timelock manager issues...'));
+  console.info(bold(green('Fixing timelock manager issues...')));
 
   const performReplace = async (from, to) => {
     const options = {
@@ -51,11 +44,7 @@ const fixTimelockManagerIssues = async () => {
       dry: false,
     };
 
-    const log = await replace(options);
-    if (DEBUG) {
-      console.info(chalk.bold(`Options: "${JSON.stringify(options, null, 2)}"`));
-      console.info(`Stdout: ${JSON.stringify(log, null, 2)}`);
-    }
+    await replaceAndLog(options);
   };
 
   // NOTE: The original contract imports v0.6.12, but that version is replaced using another replace script to 0.8.4
@@ -65,17 +54,18 @@ const fixTimelockManagerIssues = async () => {
 };
 
 const compileDaoContracts = async () => {
-  console.info(chalk.green('Compiling contracts...'));
+  console.info(bold(green('Compiling contracts...')));
 
   const hardhatDir = join(__dirname, '../hardhat');
-  await execAndLog(`cd ${hardhatDir} && npx hardhat compile`);
+  await execAndLog(`cd ${hardhatDir} && npx hardhat compile`, DEBUG);
 };
 
 const generateTypechainWrappers = async () => {
-  console.info(chalk.green('Generating typechain wrappers...'));
+  console.info(bold(green('Generating typechain wrappers...')));
 
   await execAndLog(
-    "yarn typechain --target ethers-v5 --out-dir ./src/generated-contracts './hardhat/artifacts/contracts/**/!(*.dbg).json'"
+    "yarn typechain --target ethers-v5 --out-dir ./src/generated-contracts './hardhat/artifacts/contracts/**/!(*.dbg).json'",
+    DEBUG
   );
 };
 
@@ -86,10 +76,4 @@ const main = async () => {
   await generateTypechainWrappers();
 };
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(chalk.red(`Error: ${error}`));
-    console.error(chalk.red(`Try setting DEBUG variable to true and run again.`));
-    process.exit(1);
-  });
+promiseWrapper(main);
