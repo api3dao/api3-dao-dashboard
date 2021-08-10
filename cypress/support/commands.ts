@@ -19,9 +19,9 @@ import { ethersProvider, HOME_PAGE } from './common';
 Cypress.Commands.add('increaseTimeAndRelogin', (timeInSeconds: number) => {
   cy.log('increaseTimeAndRelogin');
 
-  cy.wrap(ethersProvider.send('evm_increaseTime', [timeInSeconds])).then(() =>
-    cy.clock(Date.now() + 1000 * timeInSeconds, ['Date'])
-  );
+  cy.wrap(
+    ethersProvider.send('evm_increaseTime', [timeInSeconds]).then(() => ethersProvider.send('evm_mine', []))
+  ).then(() => cy.clock(Date.now() + 1000 * timeInSeconds, ['Date']));
 
   // Re-login to make sure app uses the increased time
   cy.login();

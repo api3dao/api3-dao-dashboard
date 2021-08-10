@@ -9,14 +9,13 @@ on:
       - main
 
 jobs:
-  # TODO: Enable when the repo is public
-  # documentation:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Clone api3-dao-dashboard
-  #     uses: actions/checkout@master
-  #   - name: Check hyperlinks
-  #     uses: gaurav-nelson/github-action-markdown-link-check@v1
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone api3-dao-dashboard
+        uses: actions/checkout@master
+      - name: Check hyperlinks
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
 
   lint-test:
     runs-on: ubuntu-latest
@@ -35,3 +34,15 @@ jobs:
         run: yarn tsc
       - name: Test
         run: yarn test
+
+  cypress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone api3-dao-dashboard
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+      - name: Cypress
+        run: yarn ci:cypress
