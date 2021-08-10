@@ -42,3 +42,5 @@ cypress-shared.json
 
 # Folder holding the DAO contracts repository used to deploy contracts locally for development and testing
 /dao-contracts
+
+cypress/videos

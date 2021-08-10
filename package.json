@@ -4,7 +4,7 @@
   "private": true,
   "homepage": ".",
   "scripts": {
-    "build": "node dev-scripts/copy-localhost-data.js && react-scripts build",
+    "build": "react-scripts build",
     "ci:cypress": "yarn start-test \"yarn concurrently 'yarn eth:node' 'yarn ci:start'\" '8545|3000' 'yarn eth:deploy-dao-contracts-on-hardhat && yarn cypress:run'",
     "ci:start": "FORCE_COLOR=true yarn start | cat",
     "cypress:open": "cypress open",
@@ -14,7 +14,7 @@
     "eth:node": "cd hardhat && npx hardhat node --network hardhat",
     "eth:prepare-dao-contracts-for-hardhat": "node dev-scripts/prepare-dao-contracts-for-hardhat.js",
     "eth:run-script": "cd hardhat && npx hardhat run",
-    "fix-dev-issues": "node dev-scripts/prepare-dao-contracts-for-typechain.js && node dev-scripts/scss-ts-hack.js",
+    "fix-dev-issues": "node dev-scripts/copy-localhost-data.js && node dev-scripts/prepare-dao-contracts-for-typechain.js && node dev-scripts/scss-ts-hack.js",
     "format": "prettier --write {src,dev-scripts}/**/*.{js,jsx,ts,tsx,json,css,scss,md}",
     "lint:fix": "eslint --fix --ext js,ts,tsx src dev-scripts",
     "lint": "eslint --ext js,ts,tsx src dev-scripts",

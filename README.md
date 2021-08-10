@@ -2,12 +2,15 @@
 
 The implementation of the DAO dashboard.
 
+[![ContinuousBuild](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml)
+
 ## Instructions for testing on Rinkeby
 
 1. Install Metamask (https://metamask.io/download)
 2. Create a wallet, connect to the Rinkeby network
 3. Get some Rinkeby ETH from https://faucet.rinkeby.io/
-4. Go to the API3 token faucet at https://rinkeby.etherscan.io/address/0xd8eC2c4158a0Cb65Dd42E2d1C1da8EA11975Ba22#writeContract.
+<!-- markdown-link-check-disable-next-line -->
+4. Go to the API3 token faucet at https://rinkeby.etherscan.io/address/0xd8eC2c4158a0Cb65Dd42E2d1C1da8EA11975Ba22#writeContract
 5. Click “Connect to Web3”
 6. Click “4. withdraw” and Write. Make the transaction. Each time you do this you will receive 1000 API3.
 
@@ -25,8 +28,13 @@ To install dependencies, run `yarn`. This will also compile the DAO contracts an
 _(If connecting to a public testnet like Ropsten or Rinkeby, you can simply run `yarn start` and switch your Metamask
 network)_
 
+<!-- markdown-link-check-disable -->
+<!-- The "how to reset account link does work, but the github actions check says it returns 403" -->
+
 > MetaMask doesn't handle localhost development ideally. Particularly, that the chain is reset after on every `yarn eth:node` command. In case you have problems making a transaction, try to [reset the
 > account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
+
+<!-- markdown-link-check-enable -->
 
 ### Contract deployments
 
@@ -96,8 +104,19 @@ branch:
 #### Updating the name servers
 
 The primary way to access the DAO dashboard is through the `api3.eth` ENS name, which points directly to the IPFS hash.
-Then, the user can either connect to mainnet on their Metamask and visit `api3.eth/` (the recommended way), or they can visit `https://api3.eth.link/` (this is reported to be down frequently, see [this](https://blog.cloudflare.com/cloudflare-distributed-web-resolver/) for more information).
-We have also forwarded `https://dao.api3.org` to the IPFS hash (using the `dweb.link` gateway), but we do not recommend using this unless necessary.
+Then, the user can either connect to mainnet on their Metamask and visit `api3.eth/` (the recommended way), or they can
+visit `https://api3.eth.link/`.
+
+<!-- markdown-link-check-disable -->
+<!-- The link below exists and works, but the github actions check says it does not" -->
+
+Unfortunately, this is reported to be down frequently, see
+[this](https://blog.cloudflare.com/cloudflare-distributed-web-resolver/) for more information.
+
+<!-- markdown-link-check-enable -->
+
+Thus, we have also forwarded `https://dao.api3.org` to the IPFS hash (using the `dweb.link` gateway), but we do not
+recommend using this unless necessary.
 
 After pushing to the production branch, verify the Fleek build (see below).
 Then, [point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
