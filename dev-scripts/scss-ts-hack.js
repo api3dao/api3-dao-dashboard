@@ -11,8 +11,8 @@
  * NOTE: It's possible (but unlikely) that the module typings change, filename changes or react-scripts end up installed
  * somewhere else. These cases are unfortunately, out of scope.
  */
-const replace = require('replace-in-file');
-const chalk = require('chalk');
+const { bold, green } = require('chalk');
+const { promiseWrapper, replaceAndLog } = require('./utils');
 
 const TEXT_TO_REMOVE = `
 declare module '*.module.scss' {
@@ -29,13 +29,8 @@ const main = async () => {
     dry: false,
   };
 
-  console.info(chalk.green('Fixing scss TS typings...'));
-  await replace(options);
+  console.info(bold(green('Fixing scss TS typings...')));
+  await replaceAndLog(options);
 };
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(chalk.red(`Error: ${error}`));
-    process.exit(1);
-  });
+promiseWrapper(main);

@@ -61,8 +61,8 @@ describe('staking', () => {
 
     cy.dataCy('pending-unstake').should('not.exist');
     // Assert balances
-    cy.dataCy('balance').should('have.text', '500.0');
-    cy.dataCy('staked').should('have.text', '80.0');
+    cy.dataCy('balance').should('have.text', '500.74'); // 0.74 because of the minted reward
+    cy.dataCy('staked').should('have.text', '80.74');
     cy.dataCy('unstaked').should('have.text', '420.0');
     cy.dataCy('withdrawable').should('have.text', '420.0');
   });
