@@ -1,7 +1,8 @@
 import { BigNumber, providers, utils } from 'ethers';
+import range from 'lodash/range';
 import { DecodedEvmScript, ProposalMetadata, ProposalType } from '../../chain-data';
 import { Api3Agent } from '../../contracts';
-import { errorFn, GoResult, goSync, GO_RESULT_INDEX, isGoSuccess, successFn } from '../../utils';
+import { errorFn, go, GoResult, goSync, GO_RESULT_INDEX, isGoSuccess, successFn } from '../../utils';
 
 /**
  * NOTE: Aragon contracts are flexible but this makes it a bit harder to work with it's contracts. We have created a
@@ -53,7 +54,7 @@ export const encodeEvmScript = async (
   const goJsonParams = goSync(() => {
     const json = JSON.parse(formData.parameters);
     if (!Array.isArray(json)) throw new Error('Parameters must be an array');
-    return json;
+    return json as string[];
   });
   if (!isGoSuccess(goJsonParams)) {
     return errorFn({ field: 'parameters', value: 'Make sure parameters is a valid JSON array' });
@@ -85,9 +86,17 @@ export const encodeEvmScript = async (
   }
   const parameterTypes = goExtractParameters[GO_RESULT_INDEX];
 
-  const goEncodeParameters = goSync(() => {
+  const goEncodeParameters = await go(async () => {
+    const parameters = await Promise.all(
+      range(parameterTypes.length).map(async (i) => {
+        const param = targetParameters[i]!;
+
+        if (parameterTypes[i] !== 'address' || utils.isAddress(param)) return param;
+        return provider.resolveName(param);
+      })
+    );
     // Encode the parameters using the parameter types
-    return utils.defaultAbiCoder.encode(parameterTypes, targetParameters);
+    return utils.defaultAbiCoder.encode(parameterTypes, parameters);
   });
   if (!isGoSuccess(goEncodeParameters)) {
     return errorFn({
@@ -154,7 +163,7 @@ export const decodeEvmScript = async (
   script: string,
   metadata: ProposalMetadata
 ): Promise<DecodedEvmScript | null> => {
-  const goResponse = goSync(() => {
+  const goResponse = await go(async () => {
     const evmScriptPayload = utils.hexDataSlice(script, 4);
     const callData = utils.hexDataSlice(evmScriptPayload, 24);
 
@@ -171,12 +180,21 @@ export const decodeEvmScript = async (
     const parameterTypes = metadata.targetSignature
       .substring(metadata.targetSignature.indexOf('(') + 1, metadata.targetSignature.indexOf(')'))
       .split(',');
-    const parameters = utils.defaultAbiCoder.decode(parameterTypes, utils.hexDataSlice(targetCallData, 4));
+    const decodedParameters = utils.defaultAbiCoder.decode(parameterTypes, utils.hexDataSlice(targetCallData, 4));
+    const parameters = await Promise.all(
+      range(parameterTypes.length).map(async (i) => {
+        const param = decodedParameters[i]!;
+        if (parameterTypes[i] !== 'address') return param;
+
+        const ensName = await provider.lookupAddress(param);
+        return ensName || param;
+      })
+    );
 
     return {
       targetAddress: targetContractAddress,
       value,
-      parameters: stringifyBigNumbersRecursively([...parameters]), // destructuring to enforce Array shape
+      parameters: stringifyBigNumbersRecursively([...parameters]),
     };
   });
 
