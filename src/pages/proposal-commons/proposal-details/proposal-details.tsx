@@ -14,7 +14,7 @@ import Tag from '../../../components/tag';
 import { TooltipChecklist } from '../../../components/tooltip';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import { getEtherscanAddressUrl, useApi3Voting } from '../../../contracts';
-import { decodeProposalTypeAndId, decodeEvmScript } from '../../../logic/proposals/encoding';
+import { decodeProposalTypeAndId } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useProposalsByIds } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
@@ -66,25 +66,25 @@ interface ProposalDetailsProps {
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const history = useHistory();
-  const { chainId } = useChainData();
+  const { chainId, provider } = useChainData();
   const { proposal } = props;
   const [voteModalOpen, setVoteModalOpen] = useState(false);
   const { transactions, setChainData } = useChainData();
   const voting = useApi3Voting();
 
-  const evmScriptData = decodeEvmScript(proposal.script, proposal.metadata);
-
   // NOTE: This should never happen, loading component in proposal details page should
   // make sure we are connected to valid chain
-  if (!voting) return null;
-  if (!evmScriptData) {
+  if (!voting || !provider) return null;
+
+  if (!proposal.decodedEvmScript) {
     return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
   }
 
+  const { parameters, targetAddress, value } = proposal.decodedEvmScript;
   const voteSliderData = voteSliderSelector(proposal);
   const canVoteData = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
-  const urlTargetAddress = getEtherscanAddressUrl(chainId, evmScriptData.targetAddress);
+  const urlTargetAddress = getEtherscanAddressUrl(chainId, targetAddress);
 
   const canVoteChecklist = [
     {
@@ -193,9 +193,9 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={globalStyles.bold}>Target Contract Address</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlTargetAddress ? (
-                  <ExternalLink href={urlTargetAddress}>{evmScriptData.targetAddress}</ExternalLink>
+                  <ExternalLink href={urlTargetAddress}>{targetAddress}</ExternalLink>
                 ) : (
-                  evmScriptData.targetAddress
+                  targetAddress
                 )}
               </p>
             </div>
@@ -203,16 +203,16 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={globalStyles.bold}>Target Contract Signature</p>
               <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
             </div>
-            {evmScriptData.value.gt(0) && (
+            {value.gt(0) && (
               <div className={styles.proposalDetailsItem}>
                 <p className={globalStyles.bold}>ETH Value</p>
-                <p className={globalStyles.secondaryColor}>{utils.formatEther(evmScriptData.value)}</p>
+                <p className={globalStyles.secondaryColor}>{utils.formatEther(value)}</p>
               </div>
             )}
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Parameters</p>
               <p className={classNames(globalStyles.secondaryColor, styles.multiline)}>
-                {JSON.stringify(evmScriptData.parameters, null, 2)}
+                {JSON.stringify(parameters, null, 2)}
               </p>
             </div>
           </div>

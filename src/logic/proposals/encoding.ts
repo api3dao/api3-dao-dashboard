@@ -1,5 +1,5 @@
-import { BigNumber, utils } from 'ethers';
-import { ProposalMetadata, ProposalType } from '../../chain-data';
+import { BigNumber, providers, utils } from 'ethers';
+import { DecodedEvmScript, ProposalMetadata, ProposalType } from '../../chain-data';
 import { Api3Agent } from '../../contracts';
 import { errorFn, GoResult, goSync, GO_RESULT_INDEX, isGoSuccess, successFn } from '../../utils';
 
@@ -45,7 +45,11 @@ type EncodedEvmScriptError = {
 };
 type EncodedEvmScript = GoResult<string, EncodedEvmScriptError>;
 
-export const encodeEvmScript = (formData: NewProposalFormData, api3Agent: Api3Agent): EncodedEvmScript => {
+export const encodeEvmScript = async (
+  provider: providers.Provider,
+  formData: NewProposalFormData,
+  api3Agent: Api3Agent
+): Promise<EncodedEvmScript> => {
   const goJsonParams = goSync(() => {
     const json = JSON.parse(formData.parameters);
     if (!Array.isArray(json)) throw new Error('Parameters must be an array');
@@ -145,14 +149,11 @@ export const encodeEvmScript = (formData: NewProposalFormData, api3Agent: Api3Ag
   return successFn(goBuildEvmScript[GO_RESULT_INDEX]);
 };
 
-export interface DecodedEvmScript {
-  targetAddress: string;
-  parameters: unknown[];
-  rawParameters: unknown[];
-  value: BigNumber; // amount of ETH that is sent to the contract
-}
-
-export const decodeEvmScript = (script: string, metadata: ProposalMetadata): DecodedEvmScript | null => {
+export const decodeEvmScript = async (
+  provider: providers.Provider,
+  script: string,
+  metadata: ProposalMetadata
+): Promise<DecodedEvmScript | null> => {
   const goResponse = goSync(() => {
     const evmScriptPayload = utils.hexDataSlice(script, 4);
     const callData = utils.hexDataSlice(evmScriptPayload, 24);
@@ -171,13 +172,11 @@ export const decodeEvmScript = (script: string, metadata: ProposalMetadata): Dec
       .substring(metadata.targetSignature.indexOf('(') + 1, metadata.targetSignature.indexOf(')'))
       .split(',');
     const parameters = utils.defaultAbiCoder.decode(parameterTypes, utils.hexDataSlice(targetCallData, 4));
-    const rawParameters = [...parameters]; // destructuring to enforce Array shape
 
     return {
       targetAddress: targetContractAddress,
       value,
-      rawParameters,
-      parameters: stringifyBigNumbersRecursively(rawParameters),
+      parameters: stringifyBigNumbersRecursively([...parameters]), // destructuring to enforce Array shape
     };
   });
 

@@ -25,7 +25,8 @@ import styles from './proposals.module.scss';
 
 const Proposals = () => {
   // TODO: Retrieve only "userVotingPower" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
-  const { proposals, delegation, dashboardState, isGenesisEpoch, transactions, setChainData } = useChainData();
+  const { provider, proposals, delegation, dashboardState, isGenesisEpoch, transactions, setChainData } =
+    useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
   const api3Agent = useApi3AgentAddresses();
@@ -86,9 +87,9 @@ const Proposals = () => {
   const canCreateNewProposal = newProposalChecklistItems.every((item) => item.checked);
 
   const onCreateProposal = async (formData: NewProposalFormData) => {
-    if (!api3Token || !api3Voting || !api3Agent) return null;
+    if (!api3Token || !api3Voting || !api3Agent || !provider) return null;
 
-    const goEncodeEvmScript = encodeEvmScript(formData, api3Agent);
+    const goEncodeEvmScript = await encodeEvmScript(provider, formData, api3Agent);
     // Should not happen, because user will not be allowed to press the create proposal button if there are errors
     if (!isGoSuccess(goEncodeEvmScript)) return null;
 
@@ -108,6 +109,7 @@ const Proposals = () => {
     setOpenNewProposalModal(false);
   };
 
+  if (!api3Agent || !provider) return null;
   return (
     <Layout title="Governance">
       <div className={styles.proposalsHeader}>
@@ -136,7 +138,8 @@ const Proposals = () => {
         <NewProposalForm
           onClose={() => setOpenNewProposalModal(false)}
           onConfirm={onCreateProposal}
-          api3Agent={api3Agent!}
+          api3Agent={api3Agent}
+          provider={provider}
         />
       </Modal>
     </Layout>
