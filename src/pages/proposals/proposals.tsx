@@ -109,7 +109,6 @@ const Proposals = () => {
     setOpenNewProposalModal(false);
   };
 
-  if (!api3Agent || !provider) return null;
   return (
     <Layout title="Governance">
       <div className={styles.proposalsHeader}>
@@ -138,8 +137,8 @@ const Proposals = () => {
         <NewProposalForm
           onClose={() => setOpenNewProposalModal(false)}
           onConfirm={onCreateProposal}
-          api3Agent={api3Agent}
-          provider={provider}
+          api3Agent={api3Agent!}
+          provider={provider!}
         />
       </Modal>
     </Layout>

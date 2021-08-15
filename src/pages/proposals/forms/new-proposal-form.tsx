@@ -189,7 +189,8 @@ const NewProposalForm = (props: Props) => {
               title,
             };
 
-            if (await !validateForm(formData)) {
+            const containsError = await validateForm(formData);
+            if (!containsError) {
               onConfirm(formData);
             }
           }}
