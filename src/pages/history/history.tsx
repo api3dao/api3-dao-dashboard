@@ -61,7 +61,6 @@ const History = () => {
                 checked={checkedPrimary}
                 color="white"
                 type="checkbox"
-                name="primary"
               />
               <RadioButton
                 onChange={() => setCheckedSecondary(!checkedSecondary)}
@@ -69,7 +68,6 @@ const History = () => {
                 checked={checkedSecondary}
                 color="white"
                 type="checkbox"
-                name="secondary"
               />
             </div>
           </div>
