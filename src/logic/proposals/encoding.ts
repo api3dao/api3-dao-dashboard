@@ -194,7 +194,7 @@ export const decodeEvmScript = async (
     return {
       targetAddress: targetContractAddress,
       value,
-      parameters: stringifyBigNumbersRecursively([...parameters]),
+      parameters: stringifyBigNumbersRecursively(parameters),
     };
   });
 
