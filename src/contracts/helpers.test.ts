@@ -36,7 +36,7 @@ describe('calculateAnnualTotalSupplyGrowth and friends', () => {
       const apy = calculateApy(currentApr);
       const mintedTokens = calculateAnnualMintedTokens(totalStake, apy);
 
-      expect(calculateAnnualTotalSupplyGrowth(mintedTokens, API3_TOKEN_SUPPLY)).toBe(35.602054);
+      expect(calculateAnnualTotalSupplyGrowth(mintedTokens, API3_TOKEN_SUPPLY)).toBe(55.284456999999996);
     });
   });
 
@@ -61,7 +61,7 @@ describe('calculateAnnualTotalSupplyGrowth and friends', () => {
         calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)),
         API3_TOKEN_SUPPLY
       )
-    ).toBe(52.509609000000005);
+    ).toBe(110.56891399999999);
   });
 });
 
