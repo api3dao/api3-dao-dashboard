@@ -36,7 +36,6 @@ export const getProposals = async (
 
   const proposals: Proposal[] = [];
   for (let i = 0; i < validStartVoteProposals.length; i++) {
-    const discussionUrl = staticVoteData.discussionUrl[i]!;
     // NOTE: TS types for this are incorrect. The function returns null if the ENS record doesn't exist. Also, we wrap
     // this in go, because we don't want the proposal fetching to throw in case of lookupAddress error (also ENS is not
     // available on localhost).
@@ -56,7 +55,6 @@ export const getProposals = async (
       startDateRaw: staticVoteData.startDate[i]!,
       script: staticVoteData.script[i]!,
       userVotingPowerAt: staticVoteData.userVotingPowerAt[i]!,
-      discussionUrl: discussionUrl === '' ? null : discussionUrl,
 
       delegateAt: isZeroAddress(dynamicVoteData.delegateAt[i]!) ? null : dynamicVoteData.delegateAt[i]!,
       delegateState: dynamicVoteData.delegateState[i] as VoterState,
