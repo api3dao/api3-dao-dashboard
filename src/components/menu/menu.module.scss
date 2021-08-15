@@ -3,10 +3,7 @@
 .menu {
   display: flex;
   flex-direction: column;
-  z-index: 2;
-  position: absolute;
-  top: 80px;
-  left: 0;
+  margin-left: 40px;
 
   @media (max-width: $max-sm) {
     display: none;

@@ -10,7 +10,7 @@ import SignIn from '../sign-in/sign-in';
 import styles from './menu.module.scss';
 import globalStyles from '../../styles/global-styles.module.scss';
 
-const DesktopMenu = () => {
+export const DesktopMenu = () => {
   const { pathname } = useLocation();
   return (
     <div className={styles.menu} data-cy="desktop-menu">
@@ -40,7 +40,7 @@ const DesktopMenu = () => {
   );
 };
 
-const MobileMenu = () => {
+export const MobileMenu = () => {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const { provider } = useChainData();
@@ -86,12 +86,3 @@ const MobileMenu = () => {
     </div>
   );
 };
-
-const Menu = () => (
-  <>
-    <DesktopMenu />
-    <MobileMenu />
-  </>
-);
-
-export default Menu;

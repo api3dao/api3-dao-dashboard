@@ -6,17 +6,24 @@
   position: relative;
 }
 
-.container {
+.content {
+  display: flex;
+
+  // Make sure the texture is behind the content
   position: relative;
   z-index: 1;
+}
+
+.main {
   max-width: 1020px;
   min-height: calc(100vh - #{$navigation-height} - #{$footer-height});
   margin: 0 auto;
   padding-top: $space-xxl;
   padding-right: $space-xxl;
-  padding-left: 184px;
+  padding-left: $space-xxl;
   padding-bottom: 2 * $space-xxl;
   box-sizing: border-box;
+  flex: 1;
 
   @media (max-width: $max-lg) {
     padding-left: 110px;
