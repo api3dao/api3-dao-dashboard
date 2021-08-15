@@ -21,7 +21,7 @@ const StakingPool = () => {
   const currentApyText = currentApy === UNKNOWN_NUMBER ? currentApy : `${currentApy}%`;
   const annualTotalSupplyGrowthText =
     annualTotalSupplyGrowth === UNKNOWN_NUMBER ? annualTotalSupplyGrowth : `${annualTotalSupplyGrowth}%`;
-  const estimatedValueTooltip = 'Value is based on the current APR and will change in time';
+  const estimatedValueTooltip = 'Value is based on the current APR and may change over time';
 
   return (
     <div className={styles.stakingPool}>
