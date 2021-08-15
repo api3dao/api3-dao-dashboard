@@ -3,7 +3,7 @@
 .menu {
   display: flex;
   flex-direction: column;
-  margin-left: 40px;
+  margin-left: $space-xxl;
 
   @media (max-width: $max-sm) {
     display: none;
@@ -79,12 +79,11 @@
 }
 
 .menuItemText {
-  @media (min-width: $min-lg) {
-    padding-left: $space-xs;
-  }
+  padding-left: $space-xs;
 
   @media (max-width: $max-lg) {
     display: none;
+    padding-left: unset;
   }
 }
 

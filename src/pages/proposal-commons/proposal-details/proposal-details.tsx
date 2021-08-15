@@ -172,9 +172,9 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         }
         content={
           <div className={styles.proposalDetailsSummary}>
-            <p className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor)}>
+            <pre className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor, styles.scrollX)}>
               {proposal.metadata.description}
-            </p>
+            </pre>
 
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Creator</p>
