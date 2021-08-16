@@ -1,18 +1,22 @@
-body {
-  margin: 0;
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 300;
-  color: #fff;
+.fontBase {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
     'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-button {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-    'Droid Sans', 'Helvetica Neue', sans-serif;
+body {
+  @extend .fontBase;
+  margin: 0;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 300;
+  color: #fff;
+}
+
+button,
+pre {
+  @extend .fontBase;
   font-weight: unset;
 }
 

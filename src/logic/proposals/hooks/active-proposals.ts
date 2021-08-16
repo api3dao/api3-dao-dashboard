@@ -157,9 +157,11 @@ const useReloadActiveProposals = () => {
             const dynamicData = await convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, chunkIds);
 
             const updatedProposals: Proposal[] = chunkIds.map((id, index) => {
+              // TODO: We assume the proposal with the given id exists (and theoretically it might not)
+              const details = proposalDetailsSelector(provider, proposals, type, id);
+
               return {
-                // TODO: We assume the proposal with the given id exists (and theoretically it might not)
-                ...proposalDetailsSelector(proposals, type, id)!,
+                ...((typeof details === 'string' ? {} : details) as Proposal),
                 yea: dynamicData.yea[index]!,
                 nay: dynamicData.nay[index]!,
                 executed: dynamicData.executed[index]!,

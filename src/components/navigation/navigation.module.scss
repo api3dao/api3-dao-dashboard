@@ -8,6 +8,10 @@
   padding: 0 $space-xxl;
   box-sizing: border-box;
 
+  // Make sure the texture is behind the navigation
+  position: relative;
+  z-index: 2;
+
   @media (max-width: $max-md) {
     padding: 0 $space-lg;
   }
@@ -26,6 +30,6 @@
   @media (max-width: $max-sm) {
     width: 100%;
     justify-content: space-between;
-    padding-bottom: $space-lg;
+    margin: auto;
   }
 }

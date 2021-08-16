@@ -33,16 +33,14 @@ interface ProposalDetailsContentProps {
 
 const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
   const { type, id } = props;
-  const { proposals } = useChainData();
+  const { proposals, provider } = useChainData();
 
-  // Need to memoize the id array to avoid infinite update loop
   useProposalsByIds(type, id);
 
-  const proposal = proposalDetailsSelector(proposals, type, id);
-  // TODO: Loading component
+  const proposal = proposalDetailsSelector(provider, proposals, type, id);
   return (
     <BaseLayout subtitle={`Proposal ${id.toString()}`}>
-      {!proposal ? <p>Loading...</p> : <ProposalDetailsContent proposal={proposal} />}
+      <ProposalDetailsContent proposal={proposal} />
     </BaseLayout>
   );
 };
@@ -61,20 +59,21 @@ const ProposalDetailsPage = () => {
 };
 
 interface ProposalDetailsProps {
-  proposal: Proposal;
+  proposal: Proposal | 'user not signed in' | 'does not exist';
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const history = useHistory();
-  const { chainId, provider } = useChainData();
+  const { chainId } = useChainData();
   const { proposal } = props;
   const [voteModalOpen, setVoteModalOpen] = useState(false);
   const { transactions, setChainData } = useChainData();
   const voting = useApi3Voting();
 
-  // NOTE: This should never happen, loading component in proposal details page should
-  // make sure we are connected to valid chain
-  if (!voting || !provider) return null;
+  // TODO: implement proper "not signed in" and "does not exist" pages
+  if (!voting || proposal === 'user not signed in')
+    return <>Please connect your wallet to see the proposal details...</>;
+  if (proposal === 'does not exist') return <>Proposal with such id hasn't been created yet...</>;
 
   if (!proposal.decodedEvmScript) {
     return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
@@ -173,9 +172,9 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         }
         content={
           <div className={styles.proposalDetailsSummary}>
-            <p className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor)}>
+            <pre className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor, styles.scrollX)}>
               {proposal.metadata.description}
-            </p>
+            </pre>
 
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Creator</p>
