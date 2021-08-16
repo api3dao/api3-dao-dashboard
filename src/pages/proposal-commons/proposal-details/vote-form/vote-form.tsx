@@ -21,18 +21,11 @@ const VoteForm = (props: Props) => {
       <h5>Vote on Proposal #{voteId}</h5>
       <div className={styles.voteFormContent}>
         <div>
-          <RadioButton
-            label={<h4>For</h4>}
-            onChange={() => setChecked('for')}
-            checked={isVotingFor}
-            name="for"
-            color="green"
-          />
+          <RadioButton label={<h4>For</h4>} onChange={() => setChecked('for')} checked={isVotingFor} color="green" />
           <RadioButton
             label={<h4>Against</h4>}
             onChange={() => setChecked('against')}
             checked={!isVotingFor}
-            name="against"
             color="pink"
           />
         </div>

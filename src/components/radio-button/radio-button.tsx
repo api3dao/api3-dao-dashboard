@@ -8,12 +8,11 @@ type Props = {
   label: ReactNode | string;
   onChange: () => void;
   checked: boolean;
-  name: string;
   type?: 'radio' | 'checkbox';
   color: 'white' | 'pink' | 'green';
 };
 
-const RadioButton = ({ label, onChange, type = 'radio', checked, name, color }: Props) => {
+const RadioButton = ({ label, onChange, type = 'radio', checked, color }: Props) => {
   return (
     <div className={styles.radioButtonWrapper} tabIndex={0} onKeyPress={triggerOnEnter(onChange)}>
       <label
@@ -24,18 +23,9 @@ const RadioButton = ({ label, onChange, type = 'radio', checked, name, color }: 
           [styles.green]: color === 'green',
           [styles.icon]: type === 'checkbox',
         })}
-        htmlFor={name}
       >
         {label}
-        <input
-          tabIndex={-1}
-          className={styles.radioButtonInput}
-          type={type}
-          onChange={onChange}
-          checked={checked}
-          name={name}
-          id={name}
-        />
+        <input tabIndex={-1} className={styles.radioButtonInput} type={type} onChange={onChange} checked={checked} />
         <span className={classNames(styles.radioButtonCheckmark, { [styles.checkbox]: type === 'checkbox' })}>
           {type === 'checkbox' && <img src={images.checkBlack} alt="check icon" />}
         </span>

@@ -12,42 +12,39 @@
   }
 }
 
-.stakingTable {
-  min-width: 120px;
-
-  @media (min-width: $min-xl) {
-    &.oneCell {
-      width: 200px;
-    }
-
-    &.twoCells {
-      width: 400px;
-    }
-  }
-
-  @media (min-width: $min-lg) {
-    &.oneCell {
-      margin-right: 2 * $space-xxxl;
-    }
-
-    &.twoCells {
-      margin-right: $space-xxxl;
-    }
-  }
-
-  @media (min-width: $min-md) {
-    margin-right: $space-xxl;
-  }
+.reverseDirectionWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 
   @media (max-width: $max-md) {
-    border-bottom: 1px solid $black-line-color;
-    &.oneCell {
-      display: flex;
-      .stakingTableRow {
-        border-top: 0;
-        height: auto;
-      }
-    }
+    flex-direction: column-reverse;
+  }
+}
+
+.sectionBase {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  margin-right: $space-xxxl;
+  @media (max-width: $max-md) {
+    margin-right: unset;
+  }
+}
+
+.firstSection {
+  @extend .sectionBase;
+  justify-content: stretch;
+}
+
+.secondSection {
+  @extend .sectionBase;
+  justify-content: center;
+
+  @media (max-width: $max-md) {
+    flex-direction: row;
   }
 }
 
@@ -58,14 +55,16 @@
   padding: $space-md 0;
   border-top: 1px solid $black-line-color;
   box-sizing: border-box;
-}
+  justify-content: center;
+  width: 100%;
 
-.stakingTableWrap {
-  display: flex;
-  align-items: center;
-
+  // On "lg" resolution the text is "cluttered" because there is not enough height
+  @media (max-width: $max-lg) {
+    height: 120px;
+  }
+  // On "md" resolution the layout changes to column and there is enough height
   @media (max-width: $max-md) {
-    flex-direction: column-reverse;
+    height: 96px;
   }
 }
 
@@ -73,23 +72,16 @@
   width: 50%;
   padding: 0 $space-md;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
 
   &.rightAlign {
+    flex-direction: column;
     text-align: right;
-  }
-  &.oneCell {
-    width: 100%;
   }
 
   @media (max-width: $max-xl) {
     padding: 0 $space-xs;
-  }
-
-  @media (max-width: $max-md) {
-    &.oneCell {
-      padding: 0 20px;
-      text-align: center;
-    }
   }
 }
 
@@ -105,7 +97,8 @@
   display: flex;
 
   @media (max-width: $max-md) {
-    margin-top: $space-md;
+    margin-top: $space-xl;
+    margin-bottom: $space-xl;
   }
 }
 

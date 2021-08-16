@@ -15,11 +15,11 @@ describe('keyboard navigation and accessibility', () => {
   it('tab key cycle works', () => {
     closeErrorReportingNotice();
     pressTabAndAssertFocusOutline(() => cy.dataCy('api3-logo'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('Connect Wallet').filter(':visible'));
+
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Staking').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Governance').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('History').filter(':visible').closest('a'));
-
-    pressTabAndAssertFocusOutline(() => cy.findAllByText('Connect Wallet').filter(':visible'));
 
     pressTabAndAssertFocusOutline(() => cy.findByText('About API3'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Docs'));

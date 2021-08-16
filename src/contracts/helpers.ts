@@ -21,8 +21,8 @@ export const calculateAnnualMintedTokens = (totalStake: BigNumber, currentApy: n
   totalStake.mul(Math.round(currentApy * precision)).div(100 * precision);
 
 // based on https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
-export const calculateAnnualInflationRate = (annualMintedTokens: BigNumber, totalSupply: BigNumber) => {
-  return (annualMintedTokens.mul(precision).div(annualMintedTokens.add(totalSupply)).toNumber() / precision) * 100;
+export const calculateAnnualTotalSupplyGrowth = (annualMintedTokens: BigNumber, totalSupply: BigNumber) => {
+  return (annualMintedTokens.mul(precision).div(totalSupply).toNumber() / precision) * 100;
 };
 
 // See: https://github.com/api3dao/api3-dao/blob/1dc0cfd219addcded295e0ae246461eaf6fae6e8/packages/pool/contracts/StateUtils.sol#L68

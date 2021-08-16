@@ -2,11 +2,14 @@
 
 The implementation of the DAO dashboard.
 
+[![ContinuousBuild](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml)
+
 ## Instructions for testing on Rinkeby
 
 1. Install Metamask (https://metamask.io/download)
 2. Create a wallet, connect to the Rinkeby network
 3. Get some Rinkeby ETH from https://faucet.rinkeby.io/
+<!-- markdown-link-check-disable-next-line -->
 4. Go to the API3 token faucet at https://rinkeby.etherscan.io/address/0xd8eC2c4158a0Cb65Dd42E2d1C1da8EA11975Ba22#writeContract
 5. Click “Connect to Web3”
 6. Click “4. withdraw” and Write. Make the transaction. Each time you do this you will receive 1000 API3.
@@ -17,50 +20,41 @@ To install dependencies, run `yarn`. This will also compile the DAO contracts an
 [TypeChain](https://github.com/ethereum-ts/TypeChain) wrappers to be used in the client application.
 
 1. To run the hardhat _(local blockchain simulator)_ use: `yarn eth:node`
-2. To deploy the DAO contracts see [contract deployments instructions](#contract-deployments)
+2. Run `yarn eth:prepare-dao-contracts-for-hardhat` and `yarn eth:deploy-dao-contracts-on-hardhat`. See [contract
+   deployments instructions](#contract-deployments) for more details
 3. In a separate terminal, start a development server with `yarn start`
 4. Run `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
 
 _(If connecting to a public testnet like Ropsten or Rinkeby, you can simply run `yarn start` and switch your Metamask
 network)_
 
+<!-- markdown-link-check-disable -->
+<!-- The "how to reset account link does work, but the github actions check says it returns 403" -->
+
 > MetaMask doesn't handle localhost development ideally. Particularly, that the chain is reset after on every `yarn eth:node` command. In case you have problems making a transaction, try to [reset the
 > account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
+
+<!-- markdown-link-check-enable -->
 
 ### Contract deployments
 
 Currently supported networks are `localhost` and `rinkeby` and `mainnet`.
 
 Unfortunately, aragon DAO contracts are not deployed easily. The easiest solution is to compile [using the script
-created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js).
+created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js). However, when
+deploying to localhost you can use the scripts which automate this for you.
 
 ### Localhost deployment
 
-To make it possible to deploy to localhost, you'll need some initial preparation:
+There are essentially two scripts, `eth:prepare-dao-contracts-for-hardhat` and `eth:deploy-dao-contracts-on-hardhat`.
 
-1. Clone [api3-dao](https://github.com/api3dao/api3-dao) and `cd` into it.
-2. Run `npm run bootstrap`
+The former downloads the repository which contains the DAO contracts and installs all it's dependencies. You need to run
+this everytime the DAO contract dependencies change.
 
-Follow these steps to deploy to localhost:
+The latter assumes the repository is already initialized and it compiles and deploys the contracts on already running
+hardhat node.
 
-1. Run the localhost node `yarn eth:node`
-2. Navigate to the DAO contracts repo `cd api3-dao/packages/dao`
-3. Run `npm run deploy:rpc` - If you get `RangeError: Maximum call stack size exceeded`, check out the solution in
-   https://api3workspace.slack.com/archives/C020RCCC3EJ/p1621327622001300 (increase stack size limit)
-4. If everything goes well, your it will deploy bunch of contracts and print out JSON in following format:
-   ```json
-   {
-     "api3Token": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
-     "api3Pool": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
-     "convenience": "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
-     "votingAppPrimary": "0xc8f18fc8faf682ce4b27124a4ab7f976ab10292f",
-     "votingAppSecondary": "0xd78bc0f7cdbb88eba36eed08c1152f80fbebbbce",
-     "agentAppPrimary": "0x600214cfaf9f0734659f57656f31e4a11e833f40",
-     "agentAppSecondary": "0x71f1337dc27cd188b3c116b0b874311efe144a0a"
-   }
-   ```
-5. Paste that JSON into `src/contract-deployments/localhost-dao.json` inside this project
-6. The dashboard app is now ready to connect these deployed contracts
+You can see the implementation of those scripts if you prefer to deploy manually.
 
 #### Deployment file for localhost
 
@@ -107,8 +101,27 @@ branch:
 2. `git merge main`
 3. `git push`
 
-> Note: As of now it's possible to push directly to production, but this will change after
-> https://github.com/api3dao/api3-dao-dashboard/issues/5 is resolved.
+#### Updating the name servers
+
+The primary way to access the DAO dashboard is through the `api3.eth` ENS name, which points directly to the IPFS hash.
+Then, the user can either connect to mainnet on their Metamask and visit `api3.eth/` (the recommended way), or they can
+visit `https://api3.eth.link/`.
+
+<!-- markdown-link-check-disable -->
+<!-- The link below exists and works, but the github actions check says it does not" -->
+
+Unfortunately, this is reported to be down frequently, see
+[this](https://blog.cloudflare.com/cloudflare-distributed-web-resolver/) for more information.
+
+<!-- markdown-link-check-enable -->
+
+Thus, we have also forwarded `https://dao.api3.org` to the IPFS hash (using the `dweb.link` gateway), but we do not
+recommend using this unless necessary.
+
+After pushing to the production branch, verify the Fleek build (see below).
+Then, [point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
+Then, with the Cloudflare account that manages `api3.org`, [update the page rule](https://support.cloudflare.com/hc/en-us/articles/200172286-Configuring-URL-forwarding-or-redirects-with-Cloudflare-Page-Rules) to direct `dao.api3.org` to the URL pointing to the new deployment through the `dweb.link` gateway (you can get this URL from the [ENS dashboard](https://app.ens.domains/name/api3.eth)).
+`https://dao.api3.org` and `api3.eth/` will start forwarding to the new deployment instantly, while `https://api3.eth.link/` will have to wait for the DNS information to propagate (may take up to 2 hours).
 
 ### Verifying the Fleek build
 
@@ -140,7 +153,7 @@ services:
 and run `docker-compose run --rm app`, which will create a `./build` directory.
 
 Then, (after installing `ipfs`) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build (`sudo` because `build` will likely be owned by root).
-This should be the same as the IPFS hash as the one on the Fleek dashboard and what our ENS/IPNS is pointing towards.
+This should be the same as the IPFS hash as the one on the Fleek dashboard and what our ENS is pointing towards.
 
 ## Error Monitoring
 
