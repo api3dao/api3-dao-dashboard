@@ -1,7 +1,7 @@
 import { isAfter } from 'date-fns';
 import {
   absoluteStakeTarget,
-  calculateAnnualInflationRate,
+  calculateAnnualTotalSupplyGrowth,
   calculateAnnualMintedTokens,
   calculateApy,
   min,
@@ -30,12 +30,12 @@ export const stakingPoolSelector = (dashboardData: ConvenienceDashboardData | nu
   const currentApy = calculateApy(apr);
 
   const annualMintedTokens = calculateAnnualMintedTokens(totalStake, currentApy);
-  const annualInflationRate = calculateAnnualInflationRate(annualMintedTokens, api3Supply);
+  const annualTotalSupplyGrowth = calculateAnnualTotalSupplyGrowth(annualMintedTokens, api3Supply);
 
   const stakingTargetInTokens = absoluteStakeTarget(stakeTarget, api3Supply);
   const stakedPercentage = totalStakedPercentage(totalStake, stakingTargetInTokens);
 
-  return { currentApy, annualInflationRate, stakingTargetInTokens, stakedPercentage };
+  return { currentApy, annualTotalSupplyGrowth, stakingTargetInTokens, stakedPercentage };
 };
 
 export const pendingUnstakeSelector = (dashboardData: ConvenienceDashboardData | null) => {
