@@ -93,16 +93,9 @@ const NewProposalForm = (props: Props) => {
         tooltip="A primary-type proposal will be enacted by the primary agent of the DAO, and vice versa."
       >
         <div className={styles.newProposalFormRadioButtons}>
-          <RadioButton
-            label="Primary"
-            name="primary"
-            onChange={() => setType('primary')}
-            checked={type === 'primary'}
-            color="white"
-          />
+          <RadioButton label="Primary" onChange={() => setType('primary')} checked={type === 'primary'} color="white" />
           <RadioButton
             label="Secondary"
-            name="secondary"
             onChange={() => setType('secondary')}
             checked={type === 'secondary'}
             color="white"

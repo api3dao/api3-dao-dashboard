@@ -7,6 +7,9 @@ it('new proposal form validation', () => {
   cy.findAllByText('Governance').filter(':visible').click();
   cy.findByText('+ New Proposal').click();
 
+  // Let's create a secondary proposal (ensures a bug from some time ago is fixed)
+  cy.findByLabelText('Secondary').click().should('be.checked');
+
   cy.findByText('Create').click();
   cy.findByText('Title must have at least one alphanumeric character').should('exist');
   cy.findByText('Description must have at least one alphanumeric character').should('exist');
