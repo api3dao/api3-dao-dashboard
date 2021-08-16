@@ -147,8 +147,10 @@ export const connectWallet = (setChainData: SettableChainData['setChainData']) =
   if (connectionError || !web3ModalProvider) return;
 
   // Wrapped in callback to prevent synchronous error, because `request` property is not guaranteed to exist
-  // TODO: Should we call this in case of wallet connect?
-  const [requestAccountsError] = await go(() => web3ModalProvider.request({ method: 'eth_requestAccounts' }));
+  const [requestAccountsError] = await go(() => {
+    if (web3ModalProvider.isMetaMask) return web3ModalProvider.request({ method: 'eth_requestAccounts' });
+    return Promise.resolve();
+  });
   // For example, user wants to connect via metamask, but declines connecting his account. We don't want to show toast
   // message in this case either.
   if (requestAccountsError) return;
