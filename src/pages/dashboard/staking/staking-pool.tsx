@@ -27,10 +27,10 @@ const StakingPool = () => {
     <div className={styles.stakingPool}>
       <div className={styles.firstSection}>
         <div className={styles.stakingTableRow}>
-          <div className={classNames(styles.stakingTableCell, styles.rightAlign)}>
+          <div className={classNames(styles.firstSectionCell, styles.rightAlign)}>
             <p className={styles.stakingAnnualApy}>{currentApyText}</p>
           </div>
-          <div className={styles.stakingTableCell}>
+          <div className={styles.firstSectionCell}>
             <p className={globalStyles.secondaryColor}>Annual Rewards (APY)</p>
             <Tooltip overlay={estimatedValueTooltip}>
               <img src={images.help} alt="help" className={globalStyles.helpIcon} />
@@ -38,11 +38,11 @@ const StakingPool = () => {
           </div>
         </div>
         <div className={styles.stakingTableRow}>
-          <div className={classNames(styles.stakingTableCell, styles.rightAlign)}>
+          <div className={classNames(styles.firstSectionCell, styles.rightAlign)}>
             <h5>{annualTotalSupplyGrowthText}</h5>
           </div>
-          <div className={styles.stakingTableCell}>
-            <p className={globalStyles.secondaryColor}>Annual total supply growth</p>
+          <div className={styles.firstSectionCell}>
+            <p className={globalStyles.secondaryColor}>Annual Total Supply Growth</p>
             <Tooltip overlay={estimatedValueTooltip}>
               <img src={images.help} alt="help" className={globalStyles.helpIcon} />
             </Tooltip>
@@ -53,14 +53,14 @@ const StakingPool = () => {
       <div className={classNames(styles.reverseDirectionWrap)}>
         <div className={styles.secondSection}>
           <div className={styles.stakingTableRow}>
-            <div className={classNames(styles.stakingTableCell, styles.rightAlign)}>
-              <p className={styles.stakingTableCellTitle}>total staked</p>
+            <div className={styles.secondSectionCell}>
+              <p className={styles.secondSectionTitle}>total staked</p>
               <p className={globalStyles.medium}>{totalStaked}</p>
             </div>
           </div>
           <div className={styles.stakingTableRow}>
-            <div className={classNames(styles.stakingTableCell, styles.rightAlign)}>
-              <p className={styles.stakingTableCellTitle}>staking target</p>
+            <div className={styles.secondSectionCell}>
+              <p className={styles.secondSectionTitle}>staking target</p>
               <p className={globalStyles.medium}>{stakingTargetInTokens}</p>
             </div>
           </div>
