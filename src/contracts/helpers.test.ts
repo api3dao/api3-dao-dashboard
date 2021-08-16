@@ -4,7 +4,7 @@ import { formatApi3 } from '../utils/api3-format';
 import {
   calculateApy,
   calculateAnnualMintedTokens,
-  calculateAnnualInflationRate,
+  calculateAnnualTotalSupplyGrowth,
   absoluteStakeTarget,
   HUNDRED_PERCENT,
   totalStakedPercentage,
@@ -16,7 +16,7 @@ const createPercentage = (numerator: number, denominator: number) => HUNDRED_PER
 
 const API3_TOKEN_SUPPLY = BigNumber.from('100000000000000000000000000');
 
-describe('calculateAnnualInflationRate and friends', () => {
+describe('calculateAnnualTotalSupplyGrowth and friends', () => {
   describe('individual functions', () => {
     const currentApr = createPercentage(75, 100);
     const totalStake = API3_TOKEN_SUPPLY.div(2);
@@ -32,11 +32,11 @@ describe('calculateAnnualInflationRate and friends', () => {
       expect(formatApi3(calculateAnnualMintedTokens(totalStake, apy))).toBe('55,284,457.03');
     });
 
-    test('calculateAnnualInflationRate', () => {
+    test('calculateAnnualTotalSupplyGrowth', () => {
       const apy = calculateApy(currentApr);
       const mintedTokens = calculateAnnualMintedTokens(totalStake, apy);
 
-      expect(calculateAnnualInflationRate(mintedTokens, API3_TOKEN_SUPPLY)).toBe(35.602054);
+      expect(calculateAnnualTotalSupplyGrowth(mintedTokens, API3_TOKEN_SUPPLY)).toBe(55.284456999999996);
     });
   });
 
@@ -45,7 +45,10 @@ describe('calculateAnnualInflationRate and friends', () => {
     const totalStake = API3_TOKEN_SUPPLY.div(1_000_000);
 
     expect(
-      calculateAnnualInflationRate(calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)), API3_TOKEN_SUPPLY)
+      calculateAnnualTotalSupplyGrowth(
+        calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)),
+        API3_TOKEN_SUPPLY
+      )
     ).toBe(0.00011);
   });
 
@@ -54,8 +57,11 @@ describe('calculateAnnualInflationRate and friends', () => {
     const totalStake = API3_TOKEN_SUPPLY;
 
     expect(
-      calculateAnnualInflationRate(calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)), API3_TOKEN_SUPPLY)
-    ).toBe(52.509609000000005);
+      calculateAnnualTotalSupplyGrowth(
+        calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)),
+        API3_TOKEN_SUPPLY
+      )
+    ).toBe(110.56891399999999);
   });
 });
 

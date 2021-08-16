@@ -3,7 +3,7 @@ import ChainDataContextProvider from './chain-data';
 import PageContainer from './page-container';
 import Dashboard from './pages/dashboard';
 import Proposals from './pages/proposals';
-import ProposalDetails from './pages/proposal-commons/proposal-details';
+import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import HistoryDetails from './pages/history-details';
 import History from './pages/history';
 import Vesting from './pages/vesting';
@@ -17,7 +17,7 @@ function App() {
         <Router>
           <Switch>
             <Route path="/governance/:typeAndId" exact>
-              <ProposalDetails />
+              <ProposalDetailsPage />
             </Route>
             <Route path="/governance" exact>
               <Proposals />

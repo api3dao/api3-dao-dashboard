@@ -46,7 +46,7 @@ async function main() {
     const formData = createNewFormData(type);
     const votingApp = new ethers.Contract(api3Voting[formData.type], votingAbi, account);
     try {
-      const goEncodeEvmScript = encodeEvmScript(formData, api3Agent);
+      const goEncodeEvmScript = encodeEvmScript(ethers.getDefaultProvider(), formData, api3Agent);
       if (!isGoSuccess(goEncodeEvmScript)) throw new Error();
       await votingApp.newVote(goEncodeEvmScript[GO_RESULT_INDEX], encodeMetadata(formData), true, true);
     } catch (e) {

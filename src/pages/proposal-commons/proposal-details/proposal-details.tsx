@@ -14,7 +14,7 @@ import Tag from '../../../components/tag';
 import { TooltipChecklist } from '../../../components/tooltip';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import { getEtherscanAddressUrl, useApi3Voting } from '../../../contracts';
-import { decodeProposalTypeAndId, decodeEvmScript } from '../../../logic/proposals/encoding';
+import { decodeProposalTypeAndId } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useProposalsByIds } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
@@ -33,16 +33,14 @@ interface ProposalDetailsContentProps {
 
 const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
   const { type, id } = props;
-  const { proposals } = useChainData();
+  const { proposals, provider } = useChainData();
 
-  // Need to memoize the id array to avoid infinite update loop
   useProposalsByIds(type, id);
 
-  const proposal = proposalDetailsSelector(proposals, type, id);
-  // TODO: Loading component
+  const proposal = proposalDetailsSelector(provider, proposals, type, id);
   return (
     <BaseLayout subtitle={`Proposal ${id.toString()}`}>
-      {!proposal ? <p>Loading...</p> : <ProposalDetailsContent proposal={proposal} />}
+      <ProposalDetailsContent proposal={proposal} />
     </BaseLayout>
   );
 };
@@ -61,7 +59,7 @@ const ProposalDetailsPage = () => {
 };
 
 interface ProposalDetailsProps {
-  proposal: Proposal;
+  proposal: Proposal | 'user not signed in' | 'does not exist';
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
@@ -72,19 +70,20 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const { transactions, setChainData } = useChainData();
   const voting = useApi3Voting();
 
-  const evmScriptData = decodeEvmScript(proposal.script, proposal.metadata);
+  // TODO: implement proper "not signed in" and "does not exist" pages
+  if (!voting || proposal === 'user not signed in')
+    return <>Please connect your wallet to see the proposal details...</>;
+  if (proposal === 'does not exist') return <>Proposal with such id hasn't been created yet...</>;
 
-  // NOTE: This should never happen, loading component in proposal details page should
-  // make sure we are connected to valid chain
-  if (!voting) return null;
-  if (!evmScriptData) {
+  if (!proposal.decodedEvmScript) {
     return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
   }
 
+  const { parameters, targetAddress, value } = proposal.decodedEvmScript;
   const voteSliderData = voteSliderSelector(proposal);
   const canVoteData = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
-  const urlTargetAddress = getEtherscanAddressUrl(chainId, evmScriptData.targetAddress);
+  const urlTargetAddress = getEtherscanAddressUrl(chainId, targetAddress);
 
   const canVoteChecklist = [
     {
@@ -173,9 +172,9 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         }
         content={
           <div className={styles.proposalDetailsSummary}>
-            <p className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor)}>
+            <pre className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor, styles.scrollX)}>
               {proposal.metadata.description}
-            </p>
+            </pre>
 
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Creator</p>
@@ -193,9 +192,9 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={globalStyles.bold}>Target Contract Address</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlTargetAddress ? (
-                  <ExternalLink href={urlTargetAddress}>{evmScriptData.targetAddress}</ExternalLink>
+                  <ExternalLink href={urlTargetAddress}>{targetAddress}</ExternalLink>
                 ) : (
-                  evmScriptData.targetAddress
+                  targetAddress
                 )}
               </p>
             </div>
@@ -203,16 +202,16 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={globalStyles.bold}>Target Contract Signature</p>
               <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
             </div>
-            {evmScriptData.value.gt(0) && (
+            {value.gt(0) && (
               <div className={styles.proposalDetailsItem}>
                 <p className={globalStyles.bold}>ETH Value</p>
-                <p className={globalStyles.secondaryColor}>{utils.formatEther(evmScriptData.value)}</p>
+                <p className={globalStyles.secondaryColor}>{utils.formatEther(value)}</p>
               </div>
             )}
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Parameters</p>
               <p className={classNames(globalStyles.secondaryColor, styles.multiline)}>
-                {JSON.stringify(evmScriptData.parameters, null, 2)}
+                {JSON.stringify(parameters, null, 2)}
               </p>
             </div>
           </div>

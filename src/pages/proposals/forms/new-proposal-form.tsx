@@ -12,6 +12,7 @@ import { filterAlphanumerical, GO_ERROR_INDEX, images, isGoSuccess } from '../..
 import styles from './new-proposal-form.module.scss';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import classNames from 'classnames';
+import { providers } from 'ethers';
 
 interface ProposalFormItemProps {
   children: ReactNode;
@@ -35,10 +36,11 @@ interface Props {
   onClose: () => void;
   onConfirm: (formData: NewProposalFormData) => void;
   api3Agent: Api3Agent;
+  provider: providers.Provider;
 }
 
 const NewProposalForm = (props: Props) => {
-  const { onConfirm, api3Agent } = props;
+  const { onConfirm, api3Agent, provider } = props;
 
   const [type, setType] = useState<ProposalType>('primary');
   const [title, setTitle] = useState('');
@@ -59,7 +61,7 @@ const NewProposalForm = (props: Props) => {
   };
   const [errors, setErrors] = useState(initialErrorsState);
 
-  const validateForm = (formData: NewProposalFormData) => {
+  const validateForm = async (formData: NewProposalFormData) => {
     const newErrors = { ...initialErrorsState };
     let foundErrors = false;
 
@@ -73,7 +75,7 @@ const NewProposalForm = (props: Props) => {
       foundErrors = true;
     }
 
-    const goEncodeEvmScript = encodeEvmScript(formData, api3Agent);
+    const goEncodeEvmScript = await encodeEvmScript(provider, formData, api3Agent);
     if (!isGoSuccess(goEncodeEvmScript)) {
       const { field, value } = goEncodeEvmScript[GO_ERROR_INDEX];
       newErrors[field] = value;
@@ -176,7 +178,7 @@ const NewProposalForm = (props: Props) => {
         <Button
           type="secondary"
           size="large"
-          onClick={() => {
+          onClick={async () => {
             const formData = {
               type,
               description,
@@ -187,7 +189,8 @@ const NewProposalForm = (props: Props) => {
               title,
             };
 
-            if (!validateForm(formData)) {
+            const containsError = await validateForm(formData);
+            if (!containsError) {
               onConfirm(formData);
             }
           }}

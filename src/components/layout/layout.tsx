@@ -8,6 +8,7 @@ import ExternalLink from '../external-link';
 import Button from '../button';
 import ErrorReportingNotice from './error-reporting-notice';
 import classNames from 'classnames';
+import { DesktopMenu } from '../menu';
 
 type Props = {
   children: ReactNode;
@@ -49,7 +50,10 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
 
       <div className={styles.layout}>
         <Navigation />
-        <div className={styles.container}>{children}</div>
+        <div className={styles.content}>
+          <DesktopMenu />
+          <main className={styles.main}>{children}</main>
+        </div>
         <footer className={styles.footer}>
           {errorReportingNoticeOpen ? (
             <ErrorReportingNotice onClose={() => setErrorReportingNoticeOpen(false)} />
