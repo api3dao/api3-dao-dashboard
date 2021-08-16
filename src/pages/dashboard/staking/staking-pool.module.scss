@@ -68,7 +68,7 @@
   }
 }
 
-.stakingTableCell {
+.firstSectionCell {
   width: 50%;
   padding: 0 $space-md;
   box-sizing: border-box;
@@ -85,7 +85,26 @@
   }
 }
 
-.stakingTableCellTitle {
+.secondSectionCell {
+  padding: 0 $space-md;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: right;
+  flex: 1;
+  min-width: 110px;
+
+  @media (max-width: $max-md) {
+    align-items: center;
+  }
+
+  @media (max-width: $max-xl) {
+    padding: 0 $space-xs;
+  }
+}
+
+.secondSectionTitle {
   font-size: $text-xsmall;
   line-height: 18px;
   color: $secondary-color;
