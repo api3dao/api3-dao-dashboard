@@ -39,6 +39,11 @@ export type VoterState = 0 | 1 | 2; // Absent, Yea, Nay
 export type ProposalType = 'primary' | 'secondary';
 export type TreasuryType = 'primary' | 'secondary';
 
+export interface DecodedEvmScript {
+  targetAddress: string;
+  parameters: unknown[];
+  value: BigNumber; // amount of ETH that is sent to the contract
+}
 export interface Proposal {
   voteId: ethers.BigNumber;
   creator: string;
@@ -60,6 +65,8 @@ export interface Proposal {
   type: ProposalType;
   script: string;
   userVotingPowerAt: BigNumber;
+  // can be null if there was an error when decoding the proposal (proposal created outside DAO dashboard)
+  decodedEvmScript: DecodedEvmScript | null;
 }
 
 export interface Delegation {

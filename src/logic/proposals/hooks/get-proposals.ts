@@ -2,7 +2,7 @@ import { BigNumber, providers } from 'ethers';
 import { ProposalType, VoterState } from '../../../chain-data';
 import { Convenience } from '../../../generated-contracts';
 import { Proposal } from '../../../chain-data';
-import { decodeMetadata } from '../encoding';
+import { decodeEvmScript, decodeMetadata } from '../encoding';
 import { blockTimestampToDate, go, GO_RESULT_INDEX, isGoSuccess } from '../../../utils';
 import { EPOCH_LENGTH, HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
@@ -40,6 +40,8 @@ export const getProposals = async (
     // this in go, because we don't want the proposal fetching to throw in case of lookupAddress error (also ENS is not
     // available on localhost).
     const goLookupAddress = await go(provider.lookupAddress(startVotesInfo[i]!.creator));
+    const script = staticVoteData.script[i]!;
+    const decodedEvmScript = await decodeEvmScript(provider, script, startVotesInfo[i]!.metadata);
 
     proposals.push({
       type,
@@ -53,7 +55,7 @@ export const getProposals = async (
       votingPower: staticVoteData.votingPower[i]!,
       deadline: blockTimestampToDate(staticVoteData.startDate[i]!.add(votingTime)),
       startDateRaw: staticVoteData.startDate[i]!,
-      script: staticVoteData.script[i]!,
+      script,
       userVotingPowerAt: staticVoteData.userVotingPowerAt[i]!,
 
       delegateAt: isZeroAddress(dynamicVoteData.delegateAt[i]!) ? null : dynamicVoteData.delegateAt[i]!,
@@ -62,6 +64,8 @@ export const getProposals = async (
       executed: dynamicVoteData.executed[i]!,
       yea: dynamicVoteData.yea[i]!,
       nay: dynamicVoteData.nay[i]!,
+
+      decodedEvmScript,
     });
   }
 
