@@ -1,42 +1,19 @@
 import { BigNumber, providers, utils } from 'ethers';
 import range from 'lodash/range';
-import { DecodedEvmScript, ProposalMetadata, ProposalType } from '../../chain-data';
-import { Api3Agent } from '../../contracts';
-import { errorFn, go, GoResult, goSync, GO_RESULT_INDEX, isGoSuccess, successFn } from '../../utils';
+import { DecodedEvmScript, ProposalMetadata } from '../../../chain-data';
+import { Api3Agent } from '../../../contracts';
+import { errorFn, go, GoResult, goSync, GO_RESULT_INDEX, isGoSuccess, successFn } from '../../../utils';
+import { NewProposalFormData } from './types';
 
-/**
- * NOTE: Aragon contracts are flexible but this makes it a bit harder to work with it's contracts. We have created a
- * simple encoding/decoding scheme for the API3 proposals. The implementation of these utilities is inspired by
- * https://github.com/bbenligiray/proposal-test.
- */
-export interface NewProposalFormData {
-  type: ProposalType;
-  title: string;
-  description: string;
-  targetAddress: string;
-  targetSignature: string;
-  targetValue: string;
-  parameters: string;
-}
-
-const METADATA_FORMAT_VERSION = '1';
-// https://stackoverflow.com/questions/492090/least-used-delimiter-character-in-normal-text-ascii-128/41555511#41555511
-export const METADATA_DELIMETER = String.fromCharCode(31);
-
-export const encodeMetadata = (formData: NewProposalFormData) =>
-  [METADATA_FORMAT_VERSION, formData.targetSignature, formData.title, formData.description].join(METADATA_DELIMETER);
-
-export const decodeMetadata = (metadata: string): ProposalMetadata | null => {
-  const tokens = metadata.split(METADATA_DELIMETER);
-  // NOTE: Our metadata encoding is just a convention and people might create proposals directly via the contract. They
-  // shouldn't do it and we will probably just ignore their proposal created this way.
-  if (tokens.length !== 4) return null;
-  return { version: tokens[0]!, targetSignature: tokens[1]!, title: tokens[2]!, description: tokens[3]! };
+const encodeFunctionSignature = (functionFragment: string) => {
+  return utils.hexDataSlice(utils.keccak256(utils.toUtf8Bytes(functionFragment)), 0, 4);
 };
 
-function encodeFunctionSignature(functionFragment: any) {
-  return utils.hexDataSlice(utils.keccak256(utils.toUtf8Bytes(functionFragment)), 0, 4);
-}
+const stringifyBigNumbersRecursively = (value: unknown): any => {
+  if (BigNumber.isBigNumber(value)) return value.toString();
+  else if (Array.isArray(value)) return value.map(stringifyBigNumbersRecursively);
+  else return value;
+};
 
 type EncodedEvmScriptError = {
   field:
@@ -44,6 +21,7 @@ type EncodedEvmScriptError = {
     | 'generic';
   value: string;
 };
+
 type EncodedEvmScript = GoResult<string, EncodedEvmScriptError>;
 
 export const encodeEvmScript = async (
@@ -200,25 +178,4 @@ export const decodeEvmScript = async (
 
   if (isGoSuccess(goResponse)) return goResponse[GO_RESULT_INDEX];
   else return null;
-};
-
-export const stringifyBigNumbersRecursively = (value: unknown): any => {
-  if (BigNumber.isBigNumber(value)) return value.toString();
-  else if (Array.isArray(value)) return value.map(stringifyBigNumbersRecursively);
-  else return value;
-};
-
-export const encodeProposalTypeAndId = (type: ProposalType, id: string) => `${type}-${id}`;
-
-const isValidProposalType = (type: string | undefined): type is ProposalType =>
-  type === 'primary' || type === 'secondary';
-
-export const decodeProposalTypeAndId = (typeAndId: string) => {
-  const [type, id, ...rest] = typeAndId.split('-');
-
-  if (rest.length !== 0) return null;
-  if (!isValidProposalType(type)) return null;
-  if (!isGoSuccess(goSync(() => BigNumber.from(id)))) return null;
-
-  return { type: type, id: BigNumber.from(id) };
 };

@@ -28,18 +28,18 @@ import ExternalLink from '../../../components/external-link';
 
 interface ProposalDetailsContentProps {
   type: ProposalType;
-  id: BigNumber;
+  voteId: BigNumber;
 }
 
 const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
-  const { type, id } = props;
+  const { type, voteId } = props;
   const { proposals, provider } = useChainData();
 
-  useProposalsByIds(type, id);
+  useProposalsByIds(type, voteId);
 
-  const proposal = proposalDetailsSelector(provider, proposals, type, id);
+  const proposal = proposalDetailsSelector(provider, proposals, type, voteId);
   return (
-    <BaseLayout subtitle={`Proposal ${id.toString()}`}>
+    <BaseLayout subtitle={`Proposal ${voteId.toString()}`}>
       <ProposalDetailsContent proposal={proposal} />
     </BaseLayout>
   );
