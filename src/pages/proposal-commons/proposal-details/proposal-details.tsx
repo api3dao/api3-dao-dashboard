@@ -1,7 +1,7 @@
 import { BigNumber, utils } from 'ethers';
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout';
@@ -63,7 +63,6 @@ interface ProposalDetailsProps {
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
-  const history = useHistory();
   const { chainId } = useChainData();
   const { proposal } = props;
   const [voteModalOpen, setVoteModalOpen] = useState(false);
@@ -84,6 +83,10 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const canVoteData = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
   const urlTargetAddress = getEtherscanAddressUrl(chainId, targetAddress);
+  const backButton = {
+    text: `Back to ${proposal.open ? 'Governance' : 'History'}`,
+    url: proposal.open ? '/governance' : '/history',
+  };
 
   const canVoteChecklist = [
     {
@@ -105,10 +108,12 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   return (
     <div>
       <div className={styles.proposalDetailsSubheader}>
-        <Button onClick={() => history.goBack()} type="text" className={styles.backBtn}>
-          <img src={images.arrowLeft} alt="back" />
-          Back
-        </Button>
+        <Link to={backButton.url} data-cy="api3-logo">
+          <Button type="text" className={styles.backBtn}>
+            <img src={images.arrowLeft} alt="back" />
+            {backButton.text}
+          </Button>
+        </Link>
       </div>
 
       <div className={styles.proposalDetailsHeader}>
