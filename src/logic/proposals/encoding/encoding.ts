@@ -1,10 +1,10 @@
 /**
  * When a proposal is passed, it can be used to execute the EVM script that was specified when the proposal was created.
- * The script can be a function call or multiple function calls. Proposal needs to be executed by separate transaction
- * and the executor pays gas also for the EVM script that is run.
+ * The script can be a function call or multiple function calls. Proposals need to be executed by separate transaction
+ * and the executor will pay the gas cost for the EVM script that is run.
  *
  * For now, we only support a single function call in the EVM script. The reasons are that it's enough for the most
- * cases, it's easier to encode it and we can create simpler UI for the users.
+ * cases, it's easier to encode it and we can create a simpler UI for end users.
  *
  * The EVM script is basically encoded "bytes" which contain the function(s) to be called and their parameters. We also
  * support ENS names when specifying them as function parameters. The conversion needs to take place before the script
@@ -64,7 +64,7 @@ export const encodeEvmScript = async (
   formData: NewProposalFormData,
   api3Agent: Api3Agent
 ): Promise<EncodedEvmScript> => {
-  // Ensure that the form parameters form a valid JSON
+  // Ensure that the form parameters form a valid JSON array
   const goJsonParams = goSync(() => {
     const json = JSON.parse(formData.parameters);
     if (!Array.isArray(json)) throw new Error('Parameters must be an array');
