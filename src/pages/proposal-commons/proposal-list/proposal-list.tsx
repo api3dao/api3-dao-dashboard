@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Proposal, useChainData } from '../../../chain-data';
 import { images } from '../../../utils';
-import { encodeProposalTypeAndId } from '../../../logic/proposals/encoding';
+import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../vote-slider/vote-slider';
 import Timer, { DATE_FORMAT } from '../../../components/timer';
 import Button from '../../../components/button';
@@ -80,15 +80,15 @@ const ProposalList = (props: Props) => {
         const votingSliderData = voteSliderSelector(p);
         const navlink = {
           base: p.open ? 'governance' : 'history',
-          typeAndId: encodeProposalTypeAndId(p.type, voteIdFormat(p.voteId)),
+          typeAndVoteId: encodeProposalTypeAndVoteId(p.type, voteIdFormat(p.voteId)),
         };
 
         return (
-          <div className={styles.proposalItem} key={`${p.type}-${voteIdFormat(p.voteId)}`} data-cy="proposal-item">
+          <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
             <div className={styles.proposalItemWrapper}>
               <ProposalInfoState proposal={p} device="mobile" />
               <p className={styles.proposalItemTitle}>
-                <NavLink to={`/${navlink.base}/${navlink.typeAndId}`}>{p.metadata.title}</NavLink>
+                <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{p.metadata.title}</NavLink>
               </p>
               <div className={styles.proposalItemSubtitle}>
                 <ProposalInfoState proposal={p} device="desktop" />
@@ -102,7 +102,7 @@ const ProposalList = (props: Props) => {
             <div className={styles.proposalVoteBar}>
               <VoteSlider {...votingSliderData} />
               <span className={styles.proposalVoteArrow}>
-                <NavLink to={`/${navlink.base}/${navlink.typeAndId}`}>
+                <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
                   <img src={images.arrowRight} alt="right arrow" />
                 </NavLink>
               </span>

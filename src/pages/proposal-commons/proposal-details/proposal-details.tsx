@@ -14,7 +14,7 @@ import Tag from '../../../components/tag';
 import { TooltipChecklist } from '../../../components/tooltip';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import { getEtherscanAddressUrl, useApi3Voting } from '../../../contracts';
-import { decodeProposalTypeAndId } from '../../../logic/proposals/encoding';
+import { decodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useProposalsByIds } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
@@ -28,31 +28,31 @@ import ExternalLink from '../../../components/external-link';
 
 interface ProposalDetailsContentProps {
   type: ProposalType;
-  id: BigNumber;
+  voteId: BigNumber;
 }
 
 const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
-  const { type, id } = props;
+  const { type, voteId } = props;
   const { proposals, provider } = useChainData();
 
-  useProposalsByIds(type, id);
+  useProposalsByIds(type, voteId);
 
-  const proposal = proposalDetailsSelector(provider, proposals, type, id);
+  const proposal = proposalDetailsSelector(provider, proposals, type, voteId);
   return (
-    <BaseLayout subtitle={`Proposal ${id.toString()}`}>
+    <BaseLayout subtitle={`Proposal ${voteId.toString()}`}>
       <ProposalDetailsContent proposal={proposal} />
     </BaseLayout>
   );
 };
 
 interface RouterParameters {
-  typeAndId: string;
+  typeAndVoteId: string;
 }
 
 const ProposalDetailsPage = () => {
   useScrollToTop();
-  const { typeAndId } = useParams<RouterParameters>();
-  const decoded = decodeProposalTypeAndId(typeAndId);
+  const { typeAndVoteId } = useParams<RouterParameters>();
+  const decoded = decodeProposalTypeAndVoteId(typeAndVoteId);
 
   if (!decoded) return <NotFoundPage />;
   return <ProposalDetailsLayout {...decoded} />;
