@@ -7,9 +7,13 @@ import { blockTimestampToDate } from '../../../utils';
 import { EPOCH_LENGTH, HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 import { convertToEnsName } from '../encoding/ens-name';
+import range from 'lodash/range';
 
 const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNumber();
 
+/**
+ * Helper function which loads all necessary proposal data for multiple proposals in parallel.
+ */
 export const getProposals = async (
   provider: providers.Web3Provider,
   convenience: Convenience,
@@ -35,12 +39,11 @@ export const getProposals = async (
   const staticVoteData = await convenience.getStaticVoteData(VOTING_APP_IDS[type], userAccount, voteIdsToLoad);
   const dynamicVoteData = await convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, voteIdsToLoad);
 
-  const proposals: Proposal[] = [];
-  for (let i = 0; i < validStartVoteProposals.length; i++) {
+  const composeProposal = async (i: number): Promise<Proposal> => {
     const script = staticVoteData.script[i]!;
     const decodedEvmScript = await decodeEvmScript(provider, script, startVotesInfo[i]!.metadata);
 
-    proposals.push({
+    return {
       type,
       ...startVotesInfo[i]!,
       open: openVoteIdsStr.includes(startVotesInfo[i]!.voteId.toString()),
@@ -63,8 +66,8 @@ export const getProposals = async (
       nay: dynamicVoteData.nay[i]!,
 
       decodedEvmScript,
-    });
-  }
+    };
+  };
 
-  return proposals;
+  return Promise.all(range(validStartVoteProposals.length).map(composeProposal));
 };
