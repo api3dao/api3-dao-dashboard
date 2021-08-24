@@ -16,13 +16,13 @@ function App() {
       <PageContainer>
         <Router>
           <Switch>
-            <Route path="/governance/:typeAndId" exact>
+            <Route path="/governance/:typeAndVoteId" exact>
               <ProposalDetailsPage />
             </Route>
             <Route path="/governance" exact>
               <Proposals />
             </Route>
-            <Route path="/history/:typeAndId" exact>
+            <Route path="/history/:typeAndVoteId" exact>
               <HistoryDetails />
             </Route>
             <Route path="/history" exact>
