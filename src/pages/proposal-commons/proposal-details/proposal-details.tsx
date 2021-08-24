@@ -26,6 +26,32 @@ import NotFoundPage from '../../not-found';
 import { handleTransactionError, images, messages, useScrollToTop } from '../../../utils';
 import ExternalLink from '../../../components/external-link';
 
+interface ProposalDescriptionProps {
+  description: string;
+}
+
+const ProposalDescription = (props: ProposalDescriptionProps) => {
+  const { description } = props;
+
+  // The regex is intentionally simpler than usual URL checking regexes.
+  //
+  // The whole regex expression must be quoted, otherwise the delimeter (the URL) will be excluded.
+  const parts = description.split(/(https?:\/\/[^\s]+)/g);
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (i % 2 === 0) return part;
+        else
+          return (
+            <ExternalLink className={styles.link} href={part} key={part}>
+              {part}
+            </ExternalLink>
+          );
+      })}
+    </>
+  );
+};
+
 interface ProposalDetailsContentProps {
   type: ProposalType;
   voteId: BigNumber;
@@ -178,14 +204,14 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         content={
           <div className={styles.proposalDetailsSummary}>
             <pre className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor, styles.scrollX)}>
-              {proposal.metadata.description}
+              <ProposalDescription description={proposal.metadata.description} />
             </pre>
 
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Creator</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlCreator ? (
-                  <ExternalLink href={urlCreator}>
+                  <ExternalLink className={styles.link} href={urlCreator}>
                     {proposal.creatorName ? proposal.creatorName : proposal.creator}
                   </ExternalLink>
                 ) : (
@@ -197,7 +223,9 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={globalStyles.bold}>Target Contract Address</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlTargetAddress ? (
-                  <ExternalLink href={urlTargetAddress}>{targetAddress}</ExternalLink>
+                  <ExternalLink className={styles.link} href={urlTargetAddress}>
+                    {targetAddress}
+                  </ExternalLink>
                 ) : (
                   targetAddress
                 )}
