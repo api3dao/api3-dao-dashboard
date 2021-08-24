@@ -84,7 +84,7 @@ const ProposalList = (props: Props) => {
         };
 
         return (
-          <div className={styles.proposalItem} key={`${p.type}-${voteIdFormat(p.voteId)}`} data-cy="proposal-item">
+          <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
             <div className={styles.proposalItemWrapper}>
               <ProposalInfoState proposal={p} device="mobile" />
               <p className={styles.proposalItemTitle}>
