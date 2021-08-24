@@ -12,7 +12,6 @@ import Button from '../../components/button';
 import { Tooltip } from '../../components/tooltip';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
-import Slider from '../../components/slider';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import UnstakeBanner from './unstake-banner/unstake-banner';
 import globalStyles from '../../styles/global-styles.module.scss';
@@ -23,7 +22,7 @@ import classNames from 'classnames';
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
 const Dashboard = () => {
-  const { dashboardState: data, transactions, setChainData } = useChainData();
+  const { dashboardState: data, transactions, setChainData, provider } = useChainData();
   const api3Pool = useApi3Pool();
 
   useLoadDashboardData();
@@ -43,16 +42,21 @@ const Dashboard = () => {
   const canWithdraw = tokenBalances && tokenBalances.withdrawable.gt(0);
   const canInitiateUnstake = data && !pendingUnstake && data.userStaked.gt(0);
 
-  // https://github.com/api3dao/api3-dao-dashboard/issues/108
-  const shouldDisplayHowThisWorks = false;
-
   return (
     <Layout title="Staking">
       {pendingUnstake?.canUnstake && <UnstakeBanner canUnstakeAndWithdraw={pendingUnstake.canUnstakeAndWithdraw} />}
-      {!pendingUnstake?.canUnstake && shouldDisplayHowThisWorks && (
+      {!provider && (
         <>
           <p className={styles.dashboardHeader}>How This Works</p>
-          <Slider />
+          <div className={styles.tutorialVideo}>
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/videoseries?list=PL9BKN1mys69GgMLD_EVkH-S3CKrPFf_ct"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
         </>
       )}
       <p className={styles.dashboardHeader}>Staking Pool</p>
