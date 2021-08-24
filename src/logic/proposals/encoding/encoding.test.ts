@@ -1,7 +1,7 @@
-import { constants, utils, providers } from 'ethers';
+import { constants, utils, providers, BigNumber } from 'ethers';
 import { updateImmutably } from '../../../chain-data';
 import { GO_ERROR_INDEX, GO_RESULT_INDEX } from '../../../utils';
-import { decodeEvmScript, encodeEvmScript } from './encoding';
+import { decodeEvmScript, encodeEvmScript, encodeFunctionSignature, stringifyBigNumbersRecursively } from './encoding';
 import { decodeMetadata, encodeMetadata } from './metadata';
 
 const newFormData = {
@@ -200,5 +200,30 @@ describe('addresses in proposal parameters', () => {
       value: utils.parseEther('12'),
       parameters: [address],
     });
+  });
+});
+
+test('encodeFunctionSignature', () => {
+  expect(encodeFunctionSignature('sendMessage(string,address)')).toBe('0xc48d6d5e');
+  expect(encodeFunctionSignature('execute(address,uint256,bytes)')).toBe('0xb61d27f6');
+});
+
+describe('stringifyBigNumbersRecursively', () => {
+  it('does not support objects', () => {
+    const value = {
+      bigNumArray: [BigNumber.from('123'), BigNumber.from('456')],
+      str: 'str',
+    };
+
+    expect(stringifyBigNumbersRecursively(value)).toEqual(value);
+  });
+
+  it('works for values and arrays', () => {
+    expect(stringifyBigNumbersRecursively([BigNumber.from('123'), BigNumber.from('456'), 'str'])).toEqual([
+      '123',
+      '456',
+      'str',
+    ]);
+    expect(stringifyBigNumbersRecursively(BigNumber.from('123'))).toEqual('123');
   });
 });
