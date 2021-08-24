@@ -21,6 +21,7 @@ import range from 'lodash/range';
 import { DecodedEvmScript, ProposalMetadata } from '../../../chain-data';
 import { Api3Agent } from '../../../contracts';
 import { errorFn, go, GoResult, goSync, GO_RESULT_INDEX, isGoSuccess, successFn } from '../../../utils';
+import { convertToAddressOrThrow, tryConvertToEnsName } from './ens-name';
 import { NewProposalFormData } from './types';
 
 // Similar to https://web3js.readthedocs.io/en/v1.2.0/web3-eth-abi.html#encodefunctionsignature
@@ -107,9 +108,9 @@ export const encodeEvmScript = async (
     const parameters = await Promise.all(
       range(parameterTypes.length).map(async (i) => {
         const param = targetParameters[i]!;
+        if (parameterTypes[i] !== 'address') return param;
 
-        if (parameterTypes[i] !== 'address' || utils.isAddress(param)) return param;
-        return provider.resolveName(param);
+        return convertToAddressOrThrow(provider, param);
       })
     );
     // Encode the parameters using the parameter types
@@ -126,12 +127,15 @@ export const encodeEvmScript = async (
   }
   const encodedTargetParameters = goEncodeParameters[GO_RESULT_INDEX];
 
-  // TODO: support ENS names?
-  // Ensure target address is a valid address
-  const targetAddress = formData.targetAddress;
-  if (!utils.isAddress(targetAddress)) {
-    return errorFn({ field: 'targetAddress', value: 'Please specify a valid account address' });
+  // Ensure target address is a valid address or valid ENS name
+  const goTargetAddress = await go(() => convertToAddressOrThrow(provider, formData.targetAddress));
+  if (!isGoSuccess(goTargetAddress)) {
+    return errorFn({
+      field: 'targetAddress',
+      value: 'Please specify a valid account address',
+    });
   }
+  const targetAddress = goTargetAddress[GO_RESULT_INDEX];
 
   // Ensure value is non negative ether amount
   const goValue = goSync(() => {
@@ -209,7 +213,7 @@ export const decodeEvmScript = async (
       ['address', 'uint256', 'bytes'],
       utils.hexDataSlice(callData, 4)
     );
-    const targetContractAddress = executionParameters[0];
+    const targetContractAddress = await tryConvertToEnsName(provider, executionParameters[0]);
     const value = executionParameters[1];
 
     // Decode the calldata of the last target function (last argument of the "execute" function) which are the decoded
@@ -226,8 +230,7 @@ export const decodeEvmScript = async (
         const param = decodedParameters[i]!;
         if (parameterTypes[i] !== 'address') return param;
 
-        const ensName = await provider.lookupAddress(param);
-        return ensName || param;
+        return tryConvertToEnsName(provider, param);
       })
     );
 

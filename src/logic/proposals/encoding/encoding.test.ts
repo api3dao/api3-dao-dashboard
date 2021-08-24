@@ -168,7 +168,22 @@ test('decoding', async () => {
   });
 });
 
-describe('addresses in proposal parameters', () => {
+describe('ENS name support', () => {
+  it('supports ENS name in target address', async () => {
+    const formDataWithAddress = updateImmutably(newFormData, (data) => {
+      data.targetAddress = MOCKED_ENS_ENTRY.ensName;
+    });
+
+    const encoded = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
+    const metadata = decodeMetadata(encodeMetadata(formDataWithAddress))!;
+
+    expect(await decodeEvmScript(mockedProvider, encoded[GO_RESULT_INDEX]!, metadata)).toEqual({
+      targetAddress: MOCKED_ENS_ENTRY.ensName,
+      value: utils.parseEther('12'),
+      parameters: ['arg1', '123'],
+    });
+  });
+
   it('supports ENS names in parameters', async () => {
     const formDataWithAddress = updateImmutably(newFormData, (data) => {
       data.targetSignature = 'functionName(address)';
@@ -199,6 +214,19 @@ describe('addresses in proposal parameters', () => {
       targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
       value: utils.parseEther('12'),
       parameters: [address],
+    });
+  });
+
+  it('encoding fails if non existent ENS name is passed in parameters', async () => {
+    const formDataWithAddress = updateImmutably(newFormData, (data) => {
+      data.targetSignature = 'functionName(address)';
+      data.parameters = JSON.stringify(['non-existent.eth']);
+    });
+
+    const encoded = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
+    expect(encoded[GO_ERROR_INDEX]).toEqual({
+      field: 'parameters',
+      value: 'Ensure parameters match target contract signature',
     });
   });
 });
