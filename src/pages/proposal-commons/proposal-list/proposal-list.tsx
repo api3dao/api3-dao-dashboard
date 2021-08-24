@@ -63,55 +63,62 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
 
 const ProposalList = (props: Props) => {
   const { proposals, type } = props;
-  const { setChainData } = useChainData();
+  const { setChainData, provider } = useChainData();
 
-  return (
-    <>
-      {!proposals && (
-        <div className={styles.noProposals}>
-          <span>You need to be connected to view proposals</span>
-          <Button type="link" onClick={connectWallet(setChainData)}>
-            Connect your wallet
-          </Button>
-        </div>
-      )}
-      {proposals?.length === 0 && <p className={styles.noProposals}>There are no {type} proposals</p>}
-      {proposals?.map((p) => {
-        const votingSliderData = voteSliderSelector(p);
-        const navlink = {
-          base: p.open ? 'governance' : 'history',
-          typeAndVoteId: encodeProposalTypeAndVoteId(p.type, voteIdFormat(p.voteId)),
-        };
+  if (!provider) {
+    return (
+      <div className={styles.noProposals}>
+        <span>You need to be connected to view proposals</span>
+        <Button type="link" onClick={connectWallet(setChainData)}>
+          Connect your wallet
+        </Button>
+      </div>
+    );
+  } else if (!proposals) {
+    // TODO: Use loading skeleton
+    return <p className={styles.noProposals}>Loading...</p>;
+  } else if (proposals.length === 0) {
+    return <p className={styles.noProposals}>There are no {type} proposals</p>;
+  } else {
+    return (
+      <>
+        {proposals.map((p) => {
+          const votingSliderData = voteSliderSelector(p);
+          const navlink = {
+            base: p.open ? 'governance' : 'history',
+            typeAndVoteId: encodeProposalTypeAndVoteId(p.type, voteIdFormat(p.voteId)),
+          };
 
-        return (
-          <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
-            <div className={styles.proposalItemWrapper}>
-              <ProposalInfoState proposal={p} device="mobile" />
-              <p className={styles.proposalItemTitle}>
-                <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{p.metadata.title}</NavLink>
-              </p>
-              <div className={styles.proposalItemSubtitle}>
-                <ProposalInfoState proposal={p} device="desktop" />
-                <div className={styles.proposalItemBox}>
-                  {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
-                  {p.open ? <Timer deadline={p.deadline} /> : format(p.startDate, DATE_FORMAT)}
+          return (
+            <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
+              <div className={styles.proposalItemWrapper}>
+                <ProposalInfoState proposal={p} device="mobile" />
+                <p className={styles.proposalItemTitle}>
+                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{p.metadata.title}</NavLink>
+                </p>
+                <div className={styles.proposalItemSubtitle}>
+                  <ProposalInfoState proposal={p} device="desktop" />
+                  <div className={styles.proposalItemBox}>
+                    {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
+                    {p.open ? <Timer deadline={p.deadline} /> : format(p.startDate, DATE_FORMAT)}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className={styles.proposalVoteBar}>
-              <VoteSlider {...votingSliderData} />
-              <span className={styles.proposalVoteArrow}>
-                <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
-                  <img src={images.arrowRight} alt="right arrow" />
-                </NavLink>
-              </span>
+              <div className={styles.proposalVoteBar}>
+                <VoteSlider {...votingSliderData} />
+                <span className={styles.proposalVoteArrow}>
+                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
+                    <img src={images.arrowRight} alt="right arrow" />
+                  </NavLink>
+                </span>
+              </div>
             </div>
-          </div>
-        );
-      })}
-    </>
-  );
+          );
+        })}
+      </>
+    );
+  }
 };
 
 export default ProposalList;
