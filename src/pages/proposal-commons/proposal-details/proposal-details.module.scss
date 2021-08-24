@@ -110,3 +110,11 @@
   font-size: $text-small;
   margin-top: $space-md;
 }
+
+.link {
+  font-size: $text-normal;
+
+  @media (max-width: $max-md) {
+    font-size: $text-small;
+  }
+}
