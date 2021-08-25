@@ -5,6 +5,7 @@ import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, assertGoSuccess
 import { isZeroAddress } from '../../contracts';
 import * as notifications from '../../components/notifications';
 import { messages } from '../../utils/messages';
+import { convertToEnsName } from '../proposals/encoding/ens-name';
 
 export const useTreasuryAndDelegation = () => {
   const { setChainData, userAccount, proposals, provider } = useChainData();
@@ -33,7 +34,7 @@ export const useTreasuryAndDelegation = () => {
       }
 
       const delegate = isZeroAddress(data.delegate) ? null : data.delegate;
-      const goDelegateName = delegate ? await go(provider.lookupAddress(delegate)) : null;
+      const delegateName = delegate ? await convertToEnsName(provider, delegate) : null;
 
       return {
         delegation: {
@@ -41,7 +42,7 @@ export const useTreasuryAndDelegation = () => {
           userVotingPower: data.userVotingPower,
           delegatedVotingPower: data.delegatedToUser,
           delegate,
-          delegateName: goDelegateName && isGoSuccess(goDelegateName) ? goDelegateName[GO_RESULT_INDEX] : null,
+          delegateName,
           lastDelegationUpdateTimestamp: blockTimestampToDate(data.lastDelegationUpdateTimestamp),
           lastProposalTimestamp: blockTimestampToDate(data.lastProposalTimestamp),
         },

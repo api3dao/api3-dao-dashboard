@@ -4,6 +4,7 @@ import { notifications } from '../components/notifications';
 import { getDaoAddresses, getEtherscanTransactionUrl, updateNetworkName } from '../contracts';
 import { ChainData, initialChainData } from './state';
 import { go, GO_RESULT_INDEX, isGoSuccess } from '../utils';
+import { convertToEnsName } from '../logic/proposals/encoding/ens-name';
 
 export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => void) => {
   // NOTE: This needs to be written in a function like this, to make sure `produce` doesn't return anything.
@@ -34,12 +35,11 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
 
   const networkName = updateNetworkName(goResponse[GO_RESULT_INDEX].network.name);
   const userAccount = goResponse[GO_RESULT_INDEX].currentAccount;
-  const goUserAccountName = await go(provider.lookupAddress(userAccount));
 
   const networkData: Partial<ChainData> = {
     provider,
     userAccount,
-    userAccountName: isGoSuccess(goUserAccountName) ? goUserAccountName[GO_RESULT_INDEX] : null,
+    userAccountName: await convertToEnsName(provider, userAccount),
     signer: provider.getSigner(),
     availableAccounts: goResponse[GO_RESULT_INDEX].allAccounts,
     networkName: networkName,
