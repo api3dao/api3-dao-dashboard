@@ -4,6 +4,18 @@ The implementation of the DAO dashboard.
 
 [![ContinuousBuild](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml)
 
+## Running dashboard on Mainnet in docker container
+
+The decentralized approach of being a DAO member is to run API3 dashboard on your local machine. For that you will just need `git` and `docker`:
+```
+git clone --depth=1 git@github.com:api3dao/api3-dao-dashboard.git
+cd api3-dao-dashboard
+docker build -t api3-dao-dashboard .
+docker run -d -p7770:80 --name api3-dao-dashboard api3-dao-dashboard
+```
+
+This will create a API3 dashboard running on http://localhost:7770/ where it is safe to connect your wallet
+
 ## Instructions for testing on Rinkeby
 
 1. Install Metamask (https://metamask.io/download)
