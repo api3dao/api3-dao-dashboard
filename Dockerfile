@@ -4,9 +4,8 @@ FROM node:lts-alpine as builder
 RUN apk add --no-cache git
 WORKDIR /usr/src/app
 ADD . .
-COPY src/contract-deployments/mainnet-dao.json ./src/contract-deployments/localhost-dao.example.json
 RUN yarn 
-RUN yarn tsc && yarn build
+RUN yarn build
 
 FROM nginx:alpine
 EXPOSE 80
