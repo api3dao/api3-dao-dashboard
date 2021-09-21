@@ -14,7 +14,7 @@ docker build -t api3-dao-dashboard .
 docker run -d -p7770:80 --name api3-dao-dashboard api3-dao-dashboard
 ```
 
-This will create a API3 dashboard running on http://localhost:7770/ where it is safe to connect your wallet
+This will create a API3 dashboard running on port 7770 of your localhost where it is safe to connect your wallet.
 
 ## Instructions for testing on Rinkeby
 
