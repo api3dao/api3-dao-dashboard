@@ -7,6 +7,7 @@ The implementation of the DAO dashboard.
 ## Running dashboard on Mainnet in docker container
 
 The decentralized approach of being a DAO member is to run API3 dashboard on your local machine. For that you will just need `git` and `docker`:
+
 ```
 git clone --depth=1 git@github.com:api3dao/api3-dao-dashboard.git
 cd api3-dao-dashboard
@@ -132,7 +133,14 @@ recommend using this unless necessary.
 
 After pushing to the production branch, verify the Fleek build (see below).
 Then, [point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
+
+<!-- markdown-link-check-disable -->
+<!-- The link below exists and works, but the github actions check says it does not" -->
+
 Then, with the Cloudflare account that manages `api3.org`, [update the page rule](https://support.cloudflare.com/hc/en-us/articles/200172286-Configuring-URL-forwarding-or-redirects-with-Cloudflare-Page-Rules) to direct `dao.api3.org` to the URL pointing to the new deployment through the `dweb.link` gateway (you can get this URL from the [ENS dashboard](https://app.ens.domains/name/api3.eth)).
+
+<!-- markdown-link-check-enable -->
+
 `https://dao.api3.org` and `api3.eth/` will start forwarding to the new deployment instantly, while `https://api3.eth.link/` will have to wait for the DNS information to propagate (may take up to 2 hours).
 
 ### Verifying the Fleek build
