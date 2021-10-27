@@ -18,30 +18,22 @@ docker run -d -p7770:80 --name api3-dao-dashboard api3-dao-dashboard
 
 This will create a API3 dashboard running on port 7770 of your localhost where it is safe to connect your wallet.
 
-## Instructions for testing on Rinkeby
-
-1. Install Metamask (https://metamask.io/download)
-2. Create a wallet, connect to the Rinkeby network
-3. Get some Rinkeby ETH from https://faucet.rinkeby.io/
-<!-- markdown-link-check-disable-next-line -->
-4. Go to the API3 token faucet at
-   https://rinkeby.etherscan.io/address/0xd8eC2c4158a0Cb65Dd42E2d1C1da8EA11975Ba22#writeContract
-5. Click “Connect to Web3”
-6. Click “4. withdraw” and Write. Make the transaction. Each time you do this you will receive 1000 API3.
-
 ## Development instructions
 
-To install dependencies, run `yarn`. This will also compile the DAO contracts and generate
-[TypeChain](https://github.com/ethereum-ts/TypeChain) wrappers to be used in the client application.
+### Running on mainnet or testnets
 
-1. To run the hardhat _(local blockchain simulator)_ use: `yarn eth:node`
-2. Run `yarn eth:prepare-dao-contracts-for-hardhat` and `yarn eth:deploy-dao-contracts-on-hardhat`. See
-   [contract deployments instructions](#contract-deployments) for more details
-3. In a separate terminal, start a development server with `yarn start`
-4. Run `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
+1. `yarn` - to install dependencies and generate TypeScript types
+2. `yarn start` - to start the application on localhost on port 3000
 
-_(If connecting to a public testnet like Ropsten or Rinkeby, you can simply run `yarn start` and switch your Metamask
-network)_
+### Running with hardhat
+
+1. `yarn` - to install dependencies and generate TypeScript types
+2. `yarn eth:node` - to start hardhat network
+3. `yarn eth:prepare-dao-contracts-for-hardhat` - to download the DAO contract sources locally. You only to run this
+   only when running for the first time.
+4. `yarn eth:deploy-dao-contracts-on-hardhat` - do deploy the contracts locally
+5. `yarn start` - to start the application on localhost on port 3000
+6. `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
 
 <!-- markdown-link-check-disable -->
 <!-- The "how to reset account link does work, but the github actions check says it returns 403" -->
@@ -52,53 +44,17 @@ network)_
 
 <!-- markdown-link-check-enable -->
 
-### Contract deployments
+### Supported networks
 
-Currently supported networks are `localhost` and `rinkeby` and `mainnet`.
-
-Unfortunately, aragon DAO contracts are not deployed easily. The easiest solution is to compile
-[using the script created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js).
-However, when deploying to localhost you can use the scripts which automate this for you.
-
-### Localhost deployment
-
-There are essentially two scripts, `eth:prepare-dao-contracts-for-hardhat` and `eth:deploy-dao-contracts-on-hardhat`.
-
-The former downloads the repository which contains the DAO contracts and installs all it's dependencies. You need to run
-this everytime the DAO contract dependencies change.
-
-The latter assumes the repository is already initialized and it compiles and deploys the contracts on already running
-hardhat node.
-
-You can see the implementation of those scripts if you prefer to deploy manually.
-
-#### Deployment file for localhost
-
-Deployment file for localhost deployment is ignored, however deployment addresses of all other networks is saved for
-checked in git and available for public. Because, we can't conditionally and synchronously import ES modules, we include
-`localhost-dao.example.json` as a placeholder for `localhost-dao.json` deployment output. We take care of creating this
-file in `yarn postinstall` script, so you don't need to create it manually.
-
-#### Deployments for other networks
-
-Deployments for other networks work similarly and there are similar command to `deploy:rpc` for other networks. However
-you might need to do additional steps and configuration before executing the deploy command. When adding deployment for
-other networks check out `contracts/network.json` on what code needs to be added for in the DAO dashboard.
-
-See: https://github.com/api3dao/api3-dao/issues/217 for more information.
-
-#### Testnet and mainnet deployments are not automatic
-
-It's important to mention that all deployed (hosted) applications will connect to the contracts specified in
-`contract-deployments/<chain-name>-dao.json`. This means, that you need to redeploy the contracts manually before
-hosting the testnet or mainnet networks.
+Currently, only `hardhat`, `rinkeby` and `mainnet` networks are supported. If you want to test the application on a
+different network, adapt the configuration to your needs.
 
 ## Hosting
 
 We use [Fleek](https://fleek.co/) to host the application on IPFS. The hosting workflow works like this:
 
-- Every PR against `main` branch will be deployed as github action and you can find the IPFS hash in the "fleek deploy
-  check" details.
+- Every PR against `main` branch will be deployed by github action (as preview deployment) and you can find the IPFS
+  hash in the "fleek deploy check" details in the PR status checks panel.
 - The current version of app in `main` branch will be deployed as staging on the following URL:
   https://api3-dao-dashboard-staging.on.fleek.co/. The app will be redeployed after every merged request automatically
 - Every push to `production` branch will trigger a production deploy. The app can be found on this URL:
@@ -117,7 +73,7 @@ branch:
 2. `git merge main`
 3. `git push`
 
-#### Updating the name servers
+### Updating the name servers
 
 The primary way to access the DAO dashboard is through the `api3.eth` ENS name, which points directly to the IPFS hash.
 Then, the user can either connect to mainnet on their Metamask and visit `api3.eth/` (the recommended way), or they can
