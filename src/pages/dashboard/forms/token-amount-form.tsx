@@ -6,6 +6,7 @@ import Button from '../../../components/button';
 import { formatApi3, goSync, parseApi3, messages } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
+import UnstakeHelperText from './unstake-helper-text';
 
 interface Props {
   title: string;
@@ -82,6 +83,7 @@ const TokenAmountForm = (props: Props) => {
           </Button>
         </div>
 
+        {action === 'Stake' && <UnstakeHelperText type="basic" />}
         {error && <p className={styles.tokenAmountFormError}>{error}</p>}
       </ModalFooter>
     </>

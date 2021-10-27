@@ -20,6 +20,7 @@ import {
 } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
+import UnstakeHelperText from './unstake-helper-text';
 
 interface Props {
   allowance: BigNumber;
@@ -145,6 +146,7 @@ const TokenDepositForm = (props: Props) => {
           </Button>
         </div>
 
+        <UnstakeHelperText type="basic" />
         {error && <p className={styles.tokenAmountFormError}>{error}</p>}
       </ModalFooter>
     </>
