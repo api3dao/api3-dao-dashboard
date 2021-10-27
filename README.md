@@ -6,7 +6,8 @@ The implementation of the DAO dashboard.
 
 ## Running dashboard on Mainnet in docker container
 
-The decentralized approach of being a DAO member is to run API3 dashboard on your local machine. For that you will just need `git` and `docker`:
+The decentralized approach of being a DAO member is to run API3 dashboard on your local machine. For that you will just
+need `git` and `docker`:
 
 ```
 git clone --depth=1 git@github.com:api3dao/api3-dao-dashboard.git
@@ -23,7 +24,8 @@ This will create a API3 dashboard running on port 7770 of your localhost where i
 2. Create a wallet, connect to the Rinkeby network
 3. Get some Rinkeby ETH from https://faucet.rinkeby.io/
 <!-- markdown-link-check-disable-next-line -->
-4. Go to the API3 token faucet at https://rinkeby.etherscan.io/address/0xd8eC2c4158a0Cb65Dd42E2d1C1da8EA11975Ba22#writeContract
+4. Go to the API3 token faucet at
+   https://rinkeby.etherscan.io/address/0xd8eC2c4158a0Cb65Dd42E2d1C1da8EA11975Ba22#writeContract
 5. Click “Connect to Web3”
 6. Click “4. withdraw” and Write. Make the transaction. Each time you do this you will receive 1000 API3.
 
@@ -33,8 +35,8 @@ To install dependencies, run `yarn`. This will also compile the DAO contracts an
 [TypeChain](https://github.com/ethereum-ts/TypeChain) wrappers to be used in the client application.
 
 1. To run the hardhat _(local blockchain simulator)_ use: `yarn eth:node`
-2. Run `yarn eth:prepare-dao-contracts-for-hardhat` and `yarn eth:deploy-dao-contracts-on-hardhat`. See [contract
-   deployments instructions](#contract-deployments) for more details
+2. Run `yarn eth:prepare-dao-contracts-for-hardhat` and `yarn eth:deploy-dao-contracts-on-hardhat`. See
+   [contract deployments instructions](#contract-deployments) for more details
 3. In a separate terminal, start a development server with `yarn start`
 4. Run `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
 
@@ -44,8 +46,9 @@ network)_
 <!-- markdown-link-check-disable -->
 <!-- The "how to reset account link does work, but the github actions check says it returns 403" -->
 
-> MetaMask doesn't handle localhost development ideally. Particularly, that the chain is reset after on every `yarn eth:node` command. In case you have problems making a transaction, try to [reset the
-> account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
+> MetaMask doesn't handle localhost development ideally. Particularly, that the chain is reset after on every
+> `yarn eth:node` command. In case you have problems making a transaction, try to
+> [reset the account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
 
 <!-- markdown-link-check-enable -->
 
@@ -53,9 +56,9 @@ network)_
 
 Currently supported networks are `localhost` and `rinkeby` and `mainnet`.
 
-Unfortunately, aragon DAO contracts are not deployed easily. The easiest solution is to compile [using the script
-created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js). However, when
-deploying to localhost you can use the scripts which automate this for you.
+Unfortunately, aragon DAO contracts are not deployed easily. The easiest solution is to compile
+[using the script created inside api3-dao](https://github.com/api3dao/api3-dao/blob/develop/packages/dao/scripts/deploy.js).
+However, when deploying to localhost you can use the scripts which automate this for you.
 
 ### Localhost deployment
 
@@ -101,9 +104,9 @@ We use [Fleek](https://fleek.co/) to host the application on IPFS. The hosting w
 - Every push to `production` branch will trigger a production deploy. The app can be found on this URL:
   https://api3-dao-dashboard.on.fleek.co/
 
-Apart from that, we are using [environment
-variables](https://create-react-app.dev/docs/adding-custom-environment-variables/), specifically `REACT_APP_NODE_ENV` to
-signal on which environment we are. Possible values `development`, `staging` and `production`.
+Apart from that, we are using
+[environment variables](https://create-react-app.dev/docs/adding-custom-environment-variables/), specifically
+`REACT_APP_NODE_ENV` to signal on which environment we are. Possible values `development`, `staging` and `production`.
 
 ### Hosting new version of production app
 
@@ -131,24 +134,29 @@ Unfortunately, this is reported to be down frequently, see
 Thus, we have also forwarded `https://dao.api3.org` to the IPFS hash (using the `dweb.link` gateway), but we do not
 recommend using this unless necessary.
 
-After pushing to the production branch, verify the Fleek build (see below).
-Then, [point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
+After pushing to the production branch, verify the Fleek build (see below). Then,
+[point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
 
 <!-- markdown-link-check-disable -->
 <!-- The link below exists and works, but the github actions check says it does not" -->
 
-Then, with the Cloudflare account that manages `api3.org`, [update the page rule](https://support.cloudflare.com/hc/en-us/articles/200172286-Configuring-URL-forwarding-or-redirects-with-Cloudflare-Page-Rules) to direct `dao.api3.org` to the URL pointing to the new deployment through the `dweb.link` gateway (you can get this URL from the [ENS dashboard](https://app.ens.domains/name/api3.eth)).
+Then, with the Cloudflare account that manages `api3.org`,
+[update the page rule](https://support.cloudflare.com/hc/en-us/articles/200172286-Configuring-URL-forwarding-or-redirects-with-Cloudflare-Page-Rules)
+to direct `dao.api3.org` to the URL pointing to the new deployment through the `dweb.link` gateway (you can get this URL
+from the [ENS dashboard](https://app.ens.domains/name/api3.eth)).
 
 <!-- markdown-link-check-enable -->
 
-`https://dao.api3.org` and `api3.eth/` will start forwarding to the new deployment instantly, while `https://api3.eth.link/` will have to wait for the DNS information to propagate (may take up to 2 hours).
+`https://dao.api3.org` and `api3.eth/` will start forwarding to the new deployment instantly, while
+`https://api3.eth.link/` will have to wait for the DNS information to propagate (may take up to 2 hours).
 
 ### Verifying the Fleek build
 
-We're using Fleek to build and deploy the dashboard.
-To avoid trusting Fleek to build and deploy the app correctly, one can also build it locally and compare its hash with the IPFS deployment.
+We're using Fleek to build and deploy the dashboard. To avoid trusting Fleek to build and deploy the app correctly, one
+can also build it locally and compare its hash with the IPFS deployment.
 
-To do so, first create a `docker-compose.yml` as explained [here](https://docs.fleek.co/hosting/site-deployment/#testing-deployments-locally) in this repo
+To do so, first create a `docker-compose.yml` as explained
+[here](https://docs.fleek.co/hosting/site-deployment/#testing-deployments-locally) in this repo
 
 ```yml
 version: '3.7'
@@ -172,13 +180,16 @@ services:
 
 and run `docker-compose run --rm app`, which will create a `./build` directory.
 
-Then, (after installing `ipfs`) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build (`sudo` because `build` will likely be owned by root).
-This should be the same as the IPFS hash as the one on the Fleek dashboard and what our ENS is pointing towards.
+Then, (after installing `ipfs`) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build (`sudo`
+because `build` will likely be owned by root). This should be the same as the IPFS hash as the one on the Fleek
+dashboard and what our ENS is pointing towards.
 
 ## Error Monitoring
 
-Please note that the API3 core team tracks application errors on test and production environments using [Sentry](https://sentry.io). This is solely used to fix errors and improve the user experience.
+Please note that the API3 core team tracks application errors on test and production environments using
+[Sentry](https://sentry.io). This is solely used to fix errors and improve the user experience.
 
 **NOTE: No identifying user information is collected**
 
-If hosting yourself, you can test Sentry by creating your own account and following the [React installation guide](https://docs.sentry.io/platforms/javascript/guides/react/)
+If hosting yourself, you can test Sentry by creating your own account and following the
+[React installation guide](https://docs.sentry.io/platforms/javascript/guides/react/)
