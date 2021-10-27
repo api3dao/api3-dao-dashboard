@@ -2,6 +2,7 @@ import { BigNumber } from 'ethers';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
 import Button from '../../../components/button';
 import styles from './forms.module.scss';
+import UnstakeHelperText from './unstake-helper-text';
 
 interface Props {
   title: string;
@@ -30,6 +31,7 @@ const ConfirmUnstakeForm = (props: Props) => {
             Initiate Unstaking
           </Button>
         </div>
+        <UnstakeHelperText type="extended" />
       </ModalFooter>
     </>
   );
