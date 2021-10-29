@@ -5,7 +5,7 @@ import Web3Modal from 'web3modal';
 import classNames from 'classnames';
 import { initialChainData, getNetworkData, useChainData, SettableChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
-import { go, GO_RESULT_INDEX, isGoSuccess } from '../../utils/generic';
+import { go } from '../../utils/generic';
 import Button from '../../components/button';
 import { Modal as GenericModal } from '../../components/modal';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown';
@@ -14,6 +14,7 @@ import globalStyles from '../../styles/global-styles.module.scss';
 import * as notifications from '../../components/notifications';
 import { images, messages } from '../../utils';
 import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscriptions } from '../../contracts';
+import { convertToEnsName } from '../../logic/proposals/encoding/ens-name';
 
 type Props = {
   dark?: boolean;
@@ -30,11 +31,9 @@ const ConnectedStatus = ({ dark, position }: Props) => {
   const onAccountChange = (account: string) => async () => {
     if (!provider) return;
 
-    const goUserAccountName = await go(provider.lookupAddress(userAccount));
-
     setChainData('Change user account', {
       userAccount: account,
-      userAccountName: isGoSuccess(goUserAccountName) ? goUserAccountName[GO_RESULT_INDEX] : null,
+      userAccountName: await convertToEnsName(provider, userAccount),
       signer: provider.getSigner(account),
     });
   };

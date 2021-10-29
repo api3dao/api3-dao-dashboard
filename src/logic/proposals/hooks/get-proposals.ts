@@ -3,12 +3,17 @@ import { ProposalType, VoterState } from '../../../chain-data';
 import { Convenience } from '../../../generated-contracts';
 import { Proposal } from '../../../chain-data';
 import { decodeEvmScript, decodeMetadata } from '../encoding';
-import { blockTimestampToDate, go, GO_RESULT_INDEX, isGoSuccess } from '../../../utils';
+import { blockTimestampToDate } from '../../../utils';
 import { EPOCH_LENGTH, HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
+import { convertToEnsName } from '../encoding/ens-name';
+import range from 'lodash/range';
 
 const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNumber();
 
+/**
+ * Helper function which loads all necessary proposal data for multiple proposals in parallel.
+ */
 export const getProposals = async (
   provider: providers.Web3Provider,
   convenience: Convenience,
@@ -34,20 +39,15 @@ export const getProposals = async (
   const staticVoteData = await convenience.getStaticVoteData(VOTING_APP_IDS[type], userAccount, voteIdsToLoad);
   const dynamicVoteData = await convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, voteIdsToLoad);
 
-  const proposals: Proposal[] = [];
-  for (let i = 0; i < validStartVoteProposals.length; i++) {
-    // NOTE: TS types for this are incorrect. The function returns null if the ENS record doesn't exist. Also, we wrap
-    // this in go, because we don't want the proposal fetching to throw in case of lookupAddress error (also ENS is not
-    // available on localhost).
-    const goLookupAddress = await go(provider.lookupAddress(startVotesInfo[i]!.creator));
+  const composeProposal = async (i: number): Promise<Proposal> => {
     const script = staticVoteData.script[i]!;
     const decodedEvmScript = await decodeEvmScript(provider, script, startVotesInfo[i]!.metadata);
 
-    proposals.push({
+    return {
       type,
       ...startVotesInfo[i]!,
       open: openVoteIdsStr.includes(startVotesInfo[i]!.voteId.toString()),
-      creatorName: isGoSuccess(goLookupAddress) ? goLookupAddress[GO_RESULT_INDEX] : null,
+      creatorName: await convertToEnsName(provider, startVotesInfo[i]!.creator),
 
       startDate: blockTimestampToDate(staticVoteData.startDate[i]!),
       supportRequired: toPercent(staticVoteData.supportRequired[i]!),
@@ -66,8 +66,8 @@ export const getProposals = async (
       nay: dynamicVoteData.nay[i]!,
 
       decodedEvmScript,
-    });
-  }
+    };
+  };
 
-  return proposals;
+  return Promise.all(range(validStartVoteProposals.length).map(composeProposal));
 };

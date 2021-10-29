@@ -1,7 +1,7 @@
 import { BigNumber, utils } from 'ethers';
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout';
@@ -14,7 +14,7 @@ import Tag from '../../../components/tag';
 import { TooltipChecklist } from '../../../components/tooltip';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import { getEtherscanAddressUrl, useApi3Voting } from '../../../contracts';
-import { decodeProposalTypeAndId } from '../../../logic/proposals/encoding';
+import { decodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useProposalsByIds } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
@@ -26,33 +26,59 @@ import NotFoundPage from '../../not-found';
 import { handleTransactionError, images, messages, useScrollToTop } from '../../../utils';
 import ExternalLink from '../../../components/external-link';
 
+interface ProposalDescriptionProps {
+  description: string;
+}
+
+const ProposalDescription = (props: ProposalDescriptionProps) => {
+  const { description } = props;
+
+  // The regex is intentionally simpler than usual URL checking regexes.
+  //
+  // The whole regex expression must be quoted, otherwise the delimeter (the URL) will be excluded.
+  const parts = description.split(/(https?:\/\/[^\s]+)/g);
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (i % 2 === 0) return part;
+        else
+          return (
+            <ExternalLink className={styles.link} href={part} key={part}>
+              {part}
+            </ExternalLink>
+          );
+      })}
+    </>
+  );
+};
+
 interface ProposalDetailsContentProps {
   type: ProposalType;
-  id: BigNumber;
+  voteId: BigNumber;
 }
 
 const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
-  const { type, id } = props;
+  const { type, voteId } = props;
   const { proposals, provider } = useChainData();
 
-  useProposalsByIds(type, id);
+  useProposalsByIds(type, voteId);
 
-  const proposal = proposalDetailsSelector(provider, proposals, type, id);
+  const proposal = proposalDetailsSelector(provider, proposals, type, voteId);
   return (
-    <BaseLayout subtitle={`Proposal ${id.toString()}`}>
+    <BaseLayout subtitle={`Proposal ${voteId.toString()}`}>
       <ProposalDetailsContent proposal={proposal} />
     </BaseLayout>
   );
 };
 
 interface RouterParameters {
-  typeAndId: string;
+  typeAndVoteId: string;
 }
 
 const ProposalDetailsPage = () => {
   useScrollToTop();
-  const { typeAndId } = useParams<RouterParameters>();
-  const decoded = decodeProposalTypeAndId(typeAndId);
+  const { typeAndVoteId } = useParams<RouterParameters>();
+  const decoded = decodeProposalTypeAndVoteId(typeAndVoteId);
 
   if (!decoded) return <NotFoundPage />;
   return <ProposalDetailsLayout {...decoded} />;
@@ -63,7 +89,6 @@ interface ProposalDetailsProps {
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
-  const history = useHistory();
   const { chainId } = useChainData();
   const { proposal } = props;
   const [voteModalOpen, setVoteModalOpen] = useState(false);
@@ -84,6 +109,10 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const canVoteData = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
   const urlTargetAddress = getEtherscanAddressUrl(chainId, targetAddress);
+  const backButton = {
+    text: `Back to ${proposal.open ? 'Governance' : 'History'}`,
+    url: proposal.open ? '/governance' : '/history',
+  };
 
   const canVoteChecklist = [
     {
@@ -105,10 +134,12 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   return (
     <div>
       <div className={styles.proposalDetailsSubheader}>
-        <Button onClick={() => history.goBack()} type="text" className={styles.backBtn}>
-          <img src={images.arrowLeft} alt="back" />
-          Back
-        </Button>
+        <Link to={backButton.url} data-cy="api3-logo">
+          <Button type="text" className={styles.backBtn}>
+            <img src={images.arrowLeft} alt="back" />
+            {backButton.text}
+          </Button>
+        </Link>
       </div>
 
       <div className={styles.proposalDetailsHeader}>
@@ -173,14 +204,14 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         content={
           <div className={styles.proposalDetailsSummary}>
             <pre className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor, styles.scrollX)}>
-              {proposal.metadata.description}
+              <ProposalDescription description={proposal.metadata.description} />
             </pre>
 
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Creator</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlCreator ? (
-                  <ExternalLink href={urlCreator}>
+                  <ExternalLink className={styles.link} href={urlCreator}>
                     {proposal.creatorName ? proposal.creatorName : proposal.creator}
                   </ExternalLink>
                 ) : (
@@ -192,7 +223,9 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={globalStyles.bold}>Target Contract Address</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlTargetAddress ? (
-                  <ExternalLink href={urlTargetAddress}>{targetAddress}</ExternalLink>
+                  <ExternalLink className={styles.link} href={urlTargetAddress}>
+                    {targetAddress}
+                  </ExternalLink>
                 ) : (
                   targetAddress
                 )}

@@ -12,6 +12,7 @@ import { messages } from '../../../../utils/messages';
 import globalStyles from '../../../../styles/global-styles.module.scss';
 import styles from './delegate.module.scss';
 import { handleTransactionError } from '../../../../utils';
+import { convertToAddressOrThrow } from '../../../../logic/proposals/encoding/ens-name';
 
 interface Props {
   onClose: () => void;
@@ -28,9 +29,9 @@ const DelegateVotesForm = (props: Props) => {
   const onDelegate = async () => {
     if (!api3Pool || !provider) return;
 
-    const delegationTargetResolvedName = await go(provider.resolveName(delegationAddress));
-    const delegationTarget = isGoSuccess(delegationTargetResolvedName)
-      ? delegationTargetResolvedName[GO_RESULT_INDEX]
+    const goDelegationTargetResolvedName = await go(convertToAddressOrThrow(provider, delegationAddress));
+    const delegationTarget = isGoSuccess(goDelegationTargetResolvedName)
+      ? goDelegationTargetResolvedName[GO_RESULT_INDEX]
       : delegationAddress;
 
     if (!utils.isAddress(delegationTarget) || delegationTarget === constants.AddressZero) {

@@ -8,8 +8,15 @@ module.exports = {
     {
       files: '*.ts',
       options: {
-        parser: 'typescript'
-      }
+        parser: 'typescript',
+      },
     },
-  ]
-}
+    {
+      files: '*.md',
+      options: {
+        parser: 'markdown',
+        proseWrap: 'always',
+      },
+    },
+  ],
+};

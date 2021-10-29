@@ -15,7 +15,7 @@
     "eth:prepare-dao-contracts-for-hardhat": "node dev-scripts/prepare-dao-contracts-for-hardhat.js",
     "eth:run-script": "cd hardhat && npx hardhat run",
     "fix-dev-issues": "node dev-scripts/copy-localhost-data.js && node dev-scripts/prepare-dao-contracts-for-typechain.js && node dev-scripts/scss-ts-hack.js",
-    "format": "prettier --write {src,dev-scripts}/**/*.{js,jsx,ts,tsx,json,css,scss,md}",
+    "format": "prettier --write ./**/*.{js,jsx,ts,tsx,json,css,scss,md}",
     "lint:fix": "eslint --fix --ext js,ts,tsx src dev-scripts",
     "lint": "eslint --ext js,ts,tsx src dev-scripts",
     "postinstall": "yarn fix-dev-issues",
@@ -35,7 +35,7 @@
     }
   },
   "lint-staged": {
-    "{src,hardhat,dev-scripts}/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+    "./**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
     ],
     "package.json": "sort-package-json"

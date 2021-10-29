@@ -1,42 +1,47 @@
+/**
+ * When a proposal is passed, it can be used to execute the EVM script that was specified when the proposal was created.
+ * The script can be a function call or multiple function calls. Proposals need to be executed by separate transaction
+ * and the executor will pay the gas cost for the EVM script that is run.
+ *
+ * For now, we only support a single function call in the EVM script. The reasons are that it's enough for the most
+ * cases, it's easier to encode it and we can create a simpler UI for end users.
+ *
+ * The EVM script is basically encoded "bytes" which contain the function(s) to be called and their parameters. We also
+ * support ENS names when specifying them as function parameters. The conversion needs to take place before the script
+ * is encoded. The encoding uses a predefined format (see the links below) and you can use "defaultAbiCoder" for
+ * encoding the bytes value.
+ *
+ * @see execute function implementation:
+ *      https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
+ * @see EVM script layout:
+ *      https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
+ */
 import { BigNumber, providers, utils } from 'ethers';
 import range from 'lodash/range';
-import { DecodedEvmScript, ProposalMetadata, ProposalType } from '../../chain-data';
-import { Api3Agent } from '../../contracts';
-import { errorFn, go, GoResult, goSync, GO_RESULT_INDEX, isGoSuccess, successFn } from '../../utils';
+import { DecodedEvmScript, ProposalMetadata } from '../../../chain-data';
+import { Api3Agent } from '../../../contracts';
+import { errorFn, go, GoResult, goSync, GO_RESULT_INDEX, isGoSuccess, successFn } from '../../../utils';
+import { convertToAddressOrThrow, tryConvertToEnsName } from './ens-name';
+import { NewProposalFormData } from './types';
 
-/**
- * NOTE: Aragon contracts are flexible but this makes it a bit harder to work with it's contracts. We have created a
- * simple encoding/decoding scheme for the API3 proposals. The implementation of these utilities is inspired by
- * https://github.com/bbenligiray/proposal-test.
- */
-export interface NewProposalFormData {
-  type: ProposalType;
-  title: string;
-  description: string;
-  targetAddress: string;
-  targetSignature: string;
-  targetValue: string;
-  parameters: string;
-}
-
-const METADATA_FORMAT_VERSION = '1';
-// https://stackoverflow.com/questions/492090/least-used-delimiter-character-in-normal-text-ascii-128/41555511#41555511
-export const METADATA_DELIMETER = String.fromCharCode(31);
-
-export const encodeMetadata = (formData: NewProposalFormData) =>
-  [METADATA_FORMAT_VERSION, formData.targetSignature, formData.title, formData.description].join(METADATA_DELIMETER);
-
-export const decodeMetadata = (metadata: string): ProposalMetadata | null => {
-  const tokens = metadata.split(METADATA_DELIMETER);
-  // NOTE: Our metadata encoding is just a convention and people might create proposals directly via the contract. They
-  // shouldn't do it and we will probably just ignore their proposal created this way.
-  if (tokens.length !== 4) return null;
-  return { version: tokens[0]!, targetSignature: tokens[1]!, title: tokens[2]!, description: tokens[3]! };
+// Similar to https://web3js.readthedocs.io/en/v1.2.0/web3-eth-abi.html#encodefunctionsignature
+export const encodeFunctionSignature = (functionFragment: string) => {
+  return utils.hexDataSlice(utils.keccak256(utils.toUtf8Bytes(functionFragment)), 0, 4);
 };
 
-function encodeFunctionSignature(functionFragment: any) {
-  return utils.hexDataSlice(utils.keccak256(utils.toUtf8Bytes(functionFragment)), 0, 4);
-}
+/**
+ * Converts BigNumber(s) decoded by ethers to strings for presentational purposes.
+ *
+ * @param value decoded by ethers (array or single value)
+ */
+export const stringifyBigNumbersRecursively = (value: unknown): any => {
+  if (BigNumber.isBigNumber(value)) return value.toString();
+  else if (Array.isArray(value)) return value.map(stringifyBigNumbersRecursively);
+  else return value;
+};
+
+// https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
+const encodedExecuteSignature = encodeFunctionSignature('execute(address,uint256,bytes)');
 
 type EncodedEvmScriptError = {
   field:
@@ -46,11 +51,21 @@ type EncodedEvmScriptError = {
 };
 type EncodedEvmScript = GoResult<string, EncodedEvmScriptError>;
 
+/**
+ * Validates the form data and encodes the EVM script.
+ *
+ * @see decodeEvmScript for details how the script is decoded
+ *
+ * @param provider a provider which is able to resolve ENS names
+ * @param formData the proposal data to be encoded
+ * @param api3Agent the addresses of the voting app agents
+ */
 export const encodeEvmScript = async (
   provider: providers.Provider,
   formData: NewProposalFormData,
   api3Agent: Api3Agent
 ): Promise<EncodedEvmScript> => {
+  // Ensure that the form parameters form a valid JSON array
   const goJsonParams = goSync(() => {
     const json = JSON.parse(formData.parameters);
     if (!Array.isArray(json)) throw new Error('Parameters must be an array');
@@ -61,12 +76,14 @@ export const encodeEvmScript = async (
   }
   const targetParameters = goJsonParams[GO_RESULT_INDEX];
 
+  // Target contract signature must be a valid solidity function signature
   const goTargetSignature = goSync(() => utils.FunctionFragment.from(formData.targetSignature));
   if (!isGoSuccess(goTargetSignature)) {
     return errorFn({ field: 'targetSignature', value: 'Please specify a valid contract signature' });
   }
   const targetSignature = formData.targetSignature;
 
+  // Extract the parameters that were passed and check if the number of arguments is same as in the function signature
   const goExtractParameters = goSync(() => {
     // Extract the parameter types from the target function signature
     const parameterTypes = targetSignature
@@ -86,13 +103,14 @@ export const encodeEvmScript = async (
   }
   const parameterTypes = goExtractParameters[GO_RESULT_INDEX];
 
+  // Resolve ENS names for parameter addresses and encode target parameters using defaultAbiCoder
   const goEncodeParameters = await go(async () => {
     const parameters = await Promise.all(
       range(parameterTypes.length).map(async (i) => {
         const param = targetParameters[i]!;
+        if (parameterTypes[i] !== 'address') return param;
 
-        if (parameterTypes[i] !== 'address' || utils.isAddress(param)) return param;
-        return provider.resolveName(param);
+        return convertToAddressOrThrow(provider, param);
       })
     );
     // Encode the parameters using the parameter types
@@ -109,11 +127,17 @@ export const encodeEvmScript = async (
   }
   const encodedTargetParameters = goEncodeParameters[GO_RESULT_INDEX];
 
-  const targetAddress = formData.targetAddress;
-  if (!utils.isAddress(targetAddress)) {
-    return errorFn({ field: 'targetAddress', value: 'Please specify a valid account address' });
+  // Ensure target address is a valid address or valid ENS name
+  const goTargetAddress = await go(() => convertToAddressOrThrow(provider, formData.targetAddress));
+  if (!isGoSuccess(goTargetAddress)) {
+    return errorFn({
+      field: 'targetAddress',
+      value: 'Please specify a valid account address',
+    });
   }
+  const targetAddress = goTargetAddress[GO_RESULT_INDEX];
 
+  // Ensure value is non negative ether amount
   const goValue = goSync(() => {
     const parsed = utils.parseEther(formData.targetValue);
     if (parsed.lt(0)) throw new Error();
@@ -124,9 +148,9 @@ export const encodeEvmScript = async (
   }
   const targetValue = goValue[GO_RESULT_INDEX];
 
+  // Build the EVM script according to the scheme
   const goBuildEvmScript = goSync(() => {
-    const encodedExecuteSignature = encodeFunctionSignature('execute(address,uint256,bytes)');
-    // Build the call data that the EVMScript will use
+    // Build the call data that the EVMScript will use (and remove 0x prefix)
     const callData =
       encodedExecuteSignature +
       utils.defaultAbiCoder
@@ -135,10 +159,14 @@ export const encodeEvmScript = async (
           [targetAddress, targetValue, encodeFunctionSignature(targetSignature) + encodedTargetParameters.substring(2)]
         )
         .substring(2);
-    // Calculate the length of the call data (in bytes) because that also goes in the EVMScript
+
+    // Calculate the length of the call data in bytes
     const callDataLengthInBytes = utils.hexZeroPad(BigNumber.from(callData.substring(2).length / 2).toHexString(), 4);
-    // See the EVMScript layout in
+
+    // See the EVMScript layout in:
     // https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
+    //
+    // Also, remove the 0x prefix in bytes
     const evmScript = [
       '0x00000001',
       api3Agent[formData.type].substring(2),
@@ -158,36 +186,51 @@ export const encodeEvmScript = async (
   return successFn(goBuildEvmScript[GO_RESULT_INDEX]);
 };
 
+/**
+ * Decodes the EVM script and returns the decoded fields. The decoding is basically formed by doing the inverse
+ * operations performed in when encoding the proposal.
+ *
+ * @see encodeEvmScript for details on how the script is encoded
+ *
+ * @param provider a provider which is able to lookup ENS addresses
+ * @param script the EVM script to be decoded
+ * @param metadata proposal metadata to help decode the EVM script
+ */
 export const decodeEvmScript = async (
   provider: providers.Provider,
   script: string,
   metadata: ProposalMetadata
 ): Promise<DecodedEvmScript | null> => {
   const goResponse = await go(async () => {
+    // See the EVMScript layout in:
+    // https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
     const evmScriptPayload = utils.hexDataSlice(script, 4);
     const callData = utils.hexDataSlice(evmScriptPayload, 24);
 
+    // Decode the parameters of the "execute" function:
     // https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
     const executionParameters = utils.defaultAbiCoder.decode(
       ['address', 'uint256', 'bytes'],
       utils.hexDataSlice(callData, 4)
     );
-    const targetContractAddress = executionParameters[0];
+    const targetContractAddress = await tryConvertToEnsName(provider, executionParameters[0]);
     const value = executionParameters[1];
 
-    // Decode the calldata
+    // Decode the calldata of the last target function (last argument of the "execute" function) which are the decoded
+    // EVM script parameters.
     const targetCallData = executionParameters[2];
     const parameterTypes = metadata.targetSignature
       .substring(metadata.targetSignature.indexOf('(') + 1, metadata.targetSignature.indexOf(')'))
       .split(',');
     const decodedParameters = utils.defaultAbiCoder.decode(parameterTypes, utils.hexDataSlice(targetCallData, 4));
+
+    // Try to lookup ENS names for the addresses in the target calldata (EVM script parameters)
     const parameters = await Promise.all(
       range(parameterTypes.length).map(async (i) => {
         const param = decodedParameters[i]!;
         if (parameterTypes[i] !== 'address') return param;
 
-        const ensName = await provider.lookupAddress(param);
-        return ensName || param;
+        return tryConvertToEnsName(provider, param);
       })
     );
 
@@ -200,25 +243,4 @@ export const decodeEvmScript = async (
 
   if (isGoSuccess(goResponse)) return goResponse[GO_RESULT_INDEX];
   else return null;
-};
-
-export const stringifyBigNumbersRecursively = (value: unknown): any => {
-  if (BigNumber.isBigNumber(value)) return value.toString();
-  else if (Array.isArray(value)) return value.map(stringifyBigNumbersRecursively);
-  else return value;
-};
-
-export const encodeProposalTypeAndId = (type: ProposalType, id: string) => `${type}-${id}`;
-
-const isValidProposalType = (type: string | undefined): type is ProposalType =>
-  type === 'primary' || type === 'secondary';
-
-export const decodeProposalTypeAndId = (typeAndId: string) => {
-  const [type, id, ...rest] = typeAndId.split('-');
-
-  if (rest.length !== 0) return null;
-  if (!isValidProposalType(type)) return null;
-  if (!isGoSuccess(goSync(() => BigNumber.from(id)))) return null;
-
-  return { type: type, id: BigNumber.from(id) };
 };
