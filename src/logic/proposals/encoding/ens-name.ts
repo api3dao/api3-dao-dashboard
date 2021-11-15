@@ -10,9 +10,8 @@ import { go, GO_RESULT_INDEX, isGoSuccess } from '../../../utils';
 export const convertToAddressOrThrow = async (provider: providers.Provider, ensNameOrAddress: string) => {
   if (utils.isAddress(ensNameOrAddress)) return ensNameOrAddress;
 
-  // NOTE: Ethers typings are wrong and "resolveName" returns "null" when the ENS name does not exist
   const resolved = await provider.resolveName(ensNameOrAddress);
-  if (!utils.isAddress(resolved)) throw Error(`ENS name "${ensNameOrAddress}" does not exist`);
+  if (!resolved || !utils.isAddress(resolved)) throw Error(`ENS name "${ensNameOrAddress}" does not exist`);
   return resolved;
 };
 
@@ -30,8 +29,7 @@ export const convertToEnsName = async (provider: providers.Provider, ensNameOrAd
   const goEnsName = await go(provider.lookupAddress(ensNameOrAddress));
   if (!isGoSuccess(goEnsName)) return null;
 
-  // NOTE: Ethers typings are wrong and "lookupAddress" returns "null" when the ENS name does not exist
-  return goEnsName[GO_RESULT_INDEX] as string | null;
+  return goEnsName[GO_RESULT_INDEX];
 };
 
 /**

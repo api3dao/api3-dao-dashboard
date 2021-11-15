@@ -16,7 +16,7 @@ export const goSync = <T>(fn: () => T): GoResult<T> => {
   try {
     return successFn(fn());
   } catch (err) {
-    return errorFn(err);
+    return errorFn(err as Error);
   }
 };
 
@@ -27,8 +27,8 @@ export const go = async <T>(fn: Promise<T> | (() => Promise<T>)): Promise<GoResu
       return fn().then(successFn).catch(errorFn);
     }
     return fn.then(successFn).catch(errorFn);
-  } catch (e) {
-    return [e, null];
+  } catch (err) {
+    return errorFn(err as Error);
   }
 };
 
