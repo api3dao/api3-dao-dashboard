@@ -18,6 +18,8 @@ docker run -d -p7770:80 --name api3-dao-dashboard api3-dao-dashboard
 
 This will create a API3 dashboard running on port 7770 of your localhost where it is safe to connect your wallet.
 
+Once you are finished interacting with the dashboard, the container can be stopped using `docker stop api3-dao-dashboard` and then removed using `docker rm api3-dao-dashboard`.
+
 ## Development instructions
 
 ### Running on mainnet or testnets
