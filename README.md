@@ -33,11 +33,14 @@ latter command to remove the container, add the `--rm` flag to the above `docker
 
 1. `yarn` - to install dependencies and generate TypeScript types
 2. `yarn eth:node` - to start hardhat network
-3. `yarn eth:prepare-dao-contracts-for-hardhat` - to download the DAO contract sources locally. You only to run this
+3. `yarn eth:prepare-dao-contracts-for-hardhat` - to download the DAO contract sources locally. You need to run this
    only when running for the first time.
-4. `yarn eth:deploy-dao-contracts-on-hardhat` - do deploy the contracts locally
-5. `yarn start` - to start the application on localhost on port 3000
-6. `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
+4. (Optional) Modify the pool contract `EPOCH_LENGTH` variable from `1 weeks` to `1 minute` to speed up testing. You can
+   find this constant inside `dao-contracts/packages/pool/contracts/StateUtils.sol`
+5. `yarn eth:deploy-dao-contracts-on-hardhat` - to deploy the contracts locally
+6. Copy the `.env.example` to `.env`. Make sure that `REACT_APP_NODE_ENV` is set to `development`
+7. `yarn start` - to start the application on localhost on port 3000
+8. `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
 
 <!-- markdown-link-check-disable -->
 <!-- The "how to reset account link does work, but the github actions check says it returns 403" -->
@@ -66,7 +69,7 @@ We use [Fleek](https://fleek.co/) to host the application on IPFS. The hosting w
 
 Apart from that, we are using
 [environment variables](https://create-react-app.dev/docs/adding-custom-environment-variables/), specifically
-`REACT_APP_NODE_ENV` to signal on which environment we are. Possible values `development`, `staging` and `production`.
+`REACT_APP_NODE_ENV` to specify the environment. Possible values `development`, `staging` and `production`.
 
 ### Hosting new version of production app
 
@@ -86,13 +89,10 @@ visit `https://api3.eth.link/`.
 <!-- markdown-link-check-disable -->
 <!-- The link below exists and works, but the github actions check says it does not" -->
 
-Unfortunately, this is reported to be down frequently, see
+Unfortunately, the `https://api3.eth.link/` is reported to be down frequently, see
 [this](https://blog.cloudflare.com/cloudflare-distributed-web-resolver/) for more information.
 
 <!-- markdown-link-check-enable -->
-
-Thus, we have also forwarded `https://dao.api3.org` to the IPFS hash (using the `dweb.link` gateway), but we do not
-recommend using this unless necessary.
 
 After pushing to the production branch, verify the Fleek build (see below). Then,
 [point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
@@ -102,13 +102,13 @@ After pushing to the production branch, verify the Fleek build (see below). Then
 
 Then, with the Cloudflare account that manages `api3.org`,
 [update the page rule](https://support.cloudflare.com/hc/en-us/articles/200172286-Configuring-URL-forwarding-or-redirects-with-Cloudflare-Page-Rules)
-to direct `dao.api3.org` to the URL pointing to the new deployment through the `dweb.link` gateway (you can get this URL
-from the [ENS dashboard](https://app.ens.domains/name/api3.eth)).
+to direct `https://api3.eth.link/#/` to the URL pointing to the new deployment through the `dweb.link` gateway (you can
+get this URL from the [ENS dashboard](https://app.ens.domains/name/api3.eth)).
 
 <!-- markdown-link-check-enable -->
 
-`https://dao.api3.org` and `api3.eth/` will start forwarding to the new deployment instantly, while
-`https://api3.eth.link/` will have to wait for the DNS information to propagate (may take up to 2 hours).
+`api3.eth/` will start forwarding to the new deployment instantly, while `https://api3.eth.link/` will have to wait for
+the DNS information to propagate (may take up to 2 hours).
 
 ### Verifying the Fleek build
 
