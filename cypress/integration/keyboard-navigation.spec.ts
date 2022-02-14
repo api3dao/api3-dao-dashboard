@@ -2,7 +2,7 @@
 
 import { closeErrorReportingNotice } from '../support/common';
 
-const pressTabAndAssertFocusOutline = (selector: () => Cypress.Chainable<unknown>) => {
+const pressTabAndAssertFocusOutline = (selector: () => Cypress.Chainable<any>) => {
   cy.tab();
   selector().should('have.css', 'box-shadow', 'rgb(255, 255, 255) 0px 0px 2.5px 1.5px');
 };
