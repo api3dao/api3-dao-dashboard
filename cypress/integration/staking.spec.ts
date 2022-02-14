@@ -77,3 +77,36 @@ describe('staking', () => {
     cy.dataCy('unstaked').should('have.text', '350.0');
   });
 });
+
+it('user can unstake & withdraw', () => {
+  cy.resetBlockchain().login();
+
+  // Approve and deposit
+  cy.findByText('+ Deposit').click();
+  cy.get('#modal').find('input').type('1000');
+  cy.findByText('Approve').click();
+  cy.findByText('Deposit and Stake').click();
+  cy.dataCy('balance').should('have.text', '1,000.0');
+
+  // Schedule unstake
+  cy.findByText('Initiate Unstake').click();
+  cy.get('#modal').find('input').type('550');
+  cy.findByText('Initiate Unstaking').click();
+  cy.findByText('Initiate Unstaking').click(); // confirm the unstake in the second modal
+  cy.findByText('Pending API3 tokens unstaking').should('exist');
+  // Assert balances
+  cy.dataCy('balance').should('have.text', '450.0');
+  cy.dataCy('staked').should('have.text', '450.0');
+  cy.dataCy('amount').should('have.text', '550.0');
+
+  // Travel to the future and unstake
+  cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // add 1 hour to be sure unstake time passed
+  cy.findAllByText('Unstake and Withdraw').first().click();
+  // Restore the original clock
+  cy.resetClock();
+
+  // The unstaked amount is now fully in users wallet.
+  // Only the staked amount is left in the pool
+  cy.dataCy('balance').should('have.text', '450.0');
+  cy.dataCy('staked').should('have.text', '450.0');
+});

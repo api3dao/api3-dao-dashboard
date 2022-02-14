@@ -60,7 +60,7 @@ export const pendingUnstakeSelector = (dashboardData: ConvenienceDashboardData |
   const tokensAtUnstakeTime = min(userUnstakeAmount, tokensAtScheduleTime);
 
   const { unlocked } = tokenBalancesSelector(dashboardData)!;
-  const canUnstakeAndWithdraw = canUnstake && unlocked.gte(tokensAtUnstakeTime);
+  const canUnstakeAndWithdraw = canUnstake && unlocked.gte(0);
 
   return { unstakeDate, tokensAtUnstakeTime, canUnstake, canUnstakeAndWithdraw };
 };
