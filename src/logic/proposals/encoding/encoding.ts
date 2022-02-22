@@ -16,7 +16,7 @@
  * @see EVM script layout:
  *      https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
  */
-import { go, GoResult, goSync } from '@api3/promise-utils';
+import { go, GoResult, goSync, fail, success } from '@api3/promise-utils';
 import { BigNumber, providers, utils } from 'ethers';
 import range from 'lodash/range';
 import { DecodedEvmScript, ProposalMetadata } from '../../../chain-data';
@@ -43,13 +43,16 @@ export const stringifyBigNumbersRecursively = (value: unknown): any => {
 // https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
 const encodedExecuteSignature = encodeFunctionSignature('execute(address,uint256,bytes)');
 
-// TODO: Fix me
-type EncodedEvmScriptError = {
-  field:
-    | keyof Pick<NewProposalFormData, 'parameters' | 'targetSignature' | 'targetValue' | 'targetAddress'>
-    | 'generic';
-  value: string;
-};
+class EncodedEvmScriptError extends Error {
+  constructor(
+    public field:
+      | keyof Pick<NewProposalFormData, 'parameters' | 'targetSignature' | 'targetValue' | 'targetAddress'>
+      | 'generic',
+    public value: string
+  ) {
+    super(`Invalid field value. Details: field=${field}, value=${value}`);
+  }
+}
 
 /**
  * Validates the form data and encodes the EVM script.
@@ -72,14 +75,14 @@ export const encodeEvmScript = async (
     return json as string[];
   });
   if (!goJsonParams.success) {
-    return errorFn({ field: 'parameters', value: 'Make sure parameters is a valid JSON array' });
+    return fail(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
   }
   const targetParameters = goJsonParams.data;
 
   // Target contract signature must be a valid solidity function signature
   const goTargetSignature = goSync(() => utils.FunctionFragment.from(formData.targetSignature));
   if (!goTargetSignature.success) {
-    return errorFn({ field: 'targetSignature', value: 'Please specify a valid contract signature' });
+    return fail(new EncodedEvmScriptError('targetSignature', 'Please specify a valid contract signature'));
   }
   const targetSignature = formData.targetSignature;
 
@@ -99,7 +102,7 @@ export const encodeEvmScript = async (
     return parameterTypes;
   });
   if (!goExtractParameters.success) {
-    return errorFn({ field: 'parameters', value: 'Please specify the correct number of function arguments' });
+    return fail(new EncodedEvmScriptError('parameters', 'Please specify the correct number of function arguments'));
   }
   const parameterTypes = goExtractParameters.data;
 
@@ -117,23 +120,22 @@ export const encodeEvmScript = async (
     return utils.defaultAbiCoder.encode(parameterTypes, parameters);
   });
   if (!goEncodeParameters.success) {
-    return errorFn({
-      field: 'parameters',
-      // NOTE: Unfortunately, when checking for valid contract signature ethers will check only the formatting issues
-      // and will not catch for example a typo "unit256" instead of "uint256". We will catch this here when we try to
-      // encode the parameter types and values.
-      value: 'Ensure parameters match target contract signature',
-    });
+    return fail(
+      new EncodedEvmScriptError(
+        'parameters',
+        // NOTE: Unfortunately, when checking for valid contract signature ethers will check only the formatting issues
+        // and will not catch for example a typo "unit256" instead of "uint256". We will catch this here when we try to
+        // encode the parameter types and values.
+        'Ensure parameters match target contract signature'
+      )
+    );
   }
   const encodedTargetParameters = goEncodeParameters.data;
 
   // Ensure target address is a valid address or valid ENS name
   const goTargetAddress = await go(() => convertToAddressOrThrow(provider, formData.targetAddress));
   if (!goTargetAddress.success) {
-    return errorFn({
-      field: 'targetAddress',
-      value: 'Please specify a valid account address',
-    });
+    return fail(new EncodedEvmScriptError('targetAddress', 'Please specify a valid account address'));
   }
   const targetAddress = goTargetAddress.data;
 
@@ -144,7 +146,7 @@ export const encodeEvmScript = async (
     return parsed;
   });
   if (!goValue.success) {
-    return errorFn({ field: 'targetValue', value: 'Please enter valid non-negative ETH amount' });
+    return fail(new EncodedEvmScriptError('targetValue', 'Please enter valid non-negative ETH amount'));
   }
   const targetValue = goValue.data;
 
@@ -177,13 +179,15 @@ export const encodeEvmScript = async (
     return evmScript;
   });
   if (!goBuildEvmScript.success) {
-    return errorFn({
-      field: 'generic',
-      value: 'Unable to encode the EVM script. Please check that all form fields are correct',
-    });
+    return fail(
+      new EncodedEvmScriptError(
+        'generic',
+        'Unable to encode the EVM script. Please check that all form fields are correct'
+      )
+    );
   }
 
-  return successFn(goBuildEvmScript.data);
+  return success(goBuildEvmScript.data);
 };
 
 /**
