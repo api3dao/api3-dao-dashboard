@@ -1,13 +1,13 @@
 import { useCallback, useEffect } from 'react';
 import { ProposalType, updateImmutablyCurried, useChainData, VoterState } from '../../../chain-data';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
-import { isGoSuccess, go, GO_RESULT_INDEX, GO_ERROR_INDEX } from '../../../utils';
 import { getProposals } from './get-proposals';
 import { BigNumber } from 'ethers';
 import { notifications } from '../../../components/notifications';
 import { messages } from '../../../utils/messages';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 import { isZeroAddress } from '../../../contracts';
+import { go } from '@api3/promise-utils';
 
 interface DynamicVotingData {
   id: BigNumber;
@@ -38,15 +38,15 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
     const startVoteFilter = votingApp.filters.StartVote(id, null, null);
 
     const goStartVoteFilters = await go(votingApp.queryFilter(startVoteFilter));
-    if (!isGoSuccess(goStartVoteFilters)) {
+    if (!goStartVoteFilters.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
-        errorOrMessage: goStartVoteFilters[GO_ERROR_INDEX],
+        errorOrMessage: goStartVoteFilters.error,
       });
     }
 
     // There will only be at most one StartEvent response for the given filter
-    const goStartVote = goStartVoteFilters[GO_RESULT_INDEX][0];
+    const goStartVote = goStartVoteFilters.data[0];
     if (!goStartVote) {
       return notifications.error({
         message: messages.PROPOSAL_NOT_FOUND,
@@ -63,22 +63,22 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
     };
 
     const goOpenVoteIds = await go(convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
-    if (!isGoSuccess(goOpenVoteIds)) {
+    if (!goOpenVoteIds.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
-        errorOrMessage: goOpenVoteIds[GO_ERROR_INDEX],
+        errorOrMessage: goOpenVoteIds.error,
       });
     }
-    const openVoteIds = goOpenVoteIds[GO_RESULT_INDEX];
+    const openVoteIds = goOpenVoteIds.data;
 
     const goLoadProposal = await go(getProposals(provider, convenience, userAccount, [startVote], openVoteIds, type));
-    if (!isGoSuccess(goLoadProposal)) {
+    if (!goLoadProposal.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
-        errorOrMessage: goLoadProposal[GO_ERROR_INDEX],
+        errorOrMessage: goLoadProposal.error,
       });
     }
-    const loadedProposals = goLoadProposal[GO_RESULT_INDEX];
+    const loadedProposals = goLoadProposal.data;
 
     setChainData(
       'Load proposals by ids',
@@ -98,13 +98,13 @@ export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
     if (!convenience) return;
 
     const goVotingData = await go(convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, [id]));
-    if (!isGoSuccess(goVotingData)) {
+    if (!goVotingData.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
-        errorOrMessage: goVotingData[GO_ERROR_INDEX],
+        errorOrMessage: goVotingData.error,
       });
     }
-    const rawVotingData = goVotingData[GO_RESULT_INDEX];
+    const rawVotingData = goVotingData.data;
     const votingData: DynamicVotingData = {
       id: id,
       // The rawVotingData is an object with fields that are single element arrays

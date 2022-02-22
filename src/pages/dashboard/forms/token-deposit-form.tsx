@@ -6,21 +6,11 @@ import { ModalFooter, ModalHeader } from '../../../components/modal';
 import Input from '../../../components/input';
 import Button from '../../../components/button';
 import { notifications } from '../../../components/notifications';
-import {
-  go,
-  goSync,
-  isUserRejection,
-  formatApi3,
-  parseApi3,
-  messages,
-  isGoSuccess,
-  GO_RESULT_INDEX,
-  GO_ERROR_INDEX,
-  UNKNOWN_NUMBER,
-} from '../../../utils';
+import { isUserRejection, formatApi3, parseApi3, messages, UNKNOWN_NUMBER } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
 import UnstakeHelperText from './unstake-helper-text';
+import { go, goSync } from '@api3/promise-utils';
 
 interface Props {
   allowance: BigNumber;
@@ -47,11 +37,11 @@ const TokenDepositForm = (props: Props) => {
     setError('');
 
     const goResponse = await go(api3Token.approve(api3Pool.address, MAX_ALLOWANCE));
-    if (isGoSuccess(goResponse)) {
-      const tx = goResponse[GO_RESULT_INDEX];
+    if (goResponse.success) {
+      const tx = goResponse.data;
       setChainData('Save deposit approval', { transactions: [...transactions, { type: 'approve-deposit', tx }] });
     } else {
-      if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
+      if (isUserRejection(goResponse.error)) {
         return notifications.info({ message: messages.TX_APPROVAL_REJECTED });
       }
       return setError(messages.TX_APPROVAL_ERROR);
@@ -75,11 +65,11 @@ const TokenDepositForm = (props: Props) => {
 
     const methodName = type === 'deposit-only' ? 'depositRegular' : 'depositAndStake';
     const goResponse = await go(api3Pool[methodName](parsedInput));
-    if (isGoSuccess(goResponse)) {
-      const tx = goResponse[GO_RESULT_INDEX];
+    if (goResponse.success) {
+      const tx = goResponse.data;
       setChainData(`Save "${type}" transaction`, { transactions: [...transactions, { type, tx }] });
     } else {
-      if (isUserRejection(goResponse[GO_ERROR_INDEX])) {
+      if (isUserRejection(goResponse.error)) {
         return notifications.info({ message: messages.TX_DEPOSIT_REJECTED });
       }
       return setError(messages.TX_DEPOSIT_ERROR);

@@ -1,5 +1,5 @@
+import { go } from '@api3/promise-utils';
 import { providers, utils } from 'ethers';
-import { go, GO_RESULT_INDEX, isGoSuccess } from '../../../utils';
 
 /**
  * Converts the value to ethereum address. Throws error if the value is not an address nor ENS name.
@@ -27,9 +27,9 @@ export const convertToEnsName = async (provider: providers.Provider, ensNameOrAd
   if (!utils.isAddress(ensNameOrAddress)) return null;
 
   const goEnsName = await go(provider.lookupAddress(ensNameOrAddress));
-  if (!isGoSuccess(goEnsName)) return null;
+  if (!goEnsName.success) return null;
 
-  return goEnsName[GO_RESULT_INDEX];
+  return goEnsName.data;
 };
 
 /**

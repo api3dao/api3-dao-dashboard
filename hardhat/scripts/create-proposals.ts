@@ -48,7 +48,7 @@ async function main() {
     try {
       const goEncodeEvmScript = encodeEvmScript(ethers.getDefaultProvider(), formData, api3Agent);
       if (!isGoSuccess(goEncodeEvmScript)) throw new Error();
-      await votingApp.newVote(goEncodeEvmScript[GO_RESULT_INDEX], encodeMetadata(formData), true, true);
+      await votingApp.newVote(goEncodeEvmScript.data, encodeMetadata(formData), true, true);
     } catch (e) {
       console.error(`Failed to create proposal for account ${account.address}. (${e.message})`);
     }

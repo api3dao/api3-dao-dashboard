@@ -1,5 +1,5 @@
+import { go } from '@api3/promise-utils';
 import { notifications } from '../components/notifications';
-import { go, GO_ERROR_INDEX, GO_RESULT_INDEX, isGoSuccess } from './generic';
 import { messages } from './messages';
 
 type ErrorWithCode = Error & { code?: number };
@@ -11,14 +11,14 @@ export const isUserRejection = (err: ErrorWithCode) => err.code === 4001 || err.
 export const handleTransactionError = async <T>(transaction: Promise<T>) => {
   const goTransaction = await go(transaction);
 
-  if (!isGoSuccess(goTransaction)) {
-    if (isUserRejection(goTransaction[GO_ERROR_INDEX])) {
+  if (!goTransaction.success) {
+    if (isUserRejection(goTransaction.error)) {
       notifications.info({ message: messages.TX_GENERIC_REJECTED });
       return;
     }
-    notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: goTransaction[GO_ERROR_INDEX] });
+    notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: goTransaction.error });
     return;
   }
 
-  return goTransaction[GO_RESULT_INDEX];
+  return goTransaction.data;
 };
