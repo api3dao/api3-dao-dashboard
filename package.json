@@ -16,17 +16,17 @@
     "eth:run-script": "cd hardhat && npx hardhat run",
     "fix-dev-issues": "node dev-scripts/copy-localhost-data.js && node dev-scripts/prepare-dao-contracts-for-typechain.js && node dev-scripts/scss-ts-hack.js",
     "format": "prettier --write ./**/*.{js,jsx,ts,tsx,json,css,scss,md}",
-    "lint:fix": "eslint --fix --ext js,ts,tsx src dev-scripts",
-    "lint": "eslint --ext js,ts,tsx src dev-scripts",
     "postinstall": "yarn fix-dev-issues",
-    "postuninstall": "yarn fix-dev-issues",
+    "lint": "eslint --ext js,ts,tsx src dev-scripts",
+    "lint:fix": "eslint --fix --ext js,ts,tsx src dev-scripts",
     "prepare": "husky install",
     "send-to-account": "cd hardhat && npx hardhat send-to-account --address",
     "start": "BROWSER=none react-scripts start",
-    "test:watch": "react-scripts test",
     "test": "react-scripts test --watchAll=false",
+    "test:watch": "react-scripts test",
+    "tsc": "tsc --project tsconfig.json",
     "tsc:watch": "tsc --project tsconfig.json --watch",
-    "tsc": "tsc --project tsconfig.json"
+    "postuninstall": "yarn fix-dev-issues"
   },
   "husky": {
     "hooks": {
@@ -73,6 +73,7 @@
     "web3modal": "^1.9.5"
   },
   "devDependencies": {
+    "@api3/promise-utils": "file:../promise-utils",
     "@aragon/os": "^4.4.0",
     "@nomiclabs/hardhat-ethers": "^2.0.4",
     "@openzeppelin/contracts": "4.2.0",

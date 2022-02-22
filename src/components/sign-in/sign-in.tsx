@@ -5,7 +5,6 @@ import Web3Modal from 'web3modal';
 import classNames from 'classnames';
 import { initialChainData, getNetworkData, useChainData, SettableChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
-import { go } from '../../utils/generic';
 import Button from '../../components/button';
 import { Modal as GenericModal } from '../../components/modal';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown';
@@ -15,6 +14,7 @@ import * as notifications from '../../components/notifications';
 import { images, messages } from '../../utils';
 import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscriptions } from '../../contracts';
 import { convertToEnsName } from '../../logic/proposals/encoding/ens-name';
+import { go } from '@api3/promise-utils';
 
 type Props = {
   dark?: boolean;

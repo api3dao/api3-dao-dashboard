@@ -3,8 +3,8 @@ import { ethers, providers } from 'ethers';
 import { notifications } from '../components/notifications';
 import { getDaoAddresses, getEtherscanTransactionUrl, updateNetworkName } from '../contracts';
 import { ChainData, initialChainData } from './state';
-import { go, GO_RESULT_INDEX, isGoSuccess } from '../utils';
 import { convertToEnsName } from '../logic/proposals/encoding/ens-name';
+import { go } from '@api3/promise-utils';
 
 export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => void) => {
   // NOTE: This needs to be written in a function like this, to make sure `produce` doesn't return anything.
@@ -31,19 +31,19 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
     };
   });
   // Happens when the user locks his metamask account
-  if (!isGoSuccess(goResponse)) return initialChainData;
+  if (!goResponse.success) return initialChainData;
 
-  const networkName = updateNetworkName(goResponse[GO_RESULT_INDEX].network.name);
-  const userAccount = goResponse[GO_RESULT_INDEX].currentAccount;
+  const networkName = updateNetworkName(goResponse.data.network.name);
+  const userAccount = goResponse.data.currentAccount;
 
   const networkData: Partial<ChainData> = {
     provider,
     userAccount,
     userAccountName: await convertToEnsName(provider, userAccount),
     signer: provider.getSigner(),
-    availableAccounts: goResponse[GO_RESULT_INDEX].allAccounts,
+    availableAccounts: goResponse.data.allAccounts,
     networkName: networkName,
-    chainId: goResponse[GO_RESULT_INDEX].network.chainId,
+    chainId: goResponse.data.network.chainId,
     contracts: getDaoAddresses(networkName),
   };
 

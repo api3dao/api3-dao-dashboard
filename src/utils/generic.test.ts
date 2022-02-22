@@ -1,11 +1,10 @@
+import { go, goSync } from '@api3/promise-utils';
 import {
   filterAlphanumerical,
   getDays,
   getHours,
   getMinutes,
   getSeconds,
-  go,
-  goSync,
   insertInBetween,
   isErrorReportingAllowed,
 } from './generic';
