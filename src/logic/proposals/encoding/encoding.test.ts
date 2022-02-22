@@ -28,9 +28,9 @@ const mockedProvider: providers.JsonRpcProvider = {
 } as any;
 
 test('correct encoding', async () => {
-  const encoded = await encodeEvmScript(mockedProvider, newFormData, api3Agent);
-  expect(encoded.error).toBeNull();
-  expect(encoded.data).toBeDefined();
+  const [err, data] = await encodeEvmScript(mockedProvider, newFormData, api3Agent);
+  expect(err).toBeNull();
+  expect(data).toBeDefined();
 });
 
 describe('encoding incorrect params', () => {
@@ -39,8 +39,8 @@ describe('encoding incorrect params', () => {
       data.parameters = JSON.stringify([123, 'arg1']); // they are in the wrong order
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
-    expect(encoded.error).toEqual({
+    const [error] = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
+    expect(error).toEqual({
       field: 'parameters',
       value: 'Ensure parameters match target contract signature',
     });
@@ -51,8 +51,8 @@ describe('encoding incorrect params', () => {
       data.parameters = JSON.stringify({ param: 'value' });
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
-    expect(encoded.error).toEqual({
+    const [error] = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
+    expect(error).toEqual({
       field: 'parameters',
       value: 'Make sure parameters is a valid JSON array',
     });
@@ -63,8 +63,8 @@ describe('encoding incorrect params', () => {
       data.parameters = '';
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
-    expect(encoded.error).toEqual({
+    const [error] = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
+    expect(error).toEqual({
       field: 'parameters',
       value: 'Make sure parameters is a valid JSON array',
     });
@@ -75,8 +75,8 @@ describe('encoding incorrect params', () => {
       data.parameters = JSON.stringify(['arg1']);
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
-    expect(encoded.error).toEqual({
+    const [error] = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
+    expect(error).toEqual({
       field: 'parameters',
       value: 'Please specify the correct number of function arguments',
     });
@@ -89,8 +89,8 @@ describe('encoding invalid target signature', () => {
       data.targetSignature = 'functionName(string,unit256)';
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
-    expect(encoded.error).toEqual({
+    const [error] = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
+    expect(error).toEqual({
       field: 'parameters',
       value: 'Ensure parameters match target contract signature',
     });
@@ -101,8 +101,8 @@ describe('encoding invalid target signature', () => {
       data.targetSignature = '"functionName(string,unit256)"';
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
-    expect(encoded.error).toEqual({
+    const [error] = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
+    expect(error).toEqual({
       field: 'targetSignature',
       value: 'Please specify a valid contract signature',
     });
@@ -115,8 +115,8 @@ describe('address validation', () => {
       data.targetAddress = 'surely-not-an-address';
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
-    expect(encoded.error).toEqual({
+    const [error] = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
+    expect(error).toEqual({
       field: 'targetAddress',
       value: 'Please specify a valid account address',
     });
@@ -127,8 +127,8 @@ describe('address validation', () => {
       data.targetAddress = '';
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
-    expect(encoded.error).toEqual({
+    const [error] = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
+    expect(error).toEqual({
       field: 'targetAddress',
       value: 'Please specify a valid account address',
     });
@@ -139,8 +139,8 @@ describe('address validation', () => {
       data.targetAddress = constants.AddressZero;
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
-    expect(encoded.error).toBe(null);
+    const [error] = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
+    expect(error).toBe(null);
   });
 });
 
@@ -149,18 +149,18 @@ it('checks for positive ETH amount', async () => {
     data.targetValue = '-0.12345';
   });
 
-  const encoded = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
-  expect(encoded.error).toEqual({
+  const [error] = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
+  expect(error).toEqual({
     field: 'targetValue',
     value: 'Please enter valid non-negative ETH amount',
   });
 });
 
 test('decoding', async () => {
-  const encoded = await encodeEvmScript(mockedProvider, newFormData, api3Agent);
+  const [, data] = await encodeEvmScript(mockedProvider, newFormData, api3Agent);
   const metadata = decodeMetadata(encodeMetadata(newFormData))!;
 
-  expect(await decodeEvmScript(mockedProvider, encoded.data!, metadata)).toEqual({
+  expect(await decodeEvmScript(mockedProvider, data!, metadata)).toEqual({
     targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
     value: utils.parseEther('12'),
     parameters: ['arg1', '123'],
@@ -173,10 +173,10 @@ describe('ENS name support', () => {
       data.targetAddress = MOCKED_ENS_ENTRY.ensName;
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
+    const [, data] = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
     const metadata = decodeMetadata(encodeMetadata(formDataWithAddress))!;
 
-    expect(await decodeEvmScript(mockedProvider, encoded.data!, metadata)).toEqual({
+    expect(await decodeEvmScript(mockedProvider, data!, metadata)).toEqual({
       targetAddress: MOCKED_ENS_ENTRY.ensName,
       value: utils.parseEther('12'),
       parameters: ['arg1', '123'],
@@ -189,10 +189,10 @@ describe('ENS name support', () => {
       data.parameters = JSON.stringify([MOCKED_ENS_ENTRY.ensName]);
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
+    const [, data] = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
     const metadata = decodeMetadata(encodeMetadata(formDataWithAddress))!;
 
-    expect(await decodeEvmScript(mockedProvider, encoded.data!, metadata)).toEqual({
+    expect(await decodeEvmScript(mockedProvider, data!, metadata)).toEqual({
       targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
       value: utils.parseEther('12'),
       parameters: [MOCKED_ENS_ENTRY.ensName],
@@ -206,10 +206,10 @@ describe('ENS name support', () => {
       data.parameters = JSON.stringify([address]);
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
+    const [, data] = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
     const metadata = decodeMetadata(encodeMetadata(formDataWithAddress))!;
 
-    expect(await decodeEvmScript(mockedProvider, encoded.data!, metadata)).toEqual({
+    expect(await decodeEvmScript(mockedProvider, data!, metadata)).toEqual({
       targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
       value: utils.parseEther('12'),
       parameters: [address],
@@ -222,8 +222,8 @@ describe('ENS name support', () => {
       data.parameters = JSON.stringify(['non-existent.eth']);
     });
 
-    const encoded = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
-    expect(encoded.error).toEqual({
+    const [error] = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
+    expect(error).toEqual({
       field: 'parameters',
       value: 'Ensure parameters match target contract signature',
     });
