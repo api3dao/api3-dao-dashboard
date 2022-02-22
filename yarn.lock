@@ -10,6 +10,9 @@
     "@jridgewell/sourcemap-codec" "^1.4.9"
     "@jridgewell/trace-mapping" "^0.2.7"
 
+"@api3/promise-utils@file:../promise-utils":
+  version "0.1.0"
+
 "@aragon/os@^4.4.0":
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@aragon/os/-/os-4.4.0.tgz#af3e80b11f71209f86dba8b2b3f37a4b025aff7b"

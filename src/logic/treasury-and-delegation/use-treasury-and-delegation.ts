@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
 import { Treasury, useChainData } from '../../chain-data';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../contracts/hooks';
-import { isGoSuccess, blockTimestampToDate, go, GO_RESULT_INDEX, assertGoSuccess, GO_ERROR_INDEX } from '../../utils';
+import { blockTimestampToDate } from '../../utils';
 import { isZeroAddress } from '../../contracts';
 import * as notifications from '../../components/notifications';
 import { messages } from '../../utils/messages';
 import { convertToEnsName } from '../proposals/encoding/ens-name';
+import { go, assertGoSuccess } from '@api3/promise-utils';
 
 export const useTreasuryAndDelegation = () => {
   const { setChainData, userAccount, proposals, provider } = useChainData();
@@ -19,7 +20,7 @@ export const useTreasuryAndDelegation = () => {
     const loadTreasuryAndDelegation = async () => {
       const goResponse = await go(convenience.getTreasuryAndUserDelegationData(userAccount));
       assertGoSuccess(goResponse);
-      const data = goResponse[GO_RESULT_INDEX];
+      const data = goResponse.data;
 
       const treasuries: Treasury[] = [];
       for (let i = 0; i < data.names.length; i++) {
@@ -51,14 +52,14 @@ export const useTreasuryAndDelegation = () => {
     };
 
     const goResponse = await go(loadTreasuryAndDelegation);
-    if (!isGoSuccess(goResponse)) {
+    if (!goResponse.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_TREASURY_AND_DELEGATION,
-        errorOrMessage: goResponse[GO_ERROR_INDEX],
+        errorOrMessage: goResponse.error,
       });
     }
 
-    const treasuryAndDelegation = goResponse[GO_RESULT_INDEX];
+    const treasuryAndDelegation = goResponse.data;
 
     setChainData('Load delegation and treasury', (state) => ({
       ...state,

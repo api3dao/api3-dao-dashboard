@@ -8,7 +8,7 @@ import { Tooltip } from '../../../components/tooltip';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
 import { encodeEvmScript, NewProposalFormData } from '../../../logic/proposals/encoding';
 import { Api3Agent } from '../../../contracts';
-import { filterAlphanumerical, GO_ERROR_INDEX, images, isGoSuccess } from '../../../utils';
+import { filterAlphanumerical, images } from '../../../utils';
 import styles from './new-proposal-form.module.scss';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import classNames from 'classnames';
@@ -75,9 +75,10 @@ const NewProposalForm = (props: Props) => {
       foundErrors = true;
     }
 
+    // TODO: Fix me
     const goEncodeEvmScript = await encodeEvmScript(provider, formData, api3Agent);
-    if (!isGoSuccess(goEncodeEvmScript)) {
-      const { field, value } = goEncodeEvmScript[GO_ERROR_INDEX];
+    if (!goEncodeEvmScript.success) {
+      const { field, value } = goEncodeEvmScript.error;
       newErrors[field] = value;
       foundErrors = true;
     }

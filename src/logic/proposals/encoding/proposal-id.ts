@@ -1,6 +1,6 @@
+import { goSync } from '@api3/promise-utils';
 import { BigNumber } from 'ethers';
 import { ProposalType } from '../../../chain-data';
-import { goSync, isGoSuccess } from '../../../utils';
 
 /**
  * Proposal is uniquely referenced by id, which is a combination of proposal type and its vote id. This function
@@ -25,7 +25,7 @@ export const decodeProposalTypeAndVoteId = (typeAndVoteId: string) => {
 
   if (rest.length !== 0) return null;
   if (!isValidProposalType(type)) return null;
-  if (!isGoSuccess(goSync(() => BigNumber.from(voteId)))) return null;
+  if (goSync(() => BigNumber.from(voteId)).success === false) return null;
 
   return { type: type, voteId: BigNumber.from(voteId) };
 };

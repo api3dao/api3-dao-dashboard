@@ -2,12 +2,13 @@ import { useCallback, useEffect } from 'react';
 import { updateImmutablyCurried, useChainData } from '../../../chain-data';
 import { Api3Voting } from '../../../generated-contracts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
-import { isGoSuccess, go, GO_RESULT_INDEX, GO_ERROR_INDEX, messages } from '../../../utils';
+import { messages } from '../../../utils';
 import keyBy from 'lodash/keyBy';
 import { getProposals } from './get-proposals';
 import { BigNumber } from 'ethers';
 import { notifications } from '../../../components/notifications';
 import { VOTING_APP_IDS } from './commons';
+import { go } from '@api3/promise-utils';
 
 const fetchStartVoteEventsForHistoryProposals = async (votingApp: Api3Voting, openVoteIds: BigNumber[]) => {
   const startVoteFilter = votingApp.filters.StartVote(null, null, null);
@@ -61,13 +62,13 @@ const useLoadHistoryProposals = () => {
         secondary: keyBy(secondaryProposals, 'voteId'),
       };
     });
-    if (!isGoSuccess(goResponse)) {
+    if (!goResponse.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
-        errorOrMessage: goResponse[GO_ERROR_INDEX],
+        errorOrMessage: goResponse.error,
       });
     }
-    const proposals = goResponse[GO_RESULT_INDEX];
+    const proposals = goResponse.data;
 
     setChainData(
       'Load history proposals',
@@ -141,10 +142,10 @@ const useReloadHistoryProposals = () => {
     };
 
     const goResponse = await go(loadProposals());
-    if (!isGoSuccess(goResponse)) {
+    if (!goResponse.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
-        errorOrMessage: goResponse[GO_ERROR_INDEX],
+        errorOrMessage: goResponse.error,
       });
     }
   }, [api3Voting, convenience, userAccount, setChainData]);

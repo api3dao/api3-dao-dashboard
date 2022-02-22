@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
 import Input from '../../../components/input';
 import Button from '../../../components/button';
-import { formatApi3, goSync, parseApi3, messages } from '../../../utils';
+import { formatApi3, parseApi3, messages } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
 import UnstakeHelperText from './unstake-helper-text';
+import { goSync } from '@api3/promise-utils';
 
 interface Props {
   title: string;
