@@ -29,7 +29,7 @@ const TokenDepositForm = (props: Props) => {
   const [error, setError] = useState('');
 
   // The input field should catch any bad inputs, but just in case, try parse and display any errors
-  const [parseErr, parsedInput] = goSync(() => parseApi3(inputValue));
+  const goParseApi3 = goSync(() => parseApi3(inputValue));
 
   const handleApprove = async () => {
     if (!api3Pool || !api3Token) return;
@@ -51,9 +51,11 @@ const TokenDepositForm = (props: Props) => {
   const handleDeposit = (type: 'deposit-only' | 'deposit-and-stake') => async () => {
     if (!api3Pool || !userAccount) return;
 
-    if (parseErr || !parsedInput) {
+    if (!goParseApi3.success) {
       return setError(messages.VALIDATION_INPUT_PARSE);
     }
+    const parsedInput = goParseApi3.data;
+
     if (parsedInput.lte(0)) {
       return setError(messages.VALIDATION_INPUT_ZERO);
     }
@@ -84,8 +86,8 @@ const TokenDepositForm = (props: Props) => {
     return null;
   }
 
-  const approvalRequired = !parseErr && !!parsedInput && parsedInput.gt(allowance);
-  const canDeposit = !parseErr && !!parsedInput && !approvalRequired && parsedInput.gt(0);
+  const approvalRequired = goParseApi3.success && !!goParseApi3.data && goParseApi3.data.gt(allowance);
+  const canDeposit = goParseApi3.success && !!goParseApi3.data && !approvalRequired && goParseApi3.data.gt(0);
 
   return (
     <>

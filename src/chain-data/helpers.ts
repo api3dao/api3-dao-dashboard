@@ -73,45 +73,45 @@ export const displayPendingTransaction = async (
     { autoClose: false, closeOnClick: false }
   );
 
-  const [err, receipt] = await go(transaction.wait());
-
+  const goRes = await go(transaction.wait());
   if (infoToastId) notifications.close(infoToastId);
 
   // NOTE: ethers.js adds various additional fields to Error, so it's easier to type as 'any'
   // https://docs.ethers.io/v5/api/providers/types/#providers-TransactionResponse
-  const ethersError = err as any;
-  if (ethersError) {
+  if (!goRes.success) {
+    const ethersError = goRes.error as any;
     // Transactions can be "replaced" or "cancelled". We don't need to worry about "repriced"
     // See: https://blog.ricmoo.com/highlights-ethers-js-may-2021-2826e858277d
-    if (ethersError.code === ethers.errors.TRANSACTION_REPLACED) {
-      // The user "cancelled" the transaction. i.e. it was resent with the same
-      // nonce, but higher gas price, value as 0 and data as 0x
-      if (ethersError.cancelled) {
-        return notifications.success({ message: 'Transaction cancelled successfully' });
-      }
+    if (ethersError.code !== ethers.errors.TRANSACTION_REPLACED) return;
 
-      // The user "sped up" their transaction by resending it with a higher gas price
-      if (ethersError.replacement && ethersError.replacement.hash) {
-        const replacementTxUrl = getEtherscanTransactionUrl(ethersError.replacement);
-        return notifications.success({ url: replacementTxUrl, message: messages.success });
-      }
-
-      // A receipt with status 0 means the transaction failed
-      if (ethersError.receipt?.status === 0) {
-        return notifications.error({ url, message: messages.error, errorOrMessage: messages.error });
-      }
+    // The user "cancelled" the transaction. i.e. it was resent with the same
+    // nonce, but higher gas price, value as 0 and data as 0x
+    if (ethersError.cancelled) {
+      return notifications.success({ message: 'Transaction cancelled successfully' });
     }
-  }
 
-  if (receipt) {
-    // A receipt with status 0 means the transaction failed and 1 indicates success
-    if (receipt.status === 0) {
+    // The user "sped up" their transaction by resending it with a higher gas price
+    if (ethersError.replacement && ethersError.replacement.hash) {
+      const replacementTxUrl = getEtherscanTransactionUrl(ethersError.replacement);
+      return notifications.success({ url: replacementTxUrl, message: messages.success });
+    }
+
+    // A receipt with status 0 means the transaction failed
+    if (ethersError.receipt?.status === 0) {
       return notifications.error({ url, message: messages.error, errorOrMessage: messages.error });
     }
 
-    if (receipt.status === 1) {
-      return notifications.success({ url, message: messages.success });
-    }
+    return;
+  }
+
+  const receipt = goRes.data;
+  // A receipt with status 0 means the transaction failed and 1 indicates success
+  if (receipt.status === 0) {
+    return notifications.error({ url, message: messages.error, errorOrMessage: messages.error });
+  }
+
+  if (receipt.status === 1) {
+    return notifications.success({ url, message: messages.success });
   }
 };
 
