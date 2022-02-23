@@ -139,30 +139,31 @@ export const connectWallet = (setChainData: SettableChainData['setChainData']) =
   });
 
   // Enable session (connection), this triggers QR Code modal in case of wallet connect
-  const [connectionError, web3ModalProvider] = await go(web3Modal.connect());
+  const goConnect = await go(web3Modal.connect());
   // Connection error will often be caused by user declining to connect (e.g. close the modal) so we don't show any
   // toast message to the user.
   // NOTE: In case users closes the wallet connect modal there is no connection error, but the provider will be null
-  if (connectionError || !web3ModalProvider) return;
+  if (!goConnect.success) return;
+  const web3ModalProvider = goConnect.data;
 
   // Wrapped in callback to prevent synchronous error, because `request` property is not guaranteed to exist
-  const [requestAccountsError] = await go(() => {
+  const goRequestAccounts = await go(() => {
     if (web3ModalProvider.isMetaMask) return web3ModalProvider.request({ method: 'eth_requestAccounts' });
     return Promise.resolve();
   });
   // For example, user wants to connect via metamask, but declines connecting his account. We don't want to show toast
   // message in this case either.
-  if (requestAccountsError) return;
+  if (!goRequestAccounts.success) return;
 
   // https://github.com/ethers-io/ethers.js/discussions/1480
   // NOTE: You can access the underlying 'web3ModalProvider' using the 'provider' property
   const externalProvider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
-  const [networkDataError, data] = await go(getNetworkData(externalProvider));
-  if (networkDataError) {
-    return notifications.error({ message: messages.FAILED_TO_LOAD_CHAIN_DATA, errorOrMessage: networkDataError });
+  const goNetworkData = await go(getNetworkData(externalProvider));
+  if (!goNetworkData.success) {
+    return notifications.error({ message: messages.FAILED_TO_LOAD_CHAIN_DATA, errorOrMessage: goNetworkData.error });
   }
 
-  setChainData('User connected', { ...data });
+  setChainData('User connected', { ...goNetworkData.data });
 };
 
 const SignIn = ({ dark, position }: Props) => {

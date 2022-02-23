@@ -23,14 +23,16 @@ const TokenAmountForm = (props: Props) => {
   const { action, onConfirm, maxValue, onChange, inputValue } = props;
 
   // The input field should catch any bad inputs, but just in case, try parse and display any errors
-  const [parseErr, parsedInput] = goSync(() => parseApi3(inputValue));
+  const goParseApi3 = goSync(() => parseApi3(inputValue));
 
   const handleAction = async () => {
     setError('');
 
-    if (parseErr || !parsedInput) {
+    if (!goParseApi3.success) {
       return setError(messages.VALIDATION_INPUT_PARSE);
     }
+    const parsedInput = goParseApi3.data;
+
     if (parsedInput.lte(0)) {
       return setError(messages.VALIDATION_INPUT_ZERO);
     }
@@ -79,7 +81,7 @@ const TokenAmountForm = (props: Props) => {
 
       <ModalFooter>
         <div className={styles.tokenAmountFormActions}>
-          <Button type="secondary" onClick={handleAction} disabled={!!parseErr}>
+          <Button type="secondary" onClick={handleAction} disabled={!goParseApi3.success}>
             {action}
           </Button>
         </div>
