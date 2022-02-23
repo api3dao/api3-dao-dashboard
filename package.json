@@ -37,8 +37,7 @@
   "lint-staged": {
     "./**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
-    ],
-    "package.json": "sort-package-json"
+    ]
   },
   "browserslist": {
     "production": [
@@ -108,7 +107,6 @@
     "prettier": "^2.5.1",
     "react-scripts": "4.0.3",
     "replace-in-file": "^6.3.2",
-    "sort-package-json": "^1.54.0",
     "start-server-and-test": "^1.14.0",
     "ts-node": "^10.4.0",
     "typechain": "^6.0.2",
