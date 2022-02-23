@@ -1,5 +1,6 @@
 import { assertGoError, assertGoSuccess } from '@api3/promise-utils';
 import { constants, utils, providers, BigNumber } from 'ethers';
+import { EncodedEvmScriptError } from '.';
 import { updateImmutably } from '../../../chain-data';
 import { decodeEvmScript, encodeEvmScript, encodeFunctionSignature, stringifyBigNumbersRecursively } from './encoding';
 import { decodeMetadata, encodeMetadata } from './metadata';
@@ -44,10 +45,9 @@ describe('encoding incorrect params', () => {
     const goRes = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
 
     assertGoError(goRes);
-    expect(goRes.error).toEqual({
-      field: 'parameters',
-      value: 'Ensure parameters match target contract signature',
-    });
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('parameters', 'Ensure parameters match target contract signature')
+    );
   });
 
   it('wrong shape', async () => {
@@ -58,10 +58,7 @@ describe('encoding incorrect params', () => {
     const goRes = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
 
     assertGoError(goRes);
-    expect(goRes.error).toEqual({
-      field: 'parameters',
-      value: 'Make sure parameters is a valid JSON array',
-    });
+    expect(goRes.error).toEqual(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
   });
 
   it('empty parameters', async () => {
@@ -72,10 +69,7 @@ describe('encoding incorrect params', () => {
     const goRes = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
 
     assertGoError(goRes);
-    expect(goRes.error).toEqual({
-      field: 'parameters',
-      value: 'Make sure parameters is a valid JSON array',
-    });
+    expect(goRes.error).toEqual(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
   });
 
   it('wrong number of parameters', async () => {
@@ -86,10 +80,9 @@ describe('encoding incorrect params', () => {
     const goRes = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
 
     assertGoError(goRes);
-    expect(goRes.error).toEqual({
-      field: 'parameters',
-      value: 'Please specify the correct number of function arguments',
-    });
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('parameters', 'Please specify the correct number of function arguments')
+    );
   });
 });
 
@@ -102,10 +95,9 @@ describe('encoding invalid target signature', () => {
     const goRes = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
 
     assertGoError(goRes);
-    expect(goRes.error).toEqual({
-      field: 'parameters',
-      value: 'Ensure parameters match target contract signature',
-    });
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('parameters', 'Ensure parameters match target contract signature')
+    );
   });
 
   it('detects when the function is unnecessarily quoted', async () => {
@@ -116,10 +108,9 @@ describe('encoding invalid target signature', () => {
     const goRes = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
 
     assertGoError(goRes);
-    expect(goRes.error).toEqual({
-      field: 'targetSignature',
-      value: 'Please specify a valid contract signature',
-    });
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('targetSignature', 'Please specify a valid contract signature')
+    );
   });
 });
 
@@ -132,10 +123,7 @@ describe('address validation', () => {
     const goRes = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
 
     assertGoError(goRes);
-    expect(goRes.error).toEqual({
-      field: 'targetAddress',
-      value: 'Please specify a valid account address',
-    });
+    expect(goRes.error).toEqual(new EncodedEvmScriptError('targetAddress', 'Please specify a valid account address'));
   });
 
   it('empty address', async () => {
@@ -146,10 +134,7 @@ describe('address validation', () => {
     const goRes = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
 
     assertGoError(goRes);
-    expect(goRes.error).toEqual({
-      field: 'targetAddress',
-      value: 'Please specify a valid account address',
-    });
+    expect(goRes.error).toEqual(new EncodedEvmScriptError('targetAddress', 'Please specify a valid account address'));
   });
 
   it('zero address is fine', async () => {
@@ -159,8 +144,7 @@ describe('address validation', () => {
 
     const goRes = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
 
-    assertGoError(goRes);
-    expect(goRes.error).toBe(null);
+    assertGoSuccess(goRes);
   });
 });
 
@@ -172,10 +156,7 @@ it('checks for positive ETH amount', async () => {
   const goRes = await encodeEvmScript(mockedProvider, invalidData, api3Agent);
 
   assertGoError(goRes);
-  expect(goRes.error).toEqual({
-    field: 'targetValue',
-    value: 'Please enter valid non-negative ETH amount',
-  });
+  expect(goRes.error).toEqual(new EncodedEvmScriptError('targetValue', 'Please enter valid non-negative ETH amount'));
 });
 
 test('decoding', async () => {
@@ -250,10 +231,9 @@ describe('ENS name support', () => {
 
     const goRes = await encodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
     assertGoError(goRes);
-    expect(goRes.error).toEqual({
-      field: 'parameters',
-      value: 'Ensure parameters match target contract signature',
-    });
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('parameters', 'Ensure parameters match target contract signature')
+    );
   });
 });
 

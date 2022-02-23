@@ -43,7 +43,7 @@ export const stringifyBigNumbersRecursively = (value: unknown): any => {
 // https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
 const encodedExecuteSignature = encodeFunctionSignature('execute(address,uint256,bytes)');
 
-class EncodedEvmScriptError extends Error {
+export class EncodedEvmScriptError extends Error {
   constructor(
     public field:
       | keyof Pick<NewProposalFormData, 'parameters' | 'targetSignature' | 'targetValue' | 'targetAddress'>
