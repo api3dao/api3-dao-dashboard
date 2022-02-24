@@ -16,17 +16,17 @@
     "eth:run-script": "cd hardhat && npx hardhat run",
     "fix-dev-issues": "node dev-scripts/copy-localhost-data.js && node dev-scripts/prepare-dao-contracts-for-typechain.js && node dev-scripts/scss-ts-hack.js",
     "format": "prettier --write ./**/*.{js,jsx,ts,tsx,json,css,scss,md}",
-    "postinstall": "yarn fix-dev-issues",
-    "lint": "eslint --ext js,ts,tsx src dev-scripts",
     "lint:fix": "eslint --fix --ext js,ts,tsx src dev-scripts",
+    "lint": "eslint --ext js,ts,tsx src dev-scripts",
+    "postinstall": "yarn fix-dev-issues",
+    "postuninstall": "yarn fix-dev-issues",
     "prepare": "husky install",
     "send-to-account": "cd hardhat && npx hardhat send-to-account --address",
     "start": "BROWSER=none react-scripts start",
-    "test": "react-scripts test --watchAll=false",
     "test:watch": "react-scripts test",
-    "tsc": "tsc --project tsconfig.json",
+    "test": "react-scripts test --watchAll=false",
     "tsc:watch": "tsc --project tsconfig.json --watch",
-    "postuninstall": "yarn fix-dev-issues"
+    "tsc": "tsc --project tsconfig.json"
   },
   "husky": {
     "hooks": {
