@@ -10,8 +10,12 @@
     "@jridgewell/sourcemap-codec" "^1.4.9"
     "@jridgewell/trace-mapping" "^0.2.7"
 
-"@api3/promise-utils@file:../promise-utils":
+"@api3/promise-utils@^0.1.0":
   version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@api3/promise-utils/-/promise-utils-0.1.0.tgz#bc0678a5d19b32274192656dc787a131e22d82dc"
+  integrity sha512-hel2yq9p9d5Yki9nf+9S7XNDzko+FVzYUps5JGwl6XvV5eBaEUDkEeTG5ulyUORzJdplfT+KyE1zxwIMG/ZfhQ==
+  dependencies:
+    "@lifeomic/attempt" "^3.0.2"
 
 "@aragon/os@^4.4.0":
   version "4.4.0"
@@ -2962,6 +2966,11 @@
   dependencies:
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.9"
+
+"@lifeomic/attempt@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@lifeomic/attempt/-/attempt-3.0.2.tgz#6920d6fa76e911c2d27e5a7c9a5f42aff2292733"
+  integrity sha512-JHRfM7fUit2UroC0xRnuzMGegSTbfvz6X/1PgcIvahXC+A7UsKa8XfR1YrBsvoSu669iMTeNkDb26pSkGOzXKw==
 
 "@metamask/safe-event-emitter@^2.0.0":
   version "2.0.0"
