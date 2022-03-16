@@ -7,7 +7,7 @@ import { TooltipChecklist } from '../../components/tooltip';
 import Treasury from '../proposal-commons/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useActiveProposals, useLoadGenesisEpoch } from '../../logic/proposals/hooks';
-import { encodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
+import { goEncodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList from '../proposal-commons/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
@@ -89,18 +89,13 @@ const Proposals = () => {
   const onCreateProposal = async (formData: NewProposalFormData) => {
     if (!api3Token || !api3Voting || !api3Agent || !provider) return null;
 
-    const goEncodeEvmScript = await encodeEvmScript(provider, formData, api3Agent);
+    const goRes = await goEncodeEvmScript(provider, formData, api3Agent);
     // Should not happen, because user will not be allowed to press the create proposal button if there are errors
-    if (!goEncodeEvmScript.success) return null;
+    if (!goRes.success) return null;
 
     const tx = await handleTransactionError(
       // NOTE: For some reason only this 'ugly' version is available on the contract
-      api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](
-        goEncodeEvmScript.data,
-        encodeMetadata(formData),
-        true,
-        true
-      )
+      api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](goRes.data, encodeMetadata(formData), true, true)
     );
     if (tx) {
       setChainData('Save new vote transaction', { transactions: [...transactions, { type: 'new-vote', tx }] });

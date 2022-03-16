@@ -63,7 +63,7 @@ export class EncodedEvmScriptError extends Error {
  * @param formData the proposal data to be encoded
  * @param api3Agent the addresses of the voting app agents
  */
-export const encodeEvmScript = async (
+export const goEncodeEvmScript = async (
   provider: providers.Provider,
   formData: NewProposalFormData,
   api3Agent: Api3Agent
@@ -194,7 +194,7 @@ export const encodeEvmScript = async (
  * Decodes the EVM script and returns the decoded fields. The decoding is basically formed by doing the inverse
  * operations performed in when encoding the proposal.
  *
- * @see encodeEvmScript for details on how the script is encoded
+ * @see goEncodeEvmScript for details on how the script is encoded
  *
  * @param provider a provider which is able to lookup ENS addresses
  * @param script the EVM script to be decoded
