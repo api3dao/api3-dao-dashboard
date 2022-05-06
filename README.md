@@ -35,8 +35,8 @@ latter command to remove the container, add the `--rm` flag to the above `docker
 2. `yarn eth:node` - to start hardhat network
 3. `yarn eth:prepare-dao-contracts-for-hardhat` - to download the DAO contract sources locally. You need to run this
    only when running for the first time.
-4. (Optional) Modify the pool contract `EPOCH_LENGTH` variable from `1 weeks` to `1 minute` to speed up testing. You can
-   find this constant inside `dao-contracts/packages/pool/contracts/StateUtils.sol`
+4. (Optional) Modify the pool contract `EPOCH_LENGTH` variable from `1 weeks` to `1 minutes` to speed up testing. You
+   can find this constant inside `dao-contracts/packages/pool/contracts/StateUtils.sol`
 5. `yarn eth:deploy-dao-contracts-on-hardhat` - to deploy the contracts locally
 6. Copy the `.env.example` to `.env`. Make sure that `REACT_APP_NODE_ENV` is set to `development`
 7. `yarn start` - to start the application on localhost on port 3000
