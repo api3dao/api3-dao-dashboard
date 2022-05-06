@@ -25,6 +25,7 @@ yarn-error.log*
 
 # IDEs
 .vscode
+.idea
 
 # DAO contract deployments - Will be regenerated after every localhost deploy.
 # We still want deployments to mainnet/testnet checked in git.
