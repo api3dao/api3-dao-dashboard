@@ -42,7 +42,7 @@ interface Props {
 const NewProposalForm = (props: Props) => {
   const { onConfirm, api3Agent, provider } = props;
 
-  const [type, setType] = useState<ProposalType>('primary');
+  const [type, setType] = useState<ProposalType>('secondary');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [targetAddress, setTargetAddress] = useState('');
