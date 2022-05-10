@@ -7,8 +7,8 @@ it('new proposal form validation', () => {
   cy.findAllByText('Governance').filter(':visible').click();
   cy.findByText('+ New Proposal').click();
 
-  // Let's create a secondary proposal (ensures a bug from some time ago is fixed)
-  cy.findByLabelText('Secondary').click().should('be.checked');
+  // Let's create a secondary proposal
+  cy.findByLabelText('Secondary').should('be.checked');
 
   cy.findByText('Create').click();
   cy.findByText('Title must have at least one alphanumeric character').should('exist');
@@ -56,5 +56,5 @@ it('new proposal form validation', () => {
   cy.resetClock();
   cy.findAllByText('Governance').filter(':visible').click();
   cy.findByText('some title', { timeout: 20 * 1000 }).should('exist');
-  cy.dataCy('proposal-item').should('have.length', 1);
+  cy.dataCy('proposal-item').should('have.length', 1).should('have.text', 'Secondary');
 });
