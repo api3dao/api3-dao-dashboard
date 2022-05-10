@@ -56,5 +56,5 @@ it('new proposal form validation', () => {
   cy.resetClock();
   cy.findAllByText('Governance').filter(':visible').click();
   cy.findByText('some title', { timeout: 20 * 1000 }).should('exist');
-  cy.dataCy('proposal-item').should('have.length', 1).should('have.text', 'Secondary');
+  cy.dataCy('proposal-item').should('have.length', 1).and('contain.text', 'secondary');
 });
