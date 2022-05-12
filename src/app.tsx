@@ -14,6 +14,7 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
+import Claims from './pages/claims';
 import './styles/variables.module.scss';
 
 const ErrorBoundary: FallbackRender = (props) => {
@@ -59,6 +60,12 @@ const AppContent = () => {
           <Route path="/vesting" exact>
             <Vesting />
           </Route>
+          {/* TODO: DAO-151 Remove condition */}
+          {process.env.NODE_ENV === 'development' && (
+            <Route path="/claims" exact>
+              <Claims />
+            </Route>
+          )}
           <Route path="/" exact>
             <Dashboard />
           </Route>

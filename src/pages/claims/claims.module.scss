@@ -1,0 +1,90 @@
+@import '../../styles/variables.module.scss';
+
+.claimsList {
+  padding: 0;
+  list-style: none;
+}
+
+.claimItem {
+  border-top: 1px solid $black-line-color;
+  padding-top: $space-md;
+  padding-bottom: $space-lg;
+
+  @media (min-width: $min-md) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.claimItemMain {
+  max-width: calc(100% - 330px);
+  font-weight: 500;
+  padding-right: $space-xxxl;
+  box-sizing: border-box;
+
+  @media (max-width: $max-xl) {
+    max-width: calc(100% - 280px);
+    padding-right: $space-xl;
+  }
+
+  @media (max-width: $max-md) {
+    max-width: none;
+    padding-right: 0;
+  }
+}
+
+.claimItemTitle {
+  display: block;
+  margin-bottom: $space-md;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  color: $primary-color;
+  text-decoration: none;
+}
+
+.claimItemInfo {
+  display: flex;
+  align-items: center;
+  font-size: $text-xsmall;
+  line-height: $lh-xsmall;
+
+  & > * {
+    margin-right: $space-xxl;
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+}
+
+.claimItemStatus {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  a {
+    display: none;
+    @media (min-width: $min-md) {
+      display: flex;
+      align-items: center;
+      margin-left: $space-md;
+    }
+  }
+}
+
+.noClaims {
+  color: $tertiary-color;
+  text-align: center;
+  margin: 15vh $space-md;
+  transform: translateY(-50%);
+  font-size: $text-small;
+
+  & > * {
+    margin-right: $space-xs;
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+}

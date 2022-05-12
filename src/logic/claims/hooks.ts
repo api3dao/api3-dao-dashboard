@@ -1,0 +1,121 @@
+import { updateImmutablyCurried, useChainData } from '../../chain-data';
+import { BigNumber } from 'ethers';
+import { useCallback, useMemo, useState } from 'react';
+import { blockTimestampToDate, messages } from '../../utils';
+import { Claim, ClaimStatus, ClaimStatuses } from '../../chain-data';
+import { go } from '@api3/promise-utils';
+import { notifications } from '../../components/notifications';
+import { usePossibleChainDataUpdate } from '../../contracts';
+import { addDays } from 'date-fns';
+
+export function useClaims() {
+  const { provider, setChainData, claims } = useChainData();
+  const data = useMemo(() => {
+    return claims ? Object.values(claims).sort((a, b) => parseInt(a.claimId) - parseInt(b.claimId)) : null;
+  }, [claims]);
+
+  const loadClaims = async () => {
+    await sleep();
+    return mockContractData.reduce((acc, claim) => {
+      const status = ClaimStatuses[claim.status as ClaimStatus];
+      const statusUpdatedAt = blockTimestampToDate(claim.statusUpdatedAt);
+      const claimedAmount = claim.claimedAmount.toNumber();
+      const resolvedAmount = claim.resolvedAmount?.toNumber() ?? null;
+
+      let deadline = null;
+      if (status === 'Resolved') {
+        if (resolvedAmount !== claimedAmount) {
+          deadline = addDays(statusUpdatedAt, 3);
+        }
+      } else if (status === 'MediationOffered' || status === 'Rejected') {
+        deadline = addDays(statusUpdatedAt, 3);
+      }
+
+      acc[claim.claimId.toString()] = {
+        claimId: claim.claimId.toString(),
+        timestamp: blockTimestampToDate(claim.timestamp),
+        claimant: claim.claimant,
+        beneficiary: claim.beneficiary,
+        claimedAmount,
+        counterOfferAmount: claim.counterOfferAmount?.toNumber() ?? null,
+        resolvedAmount,
+        policyId: claim.policyId.toString(),
+        evidence: claim.evidence,
+        status,
+        statusUpdatedAt,
+        deadline,
+      };
+      return acc;
+    }, {} as Record<string, Claim>);
+  };
+
+  const [status, setStatus] = useState<'idle' | 'loading' | 'resolved' | 'failed'>('idle');
+  const handleLoadClaims = useCallback(async () => {
+    if (!provider) return;
+    setStatus('loading');
+    const result = await go(loadClaims());
+    if (!result.success) {
+      notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
+      setStatus('failed');
+      return;
+    }
+    setChainData(
+      'Loaded claims',
+      updateImmutablyCurried((state) => {
+        state.claims = { ...state.claims, ...result.data };
+      })
+    );
+    setStatus('resolved');
+  }, [provider, setChainData]);
+
+  usePossibleChainDataUpdate(handleLoadClaims);
+
+  return {
+    data,
+    loading: status === 'loading',
+  };
+}
+
+const mockContractData = [
+  {
+    claimId: BigNumber.from(1),
+    policyId: BigNumber.from(101),
+    evidence: '0B488144f946F1c6C1eFaB0F',
+    timestamp: BigNumber.from(1652191585),
+    claimant: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4384',
+    beneficiary: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4384',
+    claimedAmount: BigNumber.from(100),
+    counterOfferAmount: BigNumber.from(70),
+    resolvedAmount: null,
+    status: 2,
+    statusUpdatedAt: BigNumber.from(1652251585),
+  },
+  {
+    claimId: BigNumber.from(2),
+    policyId: BigNumber.from(111),
+    evidence: '0B488144f946F1c6C1eFaB0F',
+    timestamp: BigNumber.from(1652191585),
+    claimant: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4385',
+    beneficiary: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4385',
+    claimedAmount: BigNumber.from(200),
+    counterOfferAmount: null,
+    resolvedAmount: null,
+    status: 1,
+    statusUpdatedAt: BigNumber.from(1652191585),
+  },
+  {
+    claimId: BigNumber.from(3),
+    policyId: BigNumber.from(121),
+    evidence: '0B488144f946F1c6C1eFaB0F',
+    timestamp: BigNumber.from(1652191585),
+    claimant: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4385',
+    beneficiary: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4385',
+    claimedAmount: BigNumber.from(200),
+    counterOfferAmount: null,
+    resolvedAmount: BigNumber.from(150),
+    status: 4,
+    statusUpdatedAt: BigNumber.from(1652191585),
+  },
+];
+
+const sleep = () => new Promise((res) => setTimeout(res, 2000));

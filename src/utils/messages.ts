@@ -35,6 +35,9 @@ export const messages = {
 
   // Vesting errors
   FAILED_TO_LOAD_VESTING_DATA: 'Failed to load vesting data. Please try again later.',
+
+  // Claims errors
+  FAILED_TO_LOAD_CLAIMS: 'Failed to load claims. Please try again later.',
 };
 
 // TODO: these messages should change depending on the final designs

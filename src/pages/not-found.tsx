@@ -1,6 +1,14 @@
+import Layout from '../components/layout';
+import { NavLink } from 'react-router-dom';
+
 const NotFoundPage = () => {
-  // TODO: Not found page
-  return <h5 style={{ color: 'black' }}>Not found</h5>;
+  return (
+    <Layout title="Not found">
+      <p>
+        <NavLink to="/">Return Home</NavLink>
+      </p>
+    </Layout>
+  );
 };
 
 export default NotFoundPage;
