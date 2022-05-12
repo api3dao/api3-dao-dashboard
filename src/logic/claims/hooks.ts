@@ -10,8 +10,9 @@ import { addDays } from 'date-fns';
 
 export function useClaims() {
   const { provider, setChainData, claims } = useChainData();
-  const data = useMemo(() => {
-    return claims ? Object.values(claims).sort((a, b) => parseInt(a.claimId) - parseInt(b.claimId)) : null;
+  const sortedClaims = useMemo(() => {
+    // Sort by claim id in descending order
+    return claims ? Object.values(claims).sort((a, b) => parseInt(b.claimId) - parseInt(a.claimId)) : null;
   }, [claims]);
 
   const loadClaims = async () => {
@@ -25,6 +26,7 @@ export function useClaims() {
       let deadline = null;
       if (status === 'Resolved') {
         if (resolvedAmount !== claimedAmount) {
+          // Kleros came back with an amount less than the original claim, so the user has 3 days to appeal
           deadline = addDays(statusUpdatedAt, 3);
         }
       } else if (status === 'MediationOffered' || status === 'Rejected') {
@@ -71,7 +73,7 @@ export function useClaims() {
   usePossibleChainDataUpdate(handleLoadClaims);
 
   return {
-    data,
+    data: sortedClaims,
     loading: status === 'loading',
   };
 }
@@ -113,7 +115,7 @@ const mockContractData = [
     claimedAmount: BigNumber.from(200),
     counterOfferAmount: null,
     resolvedAmount: BigNumber.from(150),
-    status: 4,
+    status: 3,
     statusUpdatedAt: BigNumber.from(1652191585),
   },
 ];

@@ -137,9 +137,10 @@ export const ClaimStatuses = {
   0: 'None',
   1: 'Submitted',
   2: 'MediationOffered',
-  3: 'Appealed',
-  4: 'Resolved',
-  5: 'Rejected',
+  3: 'Resolved',
+  4: 'Appealed',
+  5: 'Accepted',
+  6: 'Rejected',
 } as const;
 export type ClaimStatus = keyof typeof ClaimStatuses;
 export type ClaimStatusText = typeof ClaimStatuses[ClaimStatus];
