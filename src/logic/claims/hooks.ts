@@ -11,8 +11,9 @@ import { addDays } from 'date-fns';
 export function useClaims() {
   const { provider, setChainData, claims } = useChainData();
   const sortedClaims = useMemo(() => {
+    if (!claims) return null;
     // Sort by claim id in descending order
-    return claims ? Object.values(claims).sort((a, b) => parseInt(b.claimId) - parseInt(a.claimId)) : null;
+    return Object.values(claims).sort((a, b) => parseInt(b.claimId) - parseInt(a.claimId));
   }, [claims]);
 
   const loadClaims = async () => {
@@ -84,8 +85,8 @@ const mockContractData = [
     policyId: BigNumber.from(101),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4384',
-    beneficiary: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4384',
+    claimant: process.env.REACT_APP_LOCAL_WALLET_ADDRESS || '0x-some-account-01',
+    beneficiary: process.env.REACT_APP_LOCAL_WALLET_ADDRESS || '0x-some-account-01',
     claimedAmount: BigNumber.from(100),
     counterOfferAmount: BigNumber.from(70),
     resolvedAmount: null,
@@ -97,8 +98,8 @@ const mockContractData = [
     policyId: BigNumber.from(111),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4385',
-    beneficiary: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4385',
+    claimant: '0x-some-account-02',
+    beneficiary: '0x-some-account-02',
     claimedAmount: BigNumber.from(200),
     counterOfferAmount: null,
     resolvedAmount: null,
@@ -110,8 +111,8 @@ const mockContractData = [
     policyId: BigNumber.from(121),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4385',
-    beneficiary: '0x1423e3EF0B488144f946F1c6C1eFaB0FED1f4385',
+    claimant: '0x-some-account-03',
+    beneficiary: '0x-some-account-03',
     claimedAmount: BigNumber.from(200),
     counterOfferAmount: null,
     resolvedAmount: BigNumber.from(150),

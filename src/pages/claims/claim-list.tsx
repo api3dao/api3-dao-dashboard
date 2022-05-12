@@ -61,7 +61,7 @@ function ClaimStatus(props: ClaimStatusProps) {
         <>Countered</>
       );
     case 'Accepted':
-      return <>Accepted</>;
+      return <>Accepted Counter</>;
     case 'Rejected':
       return <>Rejected</>;
     default:
