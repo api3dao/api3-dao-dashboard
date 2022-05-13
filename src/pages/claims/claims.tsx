@@ -25,12 +25,20 @@ export default function Claims() {
     );
   }
 
+  if (!claims) {
+    return (
+      <ClaimsLayout>
+        <p className={styles.emptyState}>{loading ? 'Loading...' : null}</p>
+      </ClaimsLayout>
+    );
+  }
+
   return (
     <ClaimsLayout>
-      {claims ? (
+      {claims.length > 0 ? (
         <ClaimList claims={claims} />
       ) : (
-        <div className={styles.emptyState}>{loading ? 'Loading...' : null}</div>
+        <p className={styles.emptyState}>There are no active claims.</p>
       )}
     </ClaimsLayout>
   );
