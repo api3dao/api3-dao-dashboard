@@ -49,17 +49,13 @@ function ClaimStatus(props: ClaimStatusProps) {
   const { claim } = props;
   switch (claim.status) {
     case 'Submitted':
-    case 'Appealed':
       return <>Processing</>;
+    case 'Appealed':
+      return <>Kleros Processing</>;
     case 'MediationOffered':
       return <>Countered</>;
     case 'Resolved':
-      return claim.claimedAmount === claim.resolvedAmount ? (
-        <>Approved</>
-      ) : (
-        // Kleros came back with an amount less than the claim, so present it as a counter offer
-        <>Countered</>
-      );
+      return <>Resolved</>;
     case 'Accepted':
       return <>Accepted Counter</>;
     case 'Rejected':

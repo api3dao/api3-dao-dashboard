@@ -1,14 +1,13 @@
-import { updateImmutablyCurried, useChainData } from '../../chain-data';
-import { BigNumber } from 'ethers';
 import { useCallback, useMemo, useState } from 'react';
-import { blockTimestampToDate, messages } from '../../utils';
-import { Claim, ClaimStatus, ClaimStatuses } from '../../chain-data';
+import { BigNumber } from 'ethers';
 import { go } from '@api3/promise-utils';
+import { addDays } from 'date-fns';
+import { blockTimestampToDate, messages } from '../../utils';
+import { Claim, ClaimStatus, ClaimStatuses, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { notifications } from '../../components/notifications';
 import { usePossibleChainDataUpdate } from '../../contracts';
-import { addDays } from 'date-fns';
 
-export function useClaims() {
+export function useActiveClaims() {
   const { provider, setChainData, claims } = useChainData();
   const sortedClaims = useMemo(() => {
     if (!claims) return null;
@@ -18,36 +17,29 @@ export function useClaims() {
 
   const loadClaims = async () => {
     await sleep();
-    return mockContractData.reduce((acc, claim) => {
-      const status = ClaimStatuses[claim.status as ClaimStatus];
-      const statusUpdatedAt = blockTimestampToDate(claim.statusUpdatedAt);
-      const claimedAmount = claim.claimedAmount.toNumber();
-      const resolvedAmount = claim.resolvedAmount?.toNumber() ?? null;
+    const openClaimIds = mockOpenClaimIds.map((id) => id.toString());
+    return mockContractData.reduce((acc, claimData) => {
+      const claim: Claim = {
+        claimId: claimData.claimId.toString(),
+        policyId: claimData.policyId.toString(),
+        evidence: claimData.evidence,
+        timestamp: blockTimestampToDate(claimData.timestamp),
+        claimant: claimData.claimant,
+        beneficiary: claimData.beneficiary,
+        claimedAmount: claimData.claimedAmount.toNumber(),
+        counterOfferAmount: claimData.counterOfferAmount?.toNumber() ?? null,
+        resolvedAmount: claimData.resolvedAmount?.toNumber() ?? null,
+        open: openClaimIds.includes(claimData.claimId.toString()),
+        status: ClaimStatuses[claimData.status as ClaimStatus],
+        statusUpdatedAt: blockTimestampToDate(claimData.statusUpdatedAt),
+        deadline: null,
+      };
 
-      let deadline = null;
-      if (status === 'Resolved') {
-        if (resolvedAmount !== claimedAmount) {
-          // Kleros came back with an amount less than the original claim, so the user has 3 days to appeal
-          deadline = addDays(statusUpdatedAt, 3);
-        }
-      } else if (status === 'MediationOffered' || status === 'Rejected') {
-        deadline = addDays(statusUpdatedAt, 3);
+      if (claim.open) {
+        claim.deadline = calculateDeadline(claim);
       }
 
-      acc[claim.claimId.toString()] = {
-        claimId: claim.claimId.toString(),
-        timestamp: blockTimestampToDate(claim.timestamp),
-        claimant: claim.claimant,
-        beneficiary: claim.beneficiary,
-        claimedAmount,
-        counterOfferAmount: claim.counterOfferAmount?.toNumber() ?? null,
-        resolvedAmount,
-        policyId: claim.policyId.toString(),
-        evidence: claim.evidence,
-        status,
-        statusUpdatedAt,
-        deadline,
-      };
+      acc[claim.claimId] = claim;
       return acc;
     }, {} as Record<string, Claim>);
   };
@@ -79,19 +71,35 @@ export function useClaims() {
   };
 }
 
+function calculateDeadline(claim: Claim) {
+  switch (claim.status) {
+    case 'MediationOffered':
+    case 'Rejected':
+      return addDays(claim.statusUpdatedAt, 3);
+    case 'Resolved':
+      if (claim.resolvedAmount !== claim.claimedAmount) {
+        // Kleros came back with an amount less than the original claim, so the user has 3 days to appeal
+        return addDays(claim.statusUpdatedAt, 3);
+      }
+      return null;
+    default:
+      return null;
+  }
+}
+
 const mockContractData = [
   {
     claimId: BigNumber.from(1),
     policyId: BigNumber.from(101),
     evidence: '0B488144f946F1c6C1eFaB0F',
-    timestamp: BigNumber.from(1652191585),
+    timestamp: BigNumber.from(Math.round(addDays(new Date(), -4).getTime() / 1000)),
     claimant: process.env.REACT_APP_LOCAL_WALLET_ADDRESS || '0x-some-account-01',
     beneficiary: process.env.REACT_APP_LOCAL_WALLET_ADDRESS || '0x-some-account-01',
     claimedAmount: BigNumber.from(100),
     counterOfferAmount: BigNumber.from(70),
     resolvedAmount: null,
     status: 2,
-    statusUpdatedAt: BigNumber.from(1652251585),
+    statusUpdatedAt: BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
   },
   {
     claimId: BigNumber.from(2),
@@ -102,8 +110,8 @@ const mockContractData = [
     beneficiary: '0x-some-account-02',
     claimedAmount: BigNumber.from(200),
     counterOfferAmount: null,
-    resolvedAmount: null,
-    status: 1,
+    resolvedAmount: BigNumber.from(200),
+    status: 6,
     statusUpdatedAt: BigNumber.from(1652191585),
   },
   {
@@ -116,9 +124,10 @@ const mockContractData = [
     claimedAmount: BigNumber.from(200),
     counterOfferAmount: null,
     resolvedAmount: BigNumber.from(150),
-    status: 3,
+    status: 4,
     statusUpdatedAt: BigNumber.from(1652191585),
   },
 ];
 
+const mockOpenClaimIds = [BigNumber.from(1), BigNumber.from(2)];
 const sleep = () => new Promise((res) => setTimeout(res, 2000));

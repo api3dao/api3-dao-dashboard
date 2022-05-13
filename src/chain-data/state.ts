@@ -128,6 +128,7 @@ export interface Claim {
   claimedAmount: number;
   counterOfferAmount: null | number;
   resolvedAmount: null | number;
+  open: boolean;
   status: ClaimStatusText;
   statusUpdatedAt: Date;
   deadline: null | Date;
