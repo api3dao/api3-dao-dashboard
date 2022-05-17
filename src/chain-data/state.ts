@@ -125,13 +125,14 @@ export interface Claim {
   timestamp: Date;
   claimant: string;
   beneficiary: string;
-  claimedAmount: number;
-  counterOfferAmount: null | number;
-  resolvedAmount: null | number;
+  claimedAmount: BigNumber;
+  counterOfferAmount: null | BigNumber;
+  resolvedAmount: null | BigNumber;
   open: boolean;
   status: ClaimStatusText;
   statusUpdatedAt: Date;
   deadline: null | Date;
+  transactionHash: null | string;
 }
 
 export const ClaimStatuses = {
@@ -164,7 +165,11 @@ export interface ChainData {
   delegation: Delegation | null;
   transactions: { type: TransactionType; tx: ethers.ContractTransaction }[];
   vesting: Vesting | null;
-  claims: null | { [claimId: string]: Claim };
+  claims: {
+    activeIds: null | string[];
+    inactiveIds: null | string[];
+    byId: null | { [claimId: string]: Claim };
+  };
 }
 
 export interface SettableChainData extends ChainData {
@@ -190,7 +195,11 @@ export const initialChainData: ChainData = {
   delegation: null,
   transactions: [],
   vesting: null,
-  claims: null,
+  claims: {
+    activeIds: null,
+    inactiveIds: null,
+    byId: null,
+  },
 };
 
 export const initialSettableChainData: SettableChainData = { ...initialChainData, setChainData: () => {} };

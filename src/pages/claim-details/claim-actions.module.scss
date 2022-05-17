@@ -1,0 +1,24 @@
+@import '../../styles/variables.module.scss';
+
+.actionSection {
+  color: $secondary-color;
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.actionMainInfo {
+  font-size: $heading-5;
+  line-height: $lh-heading-5;
+  font-weight: bold;
+  margin-bottom: 4rem;
+}
+
+.actionPanel {
+  & > * {
+    margin-right: $space-xl;
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+}

@@ -10,45 +10,26 @@ import { usePossibleChainDataUpdate } from '../../contracts';
 export function useActiveClaims() {
   const { provider, setChainData, claims } = useChainData();
   const sortedClaims = useMemo(() => {
-    if (!claims) return null;
+    if (!claims.activeIds) return null;
     // Sort by claim id in descending order
-    return Object.values(claims).sort((a, b) => parseInt(b.claimId) - parseInt(a.claimId));
+    return claims.activeIds
+      .map((claimId) => claims.byId?.[claimId]!)
+      .sort((a, b) => parseInt(b.claimId) - parseInt(a.claimId));
   }, [claims]);
 
-  const loadClaims = async () => {
-    await sleep();
-    const openClaimIds = mockOpenClaimIds.map((id) => id.toString());
-    return mockContractData.reduce((acc, claimData) => {
-      const claim: Claim = {
-        claimId: claimData.claimId.toString(),
-        policyId: claimData.policyId.toString(),
-        evidence: claimData.evidence,
-        timestamp: blockTimestampToDate(claimData.timestamp),
-        claimant: claimData.claimant,
-        beneficiary: claimData.beneficiary,
-        claimedAmount: claimData.claimedAmount.toNumber(),
-        counterOfferAmount: claimData.counterOfferAmount?.toNumber() ?? null,
-        resolvedAmount: claimData.resolvedAmount?.toNumber() ?? null,
-        open: openClaimIds.includes(claimData.claimId.toString()),
-        status: ClaimStatuses[claimData.status as ClaimStatus],
-        statusUpdatedAt: blockTimestampToDate(claimData.statusUpdatedAt),
-        deadline: null,
-      };
-
-      if (claim.open) {
-        claim.deadline = calculateDeadline(claim);
-      }
-
-      acc[claim.claimId] = claim;
-      return acc;
-    }, {} as Record<string, Claim>);
-  };
-
   const [status, setStatus] = useState<'idle' | 'loading' | 'resolved' | 'failed'>('idle');
-  const handleLoadClaims = useCallback(async () => {
+  const loadActiveClaims = useCallback(async () => {
     if (!provider) return;
     setStatus('loading');
-    const result = await go(loadClaims());
+    const result = await go(async () => {
+      await sleep();
+      const activeIds = mockOpenClaimIds.map((id) => id.toString());
+      const claimsById = await loadClaimsByIds(activeIds, activeIds);
+      return {
+        activeIds,
+        claimsById,
+      };
+    });
     if (!result.success) {
       notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
       setStatus('failed');
@@ -57,18 +38,83 @@ export function useActiveClaims() {
     setChainData(
       'Loaded claims',
       updateImmutablyCurried((state) => {
-        state.claims = { ...state.claims, ...result.data };
+        state.claims.activeIds = result.data.activeIds;
+        state.claims.byId = { ...state.claims.byId, ...result.data.claimsById };
       })
     );
     setStatus('resolved');
   }, [provider, setChainData]);
 
-  usePossibleChainDataUpdate(handleLoadClaims);
+  usePossibleChainDataUpdate(loadActiveClaims);
 
   return {
     data: sortedClaims,
     loading: status === 'loading',
   };
+}
+
+export function useClaimById(claimId: string) {
+  const { provider, setChainData, claims } = useChainData();
+  const data = claims.byId?.[claimId] || null;
+
+  const [status, setStatus] = useState<'idle' | 'loading' | 'resolved' | 'failed'>('idle');
+  const loadClaim = useCallback(async () => {
+    if (!provider) return;
+    setStatus('loading');
+    const result = await go(async () => {
+      await sleep();
+      const activeIds = mockOpenClaimIds.map((id) => id.toString());
+      return await loadClaimsByIds([claimId], activeIds);
+    });
+    if (!result.success) {
+      notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
+      setStatus('failed');
+      return;
+    }
+    setChainData(
+      'Loaded claim',
+      updateImmutablyCurried((state) => {
+        state.claims.byId = { ...state.claims.byId, ...result.data };
+      })
+    );
+    setStatus('resolved');
+  }, [claimId, provider, setChainData]);
+
+  usePossibleChainDataUpdate(loadClaim);
+
+  return {
+    data,
+    loading: status === 'loading',
+    loaded: status === 'resolved',
+  };
+}
+
+async function loadClaimsByIds(claimIds: string[], activeClaimIds: string[]) {
+  return mockContractData.reduce((acc, claimData) => {
+    const claim: Claim = {
+      claimId: claimData.claimId.toString(),
+      policyId: claimData.policyId.toString(),
+      evidence: claimData.evidence,
+      timestamp: blockTimestampToDate(claimData.timestamp),
+      claimant: claimData.claimant,
+      beneficiary: claimData.beneficiary,
+      claimedAmount: claimData.claimedAmount,
+      counterOfferAmount: claimData.counterOfferAmount ?? null,
+      resolvedAmount: claimData.resolvedAmount ?? null,
+      open: activeClaimIds.includes(claimData.claimId.toString()),
+      status: ClaimStatuses[claimData.status as ClaimStatus],
+      statusUpdatedAt: blockTimestampToDate(claimData.statusUpdatedAt),
+      deadline: null,
+      transactionHash: claimData.transactionHash,
+    };
+
+    if (claim.open) {
+      claim.deadline = calculateDeadline(claim);
+    }
+
+    acc[claim.claimId] = claim;
+    return acc;
+  }, {} as Record<string, Claim>);
 }
 
 function calculateDeadline(claim: Claim) {
@@ -100,6 +146,7 @@ const mockContractData = [
     resolvedAmount: null,
     status: 2,
     statusUpdatedAt: BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
+    transactionHash: null,
   },
   {
     claimId: BigNumber.from(2),
@@ -113,6 +160,7 @@ const mockContractData = [
     resolvedAmount: BigNumber.from(200),
     status: 6,
     statusUpdatedAt: BigNumber.from(1652191585),
+    transactionHash: null,
   },
   {
     claimId: BigNumber.from(3),
@@ -126,6 +174,7 @@ const mockContractData = [
     resolvedAmount: BigNumber.from(150),
     status: 4,
     statusUpdatedAt: BigNumber.from(1652191585),
+    transactionHash: null,
   },
 ];
 

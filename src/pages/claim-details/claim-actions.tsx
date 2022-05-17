@@ -1,0 +1,133 @@
+import { useState } from 'react';
+import Button from '../../components/button';
+import { Claim } from '../../chain-data';
+import styles from './claim-actions.module.scss';
+import { formatApi3 } from '../../utils';
+
+interface Props {
+  claim: Claim;
+  currentAccount: string;
+}
+
+export default function ClaimActions(props: Props) {
+  const { claim } = props;
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
+  const disableActions = claim.claimant !== props.currentAccount || status !== 'idle';
+
+  // TODO Implement
+  const handleAcceptCounter = () => {
+    setStatus('submitting');
+  };
+
+  // TODO Implement
+  const handleAppeal = () => {
+    setStatus('submitting');
+  };
+
+  switch (claim.status) {
+    case 'Submitted':
+      return (
+        <div className={styles.actionSection}>
+          <p>API3 Multi-sig Processing...</p>
+          <div className={styles.actionMainInfo}>In progress</div>
+        </div>
+      );
+
+    case 'MediationOffered':
+      return (
+        <div className={styles.actionSection}>
+          <p>API3 Multi-sig</p>
+          <div className={styles.actionMainInfo}>
+            Countered with <br />
+            {formatApi3(claim.counterOfferAmount!)} API3
+          </div>
+          <div className={styles.actionPanel}>
+            <Button type="primary" disabled={disableActions} onClick={handleAcceptCounter}>
+              Accept Counter
+            </Button>
+            <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
+              Escalate to Kleros
+            </Button>
+          </div>
+        </div>
+      );
+
+    case 'Accepted':
+      return (
+        <div className={styles.actionSection}>
+          <p>{claim.claimant}</p>
+          <div className={styles.actionMainInfo}>
+            Accepted <br />
+            counter of <br />
+            {formatApi3(claim.counterOfferAmount!)} API3
+          </div>
+        </div>
+      );
+
+    case 'Appealed':
+      return (
+        <div className={styles.actionSection}>
+          <p>{claim.claimant}</p>
+          <div className={styles.actionMainInfo}>Appealed to Kleros</div>
+        </div>
+      );
+
+    case 'Rejected':
+      if (claim.counterOfferAmount) {
+        return (
+          <div className={styles.actionSection}>
+            <p>Kleros</p>
+            <div className={styles.actionMainInfo}>Rejected</div>
+            <div className={styles.actionPanel}>
+              <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
+                Appeal
+              </Button>
+            </div>
+          </div>
+        );
+      }
+
+      // TODO: If API3 rejected and subsequently Kleros rejected, then we don't know who rejected.
+      // We probably need a "statusUpdatedBy"
+      return (
+        <div className={styles.actionSection}>
+          <p>API3 Multi-sig</p>
+          <div className={styles.actionMainInfo}>Rejected</div>
+          <div className={styles.actionPanel}>
+            <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
+              Escalate to Kleros
+            </Button>
+          </div>
+        </div>
+      );
+
+    case 'Resolved':
+      if (claim.counterOfferAmount) {
+        return (
+          <div className={styles.actionSection}>
+            <p>Kleros</p>
+            <div className={styles.actionMainInfo}>
+              Approved <br />
+              counter of <br />
+              {formatApi3(claim.resolvedAmount!)} API3
+            </div>
+            <div className={styles.actionPanel}>
+              <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
+                Appeal
+              </Button>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className={styles.actionSection}>
+          <p>API3 Multi-sig</p>
+          <div className={styles.actionMainInfo}>Approved</div>
+        </div>
+      );
+
+    default:
+      return null;
+  }
+}
