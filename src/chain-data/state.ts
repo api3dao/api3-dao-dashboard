@@ -131,6 +131,7 @@ export interface Claim {
   open: boolean;
   status: ClaimStatusText;
   statusUpdatedAt: Date;
+  statusUpdatedBy: 'claimant' | 'mediator' | 'arbitrator';
   deadline: null | Date;
   transactionHash: null | string;
 }

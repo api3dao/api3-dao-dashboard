@@ -12,7 +12,8 @@ interface Props {
 export default function ClaimActions(props: Props) {
   const { claim } = props;
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
-  const disableActions = claim.claimant !== props.currentAccount || status !== 'idle';
+  const disableActions =
+    claim.claimant !== props.currentAccount || !claim.open || status === 'submitting' || status === 'submitted';
 
   // TODO Implement
   const handleAcceptCounter = () => {
@@ -28,8 +29,8 @@ export default function ClaimActions(props: Props) {
     case 'Submitted':
       return (
         <div className={styles.actionSection}>
-          <p>API3 Multi-sig Processing...</p>
-          <div className={styles.actionMainInfo}>In progress</div>
+          <p>API3 Multi-sig</p>
+          <div className={styles.actionMainInfo}>Processing</div>
         </div>
       );
 
@@ -68,12 +69,20 @@ export default function ClaimActions(props: Props) {
       return (
         <div className={styles.actionSection}>
           <p>{claim.claimant}</p>
-          <div className={styles.actionMainInfo}>Appealed to Kleros</div>
+          {claim.counterOfferAmount ? (
+            <div className={styles.actionMainInfo}>
+              Appealed counter of <br />
+              {formatApi3(claim.counterOfferAmount!)} API3 <br />
+              to Kleros
+            </div>
+          ) : (
+            <div className={styles.actionMainInfo}>Appealed to Kleros</div>
+          )}
         </div>
       );
 
     case 'Rejected':
-      if (claim.counterOfferAmount) {
+      if (claim.statusUpdatedBy === 'arbitrator') {
         return (
           <div className={styles.actionSection}>
             <p>Kleros</p>
@@ -87,8 +96,6 @@ export default function ClaimActions(props: Props) {
         );
       }
 
-      // TODO: If API3 rejected and subsequently Kleros rejected, then we don't know who rejected.
-      // We probably need a "statusUpdatedBy"
       return (
         <div className={styles.actionSection}>
           <p>API3 Multi-sig</p>
@@ -102,7 +109,7 @@ export default function ClaimActions(props: Props) {
       );
 
     case 'Resolved':
-      if (claim.counterOfferAmount) {
+      if (claim.statusUpdatedBy === 'arbitrator') {
         return (
           <div className={styles.actionSection}>
             <p>Kleros</p>

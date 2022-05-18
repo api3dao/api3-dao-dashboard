@@ -7,6 +7,8 @@ import ClaimActions from './claim-actions';
 import { useChainData } from '../../chain-data';
 import { useClaimById } from '../../logic/claims';
 import { formatApi3, images } from '../../utils';
+import { format } from 'date-fns';
+import { DATE_FORMAT } from '../../components/timer';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-details.module.scss';
 
@@ -64,6 +66,10 @@ export default function ClaimDetails() {
         content={
           <div className={styles.detailsSection}>
             <div className={styles.detailsItem}>
+              <p className={globalStyles.bold}>Created</p>
+              <p className={globalStyles.secondaryColor}>{format(claim.timestamp, DATE_FORMAT)}</p>
+            </div>
+            <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Evidence</p>
               <ExternalLink href={evidenceHref} className={globalStyles.secondaryColor}>
                 {evidenceHref}
@@ -71,7 +77,7 @@ export default function ClaimDetails() {
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claim Amount</p>
-              <p className={globalStyles.secondaryColor}>{formatApi3(claim.claimedAmount)}</p>
+              <p className={globalStyles.secondaryColor}>{formatApi3(claim.claimedAmount)} API3</p>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claimant</p>

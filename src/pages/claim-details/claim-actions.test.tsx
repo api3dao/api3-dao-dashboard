@@ -13,13 +13,14 @@ describe('<ClaimActions />', () => {
       policyId: '101',
       claimant: '0x-some-account',
       beneficiary: '0x-some-account',
-      claimedAmount: BigNumber.from(700000000),
+      claimedAmount: BigNumber.from('70000000000000000000'),
       counterOfferAmount: null,
       resolvedAmount: null,
       timestamp: addDays(new Date(), -2),
       open: true,
       status: 'Submitted',
       statusUpdatedAt: new Date(),
+      statusUpdatedBy: 'claimant',
       evidence: 'evidence-001',
       transactionHash: null,
       deadline: null,
@@ -29,21 +30,23 @@ describe('<ClaimActions />', () => {
   describe('"Submitted" status', () => {
     it('shows that the claim is in progress', () => {
       claim.status = 'Submitted';
+      claim.statusUpdatedBy = 'claimant';
       render(<ClaimActions currentAccount="0x-some-account" claim={claim} />);
 
-      expect(screen.getByText(/API3 Multi-sig Processing/i)).toBeInTheDocument();
-      expect(screen.getByText(/In progress/i)).toBeInTheDocument();
+      expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
+      expect(screen.getByText(/Processing/i)).toBeInTheDocument();
     });
   });
 
   describe('"MediationOffered" status', () => {
-    it('enables Accept and Appeal actions', () => {
+    it('enables Accept and Escalate actions', () => {
       claim.status = 'MediationOffered';
-      claim.counterOfferAmount = BigNumber.from(600000000000000);
+      claim.statusUpdatedBy = 'mediator';
+      claim.counterOfferAmount = BigNumber.from('60000000000000000000');
       render(<ClaimActions currentAccount="0x-some-account" claim={claim} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
-      expect(screen.getByText(/Countered with 0.0006 API3/i)).toBeInTheDocument();
+      expect(screen.getByText(/Countered with 60.0 API3/i)).toBeInTheDocument();
       const acceptButton = screen.getByRole('button', { name: /Accept Counter/i });
       const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
       expect(acceptButton).not.toBeDisabled();
@@ -52,7 +55,8 @@ describe('<ClaimActions />', () => {
 
     it('disables the buttons when viewing a claim that is not your own', () => {
       claim.status = 'MediationOffered';
-      claim.counterOfferAmount = BigNumber.from(600000000000000);
+      claim.statusUpdatedBy = 'mediator';
+      claim.counterOfferAmount = BigNumber.from('60000000000000000000');
       claim.claimant = '0x-some-other-account';
       render(<ClaimActions currentAccount="0x-some-account" claim={claim} />);
 
@@ -66,11 +70,12 @@ describe('<ClaimActions />', () => {
   describe('"Accepted" status', () => {
     it('shows claimant has accepted the counter', () => {
       claim.status = 'Accepted';
-      claim.counterOfferAmount = BigNumber.from(600000000000000);
+      claim.statusUpdatedBy = 'claimant';
+      claim.counterOfferAmount = BigNumber.from('60000000000000000000');
       render(<ClaimActions currentAccount="0x-some-other-account" claim={claim} />);
 
       expect(screen.getByText(/0x-some-account/i)).toBeInTheDocument();
-      expect(screen.getByText(/Accepted counter of 0.0006 API3/i)).toBeInTheDocument();
+      expect(screen.getByText(/Accepted counter of 60.0 API3/i)).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
   });
@@ -78,18 +83,28 @@ describe('<ClaimActions />', () => {
   describe('"Appealed" status', () => {
     it('shows claimant has appealed to Kleros', () => {
       claim.status = 'Appealed';
-      claim.counterOfferAmount = BigNumber.from(600000000000000);
+      claim.statusUpdatedBy = 'claimant';
       render(<ClaimActions currentAccount="0x-some-other-account" claim={claim} />);
 
       expect(screen.getByText(/0x-some-account/i)).toBeInTheDocument();
       expect(screen.getByText(/Appealed to Kleros/i)).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
+
+    it('shows counter offer amount when present', () => {
+      claim.status = 'Appealed';
+      claim.statusUpdatedBy = 'claimant';
+      claim.counterOfferAmount = BigNumber.from('60000000000000000000');
+      render(<ClaimActions currentAccount="0x-some-other-account" claim={claim} />);
+
+      expect(screen.getByText(/Appealed counter of 60.0 API3 to Kleros/i)).toBeInTheDocument();
+    });
   });
 
   describe('"Rejected" status', () => {
-    it('enables the Appeal action', () => {
+    it('enables the Escalate action', () => {
       claim.status = 'Rejected';
+      claim.statusUpdatedBy = 'mediator';
       render(<ClaimActions currentAccount="0x-some-account" claim={claim} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
@@ -98,12 +113,34 @@ describe('<ClaimActions />', () => {
       expect(appealButton).not.toBeDisabled();
     });
 
-    it('disables the Appeal button when viewing a claim that is not your own', () => {
+    it('disables the Escalate button when viewing a claim that is not your own', () => {
       claim.status = 'Rejected';
+      claim.statusUpdatedBy = 'mediator';
       claim.claimant = '0x-some-other-account';
       render(<ClaimActions currentAccount="0x-some-account" claim={claim} />);
 
       const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
+      expect(appealButton).toBeDisabled();
+    });
+
+    it('provides an Appeal action when Kleros is involved', () => {
+      claim.status = 'Rejected';
+      claim.statusUpdatedBy = 'arbitrator';
+      render(<ClaimActions currentAccount="0x-some-account" claim={claim} />);
+
+      expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
+      expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
+      const appealButton = screen.getByRole('button', { name: /Appeal/i });
+      expect(appealButton).not.toBeDisabled();
+    });
+
+    it('disables the Appeal button when viewing a claim that is not your own', () => {
+      claim.status = 'Rejected';
+      claim.statusUpdatedBy = 'arbitrator';
+      claim.claimant = '0x-some-other-account';
+      render(<ClaimActions currentAccount="0x-some-account" claim={claim} />);
+
+      const appealButton = screen.getByRole('button', { name: /Appeal/i });
       expect(appealButton).toBeDisabled();
     });
   });
@@ -111,7 +148,8 @@ describe('<ClaimActions />', () => {
   describe('"Resolved" status', () => {
     it('shows the claim has been approved', () => {
       claim.status = 'Resolved';
-      claim.resolvedAmount = BigNumber.from(600000000000000);
+      claim.statusUpdatedBy = 'mediator';
+      claim.resolvedAmount = BigNumber.from('60000000000000000000');
       render(<ClaimActions currentAccount="0x-some-account" claim={claim} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
@@ -121,21 +159,23 @@ describe('<ClaimActions />', () => {
 
     it('provides an Appeal action when Kleros is involved', () => {
       claim.status = 'Resolved';
-      claim.counterOfferAmount = BigNumber.from(600000000000000);
-      claim.resolvedAmount = BigNumber.from(600000000000000);
+      claim.statusUpdatedBy = 'arbitrator';
+      claim.counterOfferAmount = BigNumber.from('60000000000000000000');
+      claim.resolvedAmount = BigNumber.from('65000000000000000000');
       render(<ClaimActions currentAccount="0x-some-account" claim={claim} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-      expect(screen.getByText(/Approved/i)).toBeInTheDocument();
+      expect(screen.getByText(/Approved counter of 65.0 API3/i)).toBeInTheDocument();
       const appealButton = screen.getByRole('button', { name: /Appeal/i });
       expect(appealButton).not.toBeDisabled();
     });
 
     it('disables the Appeal button when viewing a claim that is not your own', () => {
       claim.status = 'Resolved';
+      claim.statusUpdatedBy = 'arbitrator';
       claim.claimant = '0x-some-other-account';
-      claim.counterOfferAmount = BigNumber.from(600000000000000);
-      claim.resolvedAmount = BigNumber.from(600000000000000);
+      claim.counterOfferAmount = BigNumber.from('60000000000000000000');
+      claim.resolvedAmount = BigNumber.from('65000000000000000000');
       render(<ClaimActions currentAccount="0x-some-account" claim={claim} />);
 
       const appealButton = screen.getByRole('button', { name: /Appeal/i });
