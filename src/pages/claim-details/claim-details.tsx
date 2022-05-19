@@ -19,7 +19,7 @@ interface Params {
 export default function ClaimDetails() {
   const { claimId } = useParams<Params>();
   const { data: claim, loading, loaded } = useUserClaimById(claimId);
-  const { provider, userAccount } = useChainData();
+  const { provider } = useChainData();
   if (!provider) {
     return (
       <BaseLayout subtitle={`Claim ${claimId}`}>
@@ -55,7 +55,7 @@ export default function ClaimDetails() {
         </Link>
       </div>
       <h4 className={styles.heading}>Claim {claimId}</h4>
-      <ClaimActions claim={claim} currentAccount={userAccount} />
+      <ClaimActions claim={claim} />
       <BorderedBox
         noMobileBorders
         header={

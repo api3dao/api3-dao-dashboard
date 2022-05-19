@@ -1,19 +1,17 @@
 import { useState } from 'react';
 import Button from '../../components/button';
-import { Claim } from '../../chain-data';
+import { abbrStr, Claim } from '../../chain-data';
 import styles from './claim-actions.module.scss';
 import { formatApi3 } from '../../utils';
 
 interface Props {
   claim: Claim;
-  currentAccount: string;
 }
 
 export default function ClaimActions(props: Props) {
   const { claim } = props;
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
-  const disableActions =
-    claim.claimant !== props.currentAccount || !claim.open || status === 'submitting' || status === 'submitted';
+  const disableActions = !claim.open || status === 'submitting' || status === 'submitted';
 
   // TODO DAO-151 Implement
   const handleAcceptCounter = () => {
@@ -56,7 +54,7 @@ export default function ClaimActions(props: Props) {
     case 'Accepted':
       return (
         <div className={styles.actionSection}>
-          <p>{claim.claimant}</p>
+          <p>{abbrStr(claim.claimant)}</p>
           <div className={styles.actionMainInfo}>
             Accepted <br />
             counter of <br />
@@ -68,7 +66,7 @@ export default function ClaimActions(props: Props) {
     case 'Appealed':
       return (
         <div className={styles.actionSection}>
-          <p>{claim.claimant}</p>
+          <p>{abbrStr(claim.claimant)}</p>
           {claim.counterOfferAmount ? (
             <div className={styles.actionMainInfo}>
               Appealed counter of <br />
