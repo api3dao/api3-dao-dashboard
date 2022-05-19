@@ -1,9 +1,12 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { connectWallet } from '../../components/sign-in/sign-in';
 import Layout from '../../components/layout';
 import Button from '../../components/button';
+import RadioButton from '../../components/radio-button';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import ClaimList from './claim-list';
+import { useQueryParams } from '../../utils';
+import { useHistory } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { useUserClaims } from '../../logic/claims';
 import styles from './claims.module.scss';
@@ -11,6 +14,22 @@ import styles from './claims.module.scss';
 export default function Claims() {
   const { provider, setChainData } = useChainData();
   const { data: claims, loading } = useUserClaims();
+
+  const params = useQueryParams();
+  const filter = params.get('filter');
+  const filteredClaims = useMemo(() => {
+    if (!claims) return [];
+    switch (filter) {
+      case 'none':
+        return [];
+      case 'active':
+        return claims.filter((claim) => claim.open);
+      case 'inactive':
+        return claims.filter((claim) => !claim.open);
+      default:
+        return claims;
+    }
+  }, [claims, filter]);
 
   if (!provider) {
     return (
@@ -35,20 +54,40 @@ export default function Claims() {
 
   return (
     <ClaimsLayout>
-      {claims.length > 0 ? (
-        <ClaimList claims={claims} />
+      {filteredClaims.length > 0 ? (
+        <ClaimList claims={filteredClaims} />
+      ) : claims.length === 0 ? (
+        <p className={styles.emptyState}>There are claims linked to your account.</p>
       ) : (
-        <p className={styles.emptyState}>There are no active claims.</p>
+        <p className={styles.emptyState}>There are no matching claims.</p>
       )}
     </ClaimsLayout>
   );
 }
 
 interface ClaimsLayoutProps {
+  params?: URLSearchParams;
   children: ReactNode;
 }
 
 function ClaimsLayout(props: ClaimsLayoutProps) {
+  const history = useHistory();
+  const handleFilterChange = (showActive: boolean, showInactive: boolean) => {
+    if (showActive && !showInactive) {
+      history.replace(`/claims?filter=active`);
+    } else if (!showActive && showInactive) {
+      history.replace(`/claims?filter=inactive`);
+    } else if (!showActive && !showInactive) {
+      history.replace(`/claims?filter=none`);
+    } else {
+      history.replace(`/claims`);
+    }
+  };
+
+  const params = useQueryParams();
+  const filter = params.get('filter');
+  const activeChecked = !filter || filter === 'active';
+  const inactiveChecked = !filter || filter === 'inactive';
   return (
     <Layout title="Claims">
       <BorderedBox
@@ -56,6 +95,22 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
         header={
           <Header>
             <h5>My Claims</h5>
+            <div className={styles.filters}>
+              <RadioButton
+                type="checkbox"
+                label="Active"
+                checked={activeChecked}
+                onChange={() => handleFilterChange(!activeChecked, inactiveChecked)}
+                color="white"
+              />
+              <RadioButton
+                type="checkbox"
+                label="Inactive"
+                checked={inactiveChecked}
+                onChange={() => handleFilterChange(activeChecked, !inactiveChecked)}
+                color="white"
+              />
+            </div>
           </Header>
         }
         content={props.children}

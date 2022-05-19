@@ -15,3 +15,23 @@
     margin-right: 0;
   }
 }
+
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-left: $space-md;
+
+  & > * {
+    margin-right: $space-lg;
+
+    @media (max-width: $max-md) {
+      margin-right: $space-md;
+    }
+  }
+
+  & > *:last-child {
+    margin-right: 0;
+  }
+}

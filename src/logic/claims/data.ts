@@ -18,7 +18,7 @@ export function useUserClaims() {
   }, [claims]);
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'resolved' | 'failed'>('idle');
-  const loadActiveClaims = useCallback(async () => {
+  const loadUserClaims = useCallback(async () => {
     if (!provider) return;
     setStatus('loading');
     const result = await go(async () => {
@@ -44,7 +44,7 @@ export function useUserClaims() {
     setStatus('resolved');
   }, [provider, setChainData]);
 
-  usePossibleChainDataUpdate(loadActiveClaims);
+  usePossibleChainDataUpdate(loadUserClaims);
 
   return {
     data: sortedClaims,
@@ -57,7 +57,7 @@ export function useUserClaimById(claimId: string) {
   const data = claims.byId?.[claimId] || null;
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'resolved' | 'failed'>('idle');
-  const loadClaim = useCallback(async () => {
+  const loadUserClaim = useCallback(async () => {
     if (!provider) return;
     setStatus('loading');
     const result = await go(async () => {
@@ -81,7 +81,7 @@ export function useUserClaimById(claimId: string) {
     setStatus('resolved');
   }, [claimId, provider, setChainData]);
 
-  usePossibleChainDataUpdate(loadClaim);
+  usePossibleChainDataUpdate(loadUserClaim);
 
   return {
     data,
@@ -179,7 +179,7 @@ const mockContractData = [
     claimedAmount: BigNumber.from('200000000000000000000'),
     counterOfferAmount: null,
     resolvedAmount: BigNumber.from(0),
-    open: true,
+    open: false,
     status: 6,
     statusUpdatedAt: BigNumber.from(1652191585),
     statusUpdatedBy: 2,
@@ -243,7 +243,7 @@ const mockContractData = [
     claimedAmount: BigNumber.from('200000000000000000000'),
     counterOfferAmount: BigNumber.from('150000000000000000000'),
     resolvedAmount: null,
-    open: true,
+    open: false,
     status: 5,
     statusUpdatedAt: BigNumber.from(1652191585),
     statusUpdatedBy: 2,
