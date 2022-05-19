@@ -7,12 +7,12 @@ import { Claim, ClaimStatus, ClaimStatuses, updateImmutablyCurried, useChainData
 import { notifications } from '../../components/notifications';
 import { usePossibleChainDataUpdate } from '../../contracts';
 
-export function useActiveClaims() {
+export function useUserClaims() {
   const { provider, setChainData, claims } = useChainData();
   const sortedClaims = useMemo(() => {
-    if (!claims.activeIds) return null;
+    if (!claims.userClaimIds) return null;
     // Sort by claim id in descending order
-    return claims.activeIds
+    return claims.userClaimIds
       .map((claimId) => claims.byId?.[claimId]!)
       .sort((a, b) => parseInt(b.claimId) - parseInt(a.claimId));
   }, [claims]);
@@ -22,10 +22,10 @@ export function useActiveClaims() {
     if (!provider) return;
     setStatus('loading');
     const result = await go(async () => {
-      const activeIds = mockOpenClaimIds.map((id) => id.toString());
-      const claimsById = await loadClaimsByIds(activeIds, activeIds);
+      const userClaimIds = mockUserClaimIds.map((id) => id.toString());
+      const claimsById = await loadClaimsByIds(userClaimIds);
       return {
-        activeIds,
+        userClaimIds,
         claimsById,
       };
     });
@@ -37,7 +37,7 @@ export function useActiveClaims() {
     setChainData(
       'Loaded claims',
       updateImmutablyCurried((state) => {
-        state.claims.activeIds = result.data.activeIds;
+        state.claims.userClaimIds = result.data.userClaimIds;
         state.claims.byId = { ...state.claims.byId, ...result.data.claimsById };
       })
     );
@@ -52,7 +52,7 @@ export function useActiveClaims() {
   };
 }
 
-export function useClaimById(claimId: string) {
+export function useUserClaimById(claimId: string) {
   const { provider, setChainData, claims } = useChainData();
   const data = claims.byId?.[claimId] || null;
 
@@ -61,8 +61,11 @@ export function useClaimById(claimId: string) {
     if (!provider) return;
     setStatus('loading');
     const result = await go(async () => {
-      const activeIds = mockOpenClaimIds.map((id) => id.toString());
-      return await loadClaimsByIds([claimId], activeIds);
+      const userClaimIds = mockUserClaimIds.map((id) => id.toString());
+      if (!userClaimIds.includes(claimId)) {
+        return null;
+      }
+      return await loadClaimsByIds([claimId]);
     });
     if (!result.success) {
       notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
@@ -87,34 +90,36 @@ export function useClaimById(claimId: string) {
   };
 }
 
-async function loadClaimsByIds(claimIds: string[], activeClaimIds: string[]) {
+async function loadClaimsByIds(claimIds: string[]) {
   await sleep();
-  return mockContractData.reduce((acc, claimData) => {
-    const claim: Claim = {
-      claimId: claimData.claimId.toString(),
-      policyId: claimData.policyId.toString(),
-      evidence: claimData.evidence,
-      timestamp: blockTimestampToDate(claimData.timestamp),
-      claimant: claimData.claimant,
-      beneficiary: claimData.beneficiary,
-      claimedAmount: claimData.claimedAmount,
-      counterOfferAmount: claimData.counterOfferAmount ?? null,
-      resolvedAmount: claimData.resolvedAmount ?? null,
-      open: activeClaimIds.includes(claimData.claimId.toString()),
-      status: ClaimStatuses[claimData.status as ClaimStatus],
-      statusUpdatedAt: blockTimestampToDate(claimData.statusUpdatedAt),
-      statusUpdatedBy: getStatusUpdatedByType(claimData.statusUpdatedBy),
-      deadline: null,
-      transactionHash: claimData.transactionHash,
-    };
+  return mockContractData
+    .filter((claimData) => claimIds.includes(claimData.claimId.toString()))
+    .reduce((acc, claimData) => {
+      const claim: Claim = {
+        claimId: claimData.claimId.toString(),
+        policyId: claimData.policyId.toString(),
+        evidence: claimData.evidence,
+        timestamp: blockTimestampToDate(claimData.timestamp),
+        claimant: claimData.claimant,
+        beneficiary: claimData.beneficiary,
+        claimedAmount: claimData.claimedAmount,
+        counterOfferAmount: claimData.counterOfferAmount ?? null,
+        resolvedAmount: claimData.resolvedAmount ?? null,
+        open: claimData.open,
+        status: ClaimStatuses[claimData.status as ClaimStatus],
+        statusUpdatedAt: blockTimestampToDate(claimData.statusUpdatedAt),
+        statusUpdatedBy: getStatusUpdatedByType(claimData.statusUpdatedBy),
+        deadline: null,
+        transactionHash: claimData.transactionHash,
+      };
 
-    if (claim.open) {
-      claim.deadline = calculateDeadline(claim);
-    }
+      if (claim.open) {
+        claim.deadline = calculateDeadline(claim);
+      }
 
-    acc[claim.claimId] = claim;
-    return acc;
-  }, {} as Record<string, Claim>);
+      acc[claim.claimId] = claim;
+      return acc;
+    }, {} as Record<string, Claim>);
 }
 
 function getStatusUpdatedByType(updatedBy: number): Claim['statusUpdatedBy'] {
@@ -130,6 +135,7 @@ function getStatusUpdatedByType(updatedBy: number): Claim['statusUpdatedBy'] {
 
 function calculateDeadline(claim: Claim) {
   switch (claim.status) {
+    case 'Submitted':
     case 'MediationOffered':
     case 'Rejected':
       return addDays(claim.statusUpdatedAt, 3);
@@ -144,17 +150,20 @@ function calculateDeadline(claim: Claim) {
   }
 }
 
+// TODO DAO-151 Remove mock data
+const currentWalletAddress = process.env.REACT_APP_LOCAL_WALLET_ADDRESS || '0x15asde3EF0B4881432948kajds0aB0FED112334s';
 const mockContractData = [
   {
     claimId: BigNumber.from(1),
     policyId: BigNumber.from(101),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(Math.round(addDays(new Date(), -4).getTime() / 1000)),
-    claimant: process.env.REACT_APP_LOCAL_WALLET_ADDRESS || '0x-some-account-01',
-    beneficiary: process.env.REACT_APP_LOCAL_WALLET_ADDRESS || '0x-some-account-01',
+    claimant: currentWalletAddress,
+    beneficiary: currentWalletAddress,
     claimedAmount: BigNumber.from('100000000000000000000'),
     counterOfferAmount: BigNumber.from('70000000000000000000'),
     resolvedAmount: null,
+    open: true,
     status: 2,
     statusUpdatedAt: BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
     statusUpdatedBy: 1,
@@ -165,11 +174,12 @@ const mockContractData = [
     policyId: BigNumber.from(111),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: '0x-some-account-02',
-    beneficiary: '0x-some-account-02',
+    claimant: currentWalletAddress,
+    beneficiary: currentWalletAddress,
     claimedAmount: BigNumber.from('200000000000000000000'),
     counterOfferAmount: null,
     resolvedAmount: BigNumber.from(0),
+    open: true,
     status: 6,
     statusUpdatedAt: BigNumber.from(1652191585),
     statusUpdatedBy: 2,
@@ -180,11 +190,12 @@ const mockContractData = [
     policyId: BigNumber.from(121),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
-    beneficiary: '0x-some-account-03',
+    claimant: currentWalletAddress,
+    beneficiary: currentWalletAddress,
     claimedAmount: BigNumber.from('200000000000000000000'),
     counterOfferAmount: BigNumber.from('150000000000000000000'),
     resolvedAmount: null,
+    open: true,
     status: 4,
     statusUpdatedAt: BigNumber.from(1652191585),
     statusUpdatedBy: 0,
@@ -195,17 +206,50 @@ const mockContractData = [
     policyId: BigNumber.from(131),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
-    beneficiary: '0x-some-account-03',
+    claimant: currentWalletAddress,
+    beneficiary: currentWalletAddress,
     claimedAmount: BigNumber.from('200000000000000000000'),
     counterOfferAmount: null,
     resolvedAmount: null,
+    open: true,
     status: 1,
     statusUpdatedAt: BigNumber.from(1652191585),
     statusUpdatedBy: 0,
     transactionHash: null,
   },
+  {
+    claimId: BigNumber.from(5),
+    policyId: BigNumber.from(131),
+    evidence: '0B488144f946F1c6C1eFaB0F',
+    timestamp: BigNumber.from(1652191585),
+    claimant: currentWalletAddress,
+    beneficiary: currentWalletAddress,
+    claimedAmount: BigNumber.from('200000000000000000000'),
+    counterOfferAmount: null,
+    resolvedAmount: BigNumber.from('200000000000000000000'),
+    open: true,
+    status: 3,
+    statusUpdatedAt: BigNumber.from(1652191585),
+    statusUpdatedBy: 2,
+    transactionHash: null,
+  },
+  {
+    claimId: BigNumber.from(6),
+    policyId: BigNumber.from(131),
+    evidence: '0B488144f946F1c6C1eFaB0F',
+    timestamp: BigNumber.from(1652191585),
+    claimant: currentWalletAddress,
+    beneficiary: currentWalletAddress,
+    claimedAmount: BigNumber.from('200000000000000000000'),
+    counterOfferAmount: BigNumber.from('150000000000000000000'),
+    resolvedAmount: null,
+    open: true,
+    status: 5,
+    statusUpdatedAt: BigNumber.from(1652191585),
+    statusUpdatedBy: 2,
+    transactionHash: null,
+  },
 ];
 
-const mockOpenClaimIds = [BigNumber.from(1), BigNumber.from(2), BigNumber.from(3), BigNumber.from(4)];
+const mockUserClaimIds = mockContractData.map((c) => c.claimId);
 const sleep = () => new Promise((res) => setTimeout(res, 2000));

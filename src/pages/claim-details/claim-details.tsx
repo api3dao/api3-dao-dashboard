@@ -5,7 +5,7 @@ import BorderedBox, { Header } from '../../components/bordered-box';
 import ExternalLink from '../../components/external-link';
 import ClaimActions from './claim-actions';
 import { useChainData } from '../../chain-data';
-import { useClaimById } from '../../logic/claims';
+import { useUserClaimById } from '../../logic/claims';
 import { formatApi3, images } from '../../utils';
 import { format } from 'date-fns';
 import { DATE_FORMAT } from '../../components/timer';
@@ -18,7 +18,7 @@ interface Params {
 
 export default function ClaimDetails() {
   const { claimId } = useParams<Params>();
-  const { data: claim, loading, loaded } = useClaimById(claimId);
+  const { data: claim, loading, loaded } = useUserClaimById(claimId);
   const { provider, userAccount } = useChainData();
   if (!provider) {
     return (
@@ -39,7 +39,7 @@ export default function ClaimDetails() {
         </div>
         <h4 className={styles.heading}>Claim {claimId}</h4>
         {loading && <p className={globalStyles.secondaryColor}>Loading...</p>}
-        {loaded && <p>Unable to find claim with given id.</p>}
+        {loaded && <p>Unable to find your claim with given id.</p>}
       </BaseLayout>
     );
   }

@@ -15,12 +15,12 @@ export default function ClaimActions(props: Props) {
   const disableActions =
     claim.claimant !== props.currentAccount || !claim.open || status === 'submitting' || status === 'submitted';
 
-  // TODO Implement
+  // TODO DAO-151 Implement
   const handleAcceptCounter = () => {
     setStatus('submitting');
   };
 
-  // TODO Implement
+  // TODO DAO-151 Implement
   const handleAppeal = () => {
     setStatus('submitting');
   };

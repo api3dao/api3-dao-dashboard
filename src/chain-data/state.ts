@@ -167,8 +167,7 @@ export interface ChainData {
   transactions: { type: TransactionType; tx: ethers.ContractTransaction }[];
   vesting: Vesting | null;
   claims: {
-    activeIds: null | string[];
-    inactiveIds: null | string[];
+    userClaimIds: null | string[]; // All claim ids linked to the user's account
     byId: null | { [claimId: string]: Claim };
   };
 }
@@ -197,8 +196,7 @@ export const initialChainData: ChainData = {
   transactions: [],
   vesting: null,
   claims: {
-    activeIds: null,
-    inactiveIds: null,
+    userClaimIds: null,
     byId: null,
   },
 };

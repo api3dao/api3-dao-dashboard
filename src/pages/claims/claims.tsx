@@ -5,12 +5,12 @@ import Button from '../../components/button';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import ClaimList from './claim-list';
 import { useChainData } from '../../chain-data';
-import { useActiveClaims } from '../../logic/claims';
+import { useUserClaims } from '../../logic/claims';
 import styles from './claims.module.scss';
 
 export default function Claims() {
   const { provider, setChainData } = useChainData();
-  const { data: claims, loading } = useActiveClaims();
+  const { data: claims, loading } = useUserClaims();
 
   if (!provider) {
     return (
@@ -55,7 +55,7 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
         noMobileBorders
         header={
           <Header>
-            <h5>Active Claims</h5>
+            <h5>My Claims</h5>
           </Header>
         }
         content={props.children}
