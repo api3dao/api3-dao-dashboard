@@ -12,7 +12,6 @@ import { useUserClaims } from '../../logic/claims';
 import styles from './claims.module.scss';
 
 export default function Claims() {
-  const { provider, setChainData } = useChainData();
   const { data: claims, loading } = useUserClaims();
 
   const params = useQueryParams();
@@ -31,6 +30,7 @@ export default function Claims() {
     }
   }, [claims, filter]);
 
+  const { provider, setChainData } = useChainData();
   if (!provider) {
     return (
       <ClaimsLayout>

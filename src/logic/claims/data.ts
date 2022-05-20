@@ -113,10 +113,7 @@ async function loadClaimsByIds(claimIds: string[]) {
         transactionHash: claimData.transactionHash,
       };
 
-      if (claim.open) {
-        claim.deadline = calculateDeadline(claim);
-      }
-
+      claim.deadline = calculateDeadline(claim);
       acc[claim.claimId] = claim;
       return acc;
     }, {} as Record<string, Claim>);
@@ -154,23 +151,7 @@ function calculateDeadline(claim: Claim) {
 const currentWalletAddress = process.env.REACT_APP_LOCAL_WALLET_ADDRESS || '0x15asde3EF0B4881432948kajds0aB0FED112334s';
 const mockContractData = [
   {
-    claimId: BigNumber.from(1),
-    policyId: BigNumber.from(101),
-    evidence: '0B488144f946F1c6C1eFaB0F',
-    timestamp: BigNumber.from(Math.round(addDays(new Date(), -4).getTime() / 1000)),
-    claimant: currentWalletAddress,
-    beneficiary: currentWalletAddress,
-    claimedAmount: BigNumber.from('100000000000000000000'),
-    counterOfferAmount: BigNumber.from('70000000000000000000'),
-    resolvedAmount: null,
-    open: true,
-    status: 2,
-    statusUpdatedAt: BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
-    statusUpdatedBy: 1,
-    transactionHash: null,
-  },
-  {
-    claimId: BigNumber.from(2),
+    claimId: BigNumber.from(22),
     policyId: BigNumber.from(111),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
@@ -186,7 +167,7 @@ const mockContractData = [
     transactionHash: null,
   },
   {
-    claimId: BigNumber.from(3),
+    claimId: BigNumber.from(43),
     policyId: BigNumber.from(121),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
@@ -202,7 +183,7 @@ const mockContractData = [
     transactionHash: null,
   },
   {
-    claimId: BigNumber.from(4),
+    claimId: BigNumber.from(54),
     policyId: BigNumber.from(131),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
@@ -218,7 +199,7 @@ const mockContractData = [
     transactionHash: null,
   },
   {
-    claimId: BigNumber.from(5),
+    claimId: BigNumber.from(75),
     policyId: BigNumber.from(131),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
@@ -234,7 +215,7 @@ const mockContractData = [
     transactionHash: null,
   },
   {
-    claimId: BigNumber.from(6),
+    claimId: BigNumber.from(86),
     policyId: BigNumber.from(131),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
@@ -247,6 +228,22 @@ const mockContractData = [
     status: 5,
     statusUpdatedAt: BigNumber.from(1652191585),
     statusUpdatedBy: 2,
+    transactionHash: null,
+  },
+  {
+    claimId: BigNumber.from(91),
+    policyId: BigNumber.from(101),
+    evidence: '0B488144f946F1c6C1eFaB0F',
+    timestamp: BigNumber.from(Math.round(addDays(new Date(), -4).getTime() / 1000)),
+    claimant: currentWalletAddress,
+    beneficiary: currentWalletAddress,
+    claimedAmount: BigNumber.from('100000000000000000000'),
+    counterOfferAmount: BigNumber.from('70000000000000000000'),
+    resolvedAmount: null,
+    open: true,
+    status: 2,
+    statusUpdatedAt: BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
+    statusUpdatedBy: 1,
     transactionHash: null,
   },
 ];

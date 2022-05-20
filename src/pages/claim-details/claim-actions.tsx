@@ -3,6 +3,7 @@ import Button from '../../components/button';
 import { abbrStr, Claim } from '../../chain-data';
 import styles from './claim-actions.module.scss';
 import { formatApi3 } from '../../utils';
+import { isAfter } from 'date-fns';
 
 interface Props {
   claim: Claim;
@@ -11,7 +12,8 @@ interface Props {
 export default function ClaimActions(props: Props) {
   const { claim } = props;
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
-  const disableActions = !claim.open || status === 'submitting' || status === 'submitted';
+  const isPastDeadline = claim.deadline ? isAfter(new Date(), claim.deadline) : false;
+  const disableActions = !claim.open || isPastDeadline || status === 'submitting' || status === 'submitted';
 
   // TODO DAO-151 Implement
   const handleAcceptCounter = () => {
@@ -23,6 +25,7 @@ export default function ClaimActions(props: Props) {
     setStatus('submitting');
   };
 
+  // TODO DAO-151 Add additional info messages for the different statuses
   switch (claim.status) {
     case 'Submitted':
       return (

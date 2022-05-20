@@ -5,11 +5,11 @@ import { images } from '../../utils';
 import { Claim } from '../../chain-data';
 import styles from './claim-list.module.scss';
 
-interface ClaimListProps {
+interface Props {
   claims: Claim[];
 }
 
-export default function ClaimList(props: ClaimListProps) {
+export default function ClaimList(props: Props) {
   return (
     <ul className={styles.claimList}>
       {props.claims.map((claim) => (

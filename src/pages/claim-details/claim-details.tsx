@@ -1,14 +1,15 @@
-import { BaseLayout } from '../../components/layout';
-import { useParams } from 'react-router';
+import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { BaseLayout } from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import ExternalLink from '../../components/external-link';
+import Timer, { DATE_FORMAT } from '../../components/timer';
 import ClaimActions from './claim-actions';
+import { useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { useUserClaimById } from '../../logic/claims';
-import { formatApi3, images } from '../../utils';
 import { format } from 'date-fns';
-import { DATE_FORMAT } from '../../components/timer';
+import { formatApi3, images } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-details.module.scss';
 
@@ -30,31 +31,24 @@ export default function ClaimDetails() {
 
   if (!claim) {
     return (
-      <BaseLayout subtitle={`Claim ${claimId}`}>
-        <div>
-          <Link to="/claims" className={styles.backLink}>
-            <img src={images.arrowLeft} alt="back" />
-            Back
-          </Link>
+      <ClaimDetailsLayout claimId={claimId}>
+        <div className={styles.detailsHeader}>
+          <h4>Claim {claimId}</h4>
         </div>
-        <h4 className={styles.heading}>Claim {claimId}</h4>
         {loading && <p className={globalStyles.secondaryColor}>Loading...</p>}
         {loaded && <p>Unable to find your claim with given id.</p>}
-      </BaseLayout>
+      </ClaimDetailsLayout>
     );
   }
 
   const evidenceHref = `https://ipfs.io/ipfs/${claim.evidence}`;
   const transactionHref = claim.transactionHash ? `https://etherscan.io/tx/${claim.transactionHash}` : null;
   return (
-    <BaseLayout subtitle={`Claim ${claimId}`}>
-      <div>
-        <Link to="/claims" className={styles.backLink}>
-          <img src={images.arrowLeft} alt="back" />
-          Back
-        </Link>
+    <ClaimDetailsLayout claimId={claimId}>
+      <div className={styles.detailsHeader}>
+        <h4>Claim {claimId}</h4>
+        {claim.deadline && <Timer size="large" deadline={claim.deadline} showDeadline />}
       </div>
-      <h4 className={styles.heading}>Claim {claimId}</h4>
       <ClaimActions claim={claim} />
       <BorderedBox
         noMobileBorders
@@ -98,6 +92,25 @@ export default function ClaimDetails() {
           </div>
         }
       />
+    </ClaimDetailsLayout>
+  );
+}
+
+interface ClaimDetailsLayoutProps {
+  claimId: string;
+  children: ReactNode;
+}
+
+function ClaimDetailsLayout(props: ClaimDetailsLayoutProps) {
+  return (
+    <BaseLayout subtitle={`Claim ${props.claimId}`}>
+      <div>
+        <Link to="/claims" className={styles.backLink}>
+          <img src={images.arrowLeft} alt="back" />
+          Back
+        </Link>
+      </div>
+      {props.children}
     </BaseLayout>
   );
 }
