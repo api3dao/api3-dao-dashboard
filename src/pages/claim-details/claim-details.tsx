@@ -19,7 +19,7 @@ interface Params {
 
 export default function ClaimDetails() {
   const { claimId } = useParams<Params>();
-  const { data: claim, loading, loaded } = useUserClaimById(claimId);
+  const { data: claim, status } = useUserClaimById(claimId);
   const { provider } = useChainData();
 
   if (!provider) {
@@ -36,8 +36,8 @@ export default function ClaimDetails() {
         <div className={styles.detailsHeader}>
           <h4>Claim {claimId}</h4>
         </div>
-        {loading && <p className={globalStyles.secondaryColor}>Loading...</p>}
-        {loaded && <p>Unable to find your claim with given id.</p>}
+        {status === 'loading' && <p className={globalStyles.secondaryColor}>Loading...</p>}
+        {status === 'loaded' && <p>Unable to find your claim with given id.</p>}
       </ClaimDetailsLayout>
     );
   }

@@ -17,7 +17,7 @@ export function useUserClaims() {
       .sort((a, b) => parseInt(b.claimId) - parseInt(a.claimId));
   }, [claims]);
 
-  const [status, setStatus] = useState<'idle' | 'loading' | 'resolved' | 'failed'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
   const loadUserClaims = useCallback(async () => {
     if (!provider) return;
 
@@ -30,6 +30,7 @@ export function useUserClaims() {
         claimsById,
       };
     });
+
     if (!result.success) {
       notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
       setStatus('failed');
@@ -43,14 +44,14 @@ export function useUserClaims() {
         state.claims.byId = { ...state.claims.byId, ...result.data.claimsById };
       })
     );
-    setStatus('resolved');
+    setStatus('loaded');
   }, [provider, setChainData]);
 
   usePossibleChainDataUpdate(loadUserClaims);
 
   return {
     data: sortedClaims,
-    loading: status === 'loading',
+    status,
   };
 }
 
@@ -58,7 +59,7 @@ export function useUserClaimById(claimId: string) {
   const { provider, setChainData, claims } = useChainData();
   const data = claims.byId?.[claimId] || null;
 
-  const [status, setStatus] = useState<'idle' | 'loading' | 'resolved' | 'failed'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
   const loadUserClaim = useCallback(async () => {
     if (!provider) return;
 
@@ -70,6 +71,7 @@ export function useUserClaimById(claimId: string) {
       }
       return await loadClaimsByIds([claimId]);
     });
+
     if (!result.success) {
       notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
       setStatus('failed');
@@ -82,15 +84,14 @@ export function useUserClaimById(claimId: string) {
         state.claims.byId = { ...state.claims.byId, ...result.data };
       })
     );
-    setStatus('resolved');
+    setStatus('loaded');
   }, [claimId, provider, setChainData]);
 
   usePossibleChainDataUpdate(loadUserClaim);
 
   return {
     data,
-    loading: status === 'loading',
-    loaded: status === 'resolved',
+    status,
   };
 }
 

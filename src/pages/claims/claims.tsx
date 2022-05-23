@@ -12,7 +12,7 @@ import { useUserClaims } from '../../logic/claims';
 import styles from './claims.module.scss';
 
 export default function Claims() {
-  const { data: claims, loading } = useUserClaims();
+  const { data: claims, status } = useUserClaims();
 
   const params = useQueryParams();
   const filter = params.get('filter');
@@ -47,7 +47,7 @@ export default function Claims() {
   if (!claims) {
     return (
       <ClaimsLayout>
-        <p className={styles.emptyState}>{loading ? 'Loading...' : null}</p>
+        <p className={styles.emptyState}>{status === 'loading' ? 'Loading...' : null}</p>
       </ClaimsLayout>
     );
   }
