@@ -57,7 +57,7 @@ export default function Claims() {
       {filteredClaims.length > 0 ? (
         <ClaimList claims={filteredClaims} />
       ) : claims.length === 0 ? (
-        <p className={styles.emptyState}>There are claims linked to your account.</p>
+        <p className={styles.emptyState}>There are no claims linked to your account.</p>
       ) : (
         <p className={styles.emptyState}>There are no matching claims.</p>
       )}

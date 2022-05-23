@@ -13,13 +13,14 @@ export function useUserClaims() {
     if (!claims.userClaimIds) return null;
     // Sort by claim id in descending order
     return claims.userClaimIds
-      .map((claimId) => claims.byId?.[claimId]!)
+      .map((claimId) => claims.byId![claimId]!)
       .sort((a, b) => parseInt(b.claimId) - parseInt(a.claimId));
   }, [claims]);
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'resolved' | 'failed'>('idle');
   const loadUserClaims = useCallback(async () => {
     if (!provider) return;
+
     setStatus('loading');
     const result = await go(async () => {
       const userClaimIds = mockUserClaimIds.map((id) => id.toString());
@@ -34,6 +35,7 @@ export function useUserClaims() {
       setStatus('failed');
       return;
     }
+
     setChainData(
       'Loaded claims',
       updateImmutablyCurried((state) => {
@@ -59,6 +61,7 @@ export function useUserClaimById(claimId: string) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'resolved' | 'failed'>('idle');
   const loadUserClaim = useCallback(async () => {
     if (!provider) return;
+
     setStatus('loading');
     const result = await go(async () => {
       const userClaimIds = mockUserClaimIds.map((id) => id.toString());
@@ -72,6 +75,7 @@ export function useUserClaimById(claimId: string) {
       setStatus('failed');
       return;
     }
+
     setChainData(
       'Loaded claim',
       updateImmutablyCurried((state) => {
@@ -148,15 +152,14 @@ function calculateDeadline(claim: Claim) {
 }
 
 // TODO DAO-151 Remove mock data
-const currentWalletAddress = process.env.REACT_APP_LOCAL_WALLET_ADDRESS || '0x15asde3EF0B4881432948kajds0aB0FED112334s';
 const mockContractData = [
   {
     claimId: BigNumber.from(22),
     policyId: BigNumber.from(111),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: currentWalletAddress,
-    beneficiary: currentWalletAddress,
+    claimant: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
+    beneficiary: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
     claimedAmount: BigNumber.from('200000000000000000000'),
     counterOfferAmount: null,
     resolvedAmount: BigNumber.from(0),
@@ -171,8 +174,8 @@ const mockContractData = [
     policyId: BigNumber.from(121),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: currentWalletAddress,
-    beneficiary: currentWalletAddress,
+    claimant: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
+    beneficiary: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
     claimedAmount: BigNumber.from('200000000000000000000'),
     counterOfferAmount: BigNumber.from('150000000000000000000'),
     resolvedAmount: null,
@@ -187,8 +190,8 @@ const mockContractData = [
     policyId: BigNumber.from(131),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: currentWalletAddress,
-    beneficiary: currentWalletAddress,
+    claimant: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
+    beneficiary: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
     claimedAmount: BigNumber.from('200000000000000000000'),
     counterOfferAmount: null,
     resolvedAmount: null,
@@ -203,8 +206,8 @@ const mockContractData = [
     policyId: BigNumber.from(131),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: currentWalletAddress,
-    beneficiary: currentWalletAddress,
+    claimant: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
+    beneficiary: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
     claimedAmount: BigNumber.from('200000000000000000000'),
     counterOfferAmount: null,
     resolvedAmount: BigNumber.from('200000000000000000000'),
@@ -219,8 +222,8 @@ const mockContractData = [
     policyId: BigNumber.from(131),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(1652191585),
-    claimant: currentWalletAddress,
-    beneficiary: currentWalletAddress,
+    claimant: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
+    beneficiary: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
     claimedAmount: BigNumber.from('200000000000000000000'),
     counterOfferAmount: BigNumber.from('150000000000000000000'),
     resolvedAmount: null,
@@ -235,8 +238,8 @@ const mockContractData = [
     policyId: BigNumber.from(101),
     evidence: '0B488144f946F1c6C1eFaB0F',
     timestamp: BigNumber.from(Math.round(addDays(new Date(), -4).getTime() / 1000)),
-    claimant: currentWalletAddress,
-    beneficiary: currentWalletAddress,
+    claimant: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
+    beneficiary: '0x15asde3EF0B4881432948kajds0aB0FED112334s',
     claimedAmount: BigNumber.from('100000000000000000000'),
     counterOfferAmount: BigNumber.from('70000000000000000000'),
     resolvedAmount: null,

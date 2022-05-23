@@ -167,7 +167,7 @@ export interface ChainData {
   transactions: { type: TransactionType; tx: ethers.ContractTransaction }[];
   vesting: Vesting | null;
   claims: {
-    userClaimIds: null | string[]; // All claim ids linked to the user's account
+    userClaimIds: null | string[]; // All the claim ids that are linked to the user's account
     byId: null | { [claimId: string]: Claim };
   };
 }

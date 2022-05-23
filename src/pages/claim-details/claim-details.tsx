@@ -21,6 +21,7 @@ export default function ClaimDetails() {
   const { claimId } = useParams<Params>();
   const { data: claim, loading, loaded } = useUserClaimById(claimId);
   const { provider } = useChainData();
+
   if (!provider) {
     return (
       <BaseLayout subtitle={`Claim ${claimId}`}>
@@ -42,7 +43,6 @@ export default function ClaimDetails() {
   }
 
   const evidenceHref = `https://ipfs.io/ipfs/${claim.evidence}`;
-  const transactionHref = claim.transactionHash ? `https://etherscan.io/tx/${claim.transactionHash}` : null;
   return (
     <ClaimDetailsLayout claimId={claimId}>
       <div className={styles.detailsHeader}>
@@ -80,14 +80,6 @@ export default function ClaimDetails() {
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Payout Address</p>
               <p className={globalStyles.secondaryColor}>{claim.beneficiary}</p>
-            </div>
-            <div className={styles.detailsItem}>
-              <p className={globalStyles.bold}>Payout Transaction</p>
-              {transactionHref ? (
-                <ExternalLink href={transactionHref}>{transactionHref}</ExternalLink>
-              ) : (
-                <p className={globalStyles.secondaryColor}>-</p>
-              )}
             </div>
           </div>
         }

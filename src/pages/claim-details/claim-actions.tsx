@@ -135,7 +135,7 @@ export default function ClaimActions(props: Props) {
         </div>
       );
 
-    default:
+    case 'None':
       return null;
   }
 }

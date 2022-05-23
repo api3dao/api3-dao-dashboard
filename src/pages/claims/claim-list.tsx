@@ -47,6 +47,7 @@ interface ClaimStatusProps {
 
 function ClaimStatus(props: ClaimStatusProps) {
   const { claim } = props;
+
   switch (claim.status) {
     case 'Submitted':
       return <>Processing</>;
@@ -60,7 +61,7 @@ function ClaimStatus(props: ClaimStatusProps) {
       return <>Accepted Counter</>;
     case 'Rejected':
       return <>Rejected</>;
-    default:
+    case 'None':
       return null;
   }
 }

@@ -31,6 +31,7 @@ describe('<ClaimActions />', () => {
     it('shows that the claim is in progress', () => {
       claim.status = 'Submitted';
       claim.statusUpdatedBy = 'claimant';
+
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
@@ -43,6 +44,7 @@ describe('<ClaimActions />', () => {
       claim.status = 'MediationOffered';
       claim.statusUpdatedBy = 'mediator';
       claim.counterOfferAmount = BigNumber.from('60000000000000000000');
+
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
@@ -58,6 +60,7 @@ describe('<ClaimActions />', () => {
       claim.statusUpdatedBy = 'mediator';
       claim.counterOfferAmount = BigNumber.from('60000000000000000000');
       claim.open = false;
+
       render(<ClaimActions claim={claim} />);
 
       const acceptButton = screen.getByRole('button', { name: /Accept Counter/i });
@@ -72,6 +75,7 @@ describe('<ClaimActions />', () => {
       claim.status = 'Accepted';
       claim.statusUpdatedBy = 'claimant';
       claim.counterOfferAmount = BigNumber.from('60000000000000000000');
+
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
@@ -84,6 +88,7 @@ describe('<ClaimActions />', () => {
     it('shows claimant has appealed to Kleros', () => {
       claim.status = 'Appealed';
       claim.statusUpdatedBy = 'claimant';
+
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
@@ -95,6 +100,7 @@ describe('<ClaimActions />', () => {
       claim.status = 'Appealed';
       claim.statusUpdatedBy = 'claimant';
       claim.counterOfferAmount = BigNumber.from('60000000000000000000');
+
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/Appealed counter of 60.0 API3 to Kleros/i)).toBeInTheDocument();
@@ -105,6 +111,7 @@ describe('<ClaimActions />', () => {
     it('enables the Escalate action', () => {
       claim.status = 'Rejected';
       claim.statusUpdatedBy = 'mediator';
+
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
@@ -117,6 +124,7 @@ describe('<ClaimActions />', () => {
       claim.status = 'Rejected';
       claim.statusUpdatedBy = 'mediator';
       claim.open = false;
+
       render(<ClaimActions claim={claim} />);
 
       const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
@@ -126,6 +134,7 @@ describe('<ClaimActions />', () => {
     it('provides an Appeal action when Kleros is involved', () => {
       claim.status = 'Rejected';
       claim.statusUpdatedBy = 'arbitrator';
+
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
@@ -138,6 +147,7 @@ describe('<ClaimActions />', () => {
       claim.status = 'Rejected';
       claim.statusUpdatedBy = 'arbitrator';
       claim.open = false;
+
       render(<ClaimActions claim={claim} />);
 
       const appealButton = screen.getByRole('button', { name: /Appeal/i });
@@ -150,6 +160,7 @@ describe('<ClaimActions />', () => {
       claim.status = 'Resolved';
       claim.statusUpdatedBy = 'mediator';
       claim.resolvedAmount = BigNumber.from('60000000000000000000');
+
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
@@ -162,6 +173,7 @@ describe('<ClaimActions />', () => {
       claim.statusUpdatedBy = 'arbitrator';
       claim.counterOfferAmount = BigNumber.from('60000000000000000000');
       claim.resolvedAmount = BigNumber.from('65000000000000000000');
+
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
@@ -176,6 +188,7 @@ describe('<ClaimActions />', () => {
       claim.counterOfferAmount = BigNumber.from('60000000000000000000');
       claim.resolvedAmount = BigNumber.from('65000000000000000000');
       claim.open = false;
+
       render(<ClaimActions claim={claim} />);
 
       const appealButton = screen.getByRole('button', { name: /Appeal/i });
