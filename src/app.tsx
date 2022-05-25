@@ -14,6 +14,8 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
+import Claims from './pages/claims';
+import ClaimDetails from './pages/claim-details';
 import './styles/variables.module.scss';
 
 const ErrorBoundary: FallbackRender = (props) => {
@@ -58,6 +60,12 @@ const AppContent = () => {
           </Route>
           <Route path="/vesting" exact>
             <Vesting />
+          </Route>
+          <Route path="/claims/:claimId" exact>
+            <ClaimDetails />
+          </Route>
+          <Route path="/claims" exact>
+            <Claims />
           </Route>
           <Route path="/" exact>
             <Dashboard />

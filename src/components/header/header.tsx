@@ -9,8 +9,10 @@ const Header = ({ title, subtitle }: Props) => {
   return (
     <div className={styles.header}>
       {subtitle && <div className={styles.headerSubtitle}>{subtitle}</div>}
-      <p className={styles.headerTitle}>{title}</p>
-      <p className={styles.headerLargeTitle}>{title}</p>
+      <p aria-hidden className={styles.headerTitle}>
+        {title}
+      </p>
+      <h1 className={styles.headerLargeTitle}>{title}</h1>
     </div>
   );
 };

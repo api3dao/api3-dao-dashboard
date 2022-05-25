@@ -118,6 +118,36 @@ interface Vesting {
   remainingToWithdraw: BigNumber;
 }
 
+export interface Claim {
+  claimId: string;
+  policyId: string;
+  evidence: string;
+  timestamp: Date;
+  claimant: string;
+  beneficiary: string;
+  claimedAmount: BigNumber;
+  counterOfferAmount: null | BigNumber;
+  resolvedAmount: null | BigNumber;
+  open: boolean;
+  status: ClaimStatusText;
+  statusUpdatedAt: Date;
+  statusUpdatedBy: 'claimant' | 'mediator' | 'arbitrator';
+  deadline: null | Date;
+  transactionHash: null | string;
+}
+
+export const ClaimStatuses = {
+  0: 'None',
+  1: 'Submitted',
+  2: 'MediationOffered',
+  3: 'Resolved',
+  4: 'Appealed',
+  5: 'Accepted',
+  6: 'Rejected',
+} as const;
+export type ClaimStatus = keyof typeof ClaimStatuses;
+export type ClaimStatusText = typeof ClaimStatuses[ClaimStatus];
+
 export interface ChainData {
   // TODO: move the following fields to a separate interface called GenericChainData
   provider: ethers.providers.Web3Provider | null;
@@ -136,6 +166,10 @@ export interface ChainData {
   delegation: Delegation | null;
   transactions: { type: TransactionType; tx: ethers.ContractTransaction }[];
   vesting: Vesting | null;
+  claims: {
+    userClaimIds: null | string[]; // All the claim ids that are linked to the user's account
+    byId: null | { [claimId: string]: Claim };
+  };
 }
 
 export interface SettableChainData extends ChainData {
@@ -161,6 +195,10 @@ export const initialChainData: ChainData = {
   delegation: null,
   transactions: [],
   vesting: null,
+  claims: {
+    userClaimIds: null,
+    byId: null,
+  },
 };
 
 export const initialSettableChainData: SettableChainData = { ...initialChainData, setChainData: () => {} };

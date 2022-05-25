@@ -1,0 +1,40 @@
+@import '../../styles/variables.module.scss';
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  color: $secondary-color;
+  text-decoration: none;
+  font-size: $text-small;
+  line-height: $lh-small;
+}
+
+.detailsHeader {
+  margin-bottom: $space-lg;
+
+  @media (min-width: $min-md) {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.detailsSection {
+  margin: 0 2 * $space-xl 2 * $space-xl;
+
+  @media (max-width: $max-md) {
+    font-size: $text-small;
+    line-height: $lh-small;
+    margin: 0 0 $space-xxl;
+  }
+}
+
+.detailsItem {
+  margin-top: $space-xl;
+  word-break: break-word;
+  & > * {
+    margin-bottom: $space-xxs;
+  }
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+}

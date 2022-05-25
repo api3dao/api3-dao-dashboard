@@ -10,9 +10,10 @@ type Props = {
   checked: boolean;
   type?: 'radio' | 'checkbox';
   color: 'white' | 'pink' | 'green';
+  disabled?: boolean;
 };
 
-const RadioButton = ({ label, onChange, type = 'radio', checked, color }: Props) => {
+const RadioButton = ({ label, onChange, type = 'radio', checked, color, disabled }: Props) => {
   return (
     <div className={styles.radioButtonWrapper} tabIndex={0} onKeyPress={triggerOnEnter(onChange)}>
       <label
@@ -25,7 +26,14 @@ const RadioButton = ({ label, onChange, type = 'radio', checked, color }: Props)
         })}
       >
         {label}
-        <input tabIndex={-1} className={styles.radioButtonInput} type={type} onChange={onChange} checked={checked} />
+        <input
+          tabIndex={-1}
+          className={styles.radioButtonInput}
+          type={type}
+          onChange={onChange}
+          checked={checked}
+          disabled={disabled}
+        />
         <span className={classNames(styles.radioButtonCheckmark, { [styles.checkbox]: type === 'checkbox' })}>
           {type === 'checkbox' && <img src={images.checkBlack} alt="check icon" />}
         </span>
