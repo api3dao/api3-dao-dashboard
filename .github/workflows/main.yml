@@ -53,14 +53,14 @@ jobs:
           path: |
             node_modules
             */*/node_modules
-          key: modules-${{ hashFiles('**/yarn.lock') }}
+          key: modules-v2-${{ hashFiles('**/yarn.lock') }}
       - name: Cache cypress
         id: cypress-cache
         uses: actions/cache@v2
         with:
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-cypress-v2-${{ hashFiles('**/yarn.lock') }}
           path: ~/.cache/Cypress
-          restore-keys: ${{ runner.os }}-cypress-
+          restore-keys: ${{ runner.os }}-cypress-v2-
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
       - name: Increase file watcher limit
