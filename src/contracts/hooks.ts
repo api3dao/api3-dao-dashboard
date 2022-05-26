@@ -10,6 +10,8 @@ import {
   TimelockManager__factory as TimelockManagerFactory,
 } from '../generated-contracts';
 import { initialChainData } from '../chain-data/state';
+// TODO Remove and delete JSON file
+import ClaimsManagerJson from './ClaimsManagerWithKlerosArbitrator.json';
 
 export const useApi3Pool = () => {
   const { provider, contracts, signer } = useChainData();
@@ -76,6 +78,17 @@ export const useTimelockManager = () => {
 
     return TimelockManagerFactory.connect(contracts.timelockManager, provider.getSigner());
   }, [provider, contracts]);
+};
+
+export const useClaimsManager = () => {
+  const { provider, signer } = useChainData();
+
+  return useMemo(() => {
+    if (!provider || !signer) return null;
+
+    // TODO Use factory
+    return new ethers.Contract('0x99dBE4AEa58E518C50a1c04aE9b48C9F6354612f', ClaimsManagerJson.abi, signer);
+  }, [provider, signer]);
 };
 
 /**
