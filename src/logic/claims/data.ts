@@ -11,27 +11,6 @@ export function useUserClaims() {
   const { userAccount, claims, setChainData } = useChainData();
   const claimsManager = useClaimsManager();
 
-  // useEffect(() => {
-  //   if (!claimsManager) return;
-  //
-  //   async function testMulticall() {
-  //     // @ts-ignore
-  //     const filter = claimsManager.filters.CreatedClaim(null, userAccount);
-  //     // @ts-ignore
-  //     const createdEvents = await claimsManager.queryFilter(filter);
-  //     const calls = createdEvents.map((event) =>
-  //       // @ts-ignore
-  //       claimsManager.interface.encodeFunctionData('getClaim(uint256)', [event.args.claimIndex])
-  //     );
-  //     if (calls.length) {
-  //       // @ts-ignore
-  //       await claimsManager.multicall(calls);
-  //     }
-  //   }
-  //
-  //   testMulticall();
-  // }, []);
-
   const sortedClaims = useMemo(() => {
     if (!claims.userClaimIds) return null;
     // Sort by claim id in descending order
@@ -48,7 +27,6 @@ export function useUserClaims() {
     const result = await go(async () => {
       // @ts-ignore
       const filter = claimsManager.filters.CreatedClaim(null, userAccount);
-      // @ts-ignore
       const createdEvents = await claimsManager.queryFilter(filter);
       const userClaimIds = createdEvents.map((event) => event.args!.claimIndex.toString());
       const claimsById = await loadClaimsByCreatedEvents(claimsManager, createdEvents);
@@ -123,13 +101,24 @@ export function useUserClaimById(claimId: string) {
   };
 }
 
-async function loadClaimsByCreatedEvents(contract: any, createdEvents: any[]) {
-  // TODO DAO-151 Remove the sleep
+// TODO Sort out these types after the typechain stuff
+async function loadClaimsByCreatedEvents(contract: any, createdEvents: any[]): Promise<Record<string, Claim>> {
+  // TODO Remove the sleep
   await sleep();
-  const claims = await Promise.all(createdEvents.map((event) => contract.claims(event.args.claimIndex)));
+  if (!createdEvents.length) {
+    return {};
+  }
 
-  return claims.reduce((acc, claimData) => {
-    const event = createdEvents.find((ev) => ev.args.claimIndex.toString() === claimData.claimIndex.toString());
+  const calls = createdEvents.map((event) => {
+    return contract.interface.encodeFunctionData('claims(uint256)', [event.args.claimIndex]);
+  });
+  const encodedResults: string[] = await contract.callStatic.multicall(calls);
+  const claims = encodedResults.map((res) => {
+    return contract.interface.decodeFunctionResult('claims(uint256)', res);
+  });
+
+  return createdEvents.reduce((acc, event, index) => {
+    const claimData = claims[index];
 
     const claim: Claim = {
       claimId: event.args.claimIndex.toString(),
