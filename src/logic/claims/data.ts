@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { BigNumber } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { go } from '@api3/promise-utils';
 import { addDays } from 'date-fns';
 import { blockTimestampToDate, messages } from '../../utils';
@@ -24,17 +24,7 @@ export function useUserClaims() {
     if (!claimsManager) return;
 
     setStatus('loading');
-    const result = await go(async () => {
-      // @ts-ignore
-      const filter = claimsManager.filters.CreatedClaim(null, userAccount);
-      const createdEvents = await claimsManager.queryFilter(filter);
-      const userClaimIds = createdEvents.map((event) => event.args!.claimIndex.toString());
-      const claimsById = await loadClaimsByCreatedEvents(claimsManager, createdEvents);
-      return {
-        userClaimIds,
-        claimsById,
-      };
-    });
+    const result = await go(() => loadClaims(claimsManager, { userAccount }));
 
     if (!result.success) {
       notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
@@ -45,8 +35,8 @@ export function useUserClaims() {
     setChainData(
       'Loaded claims',
       updateImmutablyCurried((state) => {
-        state.claims.userClaimIds = result.data.userClaimIds;
-        state.claims.byId = { ...state.claims.byId, ...result.data.claimsById };
+        state.claims.userClaimIds = result.data.ids;
+        state.claims.byId = { ...state.claims.byId, ...result.data.byId };
       })
     );
     setStatus('loaded');
@@ -70,13 +60,7 @@ export function useUserClaimById(claimId: string) {
     if (!claimsManager) return;
 
     setStatus('loading');
-    const result = await go(async () => {
-      // @ts-ignore
-      const filter = claimsManager.filters.CreatedClaim(BigNumber.from(claimId), userAccount);
-      // @ts-ignore
-      const createdEvents = await claimsManager.queryFilter(filter);
-      return await loadClaimsByCreatedEvents(claimsManager, createdEvents);
-    });
+    const result = await go(() => loadClaims(claimsManager, { userAccount, claimId: BigNumber.from(claimId) }));
 
     if (!result.success) {
       notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
@@ -87,7 +71,7 @@ export function useUserClaimById(claimId: string) {
     setChainData(
       'Loaded claim',
       updateImmutablyCurried((state) => {
-        state.claims.byId = { ...state.claims.byId, ...result.data };
+        state.claims.byId = { ...state.claims.byId, ...result.data.byId };
       })
     );
     setStatus('loaded');
@@ -101,34 +85,53 @@ export function useUserClaimById(claimId: string) {
   };
 }
 
-// TODO Sort out these types after the typechain stuff
-async function loadClaimsByCreatedEvents(contract: any, createdEvents: any[]): Promise<Record<string, Claim>> {
+// TODO Sort out these types after the typechain stuff (includes removing @ts-expect-error usages)
+async function loadClaims(
+  contract: Contract,
+  params: { userAccount?: string; claimId?: BigNumber }
+): Promise<{ ids: string[]; byId: Record<string, Claim> }> {
   // TODO Remove the sleep
   await sleep();
+
+  const { userAccount = null, claimId = null } = params;
+  // Get all the static data via events
+  const [createdEvents, counterOfferEvents] = await Promise.all([
+    // @ts-expect-error
+    contract.queryFilter(contract.filters.CreatedClaim(claimId, userAccount)),
+    // @ts-expect-error
+    contract.queryFilter(contract.filters.ProposedSettlement(claimId, userAccount)),
+  ]);
+
   if (!createdEvents.length) {
-    return {};
+    return { ids: [], byId: {} };
   }
 
+  // Get all dynamic data (status etc) via a single call
   const calls = createdEvents.map((event) => {
-    return contract.interface.encodeFunctionData('claims(uint256)', [event.args.claimIndex]);
+    return contract.interface.encodeFunctionData('claims(uint256)', [event.args!.claimIndex]);
   });
+  // @ts-expect-error
   const encodedResults: string[] = await contract.callStatic.multicall(calls);
   const claims = encodedResults.map((res) => {
     return contract.interface.decodeFunctionResult('claims(uint256)', res);
   });
 
-  return createdEvents.reduce((acc, event, index) => {
-    const claimData = claims[index];
+  // Combine the static and dynamic data
+  const claimsById = createdEvents.reduce((acc, event, index) => {
+    const eventArgs = event.args!;
+    const claimId = eventArgs.claimIndex.toString();
+    const counterOfferEvent = counterOfferEvents.find((ev) => ev.args!.claimIndex.toString() === claimId);
+    const claimData = claims[index]!;
 
     const claim: Claim = {
-      claimId: event.args.claimIndex.toString(),
-      policyId: event.args.policyHash.toString(),
-      evidence: event.args.evidence,
-      timestamp: blockTimestampToDate(event.args.claimCreationTime),
-      claimant: event.args.claimant,
-      beneficiary: event.args.beneficiary,
-      claimedAmount: event.args.claimAmount,
-      counterOfferAmount: null, // TODO
+      claimId,
+      policyId: eventArgs.policyHash.toString(),
+      evidence: eventArgs.evidence,
+      timestamp: blockTimestampToDate(eventArgs.claimCreationTime),
+      claimant: eventArgs.claimant,
+      beneficiary: eventArgs.beneficiary,
+      claimedAmount: eventArgs.claimAmount,
+      counterOfferAmount: counterOfferEvent ? counterOfferEvent.args!.amount : null,
       resolvedAmount: null, // TODO
       open: true, // TODO
       status: ClaimStatuses[claimData.status as ClaimStatus],
@@ -142,6 +145,11 @@ async function loadClaimsByCreatedEvents(contract: any, createdEvents: any[]): P
     acc[claim.claimId] = claim;
     return acc;
   }, {} as Record<string, Claim>);
+
+  return {
+    ids: createdEvents.map((event) => event.args!.claimIndex.toString()),
+    byId: claimsById,
+  };
 }
 
 function calculateDeadline(claim: Claim) {
