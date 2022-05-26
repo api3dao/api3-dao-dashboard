@@ -1,0 +1,16 @@
+@import '../../styles/variables.module.scss';
+
+.heading {
+  margin-bottom: $space-xxl;
+  word-break: break-word;
+}
+
+.formList {
+  padding: 1.5ch;
+  li {
+    margin-bottom: $space-xl;
+  }
+  label {
+    font-weight: 500;
+  }
+}

@@ -136,6 +136,7 @@ export interface Claim {
   transactionHash: null | string;
 }
 
+// TODO Align statuses with contract
 export const ClaimStatuses = {
   0: 'None',
   1: 'Submitted',
@@ -147,6 +148,17 @@ export const ClaimStatuses = {
 } as const;
 export type ClaimStatus = keyof typeof ClaimStatuses;
 export type ClaimStatusText = typeof ClaimStatuses[ClaimStatus];
+
+export interface Policy {
+  policyId: string;
+  timestamp: Date;
+  claimant: string;
+  beneficiary: string;
+  coverageAmount: BigNumber;
+  startTime: Date;
+  endTime: Date;
+  ipfsHash: string;
+}
 
 export interface ChainData {
   // TODO: move the following fields to a separate interface called GenericChainData
@@ -169,6 +181,10 @@ export interface ChainData {
   claims: {
     userClaimIds: null | string[]; // All the claim ids that are linked to the user's account
     byId: null | { [claimId: string]: Claim };
+  };
+  policies: {
+    userPolicyIds: null | string[]; // All the policy ids that are linked to the user's account
+    byId: null | { [policyId: string]: Policy };
   };
 }
 
@@ -197,6 +213,10 @@ export const initialChainData: ChainData = {
   vesting: null,
   claims: {
     userClaimIds: null,
+    byId: null,
+  },
+  policies: {
+    userPolicyIds: null,
     byId: null,
   },
 };
