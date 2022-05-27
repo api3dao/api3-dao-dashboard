@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
 import { BigNumber, Contract } from 'ethers';
 import { go } from '@api3/promise-utils';
-import { addDays } from 'date-fns';
+import { addDays, isAfter } from 'date-fns';
 import { blockTimestampToDate, messages } from '../../utils';
-import { Claim, ClaimStatus, ClaimStatuses, updateImmutablyCurried, useChainData } from '../../chain-data';
+import { Claim, ClaimStatus, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { notifications } from '../../components/notifications';
 import { useClaimsManager, usePossibleChainDataUpdate } from '../../contracts';
 
@@ -106,7 +106,7 @@ async function loadClaims(
     return { ids: [], byId: {} };
   }
 
-  // Get all dynamic data (status etc) via a single call
+  // Get all the dynamic data (status etc) via a single call
   const calls = createdEvents.map((event) => {
     return contract.interface.encodeFunctionData('claims(uint256)', [event.args!.claimIndex]);
   });
@@ -121,24 +121,22 @@ async function loadClaims(
     const eventArgs = event.args!;
     const claimId = eventArgs.claimIndex.toString();
     const counterOfferEvent = counterOfferEvents.find((ev) => ev.args!.claimIndex.toString() === claimId);
+    const counterOfferAmount = counterOfferEvent?.args!.amount ?? null;
     const claimData = claims[index]!;
 
     const claim: Claim = {
       claimId,
-      policyId: eventArgs.policyHash.toString(),
+      policyId: eventArgs.policyHash,
       evidence: eventArgs.evidence,
       timestamp: blockTimestampToDate(eventArgs.claimCreationTime),
       claimant: eventArgs.claimant,
       beneficiary: eventArgs.beneficiary,
-      claimedAmount: eventArgs.claimAmount,
-      counterOfferAmount: counterOfferEvent ? counterOfferEvent.args!.amount : null,
-      resolvedAmount: null, // TODO
-      open: true, // TODO
-      status: ClaimStatuses[claimData.status as ClaimStatus],
+      claimAmount: eventArgs.claimAmount,
+      counterOfferAmount,
+      status: getStatusType(claimData.status, counterOfferAmount),
       statusUpdatedAt: blockTimestampToDate(claimData.updateTime),
-      statusUpdatedBy: 'claimant', // TODO
       deadline: null,
-      transactionHash: null, // TODO
+      transactionHash: event.transactionHash,
     };
 
     claim.deadline = calculateDeadline(claim);
@@ -152,20 +150,61 @@ async function loadClaims(
   };
 }
 
+function getStatusType(status: number, counterOfferAmount: null | BigNumber): ClaimStatus {
+  switch (status) {
+    case 0:
+      return 'None';
+    case 1:
+      return 'ClaimCreated';
+    case 2:
+      return 'ClaimAccepted';
+    case 3:
+      return counterOfferAmount?.gt(0) ? 'SettlementProposed' : 'ClaimRejected';
+    case 4:
+      return 'SettlementAccepted';
+    case 5:
+      return 'DisputeCreated';
+    case 6:
+      return 'DisputeResolvedWithoutPayout';
+    case 7:
+      return 'DisputeResolvedWithClaimPayout';
+    case 8:
+      return counterOfferAmount?.gt(0) ? 'DisputeResolvedWithSettlementPayout' : 'DisputeResolvedWithoutPayout';
+    case 9:
+      return 'TimedOut';
+    default:
+      throw new TypeError(`Unrecognized claim status: ${status}`);
+  }
+}
+
 function calculateDeadline(claim: Claim) {
   switch (claim.status) {
-    case 'Submitted':
-    case 'MediationOffered':
-    case 'Rejected':
+    case 'ClaimCreated':
+    case 'ClaimRejected':
+    case 'SettlementProposed':
+    case 'DisputeResolvedWithoutPayout':
+    case 'DisputeResolvedWithSettlementPayout':
       return addDays(claim.statusUpdatedAt, 3);
-    case 'Resolved':
-      if (claim.resolvedAmount !== claim.claimedAmount) {
-        // Kleros came back with an amount less than the original claim, so the user has 3 days to appeal
-        return addDays(claim.statusUpdatedAt, 3);
-      }
-      return null;
+    case 'DisputeCreated':
+      return addDays(claim.statusUpdatedAt, 40);
     default:
       return null;
+  }
+}
+
+export function isActive(claim: Claim) {
+  switch (claim.status) {
+    case 'ClaimAccepted':
+    case 'DisputeResolvedWithClaimPayout':
+    case 'TimedOut':
+    case 'None':
+      return false;
+    case 'ClaimRejected':
+    case 'DisputeResolvedWithoutPayout':
+    case 'DisputeResolvedWithSettlementPayout':
+      return isAfter(claim.deadline!, new Date());
+    default:
+      return true;
   }
 }
 

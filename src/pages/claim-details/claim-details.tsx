@@ -71,7 +71,7 @@ export default function ClaimDetails() {
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claim Amount</p>
-              <p className={globalStyles.secondaryColor}>{formatApi3(claim.claimedAmount)} API3</p>
+              <p className={globalStyles.secondaryColor}>{formatApi3(claim.claimAmount)} API3</p>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claimant</p>
