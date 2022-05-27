@@ -125,29 +125,26 @@ export interface Claim {
   timestamp: Date;
   claimant: string;
   beneficiary: string;
-  claimedAmount: BigNumber;
+  claimAmount: BigNumber;
   counterOfferAmount: null | BigNumber;
-  resolvedAmount: null | BigNumber;
-  open: boolean;
-  status: ClaimStatusText;
+  status: ClaimStatus;
   statusUpdatedAt: Date;
-  statusUpdatedBy: 'claimant' | 'mediator' | 'arbitrator';
   deadline: null | Date;
   transactionHash: null | string;
 }
 
-// TODO Align statuses with contract
-export const ClaimStatuses = {
-  0: 'None',
-  1: 'Submitted',
-  2: 'MediationOffered',
-  3: 'Resolved',
-  4: 'Appealed',
-  5: 'Accepted',
-  6: 'Rejected',
-} as const;
-export type ClaimStatus = keyof typeof ClaimStatuses;
-export type ClaimStatusText = typeof ClaimStatuses[ClaimStatus];
+export type ClaimStatus =
+  | 'None'
+  | 'ClaimCreated'
+  | 'ClaimAccepted'
+  | 'ClaimRejected'
+  | 'SettlementProposed'
+  | 'SettlementAccepted'
+  | 'DisputeCreated'
+  | 'DisputeResolvedWithClaimPayout'
+  | 'DisputeResolvedWithSettlementPayout'
+  | 'DisputeResolvedWithoutPayout'
+  | 'TimedOut';
 
 export interface Policy {
   policyId: string;

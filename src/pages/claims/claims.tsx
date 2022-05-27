@@ -8,7 +8,7 @@ import ClaimList from './claim-list';
 import { useQueryParams } from '../../utils';
 import { useHistory } from 'react-router';
 import { useChainData } from '../../chain-data';
-import { useUserClaims } from '../../logic/claims';
+import { isActive, useUserClaims } from '../../logic/claims';
 import styles from './claims.module.scss';
 
 export default function Claims() {
@@ -22,9 +22,9 @@ export default function Claims() {
       case 'none':
         return [];
       case 'active':
-        return claims.filter((claim) => claim.open);
+        return claims.filter((claim) => isActive(claim));
       case 'inactive':
-        return claims.filter((claim) => !claim.open);
+        return claims.filter((claim) => !isActive(claim));
       default:
         return claims;
     }
