@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
 import { BigNumber, Contract } from 'ethers';
 import { go } from '@api3/promise-utils';
-import { addDays, isAfter } from 'date-fns';
+import { addDays, isBefore } from 'date-fns';
 import { blockTimestampToDate, messages } from '../../utils';
-import { Claim, ClaimStatus, updateImmutablyCurried, useChainData } from '../../chain-data';
+import { Claim, ClaimStatusCode, ClaimStatuses, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { notifications } from '../../components/notifications';
 import { useClaimsManager, usePossibleChainDataUpdate } from '../../contracts';
 
@@ -90,9 +90,6 @@ async function loadClaims(
   contract: Contract,
   params: { userAccount?: string; claimId?: BigNumber }
 ): Promise<{ ids: string[]; byId: Record<string, Claim> }> {
-  // TODO Remove the sleep
-  await sleep();
-
   const { userAccount = null, claimId = null } = params;
   // Get all the static data via events
   const [createdEvents, counterOfferEvents] = await Promise.all([
@@ -121,7 +118,6 @@ async function loadClaims(
     const eventArgs = event.args!;
     const claimId = eventArgs.claimIndex.toString();
     const counterOfferEvent = counterOfferEvents.find((ev) => ev.args!.claimIndex.toString() === claimId);
-    const counterOfferAmount = counterOfferEvent?.args!.amount ?? null;
     const claimData = claims[index]!;
 
     const claim: Claim = {
@@ -132,8 +128,8 @@ async function loadClaims(
       claimant: eventArgs.claimant,
       beneficiary: eventArgs.beneficiary,
       claimAmount: eventArgs.claimAmount,
-      counterOfferAmount,
-      status: getStatusType(claimData.status, counterOfferAmount),
+      counterOfferAmount: counterOfferEvent?.args!.amount ?? null,
+      status: ClaimStatuses[eventArgs.status as ClaimStatusCode],
       statusUpdatedAt: blockTimestampToDate(claimData.updateTime),
       deadline: null,
       transactionHash: event.transactionHash,
@@ -150,37 +146,9 @@ async function loadClaims(
   };
 }
 
-function getStatusType(status: number, counterOfferAmount: null | BigNumber): ClaimStatus {
-  switch (status) {
-    case 0:
-      return 'None';
-    case 1:
-      return 'ClaimCreated';
-    case 2:
-      return 'ClaimAccepted';
-    case 3:
-      return counterOfferAmount?.gt(0) ? 'SettlementProposed' : 'ClaimRejected';
-    case 4:
-      return 'SettlementAccepted';
-    case 5:
-      return 'DisputeCreated';
-    case 6:
-      return 'DisputeResolvedWithoutPayout';
-    case 7:
-      return 'DisputeResolvedWithClaimPayout';
-    case 8:
-      return counterOfferAmount?.gt(0) ? 'DisputeResolvedWithSettlementPayout' : 'DisputeResolvedWithoutPayout';
-    case 9:
-      return 'TimedOut';
-    default:
-      throw new TypeError(`Unrecognized claim status: ${status}`);
-  }
-}
-
 function calculateDeadline(claim: Claim) {
   switch (claim.status) {
     case 'ClaimCreated':
-    case 'ClaimRejected':
     case 'SettlementProposed':
     case 'DisputeResolvedWithoutPayout':
     case 'DisputeResolvedWithSettlementPayout':
@@ -192,20 +160,22 @@ function calculateDeadline(claim: Claim) {
   }
 }
 
-export function isActive(claim: Claim) {
+export function isActive(claim: Claim): boolean {
   switch (claim.status) {
+    case 'ClaimCreated':
+      // The user has 3 days after the deadline has been reached to escalate
+      return isBefore(new Date(), addDays(claim.deadline!, 3));
+    case 'SettlementProposed':
+      return true;
     case 'ClaimAccepted':
+    case 'SettlementAccepted':
     case 'DisputeResolvedWithClaimPayout':
     case 'TimedOut':
     case 'None':
       return false;
-    case 'ClaimRejected':
+    case 'DisputeCreated':
     case 'DisputeResolvedWithoutPayout':
     case 'DisputeResolvedWithSettlementPayout':
-      return isAfter(claim.deadline!, new Date());
-    default:
-      return true;
+      return isBefore(new Date(), claim.deadline!);
   }
 }
-
-const sleep = () => new Promise((res) => setTimeout(res, 2000));

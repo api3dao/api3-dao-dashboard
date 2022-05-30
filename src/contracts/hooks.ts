@@ -87,7 +87,7 @@ export const useClaimsManager = () => {
     if (!provider || !signer) return null;
 
     // TODO Use factory
-    return new ethers.Contract('0xD42912755319665397FF090fBB63B1a31aE87Cee', ClaimsManagerJson.abi, signer);
+    return new ethers.Contract('0x5302E909d1e93e30F05B5D6Eea766363D14F9892', ClaimsManagerJson.abi, signer);
   }, [provider, signer]);
 };
 
