@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Timer, { DATE_FORMAT } from '../../components/timer';
-import { format } from 'date-fns';
+import { format, isAfter } from 'date-fns';
 import { images } from '../../utils';
 import { Claim } from '../../chain-data';
 import styles from './claim-list.module.scss';
@@ -50,6 +50,9 @@ function ClaimStatus(props: ClaimStatusProps) {
 
   switch (claim.status) {
     case 'ClaimCreated':
+      if (isAfter(new Date(), claim.deadline!)) {
+        return <>Rejected</>;
+      }
       return <>API3 Processing</>;
     case 'SettlementProposed':
       return <>Countered</>;
@@ -62,7 +65,6 @@ function ClaimStatus(props: ClaimStatusProps) {
       return <>Accepted Counter</>;
     case 'DisputeResolvedWithSettlementPayout':
       return <>Approved Counter</>;
-    case 'ClaimRejected':
     case 'DisputeResolvedWithoutPayout':
       return <>Rejected</>;
     case 'TimedOut':

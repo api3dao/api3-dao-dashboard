@@ -3,7 +3,7 @@ import Button from '../../components/button';
 import { abbrStr, Claim } from '../../chain-data';
 import styles from './claim-actions.module.scss';
 import { formatApi3 } from '../../utils';
-import { isAfter } from 'date-fns';
+import { addDays, isAfter } from 'date-fns';
 
 interface Props {
   claim: Claim;
@@ -28,6 +28,27 @@ export default function ClaimActions(props: Props) {
   // TODO DAO-151 Add additional info messages for the different statuses
   switch (claim.status) {
     case 'ClaimCreated':
+      if (isPastDeadline) {
+        // The claim has been ignored (most likely judged to be spam), so we show that it has
+        // been rejected, and the user has 3 days to create a dispute
+        const isPastNewDeadline = isAfter(new Date(), addDays(claim.deadline!, 3));
+        return (
+          <div className={styles.actionSection}>
+            <p>API3 Multi-sig</p>
+            <div className={styles.actionMainInfo}>Rejected</div>
+            <div className={styles.actionPanel}>
+              <Button
+                type="secondary"
+                disabled={isPastNewDeadline || status === 'submitting' || status === 'submitted'}
+                onClick={handleAppeal}
+              >
+                Escalate to Kleros
+              </Button>
+            </div>
+          </div>
+        );
+      }
+
       return (
         <div className={styles.actionSection}>
           <p>API3 Multi-sig</p>
@@ -74,20 +95,17 @@ export default function ClaimActions(props: Props) {
         </div>
       );
 
-    case 'ClaimRejected':
-      return (
-        <div className={styles.actionSection}>
-          <p>API3 Multi-sig</p>
-          <div className={styles.actionMainInfo}>Rejected</div>
-          <div className={styles.actionPanel}>
-            <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
-              Escalate to Kleros
-            </Button>
-          </div>
-        </div>
-      );
-
     case 'DisputeCreated':
+      if (isPastDeadline) {
+        // The claim has been ignored (most likely judged to be spam), so we show that it has been rejected
+        return (
+          <div className={styles.actionSection}>
+            <p>Kleros</p>
+            <div className={styles.actionMainInfo}>Rejected</div>
+          </div>
+        );
+      }
+
       return (
         <div className={styles.actionSection}>
           <p>{abbrStr(claim.claimant)}</p>

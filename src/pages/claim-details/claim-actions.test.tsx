@@ -33,6 +33,30 @@ describe('<ClaimActions />', () => {
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
       expect(screen.getByText(/Processing/i)).toBeInTheDocument();
     });
+
+    describe('when the claim has been ignored by API3', () => {
+      it('shows that the claim has been rejected and enables the Escalate action', () => {
+        claim.status = 'ClaimCreated';
+        claim.deadline = addMinutes(new Date(), -1);
+
+        render(<ClaimActions claim={claim} />);
+
+        expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
+        expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
+        const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
+        expect(appealButton).not.toBeDisabled();
+      });
+
+      it('disables the Escalate button when the new deadline has passed', () => {
+        claim.status = 'ClaimCreated';
+        claim.deadline = addDays(addMinutes(new Date(), -1), -3);
+
+        render(<ClaimActions claim={claim} />);
+
+        const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
+        expect(appealButton).toBeDisabled();
+      });
+    });
   });
 
   describe('"SettlementProposed" status', () => {
@@ -97,29 +121,18 @@ describe('<ClaimActions />', () => {
 
       expect(screen.getByText(/Appealed counter of 60.0 API3 to Kleros/i)).toBeInTheDocument();
     });
-  });
 
-  describe('"ClaimRejected" status', () => {
-    it('enables the Escalate action', () => {
-      claim.status = 'ClaimRejected';
-      claim.deadline = addMinutes(new Date(), 1);
+    describe('when the claim has been ignored by Kleros', () => {
+      it('shows that the claim has been rejected', () => {
+        claim.status = 'DisputeCreated';
+        claim.deadline = addMinutes(new Date(), -1);
 
-      render(<ClaimActions claim={claim} />);
+        render(<ClaimActions claim={claim} />);
 
-      expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
-      expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
-      const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
-      expect(appealButton).not.toBeDisabled();
-    });
-
-    it('disables the Escalate button when the deadline has passed', () => {
-      claim.status = 'ClaimRejected';
-      claim.deadline = addMinutes(new Date(), -1);
-
-      render(<ClaimActions claim={claim} />);
-
-      const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
-      expect(appealButton).toBeDisabled();
+        expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
+        expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
+        expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+      });
     });
   });
 

@@ -30,7 +30,6 @@ export function useUserPolicyById(policyId: string) {
           startTime: blockTimestampToDate(eventArgs.startTime),
           endTime: blockTimestampToDate(eventArgs.endTime),
           ipfsHash: eventArgs.policy,
-          timestamp: new Date(),
         };
 
         acc[policy.policyId] = policy;

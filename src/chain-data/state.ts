@@ -133,22 +133,23 @@ export interface Claim {
   transactionHash: null | string;
 }
 
-export type ClaimStatus =
-  | 'None'
-  | 'ClaimCreated'
-  | 'ClaimAccepted'
-  | 'ClaimRejected'
-  | 'SettlementProposed'
-  | 'SettlementAccepted'
-  | 'DisputeCreated'
-  | 'DisputeResolvedWithClaimPayout'
-  | 'DisputeResolvedWithSettlementPayout'
-  | 'DisputeResolvedWithoutPayout'
-  | 'TimedOut';
+export const ClaimStatuses = {
+  0: 'None',
+  1: 'ClaimCreated',
+  2: 'ClaimAccepted',
+  3: 'SettlementProposed',
+  4: 'SettlementAccepted',
+  5: 'DisputeCreated',
+  6: 'DisputeResolvedWithoutPayout',
+  7: 'DisputeResolvedWithClaimPayout',
+  8: 'DisputeResolvedWithSettlementPayout',
+  9: 'TimedOut',
+} as const;
+export type ClaimStatusCode = keyof typeof ClaimStatuses;
+export type ClaimStatus = typeof ClaimStatuses[ClaimStatusCode];
 
 export interface Policy {
   policyId: string;
-  timestamp: Date;
   claimant: string;
   beneficiary: string;
   coverageAmount: BigNumber;
