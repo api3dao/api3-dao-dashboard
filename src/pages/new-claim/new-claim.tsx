@@ -1,14 +1,13 @@
 import { FormEventHandler, useState } from 'react';
-import { BigNumber } from 'ethers';
 import { useParams } from 'react-router';
 import { BaseLayout } from '../../components/layout';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import { isEmpty } from 'lodash';
-import { useChainData } from '../../chain-data';
+import { Policy, useChainData } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
 import { useUserPolicyById } from '../../logic/policies';
-import { parseApi3 } from '../../utils';
+import { formatApi3, parseApi3 } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim.module.scss';
 
@@ -21,17 +20,22 @@ interface FormState {
   amount: string;
 }
 
-function getMessages(form: FormState) {
+function getValidationMessages(form: FormState, policy: Policy) {
   const messages: ValidationMessages<FormState> = {};
 
   if (form.evidence.trim().length === 0) {
-    messages.evidence = 'This field is required';
+    messages.evidence = 'Please fill in this field';
   }
 
-  if (form.amount.trim().length === 0) {
-    messages.amount = 'This field is required';
-  } else if (parseFloat(form.amount) < 0) {
-    messages.amount = 'This must be greater than zero';
+  if (form.amount.replace(/-/, '').length === 0) {
+    messages.amount = 'Please fill in this field';
+  } else {
+    const parsed = parseApi3(form.amount);
+    if (parsed.lte(0)) {
+      messages.amount = 'This must be greater than zero';
+    } else if (parsed.gt(policy.coverageAmount)) {
+      messages.amount = 'This must not exceed the coverage amount';
+    }
   }
 
   return messages;
@@ -64,7 +68,7 @@ export default function NewClaim() {
     );
   }
 
-  const messages = getMessages(form);
+  const messages = getValidationMessages(form, policy);
   const handleSubmit: FormEventHandler = async (ev) => {
     ev.preventDefault();
     if (!isEmpty(messages)) {
@@ -73,17 +77,17 @@ export default function NewClaim() {
     }
 
     setStatus('submitting');
-    // TODO Handle properly
+    // TODO DOA-151 Handle properly and show success screen
     try {
-      // @ts-ignore
+      // @ts-expect-error
       await claimsManager.createClaim(
         policy.beneficiary,
         policy.coverageAmount,
         Math.round(policy.startTime.getTime() / 1000),
         Math.round(policy.endTime.getTime() / 1000),
         policy.ipfsHash,
-        BigNumber.from(parseApi3(form.amount)),
-        form.evidence
+        parseApi3(form.amount),
+        form.evidence.trim()
       );
 
       setStatus('submitted');
@@ -96,34 +100,32 @@ export default function NewClaim() {
   return (
     <BaseLayout subtitle="New Claim">
       <h4 className={styles.heading}>New Claim</h4>
-      <h5>Submit Claim</h5>
-      <form onSubmit={handleSubmit} noValidate style={{ maxWidth: '60ch' }}>
+      <h5 className={styles.subHeading}>Submit Claim</h5>
+      <form onSubmit={handleSubmit} noValidate className={styles.form}>
         <ol className={styles.formList}>
           <li>
             <label htmlFor="evidence">Enter the IPFS hash to your Claim Evidence form</label>
-            <p>You created this hash in the previous step</p>
-            <div>
-              <Input
-                id="evidence"
-                value={form.evidence}
-                onChange={(ev) => setForm({ ...form, evidence: ev.target.value })}
-                block
-              />
-            </div>
-            {showMessages && messages.evidence && <p>{messages.evidence}</p>}
+            <p className={globalStyles.secondaryColor}>You created this hash in the previous step</p>
+            <Input
+              id="evidence"
+              value={form.evidence}
+              onChange={(ev) => setForm({ ...form, evidence: ev.target.value })}
+              block
+            />
+            {showMessages && messages.evidence && <p className={styles.validation}>{messages.evidence}</p>}
           </li>
           <li>
             <label htmlFor="amount">Requested relief amount, in API3 tokens</label>
-            <p>How many API3 tokens do you wish to receive?</p>
-            <div>
-              <Input
-                id="amount"
-                type="number"
-                value={form.amount}
-                onChange={(ev) => setForm({ ...form, amount: ev.target.value })}
-              />
-            </div>
-            {showMessages && messages.amount && <p>{messages.amount}</p>}
+            <p className={globalStyles.secondaryColor}>
+              How many API3 tokens do you wish to receive? (Max of {formatApi3(policy.coverageAmount)} API3)
+            </p>
+            <Input
+              id="amount"
+              type="number"
+              value={form.amount}
+              onChange={(ev) => setForm({ ...form, amount: ev.target.value })}
+            />
+            {showMessages && messages.amount && <p className={styles.validation}>{messages.amount}</p>}
           </li>
         </ol>
         <Button disabled={status === 'submitting'}>Submit Claim</Button>
