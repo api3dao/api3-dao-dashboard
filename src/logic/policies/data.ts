@@ -16,12 +16,10 @@ export function useUserPolicyById(policyId: string) {
 
     setStatus('loading');
     const result = await go(async () => {
-      // @ts-ignore
       const filter = claimsManager.filters.CreatedPolicy(null, userAccount, policyId);
-      // @ts-ignore
       const createdEvents = await claimsManager.queryFilter(filter);
       const policiesById = createdEvents.reduce((acc, event) => {
-        const eventArgs = event.args!;
+        const eventArgs = event.args;
         const policy: Policy = {
           policyId: eventArgs.policyHash,
           claimant: eventArgs.claimant,
@@ -37,7 +35,7 @@ export function useUserPolicyById(policyId: string) {
       }, {} as { [policyId: string]: Policy });
 
       return {
-        policyIds: createdEvents.map((event) => event.args!.policyHash),
+        policyIds: createdEvents.map((event) => event.args.policyHash),
         policiesById,
       };
     });

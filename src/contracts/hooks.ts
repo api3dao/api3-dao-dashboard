@@ -9,9 +9,9 @@ import {
   Convenience__factory as ConvenienceFactory,
   TimelockManager__factory as TimelockManagerFactory,
 } from '../generated-contracts';
+// TODO DA0-151 Delete tmp folder and import from claims-manager package
+import { ClaimsManagerWithKlerosArbitrator__factory as ClaimsManagerFactory } from './tmp';
 import { initialChainData } from '../chain-data/state';
-// TODO Remove and delete JSON file
-import ClaimsManagerJson from './ClaimsManagerWithKlerosArbitrator.json';
 
 export const useApi3Pool = () => {
   const { provider, contracts, signer } = useChainData();
@@ -81,14 +81,13 @@ export const useTimelockManager = () => {
 };
 
 export const useClaimsManager = () => {
-  const { provider, signer } = useChainData();
+  const { provider, contracts } = useChainData();
 
   return useMemo(() => {
-    if (!provider || !signer) return null;
+    if (!provider || !contracts) return null;
 
-    // TODO Use factory
-    return new ethers.Contract('0x5302E909d1e93e30F05B5D6Eea766363D14F9892', ClaimsManagerJson.abi, signer);
-  }, [provider, signer]);
+    return ClaimsManagerFactory.connect(contracts.claimsManager, provider.getSigner());
+  }, [provider, contracts]);
 };
 
 /**

@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
-import { BigNumber, Contract } from 'ethers';
+import { BigNumber } from 'ethers';
 import { go } from '@api3/promise-utils';
 import { addDays, isBefore } from 'date-fns';
 import { blockTimestampToDate, messages } from '../../utils';
 import { Claim, ClaimStatusCode, ClaimStatuses, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { notifications } from '../../components/notifications';
-import { useClaimsManager, usePossibleChainDataUpdate } from '../../contracts';
+import { useClaimsManager, ClaimsManagerWithKlerosArbitrator, usePossibleChainDataUpdate } from '../../contracts';
 
 export function useUserClaims() {
   const { userAccount, claims, setChainData } = useChainData();
@@ -85,17 +85,14 @@ export function useUserClaimById(claimId: string) {
   };
 }
 
-// TODO Sort out these types after the typechain stuff (includes removing @ts-expect-error usages)
 async function loadClaims(
-  contract: Contract,
+  contract: ClaimsManagerWithKlerosArbitrator,
   params: { userAccount?: string; claimId?: BigNumber }
 ): Promise<{ ids: string[]; byId: Record<string, Claim> }> {
   const { userAccount = null, claimId = null } = params;
   // Get all the static data via events
   const [createdEvents, counterOfferEvents] = await Promise.all([
-    // @ts-expect-error
     contract.queryFilter(contract.filters.CreatedClaim(claimId, userAccount)),
-    // @ts-expect-error
     contract.queryFilter(contract.filters.ProposedSettlement(claimId, userAccount)),
   ]);
 
@@ -105,19 +102,18 @@ async function loadClaims(
 
   // Get all the dynamic data (status etc) via a single call
   const calls = createdEvents.map((event) => {
-    return contract.interface.encodeFunctionData('claims(uint256)', [event.args!.claimIndex]);
+    return contract.interface.encodeFunctionData('claims', [event.args.claimIndex]);
   });
-  // @ts-expect-error
-  const encodedResults: string[] = await contract.callStatic.multicall(calls);
+  const encodedResults = await contract.callStatic.multicall(calls);
   const claims = encodedResults.map((res) => {
-    return contract.interface.decodeFunctionResult('claims(uint256)', res);
+    return contract.interface.decodeFunctionResult('claims', res);
   });
 
   // Combine the static and dynamic data
   const claimsById = createdEvents.reduce((acc, event, index) => {
-    const eventArgs = event.args!;
+    const eventArgs = event.args;
     const claimId = eventArgs.claimIndex.toString();
-    const counterOfferEvent = counterOfferEvents.find((ev) => ev.args!.claimIndex.toString() === claimId);
+    const counterOfferEvent = counterOfferEvents.find((ev) => ev.args.claimIndex.toString() === claimId);
     const claimData = claims[index]!;
 
     const claim: Claim = {
@@ -128,7 +124,7 @@ async function loadClaims(
       claimant: eventArgs.claimant,
       beneficiary: eventArgs.beneficiary,
       claimAmount: eventArgs.claimAmount,
-      counterOfferAmount: counterOfferEvent?.args!.amount ?? null,
+      counterOfferAmount: counterOfferEvent?.args.amount ?? null,
       status: ClaimStatuses[claimData.status as ClaimStatusCode],
       statusUpdatedAt: blockTimestampToDate(claimData.updateTime),
       deadline: null,
@@ -141,7 +137,7 @@ async function loadClaims(
   }, {} as Record<string, Claim>);
 
   return {
-    ids: createdEvents.map((event) => event.args!.claimIndex.toString()),
+    ids: createdEvents.map((event) => event.args.claimIndex.toString()),
     byId: claimsById,
   };
 }
