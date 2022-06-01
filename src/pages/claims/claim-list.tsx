@@ -60,6 +60,9 @@ function ClaimStatus(props: ClaimStatusProps) {
     case 'DisputeResolvedWithClaimPayout':
       return <>Approved</>;
     case 'DisputeCreated':
+      if (isAfter(new Date(), claim.deadline!)) {
+        return <>Rejected</>;
+      }
       return <>Kleros Processing</>;
     case 'SettlementAccepted':
       return <>Accepted Counter</>;
