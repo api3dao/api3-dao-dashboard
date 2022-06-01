@@ -4,7 +4,7 @@ import { BaseLayout } from '../../components/layout';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import { isEmpty } from 'lodash';
-import { Policy, useChainData } from '../../chain-data';
+import { Policy } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
 import { useUserPolicyById } from '../../logic/policies';
 import { formatApi3, parseApi3 } from '../../utils';
@@ -27,14 +27,19 @@ function getValidationMessages(form: FormState, policy: Policy) {
     messages.evidence = 'Please fill in this field';
   }
 
-  if (form.amount.replace(/-/, '').length === 0) {
+  // Don't try to parse if the user is starting to type a negative number
+  if (form.amount.replace(/-/g, '').length === 0) {
     messages.amount = 'Please fill in this field';
   } else {
-    const parsed = parseApi3(form.amount);
-    if (parsed.lte(0)) {
-      messages.amount = 'This must be greater than zero';
-    } else if (parsed.gt(policy.coverageAmount)) {
-      messages.amount = 'This must not exceed the coverage amount';
+    try {
+      const parsed = parseApi3(form.amount);
+      if (parsed.lte(0)) {
+        messages.amount = 'This must be greater than zero';
+      } else if (parsed.gt(policy.coverageAmount)) {
+        messages.amount = 'This must not exceed the coverage amount';
+      }
+    } catch (err) {
+      messages.amount = 'Please enter a valid number';
     }
   }
 
@@ -43,14 +48,13 @@ function getValidationMessages(form: FormState, policy: Policy) {
 
 export default function NewClaim() {
   const { policyId } = useParams<Params>();
-  const { provider } = useChainData();
   const claimsManager = useClaimsManager();
   const { data: policy, status: loadStatus } = useUserPolicyById(policyId);
 
   const [form, setForm] = useState<FormState>({ evidence: '', amount: '' });
   const [status, setStatus] = useState<'idle' | 'validation_failed' | 'submitting' | 'submitted' | 'failed'>('idle');
 
-  if (!provider) {
+  if (!claimsManager) {
     return (
       <BaseLayout subtitle="New Claim">
         <p className={globalStyles.textCenter}>Please connect your wallet to submit a claim.</p>
@@ -79,7 +83,6 @@ export default function NewClaim() {
     setStatus('submitting');
     // TODO DOA-151 Handle properly and show success screen
     try {
-      // @ts-expect-error
       await claimsManager.createClaim(
         policy.beneficiary,
         policy.coverageAmount,
