@@ -72,18 +72,16 @@ task('create-user-policy', 'Creates a policy for the given user')
     // The index for the manager needs to be in sync with the deploy script
     const manager = accounts[1];
     const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS, manager);
-    const transactions = await Promise.all([
-      await claimsManager.createPolicy(
-        userAddress,
-        userAddress,
-        parseApi3(args.coverageAmount),
-        BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
-        BigNumber.from(Math.round(addDays(new Date(), 30).getTime() / 1000)),
-        args.ipfsHash
-      ),
-    ]);
+    const tx = await claimsManager.createPolicy(
+      userAddress,
+      userAddress,
+      parseApi3(args.coverageAmount),
+      BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
+      BigNumber.from(Math.round(addDays(new Date(), 30).getTime() / 1000)),
+      args.ipfsHash
+    );
 
-    await Promise.all(transactions.map((tx) => tx.wait()));
+    await tx.wait();
     const createdEvents = await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, userAddress));
 
     console.info(`User policies (${createdEvents.length}):`);
