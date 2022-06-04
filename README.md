@@ -7,10 +7,10 @@ The implementation of the DAO dashboard.
 ## Running dashboard on Mainnet in docker container
 
 The decentralized approach of being a DAO member is to run API3 dashboard on your local machine. For that you will just
-need `git` and `docker`:
+need `git` and `docker`. Note, that the production source code is on the `production` branch.
 
 ```
-git clone --depth=1 git@github.com:api3dao/api3-dao-dashboard.git
+git clone --depth=1 --branch production git@github.com:api3dao/api3-dao-dashboard.git
 cd api3-dao-dashboard
 docker build -t api3-dao-dashboard .
 docker run -d -p7770:80 --name api3-dao-dashboard api3-dao-dashboard
@@ -23,6 +23,9 @@ Once you are finished interacting with the dashboard, the container can be stopp
 latter command to remove the container, add the `--rm` flag to the above `docker run` command.
 
 ## Development instructions
+
+We use the `main` branch to develop new features. For production code, see the
+[the production branch](https://github.com/api3dao/api3-dao-dashboard/tree/production).
 
 ### Running on mainnet or testnets
 
