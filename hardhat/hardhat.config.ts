@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
 import { addDays } from 'date-fns';
 import { parseApi3 } from '../src/utils/api3-format';
-const { ClaimsManagerWithKlerosArbitrator__factory: ClaimsManagerFactory } = require('../src/contracts/tmp');
+import { ClaimsManagerWithKlerosArbitrator__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
 
 dotenv.config({ path: '../.env' });
 
@@ -71,7 +71,7 @@ task('create-user-policy', 'Creates a policy for the given user')
 
     // The index for the manager needs to be in sync with the deploy script
     const manager = accounts[1];
-    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS, manager);
+    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, manager);
     const tx = await claimsManager.createPolicy(
       userAddress,
       userAddress,
@@ -85,7 +85,7 @@ task('create-user-policy', 'Creates a policy for the given user')
     const createdEvents = await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, userAddress));
 
     console.info(`User policies (${createdEvents.length}):`);
-    createdEvents.forEach((event: any) => {
+    createdEvents.forEach((event) => {
       console.info(event.args.policyHash);
     });
   });

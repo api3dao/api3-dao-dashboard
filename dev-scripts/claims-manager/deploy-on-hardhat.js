@@ -27,7 +27,7 @@ async function deploy() {
     roles.kleros.address,
     '0x123456',
     40 * 24 * 60 * 60,
-    '/ipfs/Qm...testhash/metaevidence.json'
+    '/ipfs/Qm...testhash/metaEvidence.json'
   );
 
   console.info('DEPLOYED ADDRESSES:');
