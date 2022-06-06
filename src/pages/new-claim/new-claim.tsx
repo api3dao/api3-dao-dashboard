@@ -1,5 +1,6 @@
 import { FormEventHandler, useState } from 'react';
 import { useParams } from 'react-router';
+import { goSync } from '@api3/promise-utils';
 import { BaseLayout } from '../../components/layout';
 import Input from '../../components/input';
 import Button from '../../components/button';
@@ -27,19 +28,15 @@ function getValidationMessages(form: FormState, policy: Policy) {
     messages.evidence = 'Please fill in this field';
   }
 
-  // Don't try to parse if the user is starting to type a negative number
-  if (form.amount.replace(/-/g, '').length === 0) {
-    messages.amount = 'Please fill in this field';
+  const result = goSync(() => parseApi3(form.amount));
+  if (!result.success) {
+    messages.amount = 'Please enter a valid number';
   } else {
-    try {
-      const parsed = parseApi3(form.amount);
-      if (parsed.lte(0)) {
-        messages.amount = 'This must be greater than zero';
-      } else if (parsed.gt(policy.coverageAmount)) {
-        messages.amount = 'This must not exceed the coverage amount';
-      }
-    } catch (err) {
-      messages.amount = 'Please enter a valid number';
+    const parsed = result.data;
+    if (parsed.lte(0)) {
+      messages.amount = 'Amount must be greater than zero';
+    } else if (parsed.gt(policy.coverageAmount)) {
+      messages.amount = 'Amount must not exceed the coverage amount';
     }
   }
 
