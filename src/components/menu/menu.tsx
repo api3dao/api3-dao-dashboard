@@ -36,6 +36,13 @@ export const DesktopMenu = () => {
           <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>History</p>
         </div>
       </NavLink>
+      <NavLink activeClassName={styles.menuActiveItem} to="/claims">
+        <div className={styles.menuItem}>
+          <div className={styles.menuActiveLine} />
+          <DashboardIcon />
+          <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Claims</p>
+        </div>
+      </NavLink>
     </div>
   );
 };
