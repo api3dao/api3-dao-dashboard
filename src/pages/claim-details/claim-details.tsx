@@ -49,7 +49,7 @@ export default function ClaimDetails() {
         <h4>Claim {claimId}</h4>
         {claim.deadline && <Timer size="large" deadline={claim.deadline} showDeadline />}
       </div>
-      <ClaimActions claim={claim} />
+      <ClaimActions key={claim.status} claim={claim} />
       <BorderedBox
         noMobileBorders
         header={
