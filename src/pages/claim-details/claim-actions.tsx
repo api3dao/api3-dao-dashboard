@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import Button from '../../components/button';
-import { abbrStr, Claim } from '../../chain-data';
+import { abbrStr, Claim, useChainData } from '../../chain-data';
 import styles from './claim-actions.module.scss';
-import { formatApi3 } from '../../utils';
+import { formatApi3, handleTransactionError } from '../../utils';
 import { addDays, isAfter } from 'date-fns';
+import { useClaimsManager } from '../../contracts';
+import { BigNumber } from 'ethers';
 
 interface Props {
   claim: Claim;
@@ -11,18 +13,54 @@ interface Props {
 
 export default function ClaimActions(props: Props) {
   const { claim } = props;
+  const { setChainData, transactions } = useChainData();
+  const claimsManager = useClaimsManager()!;
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
+
   const isPastDeadline = claim.deadline ? isAfter(new Date(), claim.deadline) : false;
   const disableActions = isPastDeadline || status === 'submitting' || status === 'submitted';
 
-  // TODO DAO-151 Implement
-  const handleAcceptCounter = () => {
+  const handleAcceptCounter = async () => {
     setStatus('submitting');
+    const tx = await handleTransactionError(claimsManager.acceptSettlement(BigNumber.from(claim.claimId)));
+    if (tx) {
+      setChainData('Save accept claim settlement transaction', {
+        transactions: [...transactions, { type: 'accept-claim-settlement', tx }],
+      });
+      setStatus('submitted');
+    } else {
+      setStatus('failed');
+    }
   };
 
-  // TODO DAO-151 Implement
-  const handleAppeal = () => {
+  const handleEscalateToArbitrator = async () => {
     setStatus('submitting');
+    const tx = await handleTransactionError(
+      claimsManager.createDisputeWithKlerosArbitrator(BigNumber.from(claim.claimId))
+    );
+    if (tx) {
+      setChainData('Save escalate claim transaction', {
+        transactions: [...transactions, { type: 'escalate-claim-to-arbitrator', tx }],
+      });
+      setStatus('submitted');
+    } else {
+      setStatus('failed');
+    }
+  };
+
+  const handleAppeal = async () => {
+    setStatus('submitting');
+    const tx = await handleTransactionError(
+      claimsManager.appealKlerosArbitratorDecision(BigNumber.from(claim.claimId), claim.arbitratorDisputeId!)
+    );
+    if (tx) {
+      setChainData('Save appeal claim transaction', {
+        transactions: [...transactions, { type: 'appeal-claim-decision', tx }],
+      });
+      setStatus('submitted');
+    } else {
+      setStatus('failed');
+    }
   };
 
   // TODO DAO-151 Add additional info messages for the different statuses
@@ -40,7 +78,7 @@ export default function ClaimActions(props: Props) {
               <Button
                 type="secondary"
                 disabled={isPastNewDeadline || status === 'submitting' || status === 'submitted'}
-                onClick={handleAppeal}
+                onClick={handleEscalateToArbitrator}
               >
                 Escalate to Kleros
               </Button>
@@ -76,7 +114,7 @@ export default function ClaimActions(props: Props) {
             <Button type="primary" disabled={disableActions} onClick={handleAcceptCounter}>
               Accept Counter
             </Button>
-            <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
+            <Button type="secondary" disabled={disableActions} onClick={handleEscalateToArbitrator}>
               Escalate to Kleros
             </Button>
           </div>

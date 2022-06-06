@@ -21,6 +21,7 @@ describe('<ClaimActions />', () => {
       evidence: 'evidence-001',
       transactionHash: null,
       deadline: null,
+      arbitratorDisputeId: null,
     };
   });
 

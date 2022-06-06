@@ -91,9 +91,10 @@ async function loadClaims(
 ): Promise<{ ids: string[]; byId: Record<string, Claim> }> {
   const { userAccount = null, claimId = null } = params;
   // Get all the static data via events
-  const [createdEvents, counterOfferEvents] = await Promise.all([
+  const [createdEvents, counterOfferEvents, disputeEvents] = await Promise.all([
     contract.queryFilter(contract.filters.CreatedClaim(claimId, userAccount)),
     contract.queryFilter(contract.filters.ProposedSettlement(claimId, userAccount)),
+    contract.queryFilter(contract.filters.CreatedDisputeWithKlerosArbitrator(claimId, userAccount)),
   ]);
 
   if (!createdEvents.length) {
@@ -114,6 +115,7 @@ async function loadClaims(
     const eventArgs = event.args;
     const claimId = eventArgs.claimIndex.toString();
     const counterOfferEvent = counterOfferEvents.find((ev) => ev.args.claimIndex.toString() === claimId);
+    const disputeEvent = disputeEvents.find((ev) => ev.args.claimIndex.toString() === claimId);
     const claimData = claims[index]!;
 
     const claim: Claim = {
@@ -129,6 +131,7 @@ async function loadClaims(
       statusUpdatedAt: blockTimestampToDate(claimData.updateTime),
       deadline: null,
       transactionHash: event.transactionHash,
+      arbitratorDisputeId: disputeEvent?.args.klerosArbitratorDisputeId ?? null,
     };
 
     claim.deadline = calculateDeadline(claim);
