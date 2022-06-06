@@ -3,7 +3,7 @@ import Button from '../../components/button';
 import { abbrStr, Claim } from '../../chain-data';
 import styles from './claim-actions.module.scss';
 import { formatApi3 } from '../../utils';
-import { isAfter } from 'date-fns';
+import { addDays, isAfter } from 'date-fns';
 
 interface Props {
   claim: Claim;
@@ -13,7 +13,7 @@ export default function ClaimActions(props: Props) {
   const { claim } = props;
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
   const isPastDeadline = claim.deadline ? isAfter(new Date(), claim.deadline) : false;
-  const disableActions = !claim.open || isPastDeadline || status === 'submitting' || status === 'submitted';
+  const disableActions = isPastDeadline || status === 'submitting' || status === 'submitted';
 
   // TODO DAO-151 Implement
   const handleAcceptCounter = () => {
@@ -27,7 +27,28 @@ export default function ClaimActions(props: Props) {
 
   // TODO DAO-151 Add additional info messages for the different statuses
   switch (claim.status) {
-    case 'Submitted':
+    case 'ClaimCreated':
+      if (isPastDeadline) {
+        // The claim has been ignored (most likely judged to be spam), so we show that it has
+        // been rejected, and the user has 3 days to create a dispute
+        const isPastNewDeadline = isAfter(new Date(), addDays(claim.deadline!, 3));
+        return (
+          <div className={styles.actionSection}>
+            <p>API3 Multi-sig</p>
+            <div className={styles.actionMainInfo}>Rejected</div>
+            <div className={styles.actionPanel}>
+              <Button
+                type="secondary"
+                disabled={isPastNewDeadline || status === 'submitting' || status === 'submitted'}
+                onClick={handleAppeal}
+              >
+                Escalate to Kleros
+              </Button>
+            </div>
+          </div>
+        );
+      }
+
       return (
         <div className={styles.actionSection}>
           <p>API3 Multi-sig</p>
@@ -35,7 +56,15 @@ export default function ClaimActions(props: Props) {
         </div>
       );
 
-    case 'MediationOffered':
+    case 'ClaimAccepted':
+      return (
+        <div className={styles.actionSection}>
+          <p>API3 Multi-sig</p>
+          <div className={styles.actionMainInfo}>Approved</div>
+        </div>
+      );
+
+    case 'SettlementProposed':
       return (
         <div className={styles.actionSection}>
           <p>API3 Multi-sig</p>
@@ -54,7 +83,7 @@ export default function ClaimActions(props: Props) {
         </div>
       );
 
-    case 'Accepted':
+    case 'SettlementAccepted':
       return (
         <div className={styles.actionSection}>
           <p>{abbrStr(claim.claimant)}</p>
@@ -66,14 +95,24 @@ export default function ClaimActions(props: Props) {
         </div>
       );
 
-    case 'Appealed':
+    case 'DisputeCreated':
+      if (isPastDeadline) {
+        // The claim has been ignored (most likely judged to be spam), so we show that it has been rejected
+        return (
+          <div className={styles.actionSection}>
+            <p>Kleros</p>
+            <div className={styles.actionMainInfo}>Rejected</div>
+          </div>
+        );
+      }
+
       return (
         <div className={styles.actionSection}>
           <p>{abbrStr(claim.claimant)}</p>
-          {claim.counterOfferAmount ? (
+          {claim.counterOfferAmount?.gt(0) ? (
             <div className={styles.actionMainInfo}>
               Appealed counter of <br />
-              {formatApi3(claim.counterOfferAmount!)} API3 <br />
+              {formatApi3(claim.counterOfferAmount)} API3 <br />
               to Kleros
             </div>
           ) : (
@@ -82,56 +121,48 @@ export default function ClaimActions(props: Props) {
         </div>
       );
 
-    case 'Rejected':
-      if (claim.statusUpdatedBy === 'arbitrator') {
-        return (
-          <div className={styles.actionSection}>
-            <p>Kleros</p>
-            <div className={styles.actionMainInfo}>Rejected</div>
-            <div className={styles.actionPanel}>
-              <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
-                Appeal
-              </Button>
-            </div>
-          </div>
-        );
-      }
-
+    case 'DisputeResolvedWithClaimPayout':
       return (
         <div className={styles.actionSection}>
-          <p>API3 Multi-sig</p>
-          <div className={styles.actionMainInfo}>Rejected</div>
+          <p>Kleros</p>
+          <div className={styles.actionMainInfo}>Approved full amount</div>
+        </div>
+      );
+
+    case 'DisputeResolvedWithSettlementPayout':
+      return (
+        <div className={styles.actionSection}>
+          <p>Kleros</p>
+          <div className={styles.actionMainInfo}>
+            Approved <br />
+            counter of <br />
+            {formatApi3(claim.counterOfferAmount!)} API3
+          </div>
           <div className={styles.actionPanel}>
             <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
-              Escalate to Kleros
+              Appeal
             </Button>
           </div>
         </div>
       );
 
-    case 'Resolved':
-      if (claim.statusUpdatedBy === 'arbitrator') {
-        return (
-          <div className={styles.actionSection}>
-            <p>Kleros</p>
-            <div className={styles.actionMainInfo}>
-              Approved <br />
-              counter of <br />
-              {formatApi3(claim.resolvedAmount!)} API3
-            </div>
-            <div className={styles.actionPanel}>
-              <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
-                Appeal
-              </Button>
-            </div>
-          </div>
-        );
-      }
-
+    case 'DisputeResolvedWithoutPayout':
       return (
         <div className={styles.actionSection}>
-          <p>API3 Multi-sig</p>
-          <div className={styles.actionMainInfo}>Approved</div>
+          <p>Kleros</p>
+          <div className={styles.actionMainInfo}>Rejected</div>
+          <div className={styles.actionPanel}>
+            <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
+              Appeal
+            </Button>
+          </div>
+        </div>
+      );
+
+    case 'TimedOut':
+      return (
+        <div className={styles.actionSection}>
+          <div className={styles.actionMainInfo}>Timed Out</div>
         </div>
       );
 

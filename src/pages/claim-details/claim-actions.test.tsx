@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import ClaimActions from './claim-actions';
 import { Claim } from '../../chain-data';
 import { BigNumber } from 'ethers';
-import { addDays } from 'date-fns';
+import { addDays, addMinutes } from 'date-fns';
 
 let claim: Claim;
 
@@ -13,37 +13,57 @@ describe('<ClaimActions />', () => {
       policyId: '101',
       claimant: '0x153EF0B488148k0aB0FED112334',
       beneficiary: '0x153EF0B488148k0aB0FED112334',
-      claimedAmount: BigNumber.from('70000000000000000000'),
+      claimAmount: BigNumber.from('70000000000000000000'),
       counterOfferAmount: null,
-      resolvedAmount: null,
       timestamp: addDays(new Date(), -2),
-      open: true,
-      status: 'Submitted',
-      statusUpdatedAt: new Date(),
-      statusUpdatedBy: 'claimant',
+      status: 'ClaimCreated',
+      statusUpdatedAt: addDays(new Date(), -1),
       evidence: 'evidence-001',
       transactionHash: null,
       deadline: null,
     };
   });
 
-  describe('"Submitted" status', () => {
+  describe('"ClaimCreated" status', () => {
     it('shows that the claim is in progress', () => {
-      claim.status = 'Submitted';
-      claim.statusUpdatedBy = 'claimant';
+      claim.status = 'ClaimCreated';
 
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
       expect(screen.getByText(/Processing/i)).toBeInTheDocument();
     });
+
+    describe('when the claim has been ignored by API3', () => {
+      it('shows that the claim has been rejected and enables the Escalate action', () => {
+        claim.status = 'ClaimCreated';
+        claim.deadline = addMinutes(new Date(), -1);
+
+        render(<ClaimActions claim={claim} />);
+
+        expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
+        expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
+        const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
+        expect(appealButton).not.toBeDisabled();
+      });
+
+      it('disables the Escalate button when the new deadline has passed', () => {
+        claim.status = 'ClaimCreated';
+        claim.deadline = addDays(addMinutes(new Date(), -1), -3);
+
+        render(<ClaimActions claim={claim} />);
+
+        const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
+        expect(appealButton).toBeDisabled();
+      });
+    });
   });
 
-  describe('"MediationOffered" status', () => {
+  describe('"SettlementProposed" status', () => {
     it('enables Accept and Escalate actions', () => {
-      claim.status = 'MediationOffered';
-      claim.statusUpdatedBy = 'mediator';
+      claim.status = 'SettlementProposed';
       claim.counterOfferAmount = BigNumber.from('60000000000000000000');
+      claim.deadline = addMinutes(new Date(), 1);
 
       render(<ClaimActions claim={claim} />);
 
@@ -55,11 +75,10 @@ describe('<ClaimActions />', () => {
       expect(appealButton).not.toBeDisabled();
     });
 
-    it('disables the buttons when the claim is inactive', () => {
-      claim.status = 'MediationOffered';
-      claim.statusUpdatedBy = 'mediator';
+    it('disables the buttons when the deadline has passed', () => {
+      claim.status = 'SettlementProposed';
       claim.counterOfferAmount = BigNumber.from('60000000000000000000');
-      claim.open = false;
+      claim.deadline = addMinutes(new Date(), -1);
 
       render(<ClaimActions claim={claim} />);
 
@@ -70,10 +89,9 @@ describe('<ClaimActions />', () => {
     });
   });
 
-  describe('"Accepted" status', () => {
+  describe('"SettlementAccepted" status', () => {
     it('shows claimant has accepted the counter', () => {
-      claim.status = 'Accepted';
-      claim.statusUpdatedBy = 'claimant';
+      claim.status = 'SettlementAccepted';
       claim.counterOfferAmount = BigNumber.from('60000000000000000000');
 
       render(<ClaimActions claim={claim} />);
@@ -84,10 +102,9 @@ describe('<ClaimActions />', () => {
     });
   });
 
-  describe('"Appealed" status', () => {
+  describe('"DisputeCreated" status', () => {
     it('shows claimant has appealed to Kleros', () => {
-      claim.status = 'Appealed';
-      claim.statusUpdatedBy = 'claimant';
+      claim.status = 'DisputeCreated';
 
       render(<ClaimActions claim={claim} />);
 
@@ -97,43 +114,32 @@ describe('<ClaimActions />', () => {
     });
 
     it('shows counter offer amount when present', () => {
-      claim.status = 'Appealed';
-      claim.statusUpdatedBy = 'claimant';
+      claim.status = 'DisputeCreated';
       claim.counterOfferAmount = BigNumber.from('60000000000000000000');
 
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/Appealed counter of 60.0 API3 to Kleros/i)).toBeInTheDocument();
     });
+
+    describe('when the claim has been ignored by Kleros', () => {
+      it('shows that the claim has been rejected', () => {
+        claim.status = 'DisputeCreated';
+        claim.deadline = addMinutes(new Date(), -1);
+
+        render(<ClaimActions claim={claim} />);
+
+        expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
+        expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
+        expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+      });
+    });
   });
 
-  describe('"Rejected" status', () => {
-    it('enables the Escalate action', () => {
-      claim.status = 'Rejected';
-      claim.statusUpdatedBy = 'mediator';
-
-      render(<ClaimActions claim={claim} />);
-
-      expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
-      expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
-      const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
-      expect(appealButton).not.toBeDisabled();
-    });
-
-    it('disables the Escalate button when the claim is inactive', () => {
-      claim.status = 'Rejected';
-      claim.statusUpdatedBy = 'mediator';
-      claim.open = false;
-
-      render(<ClaimActions claim={claim} />);
-
-      const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
-      expect(appealButton).toBeDisabled();
-    });
-
-    it('provides an Appeal action when Kleros is involved', () => {
-      claim.status = 'Rejected';
-      claim.statusUpdatedBy = 'arbitrator';
+  describe('"DisputeResolvedWithoutPayout" status', () => {
+    it('enables the Appeal action', () => {
+      claim.status = 'DisputeResolvedWithoutPayout';
+      claim.deadline = addMinutes(new Date(), 1);
 
       render(<ClaimActions claim={claim} />);
 
@@ -143,10 +149,9 @@ describe('<ClaimActions />', () => {
       expect(appealButton).not.toBeDisabled();
     });
 
-    it('disables the Appeal button when the claim is inactive', () => {
-      claim.status = 'Rejected';
-      claim.statusUpdatedBy = 'arbitrator';
-      claim.open = false;
+    it('disables the Appeal button when the deadline has passed', () => {
+      claim.status = 'DisputeResolvedWithoutPayout';
+      claim.deadline = addMinutes(new Date(), -1);
 
       render(<ClaimActions claim={claim} />);
 
@@ -155,11 +160,9 @@ describe('<ClaimActions />', () => {
     });
   });
 
-  describe('"Resolved" status', () => {
+  describe('"ClaimAccepted" status', () => {
     it('shows the claim has been approved', () => {
-      claim.status = 'Resolved';
-      claim.statusUpdatedBy = 'mediator';
-      claim.resolvedAmount = BigNumber.from('60000000000000000000');
+      claim.status = 'ClaimAccepted';
 
       render(<ClaimActions claim={claim} />);
 
@@ -167,12 +170,25 @@ describe('<ClaimActions />', () => {
       expect(screen.getByText(/Approved/i)).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
+  });
 
-    it('provides an Appeal action when Kleros is involved', () => {
-      claim.status = 'Resolved';
-      claim.statusUpdatedBy = 'arbitrator';
-      claim.counterOfferAmount = BigNumber.from('60000000000000000000');
-      claim.resolvedAmount = BigNumber.from('65000000000000000000');
+  describe('"DisputeResolvedWithClaimPayout" status', () => {
+    it('shows the claim has been approved', () => {
+      claim.status = 'DisputeResolvedWithClaimPayout';
+
+      render(<ClaimActions claim={claim} />);
+
+      expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
+      expect(screen.getByText(/Approved full amount/i)).toBeInTheDocument();
+      expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+    });
+  });
+
+  describe('"DisputeResolvedWithSettlementPayout" status', () => {
+    it('provides an Appeal action', () => {
+      claim.status = 'DisputeResolvedWithSettlementPayout';
+      claim.counterOfferAmount = BigNumber.from('65000000000000000000');
+      claim.deadline = addMinutes(new Date(), 1);
 
       render(<ClaimActions claim={claim} />);
 
@@ -182,12 +198,10 @@ describe('<ClaimActions />', () => {
       expect(appealButton).not.toBeDisabled();
     });
 
-    it('disables the Appeal button when the claim is inactive', () => {
-      claim.status = 'Resolved';
-      claim.statusUpdatedBy = 'arbitrator';
-      claim.counterOfferAmount = BigNumber.from('60000000000000000000');
-      claim.resolvedAmount = BigNumber.from('65000000000000000000');
-      claim.open = false;
+    it('disables the Appeal button when the deadline has passed', () => {
+      claim.status = 'DisputeResolvedWithSettlementPayout';
+      claim.counterOfferAmount = BigNumber.from('65000000000000000000');
+      claim.deadline = addMinutes(new Date(), -1);
 
       render(<ClaimActions claim={claim} />);
 

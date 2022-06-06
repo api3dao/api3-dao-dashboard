@@ -125,28 +125,38 @@ export interface Claim {
   timestamp: Date;
   claimant: string;
   beneficiary: string;
-  claimedAmount: BigNumber;
+  claimAmount: BigNumber;
   counterOfferAmount: null | BigNumber;
-  resolvedAmount: null | BigNumber;
-  open: boolean;
-  status: ClaimStatusText;
+  status: ClaimStatus;
   statusUpdatedAt: Date;
-  statusUpdatedBy: 'claimant' | 'mediator' | 'arbitrator';
   deadline: null | Date;
   transactionHash: null | string;
 }
 
 export const ClaimStatuses = {
   0: 'None',
-  1: 'Submitted',
-  2: 'MediationOffered',
-  3: 'Resolved',
-  4: 'Appealed',
-  5: 'Accepted',
-  6: 'Rejected',
+  1: 'ClaimCreated',
+  2: 'ClaimAccepted',
+  3: 'SettlementProposed',
+  4: 'SettlementAccepted',
+  5: 'DisputeCreated',
+  6: 'DisputeResolvedWithoutPayout',
+  7: 'DisputeResolvedWithClaimPayout',
+  8: 'DisputeResolvedWithSettlementPayout',
+  9: 'TimedOut',
 } as const;
-export type ClaimStatus = keyof typeof ClaimStatuses;
-export type ClaimStatusText = typeof ClaimStatuses[ClaimStatus];
+export type ClaimStatusCode = keyof typeof ClaimStatuses;
+export type ClaimStatus = typeof ClaimStatuses[ClaimStatusCode];
+
+export interface Policy {
+  policyId: string;
+  claimant: string;
+  beneficiary: string;
+  coverageAmount: BigNumber;
+  startTime: Date;
+  endTime: Date;
+  ipfsHash: string;
+}
 
 export interface ChainData {
   // TODO: move the following fields to a separate interface called GenericChainData
@@ -169,6 +179,10 @@ export interface ChainData {
   claims: {
     userClaimIds: null | string[]; // All the claim ids that are linked to the user's account
     byId: null | { [claimId: string]: Claim };
+  };
+  policies: {
+    userPolicyIds: null | string[]; // All the policy ids that are linked to the user's account
+    byId: null | { [policyId: string]: Policy };
   };
 }
 
@@ -197,6 +211,10 @@ export const initialChainData: ChainData = {
   vesting: null,
   claims: {
     userClaimIds: null,
+    byId: null,
+  },
+  policies: {
+    userPolicyIds: null,
     byId: null,
   },
 };

@@ -9,6 +9,8 @@ import {
   Convenience__factory as ConvenienceFactory,
   TimelockManager__factory as TimelockManagerFactory,
 } from '../generated-contracts';
+// TODO DA0-151 Delete tmp folder and import from claims-manager package
+import { ClaimsManagerWithKlerosArbitrator__factory as ClaimsManagerFactory } from './tmp';
 import { initialChainData } from '../chain-data/state';
 
 export const useApi3Pool = () => {
@@ -75,6 +77,17 @@ export const useTimelockManager = () => {
     if (!provider || !contracts) return null;
 
     return TimelockManagerFactory.connect(contracts.timelockManager, provider.getSigner());
+  }, [provider, contracts]);
+};
+
+export const useClaimsManager = () => {
+  const { provider, contracts } = useChainData();
+
+  return useMemo(() => {
+    if (!provider || !contracts) return null;
+
+    // TODO DAO-151 Remove REACT_APP_CLAIMS_MANAGER_ADDRESS and get the address from the "contracts" object
+    return ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, provider.getSigner());
   }, [provider, contracts]);
 };
 

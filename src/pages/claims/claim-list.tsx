@@ -1,6 +1,6 @@
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Timer, { DATE_FORMAT } from '../../components/timer';
-import { format } from 'date-fns';
+import { format, isAfter } from 'date-fns';
 import { images } from '../../utils';
 import { Claim } from '../../chain-data';
 import styles from './claim-list.module.scss';
@@ -15,9 +15,9 @@ export default function ClaimList(props: Props) {
       {props.claims.map((claim) => (
         <li key={claim.claimId} className={styles.claimItem}>
           <div className={styles.claimItemMain}>
-            <NavLink className={styles.claimItemTitle} to={`/claims/${claim.claimId}`}>
+            <Link className={styles.claimItemTitle} to={`/claims/${claim.claimId}`}>
               Claim {claim.claimId}
-            </NavLink>
+            </Link>
 
             <div className={styles.claimItemInfo}>
               {claim.deadline ? (
@@ -25,15 +25,15 @@ export default function ClaimList(props: Props) {
               ) : (
                 <span>{format(claim.timestamp, DATE_FORMAT)}</span>
               )}
-              <NavLink to={`/policies/${claim.policyId}`}>Policy</NavLink>
+              <Link to={`/policies/${claim.policyId}`}>Policy</Link>
             </div>
           </div>
 
           <div className={styles.claimItemStatus}>
             <ClaimStatus claim={claim} />
-            <NavLink tabIndex={-1} to={`/claims/${claim.claimId}`}>
+            <Link tabIndex={-1} to={`/claims/${claim.claimId}`}>
               <img src={images.arrowRight} alt="right arrow" />
-            </NavLink>
+            </Link>
           </div>
         </li>
       ))}
@@ -49,18 +49,29 @@ function ClaimStatus(props: ClaimStatusProps) {
   const { claim } = props;
 
   switch (claim.status) {
-    case 'Submitted':
-      return <>Processing</>;
-    case 'Appealed':
-      return <>Kleros Processing</>;
-    case 'MediationOffered':
+    case 'ClaimCreated':
+      if (isAfter(new Date(), claim.deadline!)) {
+        return <>Rejected</>;
+      }
+      return <>API3 Processing</>;
+    case 'SettlementProposed':
       return <>Countered</>;
-    case 'Resolved':
-      return <>Resolved</>;
-    case 'Accepted':
+    case 'ClaimAccepted':
+    case 'DisputeResolvedWithClaimPayout':
+      return <>Approved</>;
+    case 'DisputeCreated':
+      if (isAfter(new Date(), claim.deadline!)) {
+        return <>Rejected</>;
+      }
+      return <>Kleros Processing</>;
+    case 'SettlementAccepted':
       return <>Accepted Counter</>;
-    case 'Rejected':
+    case 'DisputeResolvedWithSettlementPayout':
+      return <>Approved Counter</>;
+    case 'DisputeResolvedWithoutPayout':
       return <>Rejected</>;
+    case 'TimedOut':
+      return <>Timed Out</>;
     case 'None':
       return null;
   }

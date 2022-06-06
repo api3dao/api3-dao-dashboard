@@ -2,6 +2,10 @@ import '@nomiclabs/hardhat-ethers';
 import { task, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
 import dotenv from 'dotenv';
+import { BigNumber } from 'ethers';
+import { addDays } from 'date-fns';
+import { parseApi3 } from '../src/utils/api3-format';
+import { ClaimsManagerWithKlerosArbitrator__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
 
 dotenv.config({ path: '../.env' });
 
@@ -55,6 +59,35 @@ task('send-to-account', 'Sends ether or API3 tokens to a specified account')
     console.info(`Sent ${hre.ethers.utils.formatEther(tokens)} API3 tokens to address ${receiver}`);
     await deployer.sendTransaction({ to: receiver, value: ether });
     console.info(`Sent ${hre.ethers.utils.formatEther(ether)} ETH to address ${receiver}`);
+  });
+
+task('create-user-policy', 'Creates a policy for the given user')
+  .addParam('address', 'The user address')
+  .addParam('coverageAmount', 'The coverage amount')
+  .addParam('ipfsHash', 'The IPFS policy hash')
+  .setAction(async (args, hre) => {
+    const userAddress = args.address;
+    const accounts = await hre.ethers.getSigners();
+
+    // The index for the manager needs to be in sync with the deploy script
+    const manager = accounts[1];
+    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, manager);
+    const tx = await claimsManager.createPolicy(
+      userAddress,
+      userAddress,
+      parseApi3(args.coverageAmount),
+      BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
+      BigNumber.from(Math.round(addDays(new Date(), 30).getTime() / 1000)),
+      args.ipfsHash
+    );
+
+    await tx.wait();
+    const createdEvents = await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, userAddress));
+
+    console.info(`User policies (${createdEvents.length}):`);
+    createdEvents.forEach((event) => {
+      console.info(event.args.policyHash);
+    });
   });
 
 // See https://hardhat.org/config/
