@@ -7,7 +7,7 @@ import Timer, { DATE_FORMAT } from '../../components/timer';
 import ClaimActions from './claim-actions';
 import { useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
-import { useUserClaimById } from '../../logic/claims';
+import { useUserClaimById, getCurrentDeadline } from '../../logic/claims';
 import { format } from 'date-fns';
 import { formatApi3, images } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
@@ -43,11 +43,12 @@ export default function ClaimDetails() {
   }
 
   const evidenceHref = `https://ipfs.io/ipfs/${claim.evidence}`;
+  const deadline = getCurrentDeadline(claim);
   return (
     <ClaimDetailsLayout claimId={claimId}>
       <div className={styles.detailsHeader}>
         <h4>Claim {claimId}</h4>
-        {claim.deadline && <Timer size="large" deadline={claim.deadline} showDeadline />}
+        {deadline && <Timer size="large" deadline={deadline} showDeadline />}
       </div>
       <ClaimActions key={claim.status} claim={claim} />
       <BorderedBox

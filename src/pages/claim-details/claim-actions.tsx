@@ -3,9 +3,10 @@ import Button from '../../components/button';
 import { abbrStr, Claim, useChainData } from '../../chain-data';
 import styles from './claim-actions.module.scss';
 import { formatApi3, handleTransactionError } from '../../utils';
-import { addDays, isAfter } from 'date-fns';
+import { isAfter } from 'date-fns';
 import { useClaimsManager } from '../../contracts';
 import { BigNumber } from 'ethers';
+import { getCurrentDeadline } from '../../logic/claims';
 
 interface Props {
   claim: Claim;
@@ -69,7 +70,7 @@ export default function ClaimActions(props: Props) {
       if (isPastDeadline) {
         // The claim has been ignored (most likely judged to be spam), so we show that it has
         // been rejected, and the user has 3 days to create a dispute
-        const isPastNewDeadline = isAfter(new Date(), addDays(claim.deadline!, 3));
+        const isPastNewDeadline = isAfter(new Date(), getCurrentDeadline(claim)!);
         return (
           <div className={styles.actionSection}>
             <p>API3 Multi-sig</p>
