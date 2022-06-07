@@ -9,7 +9,7 @@ import { useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { useUserClaimById, getCurrentDeadline } from '../../logic/claims';
 import { format } from 'date-fns';
-import { formatApi3, images } from '../../utils';
+import { formatApi3, images, useScrollToTop } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-details.module.scss';
 
@@ -18,6 +18,7 @@ interface Params {
 }
 
 export default function ClaimDetails() {
+  useScrollToTop();
   const { claimId } = useParams<Params>();
   const { data: claim, status } = useUserClaimById(claimId);
   const { provider } = useChainData();
