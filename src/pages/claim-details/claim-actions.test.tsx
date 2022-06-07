@@ -104,13 +104,13 @@ describe('<ClaimActions />', () => {
   });
 
   describe('"DisputeCreated" status', () => {
-    it('shows claimant has appealed to Kleros', () => {
+    it('shows claimant has escalated to Kleros', () => {
       claim.status = 'DisputeCreated';
 
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
-      expect(screen.getByText(/Appealed to Kleros/i)).toBeInTheDocument();
+      expect(screen.getByText(/Escalated to Kleros/i)).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
 
@@ -120,7 +120,7 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} />);
 
-      expect(screen.getByText(/Appealed counter of 60.0 API3 to Kleros/i)).toBeInTheDocument();
+      expect(screen.getByText(/Escalated counter of 60.0 API3 to Kleros/i)).toBeInTheDocument();
     });
 
     describe('when the claim has been ignored by Kleros', () => {

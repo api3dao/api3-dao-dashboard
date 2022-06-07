@@ -66,7 +66,6 @@ export default function ClaimActions(props: Props) {
     }
   };
 
-  // TODO DAO-151 Add additional info messages for the different statuses
   switch (claim.status) {
     case 'ClaimCreated':
       if (isPastDeadline) {
@@ -91,6 +90,9 @@ export default function ClaimActions(props: Props) {
                 Escalate to Kleros
               </Button>
             </div>
+            <p className={styles.actionMessage}>
+              You can escalate within the given time frame or the rejection will be automatically accepted.
+            </p>
           </div>
         );
       }
@@ -131,6 +133,9 @@ export default function ClaimActions(props: Props) {
               Escalate to Kleros
             </Button>
           </div>
+          <p className={styles.actionMessage}>
+            You can take action within the given time frame or the counter offer will be automatically accepted.
+          </p>
         </div>
       );
 
@@ -167,13 +172,14 @@ export default function ClaimActions(props: Props) {
           <p>{abbrStr(claim.claimant)}</p>
           {claim.counterOfferAmount?.gt(0) ? (
             <div className={styles.actionMainInfo}>
-              Appealed counter of <br />
+              Escalated counter of <br />
               {formatApi3(claim.counterOfferAmount)} API3 <br />
               to Kleros
             </div>
           ) : (
-            <div className={styles.actionMainInfo}>Appealed to Kleros</div>
+            <div className={styles.actionMainInfo}>Escalated to Kleros</div>
           )}
+          <p className={styles.actionMessage}>Kleros will decide the outcome of your claim.</p>
         </div>
       );
 
@@ -211,6 +217,9 @@ export default function ClaimActions(props: Props) {
               Appeal
             </Button>
           </div>
+          <p className={styles.actionMessage}>
+            You can appeal within the given time frame or the counter offer will be automatically accepted.
+          </p>
         </div>
       );
 
@@ -224,6 +233,9 @@ export default function ClaimActions(props: Props) {
               Appeal
             </Button>
           </div>
+          <p className={styles.actionMessage}>
+            You can appeal within the given time frame or the rejection will be automatically accepted.
+          </p>
         </div>
       );
 

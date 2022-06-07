@@ -1,6 +1,9 @@
 @import '../../styles/variables.module.scss';
 
 .actionSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   color: $secondary-color;
   text-align: center;
   margin-bottom: 4rem;
@@ -29,6 +32,7 @@
 }
 
 .actionPanel {
+  margin-bottom: $space-md;
   & > * {
     margin-right: $space-xl;
   }
@@ -36,4 +40,10 @@
   & > *:last-child {
     margin-right: 0;
   }
+}
+
+.actionMessage {
+  color: $tertiary-color;
+  font-weight: 400;
+  max-width: 50ch;
 }
