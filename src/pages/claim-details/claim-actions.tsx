@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import Button from '../../components/button';
+import CheckIcon from '../../components/icons/check-icon';
+import CloseIcon from '../../components/icons/close-icon';
 import { abbrStr, Claim, useChainData } from '../../chain-data';
 import styles from './claim-actions.module.scss';
 import { formatApi3, handleTransactionError } from '../../utils';
@@ -74,7 +76,12 @@ export default function ClaimActions(props: Props) {
         return (
           <div className={styles.actionSection}>
             <p>API3 Multi-sig</p>
-            <div className={styles.actionMainInfo}>Rejected</div>
+            <div className={styles.actionMainInfo}>
+              <span className={styles.rejected}>
+                <CloseIcon aria-hidden />
+                Rejected
+              </span>
+            </div>
             <div className={styles.actionPanel}>
               <Button
                 type="secondary"
@@ -99,7 +106,12 @@ export default function ClaimActions(props: Props) {
       return (
         <div className={styles.actionSection}>
           <p>API3 Multi-sig</p>
-          <div className={styles.actionMainInfo}>Approved</div>
+          <div className={styles.actionMainInfo}>
+            <span className={styles.approved}>
+              <CheckIcon aria-hidden />
+              Approved
+            </span>
+          </div>
         </div>
       );
 
@@ -140,7 +152,12 @@ export default function ClaimActions(props: Props) {
         return (
           <div className={styles.actionSection}>
             <p>Kleros</p>
-            <div className={styles.actionMainInfo}>Rejected</div>
+            <div className={styles.actionMainInfo}>
+              <span className={styles.rejected}>
+                <CloseIcon aria-hidden />
+                Rejected
+              </span>
+            </div>
           </div>
         );
       }
@@ -164,7 +181,14 @@ export default function ClaimActions(props: Props) {
       return (
         <div className={styles.actionSection}>
           <p>Kleros</p>
-          <div className={styles.actionMainInfo}>Approved full amount</div>
+          <div className={styles.actionMainInfo} data-testid="status-message">
+            <span className={styles.approved}>
+              <CheckIcon aria-hidden />
+              Approved
+            </span>
+            <br />
+            {' full amount'}
+          </div>
         </div>
       );
 
@@ -172,9 +196,14 @@ export default function ClaimActions(props: Props) {
       return (
         <div className={styles.actionSection}>
           <p>Kleros</p>
-          <div className={styles.actionMainInfo}>
-            Approved <br />
-            counter of <br />
+          <div className={styles.actionMainInfo} data-testid="status-message">
+            <span className={styles.approved}>
+              <CheckIcon aria-hidden />
+              Approved
+            </span>
+            <br />
+            {' counter of '}
+            <br />
             {formatApi3(claim.counterOfferAmount!)} API3
           </div>
           <div className={styles.actionPanel}>

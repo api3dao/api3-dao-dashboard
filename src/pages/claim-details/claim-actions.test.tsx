@@ -180,7 +180,7 @@ describe('<ClaimActions />', () => {
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-      expect(screen.getByText(/Approved full amount/i)).toBeInTheDocument();
+      expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved full amount/i);
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
   });
@@ -194,7 +194,7 @@ describe('<ClaimActions />', () => {
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-      expect(screen.getByText(/Approved counter of 65.0 API3/i)).toBeInTheDocument();
+      expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of 65.0 API3/i);
       const appealButton = screen.getByRole('button', { name: /Appeal/i });
       expect(appealButton).not.toBeDisabled();
     });
