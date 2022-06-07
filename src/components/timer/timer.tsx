@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { getDays, getHours, getMinutes, getSeconds } from '../../utils/generic';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './timer.module.scss';
 import { format } from 'date-fns';
+import { usePrevious } from '../../utils';
 
 interface Props {
   deadline: Date;
   size?: 'normal' | 'large';
   showDeadline?: boolean;
+  onDeadlineExceeded?: () => void;
 }
 
 export const DATE_FORMAT = 'do MMMM yyyy';
@@ -16,7 +18,7 @@ export const DATE_FORMAT = 'do MMMM yyyy';
 export const formatDeadline = (deadline: Date) => format(deadline, DATE_FORMAT);
 
 const Timer = (props: Props) => {
-  const { deadline, size = 'normal', showDeadline } = props;
+  const { deadline, size = 'normal', showDeadline, onDeadlineExceeded } = props;
   const [timerDays, setTimerDays] = useState('00');
   const [timerHours, setTimerHours] = useState('00');
   const [timerMinutes, setTimerMinutes] = useState('00');
@@ -51,6 +53,19 @@ const Timer = (props: Props) => {
       clearInterval(timer);
     };
   }, [deadline]);
+
+  const callbackRef = useRef(onDeadlineExceeded);
+  useEffect(() => {
+    callbackRef.current = onDeadlineExceeded;
+  });
+
+  const previousDateDiff = usePrevious(dateDiff) || 0;
+  useEffect(() => {
+    // We trigger the callback when we have gone past the deadline (i.e. from a positive diff to a zero diff)
+    if (previousDateDiff > 0 && dateDiff === 0) {
+      callbackRef.current && callbackRef.current();
+    }
+  }, [previousDateDiff, dateDiff]);
 
   const largeSize = size === 'large' ? `${styles.large}` : '';
   const status = dateDiff > 0 ? `Remaining${showDeadline ? '' : ':'}` : 'Ended';

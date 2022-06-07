@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Timer, { DATE_FORMAT } from '../../components/timer';
 import { format, isAfter } from 'date-fns';
-import { images } from '../../utils';
+import { images, useForceUpdate } from '../../utils';
 import { Claim } from '../../chain-data';
 import { getCurrentDeadline } from '../../logic/claims';
 import styles from './claim-list.module.scss';
@@ -11,6 +11,9 @@ interface Props {
 }
 
 export default function ClaimList(props: Props) {
+  // We need to trigger a re-render the moment we go past a deadline
+  const forceUpdate = useForceUpdate();
+
   return (
     <ul className={styles.claimList}>
       {props.claims.map((claim) => {
@@ -23,7 +26,11 @@ export default function ClaimList(props: Props) {
               </Link>
 
               <div className={styles.claimItemInfo}>
-                {deadline ? <Timer deadline={deadline} /> : <span>{format(claim.timestamp, DATE_FORMAT)}</span>}
+                {deadline ? (
+                  <Timer deadline={deadline} onDeadlineExceeded={forceUpdate} />
+                ) : (
+                  <span>{format(claim.timestamp, DATE_FORMAT)}</span>
+                )}
                 <Link to={`/policies/${claim.policyId}`}>Policy</Link>
               </div>
             </div>
