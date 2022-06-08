@@ -66,12 +66,20 @@ task('create-user-policy', 'Creates a policy for the given user')
   .addParam('coverageAmount', 'The coverage amount')
   .addParam('ipfsHash', 'The IPFS policy hash')
   .setAction(async (args, hre) => {
+    const network = hre.network.name;
+    const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
+
+    if (!existsSync(deploymentFileName)) {
+      throw new Error(`Couldn't find deployment file for network: '${network}'.`);
+    }
+
     const userAddress = args.address;
     const accounts = await hre.ethers.getSigners();
 
     // The index for the manager needs to be in sync with the deploy script
     const manager = accounts[1];
-    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, manager);
+    const deploymentFile = require(deploymentFileName);
+    const claimsManager = ClaimsManagerFactory.connect(deploymentFile.claimsManager, manager);
     const tx = await claimsManager.createPolicy(
       userAddress,
       userAddress,
