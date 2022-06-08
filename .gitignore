@@ -41,8 +41,8 @@ yarn-error.log*
 # Cypress blockchain configuration
 cypress-shared.json
 
-# Folder holding the DAO contracts repository used to deploy contracts locally for development and testing
-/dao-contracts
+# Folder holding the DAO contract repositories used to deploy contracts locally for development and testing
+/dao-contract-repos
 
 # Cypress unused folders
 cypress/videos

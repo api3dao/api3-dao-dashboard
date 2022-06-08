@@ -86,8 +86,7 @@ export const useClaimsManager = () => {
   return useMemo(() => {
     if (!provider || !contracts) return null;
 
-    // TODO DAO-151 Remove REACT_APP_CLAIMS_MANAGER_ADDRESS and get the address from the "contracts" object
-    return ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, provider.getSigner());
+    return ClaimsManagerFactory.connect(contracts.claimsManager, provider.getSigner());
   }, [provider, contracts]);
 };
 

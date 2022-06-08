@@ -68,7 +68,7 @@ jobs:
       - name: Prepare DAO contracts
         run: yarn eth:prepare-dao-contracts-for-hardhat --github-actions
       - name: Bootstrap DAO contracts
-        run: cd dao-contracts && yarn bootstrap
+        run: cd dao-contract-repos/api3-dao && yarn bootstrap
       - name: Cypress tests
         env:
           REACT_APP_NODE_ENV: development
