@@ -45,9 +45,6 @@ We use the `main` branch to develop new features. For production code, see the
 7. `yarn start` - to start the application on localhost on port 3000
 8. `yarn send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
 
-If you are working on claims/policies, you can create some policies for your account by running: 9.
-`yarn create-user-policy --address <address> --coverage-amount 500 --ipfs-hash some-hash-001`
-
 <!-- markdown-link-check-disable -->
 <!-- The "how to reset account link does work, but the github actions check says it returns 403" -->
 
@@ -56,6 +53,13 @@ If you are working on claims/policies, you can create some policies for your acc
 > [reset the account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
 
 <!-- markdown-link-check-enable -->
+
+### Claims/Policies development
+
+You need a policy that is linked to your account in order to create a claim. You can create a policy for your account by
+running:
+
+`yarn create-user-policy --address <address> --coverage-amount 500 --ipfs-hash some-hash-001`
 
 ### Supported networks
 
