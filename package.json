@@ -93,7 +93,7 @@
     "api3-dao": "git+https://github.com/api3dao/api3-dao.git#0b8bb17fbda0161d5d9fff00ed4562b91cc27af6",
     "chai": "^4.3.6",
     "chalk": "^4.1.2",
-    "claims-manager": "git+https://github.com/api3dao/claims-manager.git#0cf57283c1e21bad328b6aab78cc67614cad77fa",
+    "claims-manager": "git+https://github.com/api3dao/claims-manager.git#ci-skip-husky",
     "concurrently": "^7.0.0",
     "cypress": "^9.4.1",
     "cypress-plugin-tab": "^1.0.5",
