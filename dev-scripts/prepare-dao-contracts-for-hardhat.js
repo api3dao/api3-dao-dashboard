@@ -50,7 +50,7 @@ const prepareClaimsManagerRepo = async (daoContractsDir, packageJson) => {
   );
 
   // Read the package.json to know what version to clone and checkout to it
-  const commitSha = packageJson.devDependencies['claims-manager'].split('#')[1];
+  const commitSha = packageJson.devDependencies['@api3/claims-manager'].split('#')[1];
   const claimsManagerDir = join(daoContractsDir, 'claims-manager');
   await execAndLog(`cd ${claimsManagerDir} && git checkout ${commitSha}`, DEBUG);
 
