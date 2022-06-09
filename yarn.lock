@@ -6237,7 +6237,7 @@ cjs-module-lexer@^0.6.0:
 
 "claims-manager@git+https://github.com/api3dao/claims-manager.git#ci-skip-husky":
   version "0.0.1"
-  resolved "git+https://github.com/api3dao/claims-manager.git#a1f222044bfbee63c1aeb50eff9fa4ab7183e6e4"
+  resolved "git+https://github.com/api3dao/claims-manager.git#7cdb3e117f5b97deb559823e3304aee2b51c4887"
 
 class-utils@^0.3.5:
   version "0.3.6"
