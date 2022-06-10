@@ -70,16 +70,12 @@ different network, adapt the configuration to your needs.
 
 We use [Fleek](https://fleek.co/) to host the application on IPFS. The hosting workflow works like this:
 
-<!-- markdown-link-check-disable -->
-
 - Every PR against `main` branch will be deployed by github action (as preview deployment) and you can find the IPFS
   hash in the "fleek deploy check" details in the PR status checks panel.
 - The current version of app in `main` branch will be deployed as staging on the following URL:
   https://api3-dao-dashboard-staging.on.fleek.co/. The app will be redeployed after every merged request automatically
 - Every push to `production` branch will trigger a production deploy. The app can be found on this URL:
   https://api3-dao-dashboard.on.fleek.co/
-
-<!-- markdown-link-check-enable -->
 
 Apart from that, we are using
 [environment variables](https://create-react-app.dev/docs/adding-custom-environment-variables/), specifically
