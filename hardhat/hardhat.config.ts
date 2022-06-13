@@ -98,7 +98,7 @@ task('accept-claim', 'Accepts the given claim')
     // The index for the manager needs to be in sync with the deploy script
     const manager = accounts[1];
     const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, manager);
-    await claimsManager.acceptClaim(BigNumber.from(args.claimId));
+    await claimsManager.acceptClaim(args.claimId);
     console.info(`Accepted Claim: ${args.claimId}`);
   });
 
@@ -111,7 +111,7 @@ task('propose-settlement', 'Proposes a settlement amount for the claim')
     // The index for the manager needs to be in sync with the deploy script
     const manager = accounts[1];
     const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, manager);
-    await claimsManager.proposeSettlement(BigNumber.from(args.claimId), parseApi3(args.amount));
+    await claimsManager.proposeSettlement(args.claimId, parseApi3(args.amount));
     console.info(`Proposed a settlement of ${args.amount} API3 for Claim: ${args.claimId}`);
   });
 
@@ -124,7 +124,7 @@ task('resolve-dispute', 'Resolves the dispute for the claim')
     // The index for the arbitrator needs to be in sync with the deploy script
     const arbitrator = accounts[2];
     const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, arbitrator);
-    await claimsManager.rule(BigNumber.from(args.disputeId), BigNumber.from(args.ruling));
+    await claimsManager.rule(args.disputeId, args.ruling);
     console.info(`Resolved dispute: ${args.disputeId} with ruling: ${args.ruling}`);
   });
 

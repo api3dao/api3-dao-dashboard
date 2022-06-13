@@ -7,7 +7,6 @@ import styles from './claim-actions.module.scss';
 import { formatApi3, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
 import { useClaimsManager } from '../../contracts';
-import { BigNumber } from 'ethers';
 import { getCurrentDeadline } from '../../logic/claims';
 
 interface Props {
@@ -25,7 +24,7 @@ export default function ClaimActions(props: Props) {
 
   const handleAcceptCounter = async () => {
     setStatus('submitting');
-    const tx = await handleTransactionError(claimsManager.acceptSettlement(BigNumber.from(claim.claimId)));
+    const tx = await handleTransactionError(claimsManager.acceptSettlement(claim.claimId));
     if (tx) {
       setChainData('Save accept claim settlement transaction', {
         transactions: [...transactions, { type: 'accept-claim-settlement', tx }],
@@ -38,9 +37,7 @@ export default function ClaimActions(props: Props) {
 
   const handleEscalateToArbitrator = async () => {
     setStatus('submitting');
-    const tx = await handleTransactionError(
-      claimsManager.createDisputeWithKlerosArbitrator(BigNumber.from(claim.claimId))
-    );
+    const tx = await handleTransactionError(claimsManager.createDisputeWithKlerosArbitrator(claim.claimId));
     if (tx) {
       setChainData('Save escalate claim transaction', {
         transactions: [...transactions, { type: 'escalate-claim-to-arbitrator', tx }],
@@ -54,7 +51,7 @@ export default function ClaimActions(props: Props) {
   const handleAppeal = async () => {
     setStatus('submitting');
     const tx = await handleTransactionError(
-      claimsManager.appealKlerosArbitratorDecision(BigNumber.from(claim.claimId), claim.arbitratorDisputeId!)
+      claimsManager.appealKlerosArbitratorDecision(claim.claimId, claim.arbitratorDisputeId!)
     );
     if (tx) {
       setChainData('Save appeal claim transaction', {
