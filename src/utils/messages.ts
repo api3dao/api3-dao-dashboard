@@ -122,4 +122,19 @@ export const transactionMessages: { [key in TransactionType]: PendingTransaction
     success: 'Success! API3 tokens withdrawn to pool.',
     error: 'Failed to withdraw to pool. Please try again.',
   },
+  'accept-claim-settlement': {
+    start: 'Accepting counter offer...',
+    success: 'Success! Counter offer has been accepted.',
+    error: 'Failed to accept counter. Please try again.',
+  },
+  'escalate-claim-to-arbitrator': {
+    start: 'Escalating to Kleros...',
+    success: 'Success! Claim has been escalated to Kleros.',
+    error: 'Failed to escalate claim. Please try again.',
+  },
+  'appeal-claim-decision': {
+    start: 'Appealing decision...',
+    success: 'Success! Claim decision has been appealed.',
+    error: 'Failed to appeal decision. Please try again.',
+  },
 };

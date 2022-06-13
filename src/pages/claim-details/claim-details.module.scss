@@ -10,8 +10,6 @@
 }
 
 .detailsHeader {
-  margin-bottom: $space-lg;
-
   @media (min-width: $min-md) {
     display: flex;
     justify-content: space-between;

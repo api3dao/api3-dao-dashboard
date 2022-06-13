@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { go } from '@api3/promise-utils';
-import { addDays, isBefore } from 'date-fns';
+import { addDays, isAfter, isBefore } from 'date-fns';
 import { blockTimestampToDate, messages } from '../../utils';
 import { Claim, ClaimStatusCode, ClaimStatuses, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { notifications } from '../../components/notifications';
@@ -91,9 +91,10 @@ async function loadClaims(
 ): Promise<{ ids: string[]; byId: Record<string, Claim> }> {
   const { userAccount = null, claimId = null } = params;
   // Get all the static data via events
-  const [createdEvents, counterOfferEvents] = await Promise.all([
+  const [createdEvents, counterOfferEvents, disputeEvents] = await Promise.all([
     contract.queryFilter(contract.filters.CreatedClaim(claimId, userAccount)),
     contract.queryFilter(contract.filters.ProposedSettlement(claimId, userAccount)),
+    contract.queryFilter(contract.filters.CreatedDisputeWithKlerosArbitrator(claimId, userAccount)),
   ]);
 
   if (!createdEvents.length) {
@@ -114,6 +115,7 @@ async function loadClaims(
     const eventArgs = event.args;
     const claimId = eventArgs.claimIndex.toString();
     const counterOfferEvent = counterOfferEvents.find((ev) => ev.args.claimIndex.toString() === claimId);
+    const disputeEvent = disputeEvents.find((ev) => ev.args.claimIndex.toString() === claimId);
     const claimData = claims[index]!;
 
     const claim: Claim = {
@@ -129,6 +131,7 @@ async function loadClaims(
       statusUpdatedAt: blockTimestampToDate(claimData.updateTime),
       deadline: null,
       transactionHash: event.transactionHash,
+      arbitratorDisputeId: disputeEvent?.args.klerosArbitratorDisputeId ?? null,
     };
 
     claim.deadline = calculateDeadline(claim);
@@ -157,10 +160,8 @@ function calculateDeadline(claim: Claim) {
 }
 
 export function isActive(claim: Claim): boolean {
+  const deadline = getCurrentDeadline(claim);
   switch (claim.status) {
-    case 'ClaimCreated':
-      // The user has 3 days after the deadline has been reached to escalate
-      return isBefore(new Date(), addDays(claim.deadline!, 3));
     case 'SettlementProposed':
       return true;
     case 'ClaimAccepted':
@@ -169,9 +170,20 @@ export function isActive(claim: Claim): boolean {
     case 'TimedOut':
     case 'None':
       return false;
+    case 'ClaimCreated':
     case 'DisputeCreated':
     case 'DisputeResolvedWithoutPayout':
     case 'DisputeResolvedWithSettlementPayout':
-      return isBefore(new Date(), claim.deadline!);
+      return isBefore(new Date(), deadline!);
   }
+}
+
+export function getCurrentDeadline(claim: Claim) {
+  if (claim.status === 'ClaimCreated') {
+    if (isAfter(new Date(), claim.deadline!)) {
+      // The user has 3 days after the deadline has been reached to escalate
+      return addDays(claim.deadline!, 3);
+    }
+  }
+  return claim.deadline;
 }

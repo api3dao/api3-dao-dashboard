@@ -1,8 +1,12 @@
 @import '../../styles/variables.module.scss';
 
 .actionSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   color: $secondary-color;
   text-align: center;
+  margin-top: 4rem;
   margin-bottom: 4rem;
   word-break: break-word;
 }
@@ -14,7 +18,22 @@
   margin-bottom: 4rem;
 }
 
+.approved {
+  color: $green-color;
+  svg {
+    margin-right: 0.5ch;
+  }
+}
+
+.rejected {
+  color: $pink-color;
+  svg {
+    margin-right: 0.75ch;
+  }
+}
+
 .actionPanel {
+  margin-bottom: $space-md;
   & > * {
     margin-right: $space-xl;
   }
@@ -22,4 +41,10 @@
   & > *:last-child {
     margin-right: 0;
   }
+}
+
+.actionMessage {
+  color: $tertiary-color;
+  font-weight: 400;
+  max-width: 50ch;
 }

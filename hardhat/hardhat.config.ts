@@ -90,6 +90,44 @@ task('create-user-policy', 'Creates a policy for the given user')
     });
   });
 
+task('accept-claim', 'Accepts the given claim')
+  .addParam('claimId', 'The claim ID')
+  .setAction(async (args, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    // The index for the manager needs to be in sync with the deploy script
+    const manager = accounts[1];
+    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, manager);
+    await claimsManager.acceptClaim(args.claimId);
+    console.info(`Accepted Claim: ${args.claimId}`);
+  });
+
+task('propose-settlement', 'Proposes a settlement amount for the claim')
+  .addParam('claimId', 'The claim ID')
+  .addParam('amount', 'The settlement amount')
+  .setAction(async (args, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    // The index for the manager needs to be in sync with the deploy script
+    const manager = accounts[1];
+    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, manager);
+    await claimsManager.proposeSettlement(args.claimId, parseApi3(args.amount));
+    console.info(`Proposed a settlement of ${args.amount} API3 for Claim: ${args.claimId}`);
+  });
+
+task('resolve-dispute', 'Resolves the dispute for the claim')
+  .addParam('disputeId', 'The arbitrator dispute ID')
+  .addParam('ruling', 'The arbitrator decision (0|1|2)')
+  .setAction(async (args, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    // The index for the arbitrator needs to be in sync with the deploy script
+    const arbitrator = accounts[2];
+    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, arbitrator);
+    await claimsManager.rule(args.disputeId, args.ruling);
+    console.info(`Resolved dispute: ${args.disputeId} with ruling: ${args.ruling}`);
+  });
+
 // See https://hardhat.org/config/
 const config: HardhatUserConfig = {
   // https://hardhat.org/hardhat-network/#connecting-to-hardhat-network-from-wallets-and-other-software

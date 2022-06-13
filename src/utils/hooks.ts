@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import { useLocation } from 'react-router';
 
 // Allows access to the previous to the previous value when re-rendering
 // https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
-export const usePrevious = (value: any) => {
-  const ref = useRef();
+export const usePrevious = <T>(value: T) => {
+  const ref = useRef<T>();
 
   useEffect(() => {
     ref.current = value;
@@ -12,6 +12,13 @@ export const usePrevious = (value: any) => {
 
   // Return previous value (happens before update in useEffect above)
   return ref.current;
+};
+
+// NOTE: Try to avoid this hook if possible.
+// https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
+export const useForceUpdate = () => {
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  return forceUpdate;
 };
 
 export const useOnMountEffect = (fn: () => void) => {

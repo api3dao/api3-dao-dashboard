@@ -7,9 +7,9 @@ import Timer, { DATE_FORMAT } from '../../components/timer';
 import ClaimActions from './claim-actions';
 import { useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
-import { useUserClaimById } from '../../logic/claims';
+import { useUserClaimById, getCurrentDeadline } from '../../logic/claims';
 import { format } from 'date-fns';
-import { formatApi3, images } from '../../utils';
+import { formatApi3, images, useForceUpdate, useScrollToTop } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-details.module.scss';
 
@@ -18,8 +18,12 @@ interface Params {
 }
 
 export default function ClaimDetails() {
+  useScrollToTop();
   const { claimId } = useParams<Params>();
   const { data: claim, status } = useUserClaimById(claimId);
+
+  // We need to trigger a re-render the moment we go past the deadline
+  const forceUpdate = useForceUpdate();
   const { provider } = useChainData();
 
   if (!provider) {
@@ -43,13 +47,14 @@ export default function ClaimDetails() {
   }
 
   const evidenceHref = `https://ipfs.io/ipfs/${claim.evidence}`;
+  const deadline = getCurrentDeadline(claim);
   return (
     <ClaimDetailsLayout claimId={claimId}>
       <div className={styles.detailsHeader}>
         <h4>Claim {claimId}</h4>
-        {claim.deadline && <Timer size="large" deadline={claim.deadline} showDeadline />}
+        {deadline && <Timer size="large" deadline={deadline} onDeadlineExceeded={forceUpdate} showDeadline />}
       </div>
-      <ClaimActions claim={claim} />
+      <ClaimActions key={claim.status} claim={claim} />
       <BorderedBox
         noMobileBorders
         header={
