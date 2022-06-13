@@ -67,8 +67,8 @@ jobs:
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - name: Prepare DAO contracts
         run: yarn eth:prepare-dao-contracts-for-hardhat --github-actions
-      - name: Bootstrap DAO contracts
-        run: cd dao-contracts && yarn bootstrap
+      - name: Bootstrap api3-dao contracts
+        run: cd dao-contracts/api3-dao && yarn bootstrap
       - name: Cypress tests
         env:
           REACT_APP_NODE_ENV: development

@@ -6,6 +6,7 @@ import { BigNumber } from 'ethers';
 import { addDays } from 'date-fns';
 import { parseApi3 } from '../src/utils/api3-format';
 import { ClaimsManagerWithKlerosArbitrator__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
+import { ChainData } from '../src/chain-data';
 
 dotenv.config({ path: '../.env' });
 
@@ -35,22 +36,15 @@ task('send-to-account', 'Sends ether or API3 tokens to a specified account')
   .addOptionalParam('tokens', 'Number of API3 tokens to send. Default is 100', '100')
   .addOptionalParam('ether', 'Amount of ETH to send. Default is 0', '0')
   .setAction(async (args, hre) => {
-    const network = hre.network.name;
-    const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
-
-    if (!existsSync(deploymentFileName)) {
-      throw new Error(`Couldn't find deployment file for network: '${network}'.`);
-    }
-
     const receiver: string = args.address;
     const tokens = hre.ethers.utils.parseEther(args.tokens);
     const ether = hre.ethers.utils.parseEther(args.ether);
 
-    const deploymentFile = require(deploymentFileName);
     // This needs to be in sync with deployer implementation (deployer should have funds and also be token owner)
     const deployer = (await hre.ethers.getSigners())[0];
+    const contracts = getContractAddresses(hre.network.name);
     const api3Token = new hre.ethers.Contract(
-      deploymentFile.api3Token,
+      contracts.api3Token,
       ['function transfer(address to, uint amount) returns (boolean)'],
       deployer
     );
@@ -71,7 +65,8 @@ task('create-user-policy', 'Creates a policy for the given user')
 
     // The index for the manager needs to be in sync with the deploy script
     const manager = accounts[1];
-    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, manager);
+    const contracts = getContractAddresses(hre.network.name);
+    const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
     const tx = await claimsManager.createPolicy(
       userAddress,
       userAddress,
@@ -97,7 +92,8 @@ task('accept-claim', 'Accepts the given claim')
 
     // The index for the manager needs to be in sync with the deploy script
     const manager = accounts[1];
-    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, manager);
+    const contracts = getContractAddresses(hre.network.name);
+    const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
     await claimsManager.acceptClaim(args.claimId);
     console.info(`Accepted Claim: ${args.claimId}`);
   });
@@ -110,7 +106,8 @@ task('propose-settlement', 'Proposes a settlement amount for the claim')
 
     // The index for the manager needs to be in sync with the deploy script
     const manager = accounts[1];
-    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, manager);
+    const contracts = getContractAddresses(hre.network.name);
+    const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
     await claimsManager.proposeSettlement(args.claimId, parseApi3(args.amount));
     console.info(`Proposed a settlement of ${args.amount} API3 for Claim: ${args.claimId}`);
   });
@@ -123,7 +120,8 @@ task('resolve-dispute', 'Resolves the dispute for the claim')
 
     // The index for the arbitrator needs to be in sync with the deploy script
     const arbitrator = accounts[2];
-    const claimsManager = ClaimsManagerFactory.connect(process.env.REACT_APP_CLAIMS_MANAGER_ADDRESS!, arbitrator);
+    const contracts = getContractAddresses(hre.network.name);
+    const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, arbitrator);
     await claimsManager.rule(args.disputeId, args.ruling);
     console.info(`Resolved dispute: ${args.disputeId} with ruling: ${args.ruling}`);
   });
@@ -193,3 +191,13 @@ const config: HardhatUserConfig = {
 };
 
 export default config;
+
+function getContractAddresses(network: string): NonNullable<ChainData['contracts']> {
+  const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
+
+  if (!existsSync(deploymentFileName)) {
+    throw new Error(`Couldn't find deployment file for network: '${network}'.`);
+  }
+
+  return require(deploymentFileName);
+}
