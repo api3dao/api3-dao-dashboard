@@ -11,9 +11,9 @@ const DEBUG = false;
 
 const main = async () => {
   const rootDir = join(__dirname, '../');
-  const daoContractsDir = join(rootDir, 'dao-contract-repos');
-  // Remove dao-contract-repos directory (if exists)
-  await execAndLog(`cd ${rootDir} && rm -rf dao-contract-repos`, DEBUG);
+  const daoContractsDir = join(rootDir, 'dao-contracts');
+  // Remove dao-contracts directory (if exists)
+  await execAndLog(`cd ${rootDir} && rm -rf dao-contracts`, DEBUG);
   await execAndLog(`mkdir ${daoContractsDir}`, DEBUG);
 
   const packageJson = JSON.parse(readFileSync(join(rootDir, 'package.json')));
@@ -23,7 +23,10 @@ const main = async () => {
 
 const prepareApi3DaoRepo = async (daoContractsDir, packageJson) => {
   // Clones the repository
-  await execAndLog(`cd ${daoContractsDir} && git clone https://github.com/api3dao/api3-dao.git api3-dao`, DEBUG);
+  await execAndLog(
+    `cd ${daoContractsDir} && git clone --branch main https://github.com/api3dao/api3-dao.git api3-dao`,
+    DEBUG
+  );
 
   // Read the package.json to know what version to clone and checkout to it
   const commitSha = packageJson.devDependencies['api3-dao'].split('#')[1];
@@ -45,7 +48,7 @@ const prepareApi3DaoRepo = async (daoContractsDir, packageJson) => {
 const prepareClaimsManagerRepo = async (daoContractsDir, packageJson) => {
   // Clone the repository
   await execAndLog(
-    `cd ${daoContractsDir} && git clone https://github.com/api3dao/claims-manager.git claims-manager`,
+    `cd ${daoContractsDir} && git clone --branch main https://github.com/api3dao/claims-manager.git claims-manager`,
     DEBUG
   );
 

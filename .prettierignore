@@ -2,7 +2,7 @@
 /hardhat/artifacts
 /hardhat/cache
 /build
-/dao-contract-repos
+/dao-contracts
 /src/contract-deployments/localhost-dao.json
 .env
 /src/generated-contracts
