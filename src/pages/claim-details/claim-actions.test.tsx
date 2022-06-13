@@ -21,6 +21,7 @@ describe('<ClaimActions />', () => {
       evidence: 'evidence-001',
       transactionHash: null,
       deadline: null,
+      arbitratorDisputeId: null,
     };
   });
 
@@ -103,13 +104,13 @@ describe('<ClaimActions />', () => {
   });
 
   describe('"DisputeCreated" status', () => {
-    it('shows claimant has appealed to Kleros', () => {
+    it('shows claimant has escalated to Kleros', () => {
       claim.status = 'DisputeCreated';
 
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
-      expect(screen.getByText(/Appealed to Kleros/i)).toBeInTheDocument();
+      expect(screen.getByText(/Escalated to Kleros/i)).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
 
@@ -119,7 +120,7 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} />);
 
-      expect(screen.getByText(/Appealed counter of 60.0 API3 to Kleros/i)).toBeInTheDocument();
+      expect(screen.getByText(/Escalated counter of 60.0 API3 to Kleros/i)).toBeInTheDocument();
     });
 
     describe('when the claim has been ignored by Kleros', () => {
@@ -179,7 +180,7 @@ describe('<ClaimActions />', () => {
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-      expect(screen.getByText(/Approved full amount/i)).toBeInTheDocument();
+      expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved full amount/i);
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
   });
@@ -193,7 +194,7 @@ describe('<ClaimActions />', () => {
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-      expect(screen.getByText(/Approved counter of 65.0 API3/i)).toBeInTheDocument();
+      expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of 65.0 API3/i);
       const appealButton = screen.getByRole('button', { name: /Appeal/i });
       expect(appealButton).not.toBeDisabled();
     });

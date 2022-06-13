@@ -111,7 +111,10 @@ export type TransactionType =
   | 'vote-against'
   | 'execute'
   | 'update-timelock-status'
-  | 'withdraw-to-pool';
+  | 'withdraw-to-pool'
+  | 'accept-claim-settlement'
+  | 'escalate-claim-to-arbitrator'
+  | 'appeal-claim-decision';
 
 interface Vesting {
   amountVested: BigNumber;
@@ -131,6 +134,7 @@ export interface Claim {
   statusUpdatedAt: Date;
   deadline: null | Date;
   transactionHash: null | string;
+  arbitratorDisputeId: null | BigNumber;
 }
 
 export const ClaimStatuses = {
