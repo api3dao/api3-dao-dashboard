@@ -70,7 +70,7 @@ task('create-user-policy', 'Creates a policy for the given user')
     const tx = await claimsManager.createPolicy(
       userAddress,
       userAddress,
-      parseApi3(args.coverageAmount),
+      args.coverageAmount,
       BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
       BigNumber.from(Math.round(addDays(new Date(), 30).getTime() / 1000)),
       args.ipfsHash

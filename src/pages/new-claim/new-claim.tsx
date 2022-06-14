@@ -5,10 +5,10 @@ import { BaseLayout } from '../../components/layout';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import { isEmpty } from 'lodash';
-import { Policy } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
 import { useUserPolicyById } from '../../logic/policies';
-import { formatApi3, parseApi3 } from '../../utils';
+import { parseApi3 } from '../../utils';
+import { commify } from 'ethers/lib/utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim.module.scss';
 
@@ -21,7 +21,7 @@ interface FormState {
   amount: string;
 }
 
-function getValidationMessages(form: FormState, policy: Policy) {
+function getValidationMessages(form: FormState) {
   const messages: ValidationMessages<FormState> = {};
 
   if (form.evidence.trim().length === 0) {
@@ -31,13 +31,8 @@ function getValidationMessages(form: FormState, policy: Policy) {
   const result = goSync(() => parseApi3(form.amount));
   if (!result.success) {
     messages.amount = 'Please enter a valid number';
-  } else {
-    const parsed = result.data;
-    if (parsed.lte(0)) {
-      messages.amount = 'Amount must be greater than zero';
-    } else if (parsed.gt(policy.coverageAmount)) {
-      messages.amount = 'Amount must not exceed the coverage amount';
-    }
+  } else if (result.data.lte(0)) {
+    messages.amount = 'Amount must be greater than zero';
   }
 
   return messages;
@@ -69,7 +64,7 @@ export default function NewClaim() {
     );
   }
 
-  const messages = getValidationMessages(form, policy);
+  const messages = getValidationMessages(form);
   const handleSubmit: FormEventHandler = async (ev) => {
     ev.preventDefault();
     if (!isEmpty(messages)) {
@@ -117,7 +112,8 @@ export default function NewClaim() {
           <li>
             <label htmlFor="amount">Requested relief amount, in API3 tokens</label>
             <p className={globalStyles.secondaryColor}>
-              How many API3 tokens do you wish to receive? (Max of {formatApi3(policy.coverageAmount)} API3)
+              How many API3 tokens do you wish to receive? (Your policy coverage is $
+              {commify(policy.coverageAmount.toString())})
             </p>
             <Input
               id="amount"
