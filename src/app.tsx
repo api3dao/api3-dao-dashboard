@@ -14,6 +14,7 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
+import Policies from './pages/policies';
 import Claims from './pages/claims';
 import ClaimDetails from './pages/claim-details';
 import PolicyDetails from './pages/policy-details';
@@ -62,6 +63,9 @@ const AppContent = () => {
           </Route>
           <Route path="/vesting" exact>
             <Vesting />
+          </Route>
+          <Route path="/policies" exact>
+            <Policies />
           </Route>
           <Route path="/claims/:claimId" exact>
             <ClaimDetails />

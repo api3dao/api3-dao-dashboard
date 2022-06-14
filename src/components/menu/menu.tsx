@@ -36,6 +36,13 @@ export const DesktopMenu = () => {
           <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>History</p>
         </div>
       </NavLink>
+      <NavLink activeClassName={styles.menuActiveItem} to="/policies">
+        <div className={styles.menuItem}>
+          <div className={styles.menuActiveLine} />
+          <DashboardIcon />
+          <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Policies</p>
+        </div>
+      </NavLink>
       <NavLink activeClassName={styles.menuActiveItem} to="/claims">
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
@@ -82,6 +89,18 @@ export const MobileMenu = () => {
               <div className={styles.menuMobileItem}>
                 <HistoryIcon />
                 <p className={styles.menuMobileItemText}>History</p>
+              </div>
+            </NavLink>
+            <NavLink activeClassName={styles.menuActiveItem} to="/policies">
+              <div className={styles.menuMobileItem}>
+                <DashboardIcon />
+                <p className={styles.menuMobileItemText}>Policies</p>
+              </div>
+            </NavLink>
+            <NavLink activeClassName={styles.menuActiveItem} to="/claims">
+              <div className={styles.menuMobileItem}>
+                <DashboardIcon />
+                <p className={styles.menuMobileItemText}>Claims</p>
               </div>
             </NavLink>
           </div>

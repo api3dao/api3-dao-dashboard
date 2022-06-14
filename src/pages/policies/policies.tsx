@@ -1,85 +1,85 @@
 import { ReactNode, useMemo } from 'react';
-import { connectWallet } from '../../components/sign-in/sign-in';
-import Layout from '../../components/layout';
-import Button from '../../components/button';
-import RadioButton from '../../components/radio-button';
-import BorderedBox, { Header } from '../../components/bordered-box';
-import ClaimList from './claim-list';
-import { useQueryParams } from '../../utils';
 import { useHistory } from 'react-router';
+import Layout from '../../components/layout';
+import BorderedBox, { Header } from '../../components/bordered-box';
+import RadioButton from '../../components/radio-button';
+import Button from '../../components/button';
+import PolicyList from './policy-list';
+import { useQueryParams } from '../../utils';
+import { connectWallet } from '../../components/sign-in/sign-in';
 import { useChainData } from '../../chain-data';
-import { isActive, useUserClaims } from '../../logic/claims';
-import styles from './claims.module.scss';
+import { useUserPolicies, isActive } from '../../logic/policies';
+import styles from '../claims/claims.module.scss';
 
-export default function Claims() {
-  const { data: claims, status } = useUserClaims();
+export default function Policies() {
+  const { data: policies, status } = useUserPolicies();
 
   const params = useQueryParams();
   const filter = params.get('filter');
-  const filteredClaims = useMemo(() => {
-    if (!claims) return [];
+  const filteredPolicies = useMemo(() => {
+    if (!policies) return [];
     switch (filter) {
       case 'none':
         return [];
       case 'active':
-        return claims.filter((claim) => isActive(claim));
+        return policies.filter((policy) => isActive(policy));
       case 'inactive':
-        return claims.filter((claim) => !isActive(claim));
+        return policies.filter((policy) => !isActive(policy));
       default:
-        return claims;
+        return policies;
     }
-  }, [claims, filter]);
+  }, [policies, filter]);
 
   const { provider, setChainData } = useChainData();
   if (!provider) {
     return (
-      <ClaimsLayout>
+      <PoliciesLayout>
         <div className={styles.emptyState}>
-          <span>You need to be connected to view claims.</span>
+          <span>You need to be connected to view your policies.</span>
           <Button type="link" onClick={connectWallet(setChainData)}>
             Connect your wallet
           </Button>
         </div>
-      </ClaimsLayout>
+      </PoliciesLayout>
     );
   }
 
-  if (!claims) {
+  if (!policies) {
     return (
-      <ClaimsLayout>
+      <PoliciesLayout>
         <p className={styles.emptyState}>{status === 'loading' ? 'Loading...' : null}</p>
-      </ClaimsLayout>
+      </PoliciesLayout>
     );
   }
 
   return (
-    <ClaimsLayout>
-      {filteredClaims.length > 0 ? (
-        <ClaimList claims={filteredClaims} />
-      ) : claims.length === 0 ? (
-        <p className={styles.emptyState}>There are no claims linked to your account.</p>
+    <PoliciesLayout>
+      {filteredPolicies.length > 0 ? (
+        <PolicyList policies={filteredPolicies} />
+      ) : policies.length === 0 ? (
+        <p className={styles.emptyState}>There are no policies linked to your account.</p>
       ) : (
-        <p className={styles.emptyState}>There are no matching claims.</p>
+        <p className={styles.emptyState}>There are no matching policies.</p>
       )}
-    </ClaimsLayout>
+    </PoliciesLayout>
   );
 }
 
-interface ClaimsLayoutProps {
+interface PoliciesLayoutProps {
   children: ReactNode;
 }
 
-function ClaimsLayout(props: ClaimsLayoutProps) {
+function PoliciesLayout(props: PoliciesLayoutProps) {
   const history = useHistory();
   const handleFilterChange = (showActive: boolean, showInactive: boolean) => {
     if (showActive && !showInactive) {
-      history.replace(`/claims?filter=active`);
+      history.replace(`/policies?filter=active`);
     } else if (!showActive && showInactive) {
-      history.replace(`/claims?filter=inactive`);
+      history.replace(`/policies?filter=inactive`);
     } else if (!showActive && !showInactive) {
-      history.replace(`/claims?filter=none`);
+      history.replace(`/policies?filter=none`);
     } else {
-      history.replace(`/claims`);
+      history.replace(`/policies`);
     }
   };
 
@@ -88,12 +88,12 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
   const activeChecked = !filter || filter === 'active';
   const inactiveChecked = !filter || filter === 'inactive';
   return (
-    <Layout title="Claims">
+    <Layout title="Policies">
       <BorderedBox
         noMobileBorders
         header={
           <Header>
-            <h5>My Claims</h5>
+            <h5>My Policies</h5>
             <div className={styles.filters}>
               <RadioButton
                 type="checkbox"
