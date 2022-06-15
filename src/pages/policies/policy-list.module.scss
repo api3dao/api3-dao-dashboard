@@ -18,13 +18,13 @@
 }
 
 .policyItemMain {
-  max-width: calc(100% - 330px);
+  flex-grow: 1;
+  max-width: calc(100% - 60px);
   font-weight: 500;
   padding-right: $space-xxxl;
   box-sizing: border-box;
 
   @media (max-width: $max-xl) {
-    max-width: calc(100% - 280px);
     padding-right: $space-xl;
   }
 

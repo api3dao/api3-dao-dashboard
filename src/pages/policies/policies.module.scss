@@ -1,5 +1,43 @@
 @import '../../styles/variables.module.scss';
 
+.searchForm {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  border-bottom: 1px solid $tertiary-color;
+  max-width: 30ch;
+  margin-bottom: 4rem;
+
+  .inputContainer {
+    flex: 1;
+    padding-right: 35px;
+  }
+
+  button {
+    background: transparent;
+    border: none;
+    color: $tertiary-color;
+    cursor: pointer;
+  }
+
+  &:focus-within {
+    border-bottom: 1px solid $secondary-color;
+    button {
+      color: $secondary-color;
+    }
+  }
+}
+
+.clearButton {
+  position: absolute;
+  right: 0;
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
 .emptyState {
   color: $tertiary-color;
   text-align: center;
@@ -34,4 +72,15 @@
   & > *:last-child {
     margin-right: 0;
   }
+}
+
+.resultsInfo {
+  color: $tertiary-color;
+  font-size: $text-xsmall;
+  line-height: $lh-small;
+  margin-top: -0.5rem;
+  margin-bottom: 1.5rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
