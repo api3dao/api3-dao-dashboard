@@ -1,7 +1,7 @@
 import { Policy } from '../../chain-data';
 import { Link } from 'react-router-dom';
-import { DATE_FORMAT } from '../../components/timer';
 import { format } from 'date-fns';
+import Button from '../../components/button';
 import { images } from '../../utils';
 import { isActive } from '../../logic/policies';
 import { commify } from 'ethers/lib/utils';
@@ -24,18 +24,22 @@ export default function PolicyList(props: Props) {
 
             <div className={styles.policyItemInfo}>
               {isActive(policy) ? <span>Active</span> : <span className={globalStyles.tertiaryColor}>Inactive</span>}
-              <span>
-                <span className={globalStyles.tertiaryColor}>Ends:</span> {format(policy.endTime, DATE_FORMAT)}{' '}
-                <span className={globalStyles.tertiaryColor}>{format(policy.endTime, 'HH:mm')}</span>
-              </span>
-              <span>
-                <span className={globalStyles.tertiaryColor}>Coverage:</span> $
-                {commify(policy.coverageAmount.toString())}
-              </span>
+              <div className={styles.infoEntry}>
+                <span className={globalStyles.tertiaryColor}>Ends: </span>
+                <span>
+                  {format(policy.endTime, 'dd MMM yyyy')}
+                  <span className={globalStyles.tertiaryColor}> {format(policy.endTime, 'HH:mm')}</span>
+                </span>
+              </div>
+              <div className={styles.infoEntry}>
+                <span className={globalStyles.tertiaryColor}>Coverage: </span>
+                <span>${commify(policy.coverageAmount.toString())}</span>
+              </div>
             </div>
           </div>
 
-          <div className={styles.policyItemArrow}>
+          <div className={styles.policyItemAction}>
+            <Button type="secondary">Create a Claim</Button>
             <Link tabIndex={-1} to={`/policies/${policy.policyId}`}>
               <img src={images.arrowRight} alt="right arrow" />
             </Link>

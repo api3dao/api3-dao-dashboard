@@ -110,7 +110,7 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
   const query = params.get('ipfs-hash') || '';
   const handleSubmit: FormEventHandler<HTMLFormElement> = (ev) => {
     ev.preventDefault();
-    const { value } = ev.currentTarget.query;
+    const value = ev.currentTarget.query.value.trim();
     if (value) {
       history.replace('/policies?ipfs-hash=' + value);
     } else if (query) {
