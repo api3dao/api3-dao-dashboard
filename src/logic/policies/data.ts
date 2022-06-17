@@ -117,5 +117,9 @@ async function loadPolicies(
 }
 
 export function isActive(policy: Policy) {
+  return isBefore(new Date(), policy.endTime);
+}
+
+export function canCreateClaim(policy: Policy) {
   return isBefore(new Date(), addDays(policy.endTime, 3));
 }
