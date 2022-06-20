@@ -3,28 +3,33 @@
 .searchForm {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
   position: relative;
   border: 1px solid $tertiary-color;
   max-width: 25ch;
   padding: 0 40px 0 8px;
   margin-bottom: 4rem;
 
-  .inputContainer {
-    flex: 1;
-    padding-top: 3px;
-  }
-
   button {
     background: transparent;
     border: none;
     color: $secondary-color;
     cursor: pointer;
+    display: flex;
+    align-items: center;
   }
 
   &:focus-within {
     border-color: $secondary-color;
   }
+}
+
+.searchButton {
+  margin-right: 3px;
+}
+
+.inputContainer {
+  flex: 1;
+  padding-top: 3px;
 }
 
 .clearButton {

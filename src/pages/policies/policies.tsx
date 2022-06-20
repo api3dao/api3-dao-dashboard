@@ -127,7 +127,7 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
   return (
     <Layout title="Policies">
       <form className={styles.searchForm} onSubmit={handleSubmit}>
-        <button type="submit">
+        <button type="submit" className={styles.searchButton}>
           <SearchIcon aria-hidden />
           <span className="sr-only">Submit</span>
         </button>
