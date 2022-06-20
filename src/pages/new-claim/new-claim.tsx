@@ -1,14 +1,14 @@
 import { FormEventHandler, useState } from 'react';
 import { useParams } from 'react-router';
 import { goSync } from '@api3/promise-utils';
+import { BigNumber, utils } from 'ethers';
 import { BaseLayout } from '../../components/layout';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import { isEmpty } from 'lodash';
+import { Policy } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
 import { useUserPolicyById } from '../../logic/policies';
-import { parseApi3 } from '../../utils';
-import { commify } from 'ethers/lib/utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim.module.scss';
 
@@ -21,18 +21,23 @@ interface FormState {
   amount: string;
 }
 
-function getValidationMessages(form: FormState) {
+function getValidationMessages(form: FormState, policy: Policy) {
   const messages: ValidationMessages<FormState> = {};
 
   if (form.evidence.trim().length === 0) {
     messages.evidence = 'Please fill in this field';
   }
 
-  const result = goSync(() => parseApi3(form.amount));
+  const result = goSync(() => parseClaimAmount(form.amount));
   if (!result.success) {
     messages.amount = 'Please enter a valid number';
-  } else if (result.data.lte(0)) {
-    messages.amount = 'Amount must be greater than zero';
+  } else {
+    const parsed = result.data;
+    if (parsed.lte(0)) {
+      messages.amount = 'Amount must be greater than zero';
+    } else if (parsed.gt(policy.coverageAmount)) {
+      messages.amount = 'Amount must not exceed the coverage amount';
+    }
   }
 
   return messages;
@@ -64,7 +69,7 @@ export default function NewClaim() {
     );
   }
 
-  const messages = getValidationMessages(form);
+  const messages = getValidationMessages(form, policy);
   const handleSubmit: FormEventHandler = async (ev) => {
     ev.preventDefault();
     if (!isEmpty(messages)) {
@@ -81,7 +86,7 @@ export default function NewClaim() {
         Math.round(policy.startTime.getTime() / 1000),
         Math.round(policy.endTime.getTime() / 1000),
         policy.ipfsHash,
-        parseApi3(form.amount),
+        parseClaimAmount(form.amount),
         form.evidence.trim()
       );
 
@@ -110,10 +115,9 @@ export default function NewClaim() {
             {showMessages && messages.evidence && <p className={styles.validation}>{messages.evidence}</p>}
           </li>
           <li>
-            <label htmlFor="amount">Requested relief amount, in API3 tokens</label>
+            <label htmlFor="amount">Requested relief amount, in USD</label>
             <p className={globalStyles.secondaryColor}>
-              How many API3 tokens do you wish to receive? (Your policy coverage is $
-              {commify(policy.coverageAmount.toString())})
+              How much USD do you wish to receive? (Max of ${utils.commify(policy.coverageAmount.toString())})
             </p>
             <Input
               id="amount"
@@ -131,3 +135,7 @@ export default function NewClaim() {
 }
 
 type ValidationMessages<T> = { [key in keyof T]?: string };
+
+function parseClaimAmount(amount: string) {
+  return BigNumber.from(Math.round(parseFloat(amount.trim())));
+}

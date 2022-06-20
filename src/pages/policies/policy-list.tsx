@@ -1,7 +1,7 @@
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { commify } from 'ethers/lib/utils';
+import { utils } from 'ethers';
 import Button from '../../components/button';
 import { Tooltip } from '../../components/tooltip';
 import { Policy } from '../../chain-data';
@@ -37,7 +37,7 @@ export default function PolicyList(props: Props) {
                 </div>
                 <div className={styles.infoEntry}>
                   <span className={globalStyles.tertiaryColor}>Coverage: </span>
-                  <span>${commify(policy.coverageAmount.toString())}</span>
+                  <span>${utils.commify(policy.coverageAmount.toString())}</span>
                 </div>
               </div>
             </div>
