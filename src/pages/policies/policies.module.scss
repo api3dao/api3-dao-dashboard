@@ -5,36 +5,34 @@
   align-items: center;
   gap: 0.5rem;
   position: relative;
-  border-bottom: 1px solid $tertiary-color;
-  max-width: 30ch;
+  border: 1px solid $tertiary-color;
+  max-width: 25ch;
+  padding: 0 40px 0 8px;
   margin-bottom: 4rem;
 
   .inputContainer {
     flex: 1;
-    padding-right: 35px;
+    padding-top: 3px;
   }
 
   button {
     background: transparent;
     border: none;
-    color: $tertiary-color;
+    color: $secondary-color;
     cursor: pointer;
   }
 
   &:focus-within {
-    border-bottom: 1px solid $secondary-color;
-    button {
-      color: $secondary-color;
-    }
+    border-color: $secondary-color;
   }
 }
 
 .clearButton {
   position: absolute;
-  right: 0;
+  right: 10px;
   svg {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
   }
 }
 
