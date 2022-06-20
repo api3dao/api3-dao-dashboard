@@ -51,7 +51,7 @@ export default function PolicyList(props: Props) {
                 <Tooltip
                   overlay={
                     <div className={styles.tooltip}>
-                      Claims are unable to be made for policies that have been inactive for more than 72 hours.
+                      Claims are unable to be made for policies inactive for more than 72 hours.
                     </div>
                   }
                 >
