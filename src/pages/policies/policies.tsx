@@ -8,6 +8,7 @@ import Input from '../../components/input';
 import CloseIcon from '../../components/icons/close-icon';
 import SearchIcon from '../../components/icons/search-icon';
 import PolicyList from './policy-list';
+import Pagination, { usePagedData } from './pagination';
 import { useQueryParams } from '../../utils';
 import { connectWallet } from '../../components/sign-in/sign-in';
 import { useChainData } from '../../chain-data';
@@ -18,8 +19,10 @@ export default function Policies() {
   const { data: policies, status } = useUserPolicies();
 
   const params = useQueryParams();
-  const query = params.get('ipfs-hash') || '';
+  const query = params.get('query') || '';
   const filter = params.get('filter');
+  const currentPage = parseInt(params.get('page') || '1');
+
   const filteredPolicies = useMemo(() => {
     if (!policies || filter === 'none') return [];
 
@@ -37,6 +40,8 @@ export default function Policies() {
         return results;
     }
   }, [policies, query, filter]);
+
+  const pagedPolicies = usePagedData({ data: filteredPolicies, currentPage });
 
   const { provider, setChainData } = useChainData();
   if (!provider) {
@@ -68,7 +73,8 @@ export default function Policies() {
             {filteredPolicies.length} result(s)
             {query && <> for "{query}"</>}
           </div>
-          <PolicyList policies={filteredPolicies} />
+          <PolicyList policies={pagedPolicies} />
+          <Pagination totalResults={filteredPolicies.length} currentPage={currentPage} className={styles.pagination} />
         </>
       ) : policies.length === 0 ? (
         <p className={styles.emptyState}>There are no policies linked to your account.</p>
@@ -91,15 +97,17 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
 
   const handleFilterChange = (showActive: boolean, showInactive: boolean) => {
     const newParams = new URLSearchParams(params);
+    newParams.delete('filter');
+    newParams.delete('page');
+
     if (showActive && !showInactive) {
       newParams.set('filter', 'active');
     } else if (!showActive && showInactive) {
       newParams.set('filter', 'inactive');
     } else if (!showActive && !showInactive) {
       newParams.set('filter', 'none');
-    } else {
-      newParams.delete('filter');
     }
+
     history.replace('/policies?' + newParams.toString());
   };
 
@@ -107,12 +115,12 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
   const activeChecked = !filter || filter === 'active';
   const inactiveChecked = !filter || filter === 'inactive';
 
-  const query = params.get('ipfs-hash') || '';
+  const query = params.get('query') || '';
   const handleSubmit: FormEventHandler<HTMLFormElement> = (ev) => {
     ev.preventDefault();
     const value = ev.currentTarget.query.value.trim();
     if (value) {
-      history.replace('/policies?ipfs-hash=' + value);
+      history.replace('/policies?query=' + value);
     } else if (query) {
       history.replace('/policies');
     }
@@ -120,7 +128,8 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
 
   const handleClear = () => {
     const newParams = new URLSearchParams(params);
-    newParams.delete('ipfs-hash');
+    newParams.delete('query');
+    newParams.delete('page');
     history.replace('/policies?' + newParams.toString());
   };
 

@@ -6,13 +6,12 @@
   position: relative;
   border: 1px solid $tertiary-color;
   max-width: 25ch;
-  padding: 0 40px 0 8px;
+  padding: 3px 40px 3px 8px;
   margin-bottom: 4rem;
 
   button {
     background: transparent;
     border: none;
-    color: $secondary-color;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -24,6 +23,7 @@
 }
 
 .searchButton {
+  color: $secondary-color;
   margin-right: 3px;
 }
 
@@ -35,6 +35,7 @@
 .clearButton {
   position: absolute;
   right: 10px;
+  color: $tertiary-color;
   svg {
     width: 11px;
     height: 11px;
@@ -86,4 +87,8 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.pagination {
+  margin-bottom: -29px;
 }
