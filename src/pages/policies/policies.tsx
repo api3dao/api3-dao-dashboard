@@ -19,7 +19,7 @@ export default function Policies() {
   const { data: policies, status } = useUserPolicies();
 
   const params = useQueryParams();
-  const query = params.get('query') || '';
+  const query = params.get('query');
   const filter = params.get('filter');
   const currentPage = parseInt(params.get('page') || '1');
 
@@ -48,7 +48,7 @@ export default function Policies() {
     return (
       <PoliciesLayout>
         <div className={styles.emptyState}>
-          <span>You need to be connected to view your policies.</span>
+          <span>You need to be connected to view your policies. </span>
           <Button type="link" onClick={connectWallet(setChainData)}>
             Connect your wallet
           </Button>
@@ -65,24 +65,51 @@ export default function Policies() {
     );
   }
 
+  if (!filteredPolicies.length) {
+    let policyQualifier;
+    if (filter === 'active') {
+      policyQualifier = <span className={styles.highlight}>active </span>;
+    } else if (filter === 'inactive') {
+      policyQualifier = <span className={styles.highlight}>inactive </span>;
+    }
+
+    return (
+      <PoliciesLayout>
+        <p className={styles.emptyState}>
+          {policies.length === 0 ? (
+            <>
+              You don't have any policies associated with the connected address.
+              <br />
+              Connect an address associated with a policy to start a claim.
+            </>
+          ) : filter === 'none' ? (
+            <>Please select a filter.</>
+          ) : query ? (
+            <>
+              We couldn't find any {policyQualifier}policies with <span className={styles.highlight}>"{query}"</span>.
+              <br />
+              Please try a different search term.
+            </>
+          ) : (
+            <>
+              You don't have any {policyQualifier}policies associated with the connected address.
+              <br />
+              Connect an address associated with a policy to start a claim.
+            </>
+          )}
+        </p>
+      </PoliciesLayout>
+    );
+  }
+
   return (
     <PoliciesLayout>
-      {filteredPolicies.length > 0 ? (
-        <>
-          <div className={styles.resultsInfo}>
-            {filteredPolicies.length} result(s)
-            {query && <> for "{query}"</>}
-          </div>
-          <PolicyList policies={pagedPolicies} />
-          <Pagination totalResults={filteredPolicies.length} currentPage={currentPage} className={styles.pagination} />
-        </>
-      ) : policies.length === 0 ? (
-        <p className={styles.emptyState}>There are no policies linked to your account.</p>
-      ) : (
-        <p className={styles.emptyState}>
-          {query ? <>There are no policies matching "{query}"</> : <>There are no matching policies.</>}
-        </p>
-      )}
+      <div className={styles.resultsInfo}>
+        {filteredPolicies.length} result(s)
+        {query && <> for "{query}"</>}
+      </div>
+      <PolicyList policies={pagedPolicies} />
+      <Pagination totalResults={filteredPolicies.length} currentPage={currentPage} className={styles.pagination} />
     </PoliciesLayout>
   );
 }
@@ -97,7 +124,7 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
 
   const handleFilterChange = (showActive: boolean, showInactive: boolean) => {
     const newParams = new URLSearchParams(params);
-    // We only want to keep the "query" search param
+    // We only want to keep the "query" search param if present
     newParams.delete('filter');
     newParams.delete('page');
 
@@ -128,7 +155,7 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
 
   const handleClear = () => {
     const newParams = new URLSearchParams(params);
-    // We only want to keep the "filter" search param
+    // We only want to keep the "filter" search param if present
     newParams.delete('query');
     newParams.delete('page');
     history.replace('/policies?' + newParams.toString());
@@ -137,10 +164,6 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
   return (
     <Layout title="Policies">
       <form className={styles.searchForm} onSubmit={handleSubmit}>
-        <button type="submit" className={styles.searchButton}>
-          <SearchIcon aria-hidden />
-          <span className="sr-only">Submit</span>
-        </button>
         <div className={styles.inputContainer}>
           <Input
             key={query}
@@ -152,6 +175,10 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
             block
           />
         </div>
+        <button type="submit" className={styles.searchButton}>
+          <SearchIcon aria-hidden />
+          <span className="sr-only">Submit</span>
+        </button>
         {query && (
           <button tabIndex={-1} type="button" className={styles.clearButton} onClick={handleClear}>
             <CloseIcon aria-hidden />

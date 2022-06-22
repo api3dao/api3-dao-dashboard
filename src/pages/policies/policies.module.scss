@@ -2,12 +2,28 @@
 
 .searchForm {
   display: flex;
+  flex-direction: row-reverse;
   align-items: center;
   position: relative;
   border: 1px solid $tertiary-color;
   max-width: 25ch;
   padding: 3px 40px 3px 8px;
   margin-bottom: 4rem;
+  transition: all 0.3s ease 0s;
+
+  input {
+    transition: all 0.3s ease 0s;
+    &::placeholder {
+      transition: all 0.3s ease 0s;
+    }
+    &:focus::placeholder {
+      color: $secondary-color;
+    }
+  }
+
+  &:focus-within {
+    border-color: $secondary-color;
+  }
 
   button {
     background: transparent;
@@ -15,10 +31,6 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-  }
-
-  &:focus-within {
-    border-color: $secondary-color;
   }
 }
 
@@ -43,19 +55,15 @@
 }
 
 .emptyState {
-  color: $tertiary-color;
+  color: $secondary-color;
   text-align: center;
   margin: 15vh $space-md;
   transform: translateY(-50%);
   font-size: $text-small;
+}
 
-  & > * {
-    margin-right: $space-xs;
-  }
-
-  & > *:last-child {
-    margin-right: 0;
-  }
+.highlight {
+  color: $primary-color;
 }
 
 .filters {
