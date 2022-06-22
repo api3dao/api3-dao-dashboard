@@ -57,6 +57,7 @@
 .emptyState {
   color: $secondary-color;
   text-align: center;
+  word-break: break-word;
   margin: 15vh $space-md;
   transform: translateY(-50%);
   font-size: $text-small;
@@ -98,5 +99,5 @@
 }
 
 .pagination {
-  margin-bottom: -29px;
+  margin-bottom: -28px;
 }

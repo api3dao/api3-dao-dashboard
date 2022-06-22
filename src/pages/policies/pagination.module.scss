@@ -28,7 +28,10 @@
 
 .previous,
 .next {
-  display: flex;
-  align-items: center;
-  gap: 1ch;
+  display: none;
+  @media (min-width: $min-md) {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+  }
 }
