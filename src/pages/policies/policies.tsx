@@ -104,10 +104,6 @@ export default function Policies() {
 
   return (
     <PoliciesLayout>
-      <div className={styles.resultsInfo}>
-        {filteredPolicies.length} result(s)
-        {query && <> for "{query}"</>}
-      </div>
       <PolicyList policies={pagedPolicies} />
       <Pagination totalResults={filteredPolicies.length} currentPage={currentPage} className={styles.pagination} />
     </PoliciesLayout>
@@ -169,8 +165,8 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
             key={query}
             name="query"
             defaultValue={query}
-            aria-label="Search by IPFS hash"
-            placeholder="Search by IPFS hash"
+            aria-label="Search your policies"
+            placeholder="Search your policies"
             underline={false}
             block
           />
