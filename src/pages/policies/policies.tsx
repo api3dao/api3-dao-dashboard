@@ -41,7 +41,7 @@ export default function Policies() {
     }
   }, [policies, query, filter]);
 
-  const pagedPolicies = usePagedData({ data: filteredPolicies, currentPage });
+  const pagedPolicies = usePagedData(filteredPolicies, { currentPage });
 
   const { provider, setChainData } = useChainData();
   if (!provider) {
@@ -97,6 +97,7 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
 
   const handleFilterChange = (showActive: boolean, showInactive: boolean) => {
     const newParams = new URLSearchParams(params);
+    // We only want to keep the "query" search param
     newParams.delete('filter');
     newParams.delete('page');
 
@@ -118,16 +119,16 @@ function PoliciesLayout(props: PoliciesLayoutProps) {
   const query = params.get('query') || '';
   const handleSubmit: FormEventHandler<HTMLFormElement> = (ev) => {
     ev.preventDefault();
-    const value = ev.currentTarget.query.value.trim();
-    if (value) {
-      history.replace('/policies?query=' + value);
-    } else if (query) {
-      history.replace('/policies');
-    }
+    const { value } = ev.currentTarget.query;
+    // We don't want to keep any search params
+    const newParams = new URLSearchParams();
+    newParams.set('query', value.trim());
+    history.replace('/policies?' + newParams.toString());
   };
 
   const handleClear = () => {
     const newParams = new URLSearchParams(params);
+    // We only want to keep the "filter" search param
     newParams.delete('query');
     newParams.delete('page');
     history.replace('/policies?' + newParams.toString());

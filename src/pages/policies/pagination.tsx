@@ -1,6 +1,6 @@
-import React from 'react';
 import { useMemo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import range from 'lodash/range';
 import classNames from 'classnames';
 import ArrowRightIcon from '../../components/icons/ArrowRightIcon';
 import ArrowLeftIcon from '../../components/icons/ArrowLeftIcon';
@@ -17,7 +17,10 @@ interface Props {
 
 export default function Pagination(props: Props) {
   const { totalResults, currentPage, pageSize } = props;
-  const pagination = usePagination({ totalResults, currentPage, pageSize });
+  const pagination = useMemo(
+    () => paginate(totalResults, { currentPage, pageSize }),
+    [totalResults, currentPage, pageSize]
+  );
   const lastPage = pagination[pagination.length - 1] as number;
 
   const location = useLocation();
@@ -47,12 +50,7 @@ export default function Pagination(props: Props) {
 
           return (
             <li key={page}>
-              <NavLink
-                replace
-                to={getHref(page)}
-                aria-label={'Page ' + page}
-                isActive={() => page === props.currentPage}
-              >
+              <NavLink replace to={getHref(page)} aria-label={'Page ' + page} isActive={() => page === currentPage}>
                 {page}
               </NavLink>
             </li>
@@ -73,60 +71,56 @@ export default function Pagination(props: Props) {
 }
 
 const MIN_PAGE_COUNT = 9;
+const DEFAULT_PAGE_SIZE = 10;
 
-export function usePagination({
-  totalResults,
-  currentPage,
-  pageSize = 10,
-}: {
-  totalResults: number;
-  currentPage: number;
-  pageSize?: number;
-}): Array<number | '...'> {
-  return useMemo(() => {
-    const totalPageCount = Math.ceil(totalResults / pageSize);
+export function paginate(
+  totalResults: number,
+  {
+    currentPage,
+    pageSize = DEFAULT_PAGE_SIZE,
+  }: {
+    currentPage: number;
+    pageSize?: number;
+  }
+): Array<number | '...'> {
+  const totalPageCount = Math.ceil(totalResults / pageSize);
 
-    if (totalPageCount < MIN_PAGE_COUNT) {
-      return getNumberRange(1, totalPageCount);
-    }
+  if (totalPageCount < MIN_PAGE_COUNT) {
+    // Total page count is small enough to return all pages
+    return range(1, totalPageCount + 1);
+  }
 
-    const lastPage = totalPageCount;
+  const lastPage = totalPageCount;
+  const previousPage = Math.max(currentPage - 1, 1);
+  const nextPage = Math.min(currentPage + 1, lastPage);
 
-    const previousPage = Math.max(currentPage - 1, 1);
-    const showDotsOnLeft = previousPage >= 4;
+  const insertDotsOnLeft = previousPage > 3;
+  const insertDotsOnRight = nextPage < lastPage - 2;
 
-    const nextPage = Math.min(currentPage + 1, lastPage);
-    const showDotsOnRight = nextPage <= lastPage - 3;
+  // 1 2 3 4 5 ... 9 10
+  if (!insertDotsOnLeft && insertDotsOnRight) {
+    return [...range(1, 6), '...', lastPage - 1, lastPage];
+  }
 
-    // 1 2 3 4 5 ... 9 10
-    if (!showDotsOnLeft && showDotsOnRight) {
-      return [...getNumberRange(1, 5), '...', lastPage - 1, lastPage];
-    }
+  // 1 2 ... 6 7 8 9 10
+  if (insertDotsOnLeft && !insertDotsOnRight) {
+    return [1, 2, '...', ...range(lastPage - 4, lastPage + 1)];
+  }
 
-    // 1 2 ... 6 7 8 9 10
-    if (showDotsOnLeft && !showDotsOnRight) {
-      return [1, 2, '...', ...getNumberRange(lastPage - 4, lastPage)];
-    }
-
-    // 1 ... 5 6 7 ... 10
-    return [1, '...', ...getNumberRange(previousPage, nextPage), '...', lastPage];
-  }, [totalResults, pageSize, currentPage]);
+  // 1 ... 4 5 6 ... 10
+  return [1, '...', ...range(previousPage, nextPage + 1), '...', lastPage];
 }
 
-function getNumberRange(start: number, end: number) {
-  const length = end - start + 1;
-  return Array.from({ length }, (_, index) => index + start);
-}
-
-export function usePagedData<T>({
-  data,
-  currentPage,
-  pageSize = 10,
-}: {
-  data: T[];
-  currentPage: number;
-  pageSize?: number;
-}) {
+export function usePagedData<T>(
+  data: T[],
+  {
+    currentPage,
+    pageSize = DEFAULT_PAGE_SIZE,
+  }: {
+    currentPage: number;
+    pageSize?: number;
+  }
+) {
   const totalPageCount = Math.ceil(data.length / pageSize);
   currentPage = Math.max(Math.min(currentPage, totalPageCount), 1);
 
