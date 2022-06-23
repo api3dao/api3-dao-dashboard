@@ -73,15 +73,14 @@ export default function Pagination(props: Props) {
 const MIN_PAGE_COUNT = 9;
 const DEFAULT_PAGE_SIZE = 10;
 
+interface PaginationOptions {
+  currentPage: number;
+  pageSize?: number;
+}
+
 export function paginate(
   totalResults: number,
-  {
-    currentPage,
-    pageSize = DEFAULT_PAGE_SIZE,
-  }: {
-    currentPage: number;
-    pageSize?: number;
-  }
+  { currentPage, pageSize = DEFAULT_PAGE_SIZE }: PaginationOptions
 ): Array<number | '...'> {
   const totalPageCount = Math.ceil(totalResults / pageSize);
 
@@ -111,16 +110,7 @@ export function paginate(
   return [1, '...', ...range(previousPage, nextPage + 1), '...', lastPage];
 }
 
-export function usePagedData<T>(
-  data: T[],
-  {
-    currentPage,
-    pageSize = DEFAULT_PAGE_SIZE,
-  }: {
-    currentPage: number;
-    pageSize?: number;
-  }
-) {
+export function usePagedData<T>(data: T[], { currentPage, pageSize = DEFAULT_PAGE_SIZE }: PaginationOptions) {
   const totalPageCount = Math.ceil(data.length / pageSize);
   currentPage = Math.max(Math.min(currentPage, totalPageCount), 1);
 

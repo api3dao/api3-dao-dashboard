@@ -26,10 +26,9 @@ export default function Policies() {
   const filteredPolicies = useMemo(() => {
     if (!policies || filter === 'none') return [];
 
-    let results = policies;
-    if (query) {
-      results = results.filter((policy) => policy.ipfsHash.toLowerCase().includes(query.toLowerCase()));
-    }
+    const results = query
+      ? policies.filter((policy) => policy.ipfsHash.toLowerCase().includes(query.toLowerCase()))
+      : policies;
 
     switch (filter) {
       case 'active':
@@ -48,8 +47,8 @@ export default function Policies() {
     return (
       <PoliciesLayout>
         <div className={styles.emptyState}>
-          <span>You need to be connected to view your policies. </span>
-          <Button type="link" onClick={connectWallet(setChainData)}>
+          You need to be connected to view your policies.
+          <Button type="link" onClick={connectWallet(setChainData)} className={styles.connectButton}>
             Connect your wallet
           </Button>
         </div>
