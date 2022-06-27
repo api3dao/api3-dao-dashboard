@@ -1,6 +1,7 @@
 import { FormEventHandler, useState } from 'react';
 import { useParams } from 'react-router';
 import { goSync } from '@api3/promise-utils';
+import { BigNumber, utils } from 'ethers';
 import { BaseLayout } from '../../components/layout';
 import Input from '../../components/input';
 import Button from '../../components/button';
@@ -8,7 +9,6 @@ import { isEmpty } from 'lodash';
 import { Policy } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
 import { useUserPolicyById } from '../../logic/policies';
-import { formatApi3, parseApi3 } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim.module.scss';
 
@@ -28,7 +28,7 @@ function getValidationMessages(form: FormState, policy: Policy) {
     messages.evidence = 'Please fill in this field';
   }
 
-  const result = goSync(() => parseApi3(form.amount));
+  const result = goSync(() => parseClaimAmount(form.amount));
   if (!result.success) {
     messages.amount = 'Please enter a valid number';
   } else {
@@ -86,7 +86,7 @@ export default function NewClaim() {
         Math.round(policy.startTime.getTime() / 1000),
         Math.round(policy.endTime.getTime() / 1000),
         policy.ipfsHash,
-        parseApi3(form.amount),
+        parseClaimAmount(form.amount),
         form.evidence.trim()
       );
 
@@ -115,9 +115,9 @@ export default function NewClaim() {
             {showMessages && messages.evidence && <p className={styles.validation}>{messages.evidence}</p>}
           </li>
           <li>
-            <label htmlFor="amount">Requested relief amount, in API3 tokens</label>
+            <label htmlFor="amount">Requested relief amount, in USD</label>
             <p className={globalStyles.secondaryColor}>
-              How many API3 tokens do you wish to receive? (Max of {formatApi3(policy.coverageAmount)} API3)
+              How much USD do you wish to receive? (Max of ${utils.commify(policy.coverageAmount.toString())})
             </p>
             <Input
               id="amount"
@@ -135,3 +135,7 @@ export default function NewClaim() {
 }
 
 type ValidationMessages<T> = { [key in keyof T]?: string };
+
+function parseClaimAmount(amount: string) {
+  return BigNumber.from(Math.round(parseFloat(amount.trim())));
+}

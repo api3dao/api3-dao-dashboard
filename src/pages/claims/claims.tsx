@@ -66,7 +66,6 @@ export default function Claims() {
 }
 
 interface ClaimsLayoutProps {
-  params?: URLSearchParams;
   children: ReactNode;
 }
 

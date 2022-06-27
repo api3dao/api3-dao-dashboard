@@ -1,22 +1,21 @@
-import { ChangeEventHandler, useCallback } from 'react';
+import { useCallback, ComponentPropsWithoutRef } from 'react';
 import classNames from 'classnames';
 import AutosizeInput from 'react-input-autosize';
 import NumberFormat from 'react-number-format';
 import styles from './input.module.scss';
 
-type Props = {
-  onChange: ChangeEventHandler<HTMLInputElement>;
-  value: string;
-  size?: 'normal' | 'large';
-  disabled?: boolean;
+type BaseProps = Omit<ComponentPropsWithoutRef<'input'>, 'size'>;
+
+interface Props extends BaseProps {
   type?: 'text' | 'number';
+  value?: string;
+  defaultValue?: string;
+  size?: 'normal' | 'large';
   autosize?: boolean;
-  placeholder?: string;
-  id?: string;
   block?: boolean;
-  autoFocus?: boolean;
+  underline?: boolean;
   allowNegative?: boolean;
-};
+}
 
 const Input = ({
   size = 'normal',
@@ -25,6 +24,7 @@ const Input = ({
   autosize,
   disabled,
   allowNegative,
+  underline = true,
   ...componentProps
 }: Props) => {
   const CustomNumberInput = useCallback(
@@ -85,7 +85,7 @@ const Input = ({
       {type === 'number' && !autosize && (
         <NumberFormat {...componentProps} customInput={CustomNumberInput} decimalScale={18} />
       )}
-      <div className={styles.inputUnderline} />
+      {underline && <div className={styles.inputUnderline} />}
     </div>
   );
 };

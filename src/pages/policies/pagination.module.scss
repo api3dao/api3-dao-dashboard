@@ -1,0 +1,37 @@
+@import '../../styles/variables.module.scss';
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5ch;
+  font-size: $text-small;
+  color: $tertiary-color;
+
+  ul {
+    display: flex;
+    gap: 3ch;
+    list-style: none;
+    padding: 0;
+  }
+
+  a {
+    color: $secondary-color;
+    text-decoration: none;
+  }
+
+  a[aria-current] {
+    color: $green-color;
+    text-decoration: underline;
+  }
+}
+
+.previous,
+.next {
+  display: none;
+  @media (min-width: $min-md) {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+  }
+}

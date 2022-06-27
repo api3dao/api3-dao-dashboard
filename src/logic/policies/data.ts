@@ -1,9 +1,52 @@
-import { Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
-import { useClaimsManager, usePossibleChainDataUpdate } from '../../contracts';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { addDays, isBefore } from 'date-fns';
 import { go } from '@api3/promise-utils';
+import { blockTimestampToDate, messages } from '../../utils';
+import { Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
+import { ClaimsManagerWithKlerosArbitrator, useClaimsManager, usePossibleChainDataUpdate } from '../../contracts';
 import { notifications } from '../../components/notifications';
-import { blockTimestampToDate } from '../../utils';
+
+export function useUserPolicies() {
+  const { userAccount, policies, setChainData } = useChainData();
+  const claimsManager = useClaimsManager();
+  const sortedPolicies = useMemo(() => {
+    if (!policies.userPolicyIds) return null;
+    // Sort by policy end time in descending order
+    return policies.userPolicyIds
+      .map((policyId) => policies.byId![policyId]!)
+      .sort((a, b) => b.endTime.getTime() - a.endTime.getTime());
+  }, [policies]);
+
+  const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
+  const loadUserPolicies = useCallback(async () => {
+    if (!claimsManager) return;
+
+    setStatus('loading');
+    const result = await go(() => loadPolicies(claimsManager, { userAccount }));
+
+    if (!result.success) {
+      notifications.error({ message: messages.FAILED_TO_LOAD_POLICIES, errorOrMessage: result.error });
+      setStatus('failed');
+      return;
+    }
+
+    setChainData(
+      'Loaded policies',
+      updateImmutablyCurried((state) => {
+        state.policies.userPolicyIds = result.data.ids;
+        state.policies.byId = { ...state.policies.byId, ...result.data.byId };
+      })
+    );
+    setStatus('loaded');
+  }, [claimsManager, userAccount, setChainData]);
+
+  usePossibleChainDataUpdate(loadUserPolicies);
+
+  return {
+    data: sortedPolicies,
+    status,
+  };
+}
 
 export function useUserPolicyById(policyId: string) {
   const { userAccount, policies, setChainData } = useChainData();
@@ -15,33 +58,10 @@ export function useUserPolicyById(policyId: string) {
     if (!claimsManager) return;
 
     setStatus('loading');
-    const result = await go(async () => {
-      const filter = claimsManager.filters.CreatedPolicy(null, userAccount, policyId);
-      const createdEvents = await claimsManager.queryFilter(filter);
-      const policiesById = createdEvents.reduce((acc, event) => {
-        const eventArgs = event.args;
-        const policy: Policy = {
-          policyId: eventArgs.policyHash,
-          claimant: eventArgs.claimant,
-          beneficiary: eventArgs.beneficiary,
-          coverageAmount: eventArgs.coverageAmount,
-          startTime: blockTimestampToDate(eventArgs.startTime),
-          endTime: blockTimestampToDate(eventArgs.endTime),
-          ipfsHash: eventArgs.policy,
-        };
-
-        acc[policy.policyId] = policy;
-        return acc;
-      }, {} as { [policyId: string]: Policy });
-
-      return {
-        policyIds: createdEvents.map((event) => event.args.policyHash),
-        policiesById,
-      };
-    });
+    const result = await go(() => loadPolicies(claimsManager, { userAccount, policyId }));
 
     if (!result.success) {
-      notifications.error({ message: 'Failed to load policies', errorOrMessage: result.error });
+      notifications.error({ message: messages.FAILED_TO_LOAD_POLICIES, errorOrMessage: result.error });
       setStatus('failed');
       return;
     }
@@ -49,7 +69,7 @@ export function useUserPolicyById(policyId: string) {
     setChainData(
       'Loaded policy',
       updateImmutablyCurried((state) => {
-        state.policies.byId = { ...state.policies.byId, ...result.data.policiesById };
+        state.policies.byId = { ...state.policies.byId, ...result.data.byId };
       })
     );
     setStatus('loaded');
@@ -61,4 +81,45 @@ export function useUserPolicyById(policyId: string) {
     data,
     status,
   };
+}
+
+async function loadPolicies(
+  contract: ClaimsManagerWithKlerosArbitrator,
+  params: { userAccount?: string; policyId?: string }
+): Promise<{ ids: string[]; byId: Record<string, Policy> }> {
+  const { userAccount = null, policyId = null } = params;
+  const createdEvents = await contract.queryFilter(contract.filters.CreatedPolicy(null, userAccount, policyId));
+
+  if (!createdEvents.length) {
+    return { ids: [], byId: {} };
+  }
+
+  const policiesById = createdEvents.reduce((acc, event) => {
+    const eventArgs = event.args;
+    const policy: Policy = {
+      policyId: eventArgs.policyHash,
+      claimant: eventArgs.claimant,
+      beneficiary: eventArgs.beneficiary,
+      coverageAmount: eventArgs.coverageAmount,
+      startTime: blockTimestampToDate(eventArgs.startTime),
+      endTime: blockTimestampToDate(eventArgs.endTime),
+      ipfsHash: eventArgs.policy,
+    };
+
+    acc[policy.policyId] = policy;
+    return acc;
+  }, {} as { [policyId: string]: Policy });
+
+  return {
+    ids: createdEvents.map((event) => event.args.policyHash),
+    byId: policiesById,
+  };
+}
+
+export function isActive(policy: Policy) {
+  return isBefore(new Date(), policy.endTime);
+}
+
+export function canCreateClaim(policy: Policy) {
+  return isBefore(new Date(), addDays(policy.endTime, 3));
 }
