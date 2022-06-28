@@ -8,23 +8,3 @@
 .subHeading {
   margin-bottom: $space-xxxl;
 }
-
-.form {
-  max-width: 60ch;
-  padding-left: 1.5ch;
-}
-
-.formList {
-  padding: 0;
-  li {
-    margin-bottom: $space-xxl;
-  }
-  label {
-    font-weight: 500;
-  }
-}
-
-.validation {
-  color: $error-color;
-  font-size: $text-small;
-}

@@ -6,7 +6,7 @@ import Input from '../../components/input';
 import Button from '../../components/button';
 import { Policy } from '../../chain-data';
 import globalStyles from '../../styles/global-styles.module.scss';
-import styles from './new-claim.module.scss';
+import styles from './new-claim-form.module.scss';
 
 export interface FormState {
   evidence: string;
@@ -88,7 +88,7 @@ export default function NewClaimForm(props: Props) {
           {showMessages && messages.amount && <p className={styles.validation}>{messages.amount}</p>}
         </li>
       </ol>
-      <Button>Next</Button>
+      <Button type="secondary">Next</Button>
     </form>
   );
 }
