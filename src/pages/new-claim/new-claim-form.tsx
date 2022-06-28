@@ -1,25 +1,19 @@
-import { FormEventHandler, useState } from 'react';
-import { useParams } from 'react-router';
+import { FormEventHandler } from 'react';
 import { goSync } from '@api3/promise-utils';
 import { BigNumber, utils } from 'ethers';
-import { BaseLayout } from '../../components/layout';
+import isEmpty from 'lodash/isEmpty';
 import Input from '../../components/input';
 import Button from '../../components/button';
-import { isEmpty } from 'lodash';
 import { Policy } from '../../chain-data';
-import { useClaimsManager } from '../../contracts';
-import { useUserPolicyById } from '../../logic/policies';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim.module.scss';
 
-interface Params {
-  policyId: string;
-}
-
-interface FormState {
+export interface FormState {
   evidence: string;
   amount: string;
 }
+
+export type FormStatus = 'idle' | 'validation_failed' | 'submitting' | 'submitted' | 'failed';
 
 function getValidationMessages(form: FormState, policy: Policy) {
   const messages: ValidationMessages<FormState> = {};
@@ -43,99 +37,64 @@ function getValidationMessages(form: FormState, policy: Policy) {
   return messages;
 }
 
-export default function NewClaim() {
-  const { policyId } = useParams<Params>();
-  const claimsManager = useClaimsManager();
-  const { data: policy, status: loadStatus } = useUserPolicyById(policyId);
+interface Props {
+  form: FormState;
+  onChange: (newState: FormState) => void;
+  status: FormStatus;
+  policy: Policy;
+  onValidationFailed: () => void;
+  onNext: () => void;
+}
 
-  const [form, setForm] = useState<FormState>({ evidence: '', amount: '' });
-  const [status, setStatus] = useState<'idle' | 'validation_failed' | 'submitting' | 'submitted' | 'failed'>('idle');
-
-  if (!claimsManager) {
-    return (
-      <BaseLayout subtitle="New Claim">
-        <p className={globalStyles.textCenter}>Please connect your wallet to submit a claim.</p>
-      </BaseLayout>
-    );
-  }
-
-  if (!policy) {
-    return (
-      <BaseLayout subtitle="New Claim">
-        <h4 className={styles.heading}>New Claim</h4>
-        {loadStatus === 'loading' && <p className={globalStyles.secondaryColor}>Loading...</p>}
-        {loadStatus === 'loaded' && <p>Unable to find your policy with given id.</p>}
-      </BaseLayout>
-    );
-  }
+export default function NewClaimForm(props: Props) {
+  const { form, status, onChange, policy } = props;
 
   const messages = getValidationMessages(form, policy);
-  const handleSubmit: FormEventHandler = async (ev) => {
+  const handleSubmit: FormEventHandler = (ev) => {
     ev.preventDefault();
     if (!isEmpty(messages)) {
-      setStatus('validation_failed');
-      return;
-    }
-
-    setStatus('submitting');
-    // TODO DOA-151 Handle properly and show success screen
-    try {
-      await claimsManager.createClaim(
-        policy.beneficiary,
-        policy.coverageAmount,
-        Math.round(policy.startTime.getTime() / 1000),
-        Math.round(policy.endTime.getTime() / 1000),
-        policy.ipfsHash,
-        parseClaimAmount(form.amount),
-        form.evidence.trim()
-      );
-
-      setStatus('submitted');
-    } catch (err) {
-      setStatus('failed');
+      props.onValidationFailed();
+    } else {
+      props.onNext();
     }
   };
 
   const showMessages = status === 'validation_failed';
   return (
-    <BaseLayout subtitle="New Claim">
-      <h4 className={styles.heading}>New Claim</h4>
-      <h5 className={styles.subHeading}>Submit Claim</h5>
-      <form onSubmit={handleSubmit} noValidate className={styles.form}>
-        <ol className={styles.formList}>
-          <li>
-            <label htmlFor="evidence">Enter the IPFS hash to your Claim Evidence form</label>
-            <p className={globalStyles.secondaryColor}>You created this hash in the previous step</p>
-            <Input
-              id="evidence"
-              value={form.evidence}
-              onChange={(ev) => setForm({ ...form, evidence: ev.target.value })}
-              block
-            />
-            {showMessages && messages.evidence && <p className={styles.validation}>{messages.evidence}</p>}
-          </li>
-          <li>
-            <label htmlFor="amount">Requested relief amount, in USD</label>
-            <p className={globalStyles.secondaryColor}>
-              How much USD do you wish to receive? (Max of ${utils.commify(policy.coverageAmount.toString())})
-            </p>
-            <Input
-              id="amount"
-              type="number"
-              value={form.amount}
-              onChange={(ev) => setForm({ ...form, amount: ev.target.value })}
-            />
-            {showMessages && messages.amount && <p className={styles.validation}>{messages.amount}</p>}
-          </li>
-        </ol>
-        <Button disabled={status === 'submitting'}>Submit Claim</Button>
-      </form>
-    </BaseLayout>
+    <form onSubmit={handleSubmit} noValidate className={styles.form}>
+      <ol className={styles.formList}>
+        <li>
+          <label htmlFor="evidence">Enter the IPFS hash to your Claim Evidence form</label>
+          <p className={globalStyles.secondaryColor}>You created this hash in the previous step</p>
+          <Input
+            id="evidence"
+            value={form.evidence}
+            onChange={(ev) => onChange({ ...form, evidence: ev.target.value })}
+            block
+          />
+          {showMessages && messages.evidence && <p className={styles.validation}>{messages.evidence}</p>}
+        </li>
+        <li>
+          <label htmlFor="amount">Requested relief amount, in USD</label>
+          <p className={globalStyles.secondaryColor}>
+            How much USD do you wish to receive? (Max of ${utils.commify(policy.coverageAmount.toString())})
+          </p>
+          <Input
+            id="amount"
+            type="number"
+            value={form.amount}
+            onChange={(ev) => onChange({ ...form, amount: ev.target.value })}
+          />
+          {showMessages && messages.amount && <p className={styles.validation}>{messages.amount}</p>}
+        </li>
+      </ol>
+      <Button>Next</Button>
+    </form>
   );
 }
 
 type ValidationMessages<T> = { [key in keyof T]?: string };
 
-function parseClaimAmount(amount: string) {
+export function parseClaimAmount(amount: string) {
   return BigNumber.from(Math.round(parseFloat(amount.trim())));
 }
