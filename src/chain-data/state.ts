@@ -112,6 +112,7 @@ export type TransactionType =
   | 'execute'
   | 'update-timelock-status'
   | 'withdraw-to-pool'
+  | 'create-claim'
   | 'accept-claim-settlement'
   | 'escalate-claim-to-arbitrator'
   | 'appeal-claim-decision';

@@ -4,6 +4,9 @@ import { Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
 import Button from '../../components/button';
 import NewClaimForm, { FormState, FormStatus, parseClaimAmount } from './new-claim-form';
+import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManagerWithKlerosArbitrator';
+import { handleTransactionError } from '../../utils';
+import { useChainData } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
 import { useUserPolicyById, canCreateClaim } from '../../logic/policies';
 import globalStyles from '../../styles/global-styles.module.scss';
@@ -17,11 +20,13 @@ export default function NewClaim() {
   const { policyId } = useParams<Params>();
   const [step, setStep] = useState<'instructions' | 'capture' | 'confirmation'>('instructions');
 
+  const { setChainData, transactions } = useChainData();
   const claimsManager = useClaimsManager();
   const { data: policy, status: loadStatus } = useUserPolicyById(policyId);
 
   const [form, setForm] = useState<FormState>({ evidence: '', amount: '' });
   const [status, setStatus] = useState<FormStatus>('idle');
+  const [newClaimId, setNewClaimId] = useState<null | string>(null);
 
   if (!claimsManager) {
     return (
@@ -47,8 +52,8 @@ export default function NewClaim() {
 
   const handleSubmit = async () => {
     setStatus('submitting');
-    try {
-      await claimsManager.createClaim(
+    const tx = await handleTransactionError(
+      claimsManager.createClaim(
         policy.beneficiary,
         policy.coverageAmount,
         Math.round(policy.startTime.getTime() / 1000),
@@ -56,10 +61,18 @@ export default function NewClaim() {
         policy.ipfsHash,
         parseClaimAmount(form.amount),
         form.evidence.trim()
-      );
+      )
+    );
 
+    if (tx) {
+      setChainData('Save create claim transaction', {
+        transactions: [...transactions, { type: 'create-claim', tx }],
+      });
+      const receipt = await tx.wait();
+      const event = receipt.events?.find((ev) => ev.event === 'CreatedClaim') as CreatedClaimEvent;
+      setNewClaimId(event?.args.claimIndex.toString());
       setStatus('submitted');
-    } catch (err) {
+    } else {
       setStatus('failed');
     }
   };
@@ -68,6 +81,7 @@ export default function NewClaim() {
     return (
       <BaseLayout subtitle="New Claim">
         <p>Success TODO</p>
+        <p>Claim ID: {newClaimId}</p>
       </BaseLayout>
     );
   }
