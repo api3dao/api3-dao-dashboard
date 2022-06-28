@@ -3,7 +3,7 @@ import { task, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
 import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
-import { addDays } from 'date-fns';
+import { addDays, parseISO } from 'date-fns';
 import { parseApi3 } from '../src/utils/api3-format';
 import { ClaimsManagerWithKlerosArbitrator__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
 import { ChainData } from '../src/chain-data';
@@ -59,6 +59,8 @@ task('create-user-policy', 'Creates a policy for the given user')
   .addParam('address', 'The user address')
   .addParam('coverageAmount', 'The coverage amount')
   .addParam('ipfsHash', 'The IPFS policy hash')
+  .addOptionalParam('startTime', 'The policy start time')
+  .addOptionalParam('endTime', 'The policy end time')
   .setAction(async (args, hre) => {
     const userAddress = args.address;
     const accounts = await hre.ethers.getSigners();
@@ -67,12 +69,15 @@ task('create-user-policy', 'Creates a policy for the given user')
     const manager = accounts[1];
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
+
+    const startTime = args.startTime ? parseISO(args.startTime) : addDays(new Date(), -1);
+    const endTime = args.endTime ? parseISO(args.endTime) : addDays(startTime, 30);
     const tx = await claimsManager.createPolicy(
       userAddress,
       userAddress,
       args.coverageAmount,
-      BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
-      BigNumber.from(Math.round(addDays(new Date(), 30).getTime() / 1000)),
+      BigNumber.from(Math.round(startTime.getTime() / 1000)),
+      BigNumber.from(Math.round(endTime.getTime() / 1000)),
       args.ipfsHash
     );
 
