@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
-import Button from '../../components/button';
+import ClaimEvidence from './claim-evidence';
 import NewClaimForm, { FormState, FormStatus, parseClaimAmount } from './new-claim-form';
 import Confirmation from './confirmation';
 import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManagerWithKlerosArbitrator';
@@ -93,8 +93,7 @@ export default function NewClaim() {
         <BaseLayout subtitle="New Claim">
           <h4 className={styles.heading}>New Claim</h4>
           <h5 className={styles.subHeading}>Creating Evidence</h5>
-          <p>TODO</p>
-          <Button onClick={() => setStep('capture')}>Next</Button>
+          <ClaimEvidence onNext={() => setStep('capture')} />
         </BaseLayout>
       );
 
