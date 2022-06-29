@@ -61,8 +61,8 @@ export default function NewClaimForm(props: Props) {
 
   const showMessages = status === 'validation_failed';
   return (
-    <form onSubmit={handleSubmit} noValidate className={styles.form}>
-      <ol className={styles.formList}>
+    <form onSubmit={handleSubmit} noValidate className={styles.container}>
+      <ol className={styles.fieldList}>
         <li>
           <label htmlFor="evidence">Enter the IPFS hash to your Claim Evidence form</label>
           <p className={globalStyles.secondaryColor}>You created this hash in the previous step</p>
@@ -88,8 +88,22 @@ export default function NewClaimForm(props: Props) {
           {showMessages && messages.amount && <p className={styles.validation}>{messages.amount}</p>}
         </li>
       </ol>
-      <Button type="secondary">Next</Button>
+      <Acknowledgement />
+      <div className={styles.buttonRow}>
+        <Button type="secondary">Next</Button>
+      </div>
     </form>
+  );
+}
+
+export function Acknowledgement() {
+  return (
+    <p className={globalStyles.textSmall}>
+      Claimant represents that the requested relief amount is commensurate with direct quantifiable permanent damages
+      (objectively calculated “make-whole” amounts) at the time of the claimed event to the Claimant from, or direct
+      contractual privity with, the affected protocol, application, smart contract, or entity directly affected by the
+      claimed material malfunction.
+    </p>
   );
 }
 

@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
 import Button from '../../components/button';
 import NewClaimForm, { FormState, FormStatus, parseClaimAmount } from './new-claim-form';
+import Confirmation from './confirmation';
 import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManagerWithKlerosArbitrator';
 import { handleTransactionError } from '../../utils';
 import { useChainData } from '../../chain-data';
@@ -118,8 +119,7 @@ export default function NewClaim() {
         <BaseLayout subtitle="New Claim">
           <h4 className={styles.heading}>New Claim</h4>
           <h5 className={styles.subHeading}>Review Your Claim</h5>
-          <p>TODO</p>
-          <Button onClick={handleSubmit}>Submit Claim</Button>
+          <Confirmation form={form} policy={policy} onSubmit={handleSubmit} onCancel={() => setStep('capture')} />
         </BaseLayout>
       );
   }

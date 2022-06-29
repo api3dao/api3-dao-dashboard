@@ -1,16 +1,22 @@
 @import '../../styles/variables.module.scss';
 
-.form {
+.container {
   max-width: 60ch;
   padding-left: 1.5ch;
 }
 
-.formList {
+.fieldList {
   padding: 0;
+
   li {
-    margin-bottom: $space-xxl;
+    margin-top: $space-xxxl;
+    &::marker {
+      font-weight: 500;
+    }
   }
-  label {
+
+  label,
+  p:first-child {
     font-weight: 500;
   }
 }
@@ -18,4 +24,15 @@
 .validation {
   color: $error-color;
   font-size: $text-small;
+}
+
+.confirmValue {
+  margin-top: 10px;
+}
+
+.buttonRow {
+  margin-top: $space-xxxl;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
