@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router';
 import { Link, Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
-import ClaimEvidence from './claim-evidence';
+import ClaimEvidenceInstructions from './claim-evidence-instructions';
 import NewClaimForm, { FormState, FormStatus, parseClaimAmount } from './new-claim-form';
 import Confirmation from './confirmation';
 import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManagerWithKlerosArbitrator';
@@ -86,7 +86,7 @@ export default function NewClaim() {
           <p className={globalStyles.bold}>Your claim ID is: {newClaimId}</p>
           <p className={styles.processMessage}>
             Your claim is being processed and will be voted on within 72 hours. Please check back for any updates and{' '}
-            <a href="https://docs.google.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer">
               read about the claim process here
             </a>{' '}
             to familiarize yourself with the next steps.
@@ -103,7 +103,7 @@ export default function NewClaim() {
         <BaseLayout subtitle="New Claim">
           <h4 className={styles.heading}>New Claim</h4>
           <h5 className={styles.subHeading}>Creating Evidence</h5>
-          <ClaimEvidence onNext={() => setStep('capture')} />
+          <ClaimEvidenceInstructions onNext={() => setStep('capture')} />
         </BaseLayout>
       );
 

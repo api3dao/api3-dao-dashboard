@@ -1,11 +1,11 @@
 import Button from '../../components/button';
-import styles from './claim-evidence.module.scss';
+import styles from './claim-evidence-instructions.module.scss';
 
 interface Props {
   onNext: () => void;
 }
 
-export default function ClaimEvidence(props: Props) {
+export default function ClaimEvidenceInstructions(props: Props) {
   return (
     <div className={styles.container}>
       <p>Your claim must include the following:</p>
@@ -39,6 +39,7 @@ export default function ClaimEvidence(props: Props) {
           </li>
           <li>
             <p>Upload completed Claim Evidence Form to IPFS</p>
+            <p>You will need the resulting hash in the next step.</p>
             <p>
               Need help uploading something to IPFS?{' '}
               <a href="https://docs.ipfs.io" target="_blank" rel="noopener noreferrer">
