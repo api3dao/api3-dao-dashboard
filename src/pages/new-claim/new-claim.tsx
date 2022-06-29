@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
 import ClaimEvidence from './claim-evidence';
 import NewClaimForm, { FormState, FormStatus, parseClaimAmount } from './new-claim-form';
@@ -81,8 +81,18 @@ export default function NewClaim() {
   if (status === 'submitted') {
     return (
       <BaseLayout subtitle="New Claim">
-        <p>Success TODO</p>
-        <p>Claim ID: {newClaimId}</p>
+        <div className={styles.successContainer}>
+          <h5 className={styles.subHeading}>Thank you for submitting your claim</h5>
+          <p className={globalStyles.bold}>Your claim ID is: {newClaimId}</p>
+          <p className={styles.processMessage}>
+            Your claim is being processed and will be voted on within 72 hours. Please check back for any updates and{' '}
+            <a href="https://docs.google.com" target="_blank" rel="noopener noreferrer">
+              read about the claim process here
+            </a>{' '}
+            to familiarize yourself with the next steps.
+          </p>
+          <Link to="/">Return Home</Link>
+        </div>
       </BaseLayout>
     );
   }

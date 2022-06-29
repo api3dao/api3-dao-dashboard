@@ -8,3 +8,14 @@
 .subHeading {
   margin-bottom: $space-xxxl;
 }
+
+.successContainer {
+  margin: 0 auto;
+  text-align: center;
+  max-width: 70ch;
+}
+
+.processMessage {
+  color: $secondary-color;
+  margin-bottom: $space-xxxl;
+}
