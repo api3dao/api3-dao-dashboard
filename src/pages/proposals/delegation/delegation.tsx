@@ -12,7 +12,6 @@ import { handleTransactionError } from '../../../utils';
 import { images } from '../../../utils';
 import { useLoadDashboardData } from '../../../logic/dashboard';
 import { TooltipChecklist } from '../../../components/tooltip';
-import styles from './delegation.module.scss';
 import classNames from 'classnames';
 
 const Delegation = () => {
@@ -51,7 +50,6 @@ const Delegation = () => {
             Delegated to: {delegation.delegateName ? delegation.delegateName : abbrStr(delegation.delegate)}
           </p>
           <Button
-            className={styles.proposalsLink}
             type="text"
             onClick={() => setOpenChooseDelegateActionModal(true)}
             disabled={!canDelegate && !canUndelegate}
@@ -87,12 +85,7 @@ const Delegation = () => {
       ) : (
         <div>
           <p className={classNames(globalStyles.secondaryColor, globalStyles.bold)}>Undelegated</p>
-          <Button
-            className={styles.proposalsLink}
-            type="text"
-            onClick={() => setOpenDelegationModal(true)}
-            disabled={!canDelegate}
-          >
+          <Button type="text" onClick={() => setOpenDelegationModal(true)} disabled={!canDelegate}>
             Delegate
           </Button>
           <TooltipChecklist items={delegateChecklistItems}>

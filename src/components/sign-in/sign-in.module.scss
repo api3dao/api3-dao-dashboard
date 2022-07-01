@@ -15,10 +15,7 @@
 
 .mobileMenuButton {
   width: 100%;
-  button {
-    width: 100%;
-    color: $secondary-black-color;
-  }
+  color: $secondary-black-color;
 }
 
 .mobileMenuConnectedStatus {
@@ -45,9 +42,6 @@
 .fullWidthMobile {
   @media (max-width: $max-sm) {
     width: 100%;
-    button {
-      width: 100%;
-    }
   }
 }
 
@@ -56,9 +50,7 @@
 }
 
 .availableAccountButton {
-  button {
-    height: unset !important;
-  }
+  height: unset !important;
 }
 
 .availableAccounts {

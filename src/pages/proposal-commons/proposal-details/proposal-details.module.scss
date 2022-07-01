@@ -1,10 +1,12 @@
 @import '../../../styles/variables.module.scss';
 
-.backBtn {
-  button {
-    color: $secondary-color;
-    text-decoration: none !important;
-  }
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  color: $secondary-color;
+  text-decoration: none;
+  font-size: $text-small;
+  line-height: $lh-small;
 }
 
 .proposalDetailsSubheader {

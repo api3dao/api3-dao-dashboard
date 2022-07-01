@@ -13,30 +13,20 @@ type Props = {
 
 const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick, className }: Props) => {
   return (
-    <div className={classNames(styles.buttonWrapper, { [styles.disabled]: disabled }, className)}>
-      <button
-        className={classNames(styles.button, {
-          [styles.primary]: type === 'primary',
-          [styles.secondary]: type === 'secondary',
-          [styles.link]: type === 'link',
-          [styles.text]: type === 'text',
-          [styles.normal]: size === 'normal' && type !== 'link',
-          [styles.large]: size === 'large' && type !== 'link',
-        })}
-        onClick={onClick}
-        disabled={disabled}
-      >
-        {children}
-      </button>
-      {['primary', 'secondary'].includes(type) && (
-        <div
-          className={classNames(styles.buttonUnderline, {
-            [styles.primary]: type === 'primary',
-            [styles.secondary]: type === 'secondary',
-          })}
-        />
-      )}
-    </div>
+    <button
+      className={classNames(styles.button, className, {
+        [styles.primary]: type === 'primary',
+        [styles.secondary]: type === 'secondary',
+        [styles.link]: type === 'link',
+        [styles.text]: type === 'text',
+        [styles.normal]: size === 'normal' && type !== 'link',
+        [styles.large]: size === 'large' && type !== 'link',
+      })}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {children}
+    </button>
   );
 };
 
