@@ -10,7 +10,8 @@ describe('staking', () => {
     cy.findByText('+ Deposit').click();
     cy.get('#modal').find('input').type('500');
     cy.findByText('Approve').click();
-    cy.findByText('Deposit').percySnapshot('Staking: Deposit modal');
+    cy.findByText('Deposit').should('be.visible');
+    cy.percySnapshot('Staking: Deposit modal');
     cy.findByText('Deposit').click();
     cy.dataCy('balance').should('have.text', '500.0');
 

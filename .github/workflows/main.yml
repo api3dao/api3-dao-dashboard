@@ -72,7 +72,7 @@ jobs:
       - name: Cypress tests
         env:
           REACT_APP_NODE_ENV: development
-        run: yarn ci:cypress
+        run: yarn percy exec -- yarn ci:cypress
       - name: Store artifacts
         uses: actions/upload-artifact@v1
         if: always()
