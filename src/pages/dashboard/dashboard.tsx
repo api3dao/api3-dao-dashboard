@@ -89,7 +89,7 @@ const Dashboard = () => {
               </>
             }
             footer={
-              <Button type="link" onClick={() => setOpenModal('withdraw')} disabled={!canWithdraw}>
+              <Button variant="link" onClick={() => setOpenModal('withdraw')} disabled={!canWithdraw}>
                 Withdraw
               </Button>
             }
@@ -128,7 +128,7 @@ const Dashboard = () => {
             }
             footer={
               // TODO: In case there is a pending unstake there should be no button, just green arrow (see figma)
-              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={!canInitiateUnstake}>
+              <Button variant="link" onClick={() => setOpenModal('unstake')} disabled={!canInitiateUnstake}>
                 Initiate Unstake
               </Button>
             }

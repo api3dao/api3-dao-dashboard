@@ -50,7 +50,7 @@ const Delegation = () => {
             Delegated to: {delegation.delegateName ? delegation.delegateName : abbrStr(delegation.delegate)}
           </p>
           <Button
-            type="text"
+            variant="text"
             onClick={() => setOpenChooseDelegateActionModal(true)}
             disabled={!canDelegate && !canUndelegate}
           >
@@ -85,7 +85,7 @@ const Delegation = () => {
       ) : (
         <div>
           <p className={classNames(globalStyles.secondaryColor, globalStyles.bold)}>Undelegated</p>
-          <Button type="text" onClick={() => setOpenDelegationModal(true)} disabled={!canDelegate}>
+          <Button variant="text" onClick={() => setOpenDelegationModal(true)} disabled={!canDelegate}>
             Delegate
           </Button>
           <TooltipChecklist items={delegateChecklistItems}>

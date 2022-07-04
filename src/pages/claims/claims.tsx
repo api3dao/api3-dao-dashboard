@@ -36,7 +36,7 @@ export default function Claims() {
       <ClaimsLayout>
         <div className={styles.emptyState}>
           <span>You need to be connected to view claims.</span>
-          <Button type="link" onClick={connectWallet(setChainData)}>
+          <Button variant="link" onClick={connectWallet(setChainData)}>
             Connect your wallet
           </Button>
         </div>

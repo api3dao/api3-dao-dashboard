@@ -161,7 +161,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         <VoteSlider {...voteSliderData} size="large" />
         <VoteStatus voterState={voteSliderData.voterState} wasDelegated={voteSliderData.wasDelegated} large />
         <div>
-          <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
+          <Button variant="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
             Vote
           </Button>
           <TooltipChecklist items={canVoteChecklist}>
