@@ -18,3 +18,4 @@ import '@testing-library/cypress/add-commands';
 import 'cypress-plugin-tab';
 import './chain';
 import './commands';
+import '@percy/cypress';

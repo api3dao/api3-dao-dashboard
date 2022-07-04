@@ -10,6 +10,7 @@ describe('staking', () => {
     cy.findByText('+ Deposit').click();
     cy.get('#modal').find('input').type('500');
     cy.findByText('Approve').click();
+    cy.findByText('Deposit').percySnapshot('Staking: Deposit modal');
     cy.findByText('Deposit').click();
     cy.dataCy('balance').should('have.text', '500.0');
 
@@ -20,6 +21,7 @@ describe('staking', () => {
     cy.dataCy('unstaked').should('have.text', '400.0');
     cy.dataCy('withdrawable').should('have.text', '400.0');
     cy.dataCy('staked').should('have.text', '100.0');
+    cy.percySnapshot('Staking: Successfully staked');
 
     // Create a snapshot of blockchain
     cy.createChainSnapshot('user-staked');
@@ -54,6 +56,7 @@ describe('staking', () => {
     // Travel to the future and unstake
     cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // add 1 hour to be sure unstake time passed
     cy.findAllByText('Unstake').should('have.length', 2);
+    cy.percySnapshot('Staking: Pending unstaking');
     cy.findAllByText('Unstake').first().click();
 
     // Restore the original clock
