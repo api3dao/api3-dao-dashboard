@@ -5,7 +5,7 @@
   "homepage": ".",
   "scripts": {
     "build": "react-scripts build",
-    "ci:cypress": "yarn start-test \"yarn concurrently 'yarn eth:node' 'yarn ci:start'\" '8545|3000' 'yarn eth:deploy-dao-contracts-on-hardhat && yarn cypress:run'",
+    "ci:cypress": "yarn start-test \"yarn concurrently 'yarn eth:node' 'yarn ci:start'\" '8545|3000' 'yarn eth:deploy-dao-contracts-on-hardhat && yarn percy exec -- yarn cypress:run'",
     "ci:start": "FORCE_COLOR=true yarn start | cat",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
