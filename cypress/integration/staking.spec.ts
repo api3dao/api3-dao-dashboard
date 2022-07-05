@@ -82,7 +82,7 @@ describe('staking', () => {
   });
 });
 
-it.skip('user can unstake & withdraw', () => {
+it('user can unstake & withdraw', () => {
   cy.resetBlockchain().login();
 
   // Approve and deposit
