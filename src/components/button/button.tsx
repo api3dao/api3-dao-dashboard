@@ -1,17 +1,15 @@
-import { ReactNode } from 'react';
+import { ComponentProps } from 'react';
 import classNames from 'classnames';
 import styles from './button.module.scss';
 
-type Props = {
-  children: ReactNode;
-  className?: string;
+interface Props extends ComponentProps<'button'> {
   variant?: 'primary' | 'secondary' | 'link' | 'text';
   size?: 'normal' | 'large';
-  disabled?: boolean;
-  onClick?: () => void;
-};
+}
 
-const Button = ({ children, disabled, variant = 'primary', size = 'normal', onClick, className }: Props) => {
+export default function Button(props: Props) {
+  const { className, children, variant = 'primary', size = 'normal', ...rest } = props;
+
   return (
     <button
       className={classNames(styles.button, className, {
@@ -22,12 +20,9 @@ const Button = ({ children, disabled, variant = 'primary', size = 'normal', onCl
         [styles.normal]: size === 'normal' && variant !== 'link',
         [styles.large]: size === 'large' && variant !== 'link',
       })}
-      onClick={onClick}
-      disabled={disabled}
+      {...rest}
     >
       {children}
     </button>
   );
-};
-
-export default Button;
+}
