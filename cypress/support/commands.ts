@@ -1,4 +1,4 @@
-import { ethersProvider, HOME_PAGE } from './common';
+import { closeErrorReportingNotice, ethersProvider, HOME_PAGE } from './common';
 
 // -- This is a parent command -- Cypress.Commands.add('login', (email, password) => { ... })
 //
@@ -68,6 +68,13 @@ Cypress.Commands.add('login', () => {
   cy.findByRole('button', { name: 'Connect Wallet' }).click();
   cy.findByText('Web3').click();
   cy.findAllByText('Connected to localhost').filter(':visible').should('exist');
+
+  // Close the error reporting notice if it is present
+  cy.get('footer').then((el) => {
+    if (el.text().match(/Allow error reporting/i)) {
+      closeErrorReportingNotice();
+    }
+  });
 });
 
 Cypress.Commands.add('dataCy', (value) => {
