@@ -2,7 +2,7 @@
 
 import { ACCOUNTS, EPOCH_LENGTH } from '../support/common';
 
-it('new proposal form validation', () => {
+it.skip('new proposal form validation', () => {
   cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // skip the genesis epoch (add 1 hour just to be sure)
   cy.findAllByText('Governance').filter(':visible').click();
   cy.findByText('+ New Proposal').click();

@@ -5,7 +5,7 @@
   "homepage": ".",
   "scripts": {
     "build": "react-scripts build",
-    "ci:cypress": "yarn start-test \"yarn concurrently 'yarn eth:node' 'yarn ci:start'\" '8545|3000' 'yarn eth:deploy-dao-contracts-on-hardhat && yarn cypress:run'",
+    "ci:cypress": "yarn start-test \"yarn concurrently 'yarn eth:node' 'yarn ci:start'\" '8545|3000' 'yarn eth:deploy-dao-contracts-on-hardhat && yarn percy exec -- -- yarn cypress:run'",
     "ci:start": "FORCE_COLOR=true yarn start | cat",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
@@ -83,7 +83,7 @@
     "@aragon/os": "^4.4.0",
     "@nomiclabs/hardhat-ethers": "^2.0.4",
     "@openzeppelin/contracts": "4.2.0",
-    "@percy/cli": "^1.5.1",
+    "@percy/cli": "^1.6.0",
     "@percy/cypress": "^3.1.2",
     "@testing-library/cypress": "^8.0.2",
     "@testing-library/jest-dom": "^5.16.2",
@@ -123,18 +123,5 @@
   "resolutions": {
     "//": "Remove once upgraded to react-scripts v5. See https://github.com/facebook/create-react-app/issues/11773",
     "react-error-overlay": "6.0.9"
-  },
-  "percy": {
-    "version": 2,
-    "snapshot": {
-      "widths": [
-        375,
-        1280
-      ],
-      "percyCSS": ".Toastify { visibility: hidden; }"
-    },
-    "discovery": {
-      "disableCache": true
-    }
   }
 }
