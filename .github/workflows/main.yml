@@ -73,6 +73,8 @@ jobs:
         env:
           REACT_APP_NODE_ENV: development
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          PERCY_DEBUG: *
+          LOG_LEVEL: debug
         run: yarn ci:cypress
       - name: Store artifacts
         uses: actions/upload-artifact@v1
