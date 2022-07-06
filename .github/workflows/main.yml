@@ -74,6 +74,7 @@ jobs:
           REACT_APP_NODE_ENV: development
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
           PERCY_DEBUG: true
+          PERCY_LOGLEVEL: debug
           LOG_LEVEL: debug
         run: yarn ci:cypress
       - name: Store artifacts
