@@ -34,7 +34,7 @@ export default function Confirmation(props: Props) {
       <Acknowledgement />
       <div className={styles.buttonRow}>
         <Button onClick={props.onSubmit}>Submit Claim</Button>
-        <Button type="text" onClick={props.onCancel}>
+        <Button variant="text" onClick={props.onCancel}>
           Go Back
         </Button>
       </div>

@@ -39,16 +39,15 @@ export default function ClaimEvidenceInstructions(props: Props) {
           </li>
           <li>
             <p>Upload completed Claim Evidence Form to IPFS</p>
-            <p>You will need the resulting hash in the next step.</p>
             <p>
-              Need help uploading something to IPFS?{' '}
+              You will need the resulting hash in the next step. Need help uploading something to IPFS?{' '}
               <a href="https://docs.ipfs.io" target="_blank" rel="noopener noreferrer">
                 Read the docs here
               </a>
             </p>
           </li>
         </ol>
-        <Button type="secondary" onClick={props.onNext}>
+        <Button variant="secondary" onClick={props.onNext}>
           Next
         </Button>
       </div>

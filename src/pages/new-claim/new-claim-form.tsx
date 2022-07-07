@@ -90,7 +90,7 @@ export default function NewClaimForm(props: Props) {
       </ol>
       <Acknowledgement />
       <div className={styles.buttonRow}>
-        <Button type="secondary">Next</Button>
+        <Button variant="secondary">Next</Button>
       </div>
     </form>
   );
