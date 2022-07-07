@@ -78,9 +78,7 @@
 }
 
 .externalLinkButton {
-  button {
-    color: $secondary-color;
-  }
+  color: $secondary-color;
 }
 
 .linkSeparator {
@@ -90,11 +88,7 @@
 }
 
 .noUnderline {
-  text-decoration: none;
-
-  button {
-    text-decoration: none !important;
-  }
+  text-decoration: none !important;
 }
 
 .linkSpacing {

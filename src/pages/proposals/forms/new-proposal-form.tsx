@@ -176,7 +176,7 @@ const NewProposalForm = (props: Props) => {
 
       <ModalFooter>
         <Button
-          type="secondary"
+          variant="secondary"
           size="large"
           onClick={async () => {
             const formData = {

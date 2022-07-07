@@ -30,7 +30,7 @@ const VoteForm = (props: Props) => {
           />
         </div>
       </div>
-      <Button type="secondary" size="large" onClick={() => onConfirm(checked)}>
+      <Button variant="secondary" size="large" onClick={() => onConfirm(checked)}>
         Create Transaction
       </Button>
     </div>

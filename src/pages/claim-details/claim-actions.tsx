@@ -80,7 +80,7 @@ export default function ClaimActions(props: Props) {
             </div>
             <div className={styles.actionPanel}>
               <Button
-                type="secondary"
+                variant="secondary"
                 disabled={isPastNewDeadline || status === 'submitting' || status === 'submitted'}
                 onClick={handleEscalateToArbitrator}
               >
@@ -123,10 +123,10 @@ export default function ClaimActions(props: Props) {
             {formatApi3(claim.counterOfferAmount!)} API3
           </div>
           <div className={styles.actionPanel}>
-            <Button type="primary" disabled={disableActions} onClick={handleAcceptCounter}>
+            <Button variant="primary" disabled={disableActions} onClick={handleAcceptCounter}>
               Accept Counter
             </Button>
-            <Button type="secondary" disabled={disableActions} onClick={handleEscalateToArbitrator}>
+            <Button variant="secondary" disabled={disableActions} onClick={handleEscalateToArbitrator}>
               Escalate to Kleros
             </Button>
           </div>
@@ -210,7 +210,7 @@ export default function ClaimActions(props: Props) {
             {formatApi3(claim.counterOfferAmount!)} API3
           </div>
           <div className={styles.actionPanel}>
-            <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
+            <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>
               Appeal
             </Button>
           </div>
@@ -226,7 +226,7 @@ export default function ClaimActions(props: Props) {
           <p>Kleros</p>
           <div className={styles.actionMainInfo}>Rejected</div>
           <div className={styles.actionPanel}>
-            <Button type="secondary" disabled={disableActions} onClick={handleAppeal}>
+            <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>
               Appeal
             </Button>
           </div>

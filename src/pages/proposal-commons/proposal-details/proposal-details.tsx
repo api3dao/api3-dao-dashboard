@@ -134,11 +134,9 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   return (
     <div>
       <div className={styles.proposalDetailsSubheader}>
-        <Link to={backButton.url} data-cy="api3-logo">
-          <Button type="text" className={styles.backBtn}>
-            <img src={images.arrowLeft} alt="back" />
-            {backButton.text}
-          </Button>
+        <Link to={backButton.url} className={styles.backLink}>
+          <img src={images.arrowLeft} alt="back" />
+          {backButton.text}
         </Link>
       </div>
 
@@ -163,7 +161,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         <VoteSlider {...voteSliderData} size="large" />
         <VoteStatus voterState={voteSliderData.voterState} wasDelegated={voteSliderData.wasDelegated} large />
         <div>
-          <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
+          <Button variant="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
             Vote
           </Button>
           <TooltipChecklist items={canVoteChecklist}>
