@@ -44,7 +44,7 @@ const ProposalStatus = (props: Props) => {
       )}
       {proposalStatus === 'Execute' ? (
         <Button
-          type="text"
+          variant="text"
           className={styles.execute}
           onClick={async () => {
             if (!voting) return;

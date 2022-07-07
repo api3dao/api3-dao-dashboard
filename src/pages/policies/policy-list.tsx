@@ -44,7 +44,7 @@ export default function PolicyList(props: Props) {
 
           <div className={styles.policyItemAction}>
             {canCreateClaim(policy) ? (
-              <Button type="secondary" onClick={() => history.push(`/policies/${policy.policyId}/claims/new`)}>
+              <Button variant="secondary" onClick={() => history.push(`/policies/${policy.policyId}/claims/new`)}>
                 Create a Claim
               </Button>
             ) : (
@@ -56,7 +56,7 @@ export default function PolicyList(props: Props) {
                 }
               >
                 <div>
-                  <Button type="secondary" disabled>
+                  <Button variant="secondary" disabled>
                     Create a Claim
                   </Button>
                 </div>

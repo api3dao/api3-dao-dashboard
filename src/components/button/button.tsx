@@ -1,43 +1,28 @@
-import { ReactNode } from 'react';
+import { ComponentProps } from 'react';
 import classNames from 'classnames';
 import styles from './button.module.scss';
 
-type Props = {
-  children: ReactNode;
-  className?: string;
-  type?: 'primary' | 'secondary' | 'link' | 'text';
+interface Props extends ComponentProps<'button'> {
+  variant?: 'primary' | 'secondary' | 'link' | 'text';
   size?: 'normal' | 'large';
-  disabled?: boolean;
-  onClick?: () => void;
-};
+}
 
-const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick, className }: Props) => {
+export default function Button(props: Props) {
+  const { className, children, variant = 'primary', size = 'normal', ...rest } = props;
+
   return (
-    <div className={classNames(styles.buttonWrapper, { [styles.disabled]: disabled }, className)}>
-      <button
-        className={classNames(styles.button, {
-          [styles.primary]: type === 'primary',
-          [styles.secondary]: type === 'secondary',
-          [styles.link]: type === 'link',
-          [styles.text]: type === 'text',
-          [styles.normal]: size === 'normal' && type !== 'link',
-          [styles.large]: size === 'large' && type !== 'link',
-        })}
-        onClick={onClick}
-        disabled={disabled}
-      >
-        {children}
-      </button>
-      {['primary', 'secondary'].includes(type) && (
-        <div
-          className={classNames(styles.buttonUnderline, {
-            [styles.primary]: type === 'primary',
-            [styles.secondary]: type === 'secondary',
-          })}
-        />
-      )}
-    </div>
+    <button
+      className={classNames(styles.button, className, {
+        [styles.primary]: variant === 'primary',
+        [styles.secondary]: variant === 'secondary',
+        [styles.link]: variant === 'link',
+        [styles.text]: variant === 'text',
+        [styles.normal]: size === 'normal' && variant !== 'link',
+        [styles.large]: size === 'large' && variant !== 'link',
+      })}
+      {...rest}
+    >
+      {children}
+    </button>
   );
-};
-
-export default Button;
+}

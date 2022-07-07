@@ -72,7 +72,7 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
                       return (
                         <Button
                           key={link.text}
-                          type="text"
+                          variant="text"
                           className={classNames(styles.externalLinkButton, styles.noUnderline)}
                           onClick={link.onClick}
                         >

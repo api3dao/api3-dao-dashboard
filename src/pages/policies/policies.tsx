@@ -48,7 +48,7 @@ export default function Policies() {
       <PoliciesLayout>
         <div className={styles.emptyState}>
           You need to be connected to view your policies.
-          <Button type="link" onClick={connectWallet(setChainData)} className={styles.connectButton}>
+          <Button variant="link" onClick={connectWallet(setChainData)} className={styles.connectButton}>
             Connect your wallet
           </Button>
         </div>

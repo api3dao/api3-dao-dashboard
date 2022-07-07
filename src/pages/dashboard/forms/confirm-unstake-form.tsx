@@ -24,10 +24,10 @@ const ConfirmUnstakeForm = (props: Props) => {
 
       <ModalFooter>
         <div className={styles.tokenAmountFormActions}>
-          <Button type="text" onClick={onClose} className={styles.cancelButton}>
+          <Button variant="text" onClick={onClose} className={styles.cancelButton}>
             Cancel
           </Button>
-          <Button type="secondary" onClick={handleAction}>
+          <Button variant="secondary" onClick={handleAction}>
             Initiate Unstaking
           </Button>
         </div>

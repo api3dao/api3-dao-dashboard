@@ -103,7 +103,7 @@ const TokenDepositForm = (props: Props) => {
             size="large"
             autoFocus
           />
-          <Button className={styles.maxButton} type="text" onClick={handleSetMax} size="normal">
+          <Button className={styles.maxButton} variant="text" onClick={handleSetMax} size="normal">
             Max
           </Button>
         </div>
@@ -119,12 +119,12 @@ const TokenDepositForm = (props: Props) => {
       <ModalFooter>
         <div className={styles.tokenAmountFormActions}>
           {approvalRequired ? (
-            <Button type="secondary" onClick={handleApprove} className={styles.tokenAmountFormApprove}>
+            <Button variant="secondary" onClick={handleApprove} className={styles.tokenAmountFormApprove}>
               Approve
             </Button>
           ) : (
             <Button
-              type="link"
+              variant="link"
               className={styles.tokenAmountFormApprove}
               onClick={handleDeposit('deposit-only')}
               disabled={!canDeposit}
@@ -133,7 +133,7 @@ const TokenDepositForm = (props: Props) => {
             </Button>
           )}
 
-          <Button type="secondary" onClick={handleDeposit('deposit-and-stake')} disabled={!canDeposit}>
+          <Button variant="secondary" onClick={handleDeposit('deposit-and-stake')} disabled={!canDeposit}>
             Deposit and Stake
           </Button>
         </div>
