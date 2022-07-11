@@ -5,7 +5,7 @@ import { addDays, isAfter, isBefore } from 'date-fns';
 import { blockTimestampToDate, messages } from '../../utils';
 import { Claim, ClaimStatusCode, ClaimStatuses, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { notifications } from '../../components/notifications';
-import { useClaimsManager, ClaimsManagerWithKlerosArbitrator, usePossibleChainDataUpdate } from '../../contracts';
+import { useClaimsManager, ClaimsManagerWithKlerosArbitration, usePossibleChainDataUpdate } from '../../contracts';
 
 export function useUserClaims() {
   const { userAccount, claims, setChainData } = useChainData();
@@ -86,7 +86,7 @@ export function useUserClaimById(claimId: string) {
 }
 
 async function loadClaims(
-  contract: ClaimsManagerWithKlerosArbitrator,
+  contract: ClaimsManagerWithKlerosArbitration,
   params: { userAccount?: string; claimId?: BigNumber }
 ): Promise<{ ids: string[]; byId: Record<string, Claim> }> {
   const { userAccount = null, claimId = null } = params;
@@ -131,7 +131,7 @@ async function loadClaims(
       statusUpdatedAt: blockTimestampToDate(claimData.updateTime),
       deadline: null,
       transactionHash: event.transactionHash,
-      arbitratorDisputeId: disputeEvent?.args.klerosArbitratorDisputeId ?? null,
+      arbitratorDisputeId: disputeEvent?.args.disputeId ?? null,
     };
 
     claim.deadline = calculateDeadline(claim);

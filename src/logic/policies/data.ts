@@ -3,7 +3,7 @@ import { addDays, isBefore } from 'date-fns';
 import { go } from '@api3/promise-utils';
 import { blockTimestampToDate, messages } from '../../utils';
 import { Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
-import { ClaimsManagerWithKlerosArbitrator, useClaimsManager, usePossibleChainDataUpdate } from '../../contracts';
+import { ClaimsManagerWithKlerosArbitration, useClaimsManager, usePossibleChainDataUpdate } from '../../contracts';
 import { notifications } from '../../components/notifications';
 
 export function useUserPolicies() {
@@ -84,7 +84,7 @@ export function useUserPolicyById(policyId: string) {
 }
 
 async function loadPolicies(
-  contract: ClaimsManagerWithKlerosArbitrator,
+  contract: ClaimsManagerWithKlerosArbitration,
   params: { userAccount?: string; policyId?: string }
 ): Promise<{ ids: string[]; byId: Record<string, Policy> }> {
   const { userAccount = null, policyId = null } = params;
@@ -101,8 +101,8 @@ async function loadPolicies(
       claimant: eventArgs.claimant,
       beneficiary: eventArgs.beneficiary,
       coverageAmount: eventArgs.coverageAmount,
-      startTime: blockTimestampToDate(eventArgs.startTime),
-      endTime: blockTimestampToDate(eventArgs.endTime),
+      startTime: blockTimestampToDate(eventArgs.claimsAllowedFrom),
+      endTime: blockTimestampToDate(eventArgs.claimsAllowedUntil),
       ipfsHash: eventArgs.policy,
     };
 

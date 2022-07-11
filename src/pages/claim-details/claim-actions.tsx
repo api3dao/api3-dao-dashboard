@@ -51,7 +51,7 @@ export default function ClaimActions(props: Props) {
   const handleAppeal = async () => {
     setStatus('submitting');
     const tx = await handleTransactionError(
-      claimsManager.appealKlerosArbitratorDecision(claim.claimId, claim.arbitratorDisputeId!)
+      claimsManager.appealKlerosArbitratorRuling(claim.claimId, claim.arbitratorDisputeId!)
     );
     if (tx) {
       setChainData('Save appeal claim transaction', {
