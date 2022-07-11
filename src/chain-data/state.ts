@@ -160,6 +160,7 @@ export interface Policy {
   startTime: Date;
   endTime: Date;
   ipfsHash: string;
+  metadata: string;
 }
 
 export interface ChainData {

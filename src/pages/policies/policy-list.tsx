@@ -23,7 +23,7 @@ export default function PolicyList(props: Props) {
         <li key={policy.policyId} className={styles.policyItem}>
           <div className={styles.policyItemMain}>
             <Link className={styles.policyItemTitle} to={`/policies/${policy.policyId}`}>
-              Policy {policy.ipfsHash}
+              {policy.metadata}
             </Link>
 
             <div className={styles.policyItemInfo}>

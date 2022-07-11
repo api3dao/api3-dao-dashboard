@@ -104,6 +104,7 @@ async function loadPolicies(
       startTime: blockTimestampToDate(eventArgs.claimsAllowedFrom),
       endTime: blockTimestampToDate(eventArgs.claimsAllowedUntil),
       ipfsHash: eventArgs.policy,
+      metadata: eventArgs.metadata,
     };
 
     acc[policy.policyId] = policy;
