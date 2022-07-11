@@ -73,6 +73,7 @@ jobs:
         env:
           REACT_APP_NODE_ENV: development
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          DEBUG: "cypress:server:reporter"
           PERCY_DEBUG: "*"
           LOG_LEVEL: debug
         run: yarn percy exec -- -- yarn ci:cypress
