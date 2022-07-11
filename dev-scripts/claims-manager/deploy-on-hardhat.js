@@ -14,7 +14,7 @@ async function deploy() {
   const mockApi3Pool = await mockApi3PoolFactory.deploy();
 
   const claimsManagerWithKlerosArbitratorFactory = await hre.ethers.getContractFactory(
-    'ClaimsManagerWithKlerosArbitrator',
+    'ClaimsManagerWithKlerosArbitration',
     roles.deployer
   );
   const claimsManager = await claimsManagerWithKlerosArbitratorFactory.deploy(
@@ -26,8 +26,8 @@ async function deploy() {
     3 * 24 * 60 * 60,
     roles.kleros.address,
     '0x123456',
-    40 * 24 * 60 * 60,
-    '/ipfs/Qm...testhash/metaEvidence.json'
+    '/ipfs/Qm...testhash/metaEvidence.json',
+    40 * 24 * 60 * 60
   );
 
   console.info('DEPLOYED ADDRESSES:');

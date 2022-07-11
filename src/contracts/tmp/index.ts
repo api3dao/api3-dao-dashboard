@@ -1,2 +1,2 @@
-export type { ClaimsManagerWithKlerosArbitrator } from './ClaimsManagerWithKlerosArbitrator';
-export { ClaimsManagerWithKlerosArbitrator__factory } from './factories/ClaimsManagerWithKlerosArbitrator__factory';
+export type { ClaimsManagerWithKlerosArbitration } from './ClaimsManagerWithKlerosArbitration';
+export { ClaimsManagerWithKlerosArbitration__factory } from './factories/ClaimsManagerWithKlerosArbitration__factory';

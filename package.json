@@ -78,7 +78,7 @@
     "web3modal": "^1.9.5"
   },
   "devDependencies": {
-    "@api3/claims-manager": "api3dao/claims-manager.git#0cf57283c1e21bad328b6aab78cc67614cad77fa",
+    "@api3/claims-manager": "api3dao/claims-manager.git#7952872923f8c2199544f0457ee6d2208e3e857d",
     "@api3/promise-utils": "^0.1.0",
     "@aragon/os": "^4.4.0",
     "@nomiclabs/hardhat-ethers": "^2.0.4",

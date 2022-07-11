@@ -10,7 +10,7 @@ import {
   TimelockManager__factory as TimelockManagerFactory,
 } from '../generated-contracts';
 // TODO DA0-151 Delete tmp folder and import from claims-manager package
-import { ClaimsManagerWithKlerosArbitrator__factory as ClaimsManagerFactory } from './tmp';
+import { ClaimsManagerWithKlerosArbitration__factory as ClaimsManagerFactory } from './tmp';
 import { initialChainData } from '../chain-data/state';
 
 export const useApi3Pool = () => {
