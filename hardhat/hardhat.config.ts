@@ -1,6 +1,7 @@
 import '@nomiclabs/hardhat-ethers';
 import { task, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
+import { randomBytes } from 'crypto';
 import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
 import { addDays } from 'date-fns';
@@ -58,7 +59,8 @@ task('send-to-account', 'Sends ether or API3 tokens to a specified account')
 task('create-user-policy', 'Creates a policy for the given user')
   .addParam('address', 'The user address')
   .addParam('coverageAmount', 'The coverage amount')
-  .addParam('ipfsHash', 'The IPFS policy hash')
+  .addParam('metadata', 'The human-readable policy identifier')
+  .addOptionalParam('ipfsHash', 'The IPFS policy hash')
   .setAction(async (args, hre) => {
     const userAddress = args.address;
     const accounts = await hre.ethers.getSigners();
@@ -73,8 +75,8 @@ task('create-user-policy', 'Creates a policy for the given user')
       args.coverageAmount,
       BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
       BigNumber.from(Math.round(addDays(new Date(), 30).getTime() / 1000)),
-      args.ipfsHash,
-      'Some policy metadata'
+      args.ipfsHash || 'Qm' + randomBytes(22).toString('hex'),
+      args.metadata
     );
 
     await tx.wait();
