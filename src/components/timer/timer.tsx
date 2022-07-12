@@ -17,36 +17,25 @@ export const DATE_FORMAT = 'do MMMM yyyy';
 
 export const formatDeadline = (deadline: Date) => format(deadline, DATE_FORMAT);
 
+interface Countdown {
+  days: string;
+  hours: string;
+  minutes: string;
+  seconds: string;
+  dateDiff: number;
+}
+
 const Timer = (props: Props) => {
   const { deadline, size = 'normal', showDeadline, onDeadlineExceeded } = props;
-  const [timerDays, setTimerDays] = useState('00');
-  const [timerHours, setTimerHours] = useState('00');
-  const [timerMinutes, setTimerMinutes] = useState('00');
-  const [timerSeconds, setTimerSeconds] = useState('00');
-  const [dateDiff, setDateDiff] = useState(0);
+  const [countdown, setCountdown] = useState<Countdown>(() => calculateCountdown(deadline));
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const deadlineDate = deadline.getTime();
-
-      let distance = deadlineDate - now;
-
-      if (distance < 0) {
+      const countdown = calculateCountdown(deadline);
+      if (countdown.dateDiff === 0) {
         clearInterval(timer);
-        distance = 0;
       }
-
-      const days = getDays(distance);
-      const hours = getHours(distance);
-      const minutes = getMinutes(distance);
-      const seconds = getSeconds(distance);
-
-      setTimerDays(days);
-      setTimerHours(hours);
-      setTimerMinutes(minutes);
-      setTimerSeconds(seconds);
-      setDateDiff(distance);
+      setCountdown(countdown);
     }, 1000);
 
     return () => {
@@ -59,6 +48,7 @@ const Timer = (props: Props) => {
     callbackRef.current = onDeadlineExceeded;
   });
 
+  const { dateDiff } = countdown;
   const previousDateDiff = usePrevious(dateDiff) || 0;
   useEffect(() => {
     // We trigger the callback when we have gone past the deadline (i.e. from a positive diff to a zero diff)
@@ -76,24 +66,24 @@ const Timer = (props: Props) => {
       <div className={globalStyles.tertiaryColor}>{status}</div>
       <div className={styles.timerContainer}>
         <div className={styles.timerWrap}>
-          <div className={styles.timerNumber}>{timerDays}</div>
+          <div className={styles.timerNumber}>{countdown.days}</div>
           <div className={globalStyles.tertiaryColor}>D</div>
         </div>
         <div className={styles.timerColon}>:</div>
         <div className={styles.timerWrap}>
-          <div className={styles.timerNumber}>{timerHours}</div>
+          <div className={styles.timerNumber}>{countdown.hours}</div>
           <div className={globalStyles.tertiaryColor}>HR</div>
         </div>
         <div className={styles.timerColon}>:</div>
         <div className={styles.timerWrap}>
-          <div className={styles.timerNumber}>{timerMinutes}</div>
+          <div className={styles.timerNumber}>{countdown.minutes}</div>
           <div className={globalStyles.tertiaryColor}>MIN</div>
         </div>
         {size === 'large' && (
           <>
             <div className={styles.timerColon}>:</div>
             <div className={styles.timerWrap}>
-              <div className={styles.timerNumber}>{timerSeconds}</div>
+              <div className={styles.timerNumber}>{countdown.seconds}</div>
               <div className={globalStyles.tertiaryColor}>SEC</div>
             </div>
           </>
@@ -105,3 +95,16 @@ const Timer = (props: Props) => {
 };
 
 export default Timer;
+
+function calculateCountdown(deadline: Date): Countdown {
+  const now = new Date().getTime();
+  const dateDiff = Math.max(deadline.getTime() - now, 0);
+
+  return {
+    days: getDays(dateDiff),
+    hours: getHours(dateDiff),
+    minutes: getMinutes(dateDiff),
+    seconds: getSeconds(dateDiff),
+    dateDiff,
+  };
+}
