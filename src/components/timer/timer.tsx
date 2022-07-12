@@ -32,10 +32,11 @@ const Timer = (props: Props) => {
   useEffect(() => {
     const timer = setInterval(() => {
       const countdown = calculateCountdown(deadline);
+      setCountdown(countdown);
+
       if (countdown.dateDiff === 0) {
         clearInterval(timer);
       }
-      setCountdown(countdown);
     }, 1000);
 
     return () => {
@@ -62,7 +63,10 @@ const Timer = (props: Props) => {
   const formattedDeadline = `${dateDiff > 0 ? 'Ends on' : ''} ${formatDeadline(deadline)}`;
 
   return (
-    <div className={classNames(styles.timer, largeSize, dateDiff === 0 ? styles.grayOut : globalStyles.primaryColor)}>
+    <div
+      className={classNames(styles.timer, largeSize, dateDiff === 0 ? styles.grayOut : globalStyles.primaryColor)}
+      data-testid="timer"
+    >
       <div className={globalStyles.tertiaryColor}>{status}</div>
       <div className={styles.timerContainer}>
         <div className={styles.timerWrap}>
