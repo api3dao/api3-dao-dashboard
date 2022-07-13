@@ -76,8 +76,9 @@ jobs:
         run: yarn percy exec -- -- yarn ci:cypress
         timeout-minutes: 60
       - name: Store artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: cypress-artifacts
           path: cypress/screenshots
+          if-no-files-found: ignore
