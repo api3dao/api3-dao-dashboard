@@ -46,7 +46,7 @@ const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
             />
             <label htmlFor="errorReporting">Allow error reporting</label>
           </div>
-          <Button type="secondary" onClick={onErrorReportingNoticeConfirm}>
+          <Button variant="secondary" onClick={onErrorReportingNoticeConfirm}>
             Done
           </Button>
         </div>

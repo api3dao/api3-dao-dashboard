@@ -1,4 +1,4 @@
-/// <reference path="../support/index.d.ts" />
+/// <reference path="../support/e2e.d.ts" />
 
 import { EPOCH_LENGTH } from '../support/common';
 

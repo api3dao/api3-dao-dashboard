@@ -70,7 +70,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
           {connectedContent}
           {availableAccounts.length > 1 && (
             <Button
-              type="secondary"
+              variant="secondary"
               onClick={openModal}
               className={classNames({ [styles.mobileMenuButton]: position === 'mobileMenu' })}
             >
@@ -78,7 +78,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
             </Button>
           )}
           <Button
-            type="secondary"
+            variant="secondary"
             onClick={onDisconnect}
             className={classNames({ [styles.mobileMenuButton]: position === 'mobileMenu' })}
           >
@@ -106,7 +106,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
             {availableAccounts.map((account) => (
               <Button
                 key={account}
-                type="text"
+                variant="text"
                 className={styles.availableAccountButton}
                 onClick={onAccountChange(account)}
               >
@@ -182,7 +182,7 @@ const SignIn = ({ dark, position }: Props) => {
     <>
       {!provider && (
         <Button
-          type={dark ? 'secondary' : 'primary'}
+          variant={dark ? 'secondary' : 'primary'}
           onClick={connectWallet(setChainData)}
           className={classNames({
             [styles.mobileMenuButton]: dark,

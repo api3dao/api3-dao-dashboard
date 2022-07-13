@@ -62,7 +62,7 @@ const TokenAmountForm = (props: Props) => {
             autoFocus
           />
           {maxValue && (
-            <Button className={styles.maxButton} type="text" onClick={handleSetMax}>
+            <Button className={styles.maxButton} variant="text" onClick={handleSetMax}>
               Max
             </Button>
           )}
@@ -81,7 +81,7 @@ const TokenAmountForm = (props: Props) => {
 
       <ModalFooter>
         <div className={styles.tokenAmountFormActions}>
-          <Button type="secondary" onClick={handleAction} disabled={!goParseApi3.success}>
+          <Button variant="secondary" onClick={handleAction} disabled={!goParseApi3.success}>
             {action}
           </Button>
         </div>

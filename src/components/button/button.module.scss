@@ -1,8 +1,15 @@
 @import '../../styles/variables.module.scss';
 
-.buttonWrapper {
-  display: inline-block;
-  &.disabled {
+.button {
+  background-color: transparent;
+  position: relative;
+  color: $button-color;
+  border-width: 1px;
+  border-style: solid;
+  outline: none;
+  cursor: pointer;
+
+  &:disabled {
     opacity: 0.4;
     pointer-events: none;
   }
@@ -12,69 +19,67 @@
   }
 }
 
-.button {
-  background-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: $button-color;
-  border-width: 1px;
-  border-style: solid;
-  outline: none;
-  cursor: pointer;
+.primary {
+  border-image-source: $primary-border;
+  border-image-slice: 1;
 
-  &.primary {
-    border-image-source: $primary-border;
-    border-image-slice: 1;
-  }
-
-  &.secondary {
-    border-color: $secondary-border;
-  }
-
-  &.normal {
-    font-size: $text-small;
-    line-height: $lh-small;
-    padding: 17px $space-lg;
-
-    @media (max-width: $max-md) {
-      padding: $space-md;
-    }
-  }
-
-  &.large {
-    font-size: $text-normal;
-    line-height: 22px;
-    padding: 20px 44px;
-
-    @media (max-width: $max-md) {
-      font-size: $text-small;
-      padding: $space-md $space-xl;
-    }
-  }
-
-  &.link {
-    color: $link-color;
-    border: 0;
-    text-decoration: underline;
-    padding: 0;
-  }
-
-  &.text {
-    border: 0;
-    text-decoration: underline;
-    padding: 0;
+  &::after {
+    background: $primary-border;
   }
 }
 
-.buttonUnderline {
-  margin-top: $space-xxs;
-  height: 1px;
-  width: 100%;
-  &.primary {
-    background: linear-gradient(to left, $green-color, $violet-color);
-  }
-  &.secondary {
+.secondary {
+  border-color: $secondary-border;
+
+  &::after {
     background-color: $secondary-border;
   }
+}
+
+.primary,
+.secondary {
+  margin-bottom: 5px;
+
+  &::after {
+    content: '';
+    height: 1px;
+    width: calc(100% + 2px);
+    position: absolute;
+    bottom: -6px;
+    left: -1px;
+  }
+}
+
+.normal {
+  font-size: $text-small;
+  line-height: $lh-small;
+  padding: 17px $space-lg;
+
+  @media (max-width: $max-md) {
+    padding: $space-md;
+  }
+}
+
+.large {
+  font-size: $text-normal;
+  line-height: 22px;
+  padding: 20px 44px;
+
+  @media (max-width: $max-md) {
+    font-size: $text-small;
+    padding: $space-md $space-xl;
+  }
+}
+
+.link {
+  color: $link-color;
+  border: 0;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.text {
+  border: 0;
+  text-decoration: underline;
+  padding: 0;
 }

@@ -42,7 +42,7 @@ const UnstakeBanner = (props: Props) => {
         </div>
       </div>
       <div className={styles.buttonPanel}>
-        <Button type="link" onClick={handleUnstake}>
+        <Button variant="link" onClick={handleUnstake}>
           Unstake
         </Button>
         <Button onClick={handleUnstakeAndWithdraw} disabled={!canUnstakeAndWithdraw}>

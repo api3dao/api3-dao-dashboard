@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
 import { addDays } from 'date-fns';
 import { parseApi3 } from '../src/utils/api3-format';
-import { ClaimsManagerWithKlerosArbitrator__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
+import { ClaimsManagerWithKlerosArbitration__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
 import { ChainData } from '../src/chain-data';
 
 dotenv.config({ path: '../.env' });
@@ -73,7 +73,8 @@ task('create-user-policy', 'Creates a policy for the given user')
       args.coverageAmount,
       BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
       BigNumber.from(Math.round(addDays(new Date(), 30).getTime() / 1000)),
-      args.ipfsHash
+      args.ipfsHash,
+      'Some policy metadata'
     );
 
     await tx.wait();

@@ -86,7 +86,7 @@ const DelegateVotesForm = (props: Props) => {
       </div>
 
       <ModalFooter>
-        <Button type="secondary" size="large" onClick={onDelegate}>
+        <Button variant="secondary" size="large" onClick={onDelegate}>
           Delegate
         </Button>
 
