@@ -5,7 +5,7 @@ import { BaseLayout } from '../../components/layout';
 import ClaimEvidenceInstructions from './claim-evidence-instructions';
 import NewClaimForm, { FormState, FormStatus, parseClaimAmount } from './new-claim-form';
 import Confirmation from './confirmation';
-import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManagerWithKlerosArbitrator';
+import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManagerWithKlerosArbitration';
 import { handleTransactionError } from '../../utils';
 import { useChainData } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
