@@ -9,7 +9,7 @@ export default defineConfig({
     openMode: 0,
   },
 
-  video: true,
+  video: false,
   videoUploadOnPasses: false,
   screenshotOnRunFailure: false,
 
