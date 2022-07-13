@@ -21,7 +21,7 @@ describe('delegation', () => {
     cy.findAllByText('Governance').filter(':visible').click();
     cy.findByText('Delegate').click();
     cy.get('#modal').find('input').type(ACCOUNTS[1]);
-    cy.get('#modal').findByText('Delegate').click();
+    cy.get('#modal').findByText('Delegate test screenshots').click();
 
     cy.dataCy('delegated-to').should('have.text', `Delegated to: ${abbrStr(ACCOUNTS[1])}`);
   });

@@ -10,8 +10,6 @@ export default defineConfig({
   },
 
   video: false,
-  videoUploadOnPasses: false,
-  screenshotOnRunFailure: false,
 
   e2e: {
     setupNodeEvents(on, config) {

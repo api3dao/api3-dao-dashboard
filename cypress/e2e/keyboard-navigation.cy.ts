@@ -20,7 +20,7 @@ describe('keyboard navigation and accessibility', () => {
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Staking').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Governance').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('History').filter(':visible').closest('a'));
-    pressTabAndAssertFocusOutline(() => cy.findAllByText('Policies').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('Policies test screenshots').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Claims').filter(':visible').closest('a'));
 
     pressTabAndAssertFocusOutline(() => cy.findByText('About API3'));
@@ -66,7 +66,7 @@ describe('keyboard navigation and accessibility', () => {
       // See: https://github.com/cypress-io/cypress/issues/8267#issuecomment-743918524
       cy.get('#modal').find('input').focus();
       cy.findByText('Approve').type('{enter}'); // Approve
-      cy.findByText('Deposit and Stake').should('not.be.disabled');
+      cy.findByText('Deposit and Stake test screenshots').should('not.be.disabled');
       cy.findByText('Deposit and Stake').type('{enter}');
 
       // Assert dashboard balance
