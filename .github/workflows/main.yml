@@ -74,6 +74,7 @@ jobs:
         env:
           REACT_APP_NODE_ENV: development
         run: yarn ci:cypress
+        timeout-minutes: 60
       - name: Store artifacts
         uses: actions/upload-artifact@v3
         if: always()
