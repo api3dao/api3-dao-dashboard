@@ -72,11 +72,10 @@ jobs:
       - name: Cypress tests
         env:
           REACT_APP_NODE_ENV: development
-          DEBUG: "cypress:*"
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
           PERCY_DEBUG: "*"
           LOG_LEVEL: debug
-        run: yarn percy exec --verbose -- -- yarn ci:cypress
+        run: yarn percy exec -- -- yarn ci:cypress
         timeout-minutes: 60
       - name: Store artifacts
         uses: actions/upload-artifact@v1
