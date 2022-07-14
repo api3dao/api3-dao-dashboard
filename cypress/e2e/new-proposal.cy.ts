@@ -14,6 +14,7 @@ it('new proposal form validation', () => {
   cy.findByText('Title must have at least one alphanumeric character').should('exist');
   cy.findByText('Description must have at least one alphanumeric character').should('exist');
   cy.findByText('Make sure parameters is a valid JSON array').should('exist');
+  cy.percySnapshot('Governance: New proposal modal');
 
   // Correct the errors
   cy.findByLabelText('Title').type('Getting University Blockchain Groups Involved in Governance');
@@ -57,4 +58,5 @@ it('new proposal form validation', () => {
   cy.findAllByText('Governance').filter(':visible').click();
   cy.findByText('Getting University Blockchain Groups Involved in Governance', { timeout: 20 * 1000 }).should('exist');
   cy.dataCy('proposal-item').should('have.length', 1).and('contain.text', 'secondary');
+  cy.percySnapshot('Governance: Active proposals');
 });
