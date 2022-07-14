@@ -2,7 +2,7 @@
 
 import { ACCOUNTS, EPOCH_LENGTH } from '../support/common';
 
-it.skip('new proposal form validation', () => {
+it('new proposal form validation', () => {
   cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // skip the genesis epoch (add 1 hour just to be sure)
   cy.findAllByText('Governance').filter(':visible').click();
   cy.findByText('+ New Proposal').click();
@@ -55,6 +55,6 @@ it.skip('new proposal form validation', () => {
   // Expect the proposal to be created
   cy.resetClock();
   cy.findAllByText('Governance').filter(':visible').click();
-  cy.findByText('some title', { timeout: 20 * 1000 }).should('exist');
+  cy.findByText('Getting University Blockchain Groups Involved in Governance', { timeout: 20 * 1000 }).should('exist');
   cy.dataCy('proposal-item').should('have.length', 1).and('contain.text', 'secondary');
 });
