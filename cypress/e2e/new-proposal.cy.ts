@@ -14,11 +14,11 @@ it('new proposal form validation', () => {
   cy.findByText('Title must have at least one alphanumeric character').should('exist');
   cy.findByText('Description must have at least one alphanumeric character').should('exist');
   cy.findByText('Make sure parameters is a valid JSON array').should('exist');
-  cy.percySnapshot('Governance: New proposal modal');
+  cy.percySnapshot('Governance: New proposal modal', { minHeight: 1500 });
 
   // Correct the errors
   cy.findByLabelText('Title').type('Getting University Blockchain Groups Involved in Governance');
-  cy.findByLabelText('Description').type('best description');
+  cy.findByLabelText('Description').type('https://forum.api3.org/t/getting-university-blockchain-groups-involved');
   cy.findByLabelText('Parameters').type('{}');
   cy.findByText('Create').click();
   cy.findByText('Make sure parameters is a valid JSON array').should('exist');
@@ -59,4 +59,8 @@ it('new proposal form validation', () => {
   cy.findByText('Getting University Blockchain Groups Involved in Governance', { timeout: 20 * 1000 }).should('exist');
   cy.dataCy('proposal-item').should('have.length', 1).and('contain.text', 'secondary');
   cy.percySnapshot('Governance: Active proposals');
+
+  // Navigate to proposal
+  cy.findByRole('link', { name: 'Getting University Blockchain Groups Involved in Governance' }).click();
+  cy.percySnapshot('Proposal details');
 });
