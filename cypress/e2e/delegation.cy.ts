@@ -9,7 +9,7 @@ describe('delegation', () => {
     cy.get('#modal').find('input').type('200');
     cy.findByText('Approve').click();
     cy.findByText('Deposit and Stake').click();
-    cy.dataCy('staked').should('have.text', '200.0'); // Ensure transaction is mined
+    cy.dataCy('staked').should('have.text', '200.0 test screenshot uploads on v3 uploader'); // Ensure transaction is mined
 
     cy.createChainSnapshot('user-staked');
   });
