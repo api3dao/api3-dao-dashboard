@@ -83,6 +83,8 @@
     "@aragon/os": "^4.4.0",
     "@nomiclabs/hardhat-ethers": "^2.0.4",
     "@openzeppelin/contracts": "4.2.0",
+    "@percy/cli": "^1.6.0",
+    "@percy/cypress": "^3.1.2",
     "@testing-library/cypress": "^8.0.3",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",

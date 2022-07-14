@@ -34,7 +34,6 @@ describe('keyboard navigation and accessibility', () => {
   describe('can use keyboard keys in modal', () => {
     before(() => {
       cy.login();
-      closeErrorReportingNotice();
     });
 
     it('uses focus lock (cannot tab outside modal)', () => {
