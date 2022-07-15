@@ -84,7 +84,7 @@ const Timer = (props: Props) => {
           </>
         )}
       </div>
-      {showDeadline && <div className={globalStyles.tertiaryColor}>{formattedDeadline}</div>}
+      {showDeadline && <div className={`visual-test:invisible ${globalStyles.tertiaryColor}`}>{formattedDeadline}</div>}
     </div>
   );
 };
