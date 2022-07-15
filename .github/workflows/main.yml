@@ -62,7 +62,9 @@ jobs:
           path: ~/.cache/Cypress
           restore-keys: ${{ runner.os }}-cypress-v2-
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          yarn install --frozen-lockfile
+          yarn cypress install
       - name: Increase file watcher limit
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - name: Prepare DAO contracts
