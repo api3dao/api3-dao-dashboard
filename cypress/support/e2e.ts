@@ -1,5 +1,5 @@
 // ***********************************************************
-// This example support/index.js is processed and
+// This example support/e2e.ts is processed and
 // loaded automatically before your test files.
 //
 // This is a great place to put global configuration and
@@ -18,3 +18,4 @@ import '@testing-library/cypress/add-commands';
 import 'cypress-plugin-tab';
 import './chain';
 import './commands';
+import '@percy/cypress';

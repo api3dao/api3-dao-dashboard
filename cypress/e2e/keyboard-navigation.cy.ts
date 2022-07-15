@@ -1,4 +1,4 @@
-/// <reference path="../support/index.d.ts" />
+/// <reference path="../support/e2e.d.ts" />
 
 import { closeErrorReportingNotice } from '../support/common';
 
@@ -34,7 +34,6 @@ describe('keyboard navigation and accessibility', () => {
   describe('can use keyboard keys in modal', () => {
     before(() => {
       cy.login();
-      closeErrorReportingNotice();
     });
 
     it('uses focus lock (cannot tab outside modal)', () => {

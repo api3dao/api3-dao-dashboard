@@ -87,7 +87,7 @@ const Timer = (props: Props) => {
           <>
             <div className={styles.timerColon}>:</div>
             <div className={styles.timerWrap}>
-              <div className={styles.timerNumber}>{countdown.seconds}</div>
+              <div className={`visual-test:invisible ${styles.timerNumber}`}>{countdown.seconds}</div>
               <div className={globalStyles.tertiaryColor}>SEC</div>
             </div>
           </>
