@@ -62,6 +62,7 @@ jobs:
           path: ~/.cache/Cypress
           restore-keys: ${{ runner.os }}-cypress-v2-
       - name: Install Dependencies
+        # We add the additional cypress install to handle the common Missing Binary issue: https://docs.cypress.io/guides/continuous-integration/introduction#Missing-binary
         run: |
           yarn install --frozen-lockfile
           yarn cypress install
