@@ -8,6 +8,9 @@ export const formatApi3 = (value: BigNumberish, commify = true) => {
   return commify ? utils.commify(formatted) : formatted;
 };
 
+// USD amounts have the same denomination as API3.
+export const formatUsd = formatApi3;
+
 export const formatAndRoundApi3 = (tokens: BigNumberish, decimals = DEFAULT_DECIMALS) => {
   const formatted = utils.formatEther(tokens);
   // NOTE: The number of tokens is formatted by ethers first so it will fit into JS number
@@ -17,6 +20,9 @@ export const formatAndRoundApi3 = (tokens: BigNumberish, decimals = DEFAULT_DECI
 
 // API3 Token has the same denomination as ETH.
 export const parseApi3 = utils.parseEther;
+
+// USD amounts have the same denomination as ETH.
+export const parseUsd = utils.parseEther;
 
 export const round = (value: number | string, decimals = DEFAULT_DECIMALS) => {
   const strValue = value.toString();

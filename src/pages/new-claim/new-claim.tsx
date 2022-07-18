@@ -1,7 +1,6 @@
 import { FormEventHandler, useState } from 'react';
 import { useParams } from 'react-router';
 import { goSync } from '@api3/promise-utils';
-import { BigNumber, utils } from 'ethers';
 import { BaseLayout } from '../../components/layout';
 import Input from '../../components/input';
 import Button from '../../components/button';
@@ -9,6 +8,7 @@ import { isEmpty } from 'lodash';
 import { Policy } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
 import { useUserPolicyById } from '../../logic/policies';
+import { formatUsd, parseUsd } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim.module.scss';
 
@@ -28,14 +28,14 @@ function getValidationMessages(form: FormState, policy: Policy) {
     messages.evidence = 'Please fill in this field';
   }
 
-  const result = goSync(() => parseClaimAmount(form.amount));
+  const result = goSync(() => parseUsd(form.amount));
   if (!result.success) {
     messages.amount = 'Please enter a valid number';
   } else {
     const parsed = result.data;
     if (parsed.lte(0)) {
       messages.amount = 'Amount must be greater than zero';
-    } else if (parsed.gt(policy.coverageAmount)) {
+    } else if (parsed.gt(policy.coverageAmountInUsd)) {
       messages.amount = 'Amount must not exceed the coverage amount';
     }
   }
@@ -82,11 +82,11 @@ export default function NewClaim() {
     try {
       await claimsManager.createClaim(
         policy.beneficiary,
-        policy.coverageAmount,
+        policy.coverageAmountInUsd,
         Math.round(policy.startTime.getTime() / 1000),
         Math.round(policy.endTime.getTime() / 1000),
         policy.ipfsHash,
-        parseClaimAmount(form.amount),
+        parseUsd(form.amount),
         form.evidence.trim()
       );
 
@@ -117,7 +117,7 @@ export default function NewClaim() {
           <li>
             <label htmlFor="amount">Requested relief amount, in USD</label>
             <p className={globalStyles.secondaryColor}>
-              How much USD do you wish to receive? (Max of ${utils.commify(policy.coverageAmount.toString())})
+              How much USD do you wish to receive? (Max of ${formatUsd(policy.coverageAmountInUsd)})
             </p>
             <Input
               id="amount"
@@ -135,7 +135,3 @@ export default function NewClaim() {
 }
 
 type ValidationMessages<T> = { [key in keyof T]?: string };
-
-function parseClaimAmount(amount: string) {
-  return BigNumber.from(Math.round(parseFloat(amount.trim())));
-}

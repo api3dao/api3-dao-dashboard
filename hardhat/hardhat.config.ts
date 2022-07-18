@@ -4,7 +4,7 @@ import { existsSync } from 'fs';
 import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
 import { addDays } from 'date-fns';
-import { parseApi3 } from '../src/utils/api3-format';
+import { parseUsd } from '../src/utils/api3-format';
 import { ClaimsManagerWithKlerosArbitration__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
 import { ChainData } from '../src/chain-data';
 
@@ -70,7 +70,7 @@ task('create-user-policy', 'Creates a policy for the given user')
     const tx = await claimsManager.createPolicy(
       userAddress,
       userAddress,
-      args.coverageAmount,
+      parseUsd(args.coverageAmount),
       BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
       BigNumber.from(Math.round(addDays(new Date(), 30).getTime() / 1000)),
       args.ipfsHash,
@@ -109,7 +109,7 @@ task('propose-settlement', 'Proposes a settlement amount for the claim')
     const manager = accounts[1];
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
-    await claimsManager.proposeSettlement(args.claimId, args.amount);
+    await claimsManager.proposeSettlement(args.claimId, parseUsd(args.amount));
     console.info(`Proposed a settlement of ${args.amount} API3 for Claim: ${args.claimId}`);
   });
 

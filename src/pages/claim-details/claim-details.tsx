@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { utils } from 'ethers';
 import { BaseLayout } from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import ExternalLink from '../../components/external-link';
@@ -10,7 +9,7 @@ import { useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { useUserClaimById, getCurrentDeadline } from '../../logic/claims';
 import { format } from 'date-fns';
-import { images, useForceUpdate, useScrollToTop } from '../../utils';
+import { formatUsd, images, useForceUpdate, useScrollToTop } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-details.module.scss';
 
@@ -77,7 +76,7 @@ export default function ClaimDetails() {
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claim Amount</p>
-              <p className={globalStyles.secondaryColor}>${utils.commify(claim.claimAmount.toString())}</p>
+              <p className={globalStyles.secondaryColor}>${formatUsd(claim.claimAmountInUsd)}</p>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claimant</p>

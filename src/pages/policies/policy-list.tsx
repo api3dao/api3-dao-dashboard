@@ -1,12 +1,11 @@
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { utils } from 'ethers';
 import Button from '../../components/button';
 import { Tooltip } from '../../components/tooltip';
 import { Policy } from '../../chain-data';
 import { isActive, canCreateClaim } from '../../logic/policies';
-import { images } from '../../utils';
+import { formatUsd, images } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './policy-list.module.scss';
 
@@ -37,7 +36,7 @@ export default function PolicyList(props: Props) {
               </div>
               <div className={styles.infoEntry}>
                 <span className={globalStyles.tertiaryColor}>Coverage: </span>
-                <span>${utils.commify(policy.coverageAmount.toString())}</span>
+                <span>${formatUsd(policy.coverageAmountInUsd)}</span>
               </div>
             </div>
           </div>
