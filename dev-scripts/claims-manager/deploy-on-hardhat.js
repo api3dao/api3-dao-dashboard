@@ -30,6 +30,11 @@ async function deploy() {
     40 * 24 * 60 * 60
   );
 
+  const mockDapiServerFactory = await hre.ethers.getContractFactory('MockDapiServer', roles.deployer);
+  const mockDapiServer = await mockDapiServerFactory.deploy();
+  const api3ToUsdReaderFactory = await hre.ethers.getContractFactory('Api3ToUsdReader', roles.deployer);
+  await api3ToUsdReaderFactory.deploy(mockDapiServer.address, claimsManager.address);
+
   console.info('DEPLOYED ADDRESSES:');
   console.info(JSON.stringify({ claimsManager: claimsManager.address }, null, 2));
 }

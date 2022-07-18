@@ -109,7 +109,7 @@ task('propose-settlement', 'Proposes a settlement amount for the claim')
     const manager = accounts[1];
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
-    await claimsManager.proposeSettlement(args.claimId, parseApi3(args.amount));
+    await claimsManager.proposeSettlement(args.claimId, args.amount);
     console.info(`Proposed a settlement of ${args.amount} API3 for Claim: ${args.claimId}`);
   });
 
