@@ -2,14 +2,16 @@ import { utils, BigNumberish } from 'ethers';
 
 const DEFAULT_DECIMALS = 2;
 
-// API3 Token has the same denomination as ETH.
-export const formatApi3 = (value: BigNumberish, commify = true) => {
+export const formatEther = (value: BigNumberish, commify = true) => {
   const formatted = utils.formatEther(value);
   return commify ? utils.commify(formatted) : formatted;
 };
 
-// USD amounts have the same denomination as API3.
-export const formatUsd = formatApi3;
+// API3 Token has the same denomination as ETH.
+export const formatApi3 = formatEther;
+
+// USD amounts have the same denomination as ETH.
+export const formatUsd = formatEther;
 
 export const formatAndRoundApi3 = (tokens: BigNumberish, decimals = DEFAULT_DECIMALS) => {
   const formatted = utils.formatEther(tokens);
@@ -18,11 +20,13 @@ export const formatAndRoundApi3 = (tokens: BigNumberish, decimals = DEFAULT_DECI
   return utils.commify(Number.parseFloat(formatted).toFixed(decimals));
 };
 
+export const parseEther = utils.parseEther;
+
 // API3 Token has the same denomination as ETH.
-export const parseApi3 = utils.parseEther;
+export const parseApi3 = parseEther;
 
 // USD amounts have the same denomination as ETH.
-export const parseUsd = utils.parseEther;
+export const parseUsd = parseEther;
 
 export const round = (value: number | string, decimals = DEFAULT_DECIMALS) => {
   const strValue = value.toString();

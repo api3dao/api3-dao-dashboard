@@ -1,8 +1,25 @@
-import { formatApi3, parseApi3, formatAndRoundApi3, round } from './api3-format';
+import {
+  parseEther,
+  parseApi3,
+  parseUsd,
+  formatEther,
+  formatApi3,
+  formatUsd,
+  formatAndRoundApi3,
+  round,
+} from './api3-format';
+
+test('parseEther', () => {
+  expect(parseEther('10').toString()).toBe('10000000000000000000');
+  expect(parseEther('0.00012345').toString()).toBe('123450000000000');
+});
 
 test('parseApi3', () => {
-  expect(parseApi3('10').toString()).toBe('10000000000000000000');
-  expect(parseApi3('0.00012345').toString()).toBe('123450000000000');
+  expect(parseApi3).toBe(parseEther);
+});
+
+test('parseUsd', () => {
+  expect(parseUsd).toBe(parseEther);
 });
 
 test('formatAndRoundApi3', () => {
@@ -15,12 +32,20 @@ test('formatAndRoundApi3', () => {
   expect(formatAndRoundApi3('1234567891234567890000000000')).toBe('1,234,567,891.23');
 });
 
+test('formatEther', () => {
+  expect(formatEther('10000000000000000000').toString()).toBe('10.0');
+  expect(formatEther('12345000000').toString()).toBe('0.000000012345');
+  expect(() => formatEther('abc')).toThrowError('invalid BigNumber string');
+  expect(formatEther('1234567890000000000000000000')).toBe('1,234,567,890.0');
+  expect(formatEther('1234567890000000000000000000', false)).toBe('1234567890.0');
+});
+
 test('formatApi3', () => {
-  expect(formatApi3('10000000000000000000').toString()).toBe('10.0');
-  expect(formatApi3('12345000000').toString()).toBe('0.000000012345');
-  expect(() => formatApi3('abc')).toThrowError('invalid BigNumber string');
-  expect(formatApi3('1234567890000000000000000000')).toBe('1,234,567,890.0');
-  expect(formatApi3('1234567890000000000000000000', false)).toBe('1234567890.0');
+  expect(formatApi3).toBe(formatEther);
+});
+
+test('formatUsd', () => {
+  expect(formatUsd).toBe(formatEther);
 });
 
 test('round', () => {
