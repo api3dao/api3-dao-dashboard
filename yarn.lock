@@ -10,9 +10,9 @@
     "@jridgewell/sourcemap-codec" "^1.4.9"
     "@jridgewell/trace-mapping" "^0.2.7"
 
-"@api3/claims-manager@api3dao/claims-manager.git#7952872923f8c2199544f0457ee6d2208e3e857d":
+"@api3/claims-manager@api3dao/claims-manager.git#3380acf763b91a2b8fdb6d1db5a9be99524dca94":
   version "0.0.1"
-  resolved "https://codeload.github.com/api3dao/claims-manager/tar.gz/7952872923f8c2199544f0457ee6d2208e3e857d"
+  resolved "https://codeload.github.com/api3dao/claims-manager/tar.gz/3380acf763b91a2b8fdb6d1db5a9be99524dca94"
 
 "@api3/promise-utils@^0.1.0":
   version "0.1.0"
