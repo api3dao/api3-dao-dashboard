@@ -157,8 +157,8 @@ export interface Policy {
   claimant: string;
   beneficiary: string;
   coverageAmount: BigNumber;
-  startTime: Date;
-  endTime: Date;
+  claimsAllowedFrom: Date;
+  claimsAllowedUntil: Date;
   ipfsHash: string;
 }
 
