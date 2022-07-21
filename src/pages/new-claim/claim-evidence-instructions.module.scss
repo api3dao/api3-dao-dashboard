@@ -1,0 +1,41 @@
+@import '../../styles/variables.module.scss';
+
+.container {
+  a {
+    color: inherit;
+  }
+}
+
+.terms {
+  margin-top: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    margin-bottom: $space-lg;
+  }
+}
+
+.instructionsContainer {
+  padding-left: 20px;
+}
+
+.instructions {
+  padding: 0;
+  margin-top: $space-xxl;
+  margin-bottom: $space-xxl;
+
+  li {
+    margin-bottom: $space-lg;
+    &::marker {
+      font-weight: 500;
+    }
+  }
+
+  li > p:first-child {
+    font-weight: 500;
+  }
+
+  li > p:not(:first-child) {
+    color: $secondary-color;
+  }
+}

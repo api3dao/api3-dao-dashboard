@@ -112,6 +112,7 @@ export type TransactionType =
   | 'execute'
   | 'update-timelock-status'
   | 'withdraw-to-pool'
+  | 'create-claim'
   | 'accept-claim-settlement'
   | 'escalate-claim-to-arbitrator'
   | 'appeal-claim-decision';
@@ -157,8 +158,8 @@ export interface Policy {
   claimant: string;
   beneficiary: string;
   coverageAmount: BigNumber;
-  startTime: Date;
-  endTime: Date;
+  claimsAllowedFrom: Date;
+  claimsAllowedUntil: Date;
   ipfsHash: string;
   metadata: string;
 }

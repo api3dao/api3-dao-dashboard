@@ -123,6 +123,11 @@ export const transactionMessages: { [key in TransactionType]: PendingTransaction
     success: 'Success! API3 tokens withdrawn to pool.',
     error: 'Failed to withdraw to pool. Please try again.',
   },
+  'create-claim': {
+    start: 'Submitting new claim...',
+    success: 'Success! New claim submitted.',
+    error: 'Failed to submit new claim. Please try again.',
+  },
   'accept-claim-settlement': {
     start: 'Accepting counter offer...',
     success: 'Success! Counter offer has been accepted.',

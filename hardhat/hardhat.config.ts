@@ -4,7 +4,7 @@ import { existsSync } from 'fs';
 import { randomBytes } from 'crypto';
 import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
-import { addDays } from 'date-fns';
+import { addDays, parseISO } from 'date-fns';
 import { parseApi3 } from '../src/utils/api3-format';
 import { ClaimsManagerWithKlerosArbitration__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
 import { ChainData } from '../src/chain-data';
@@ -61,6 +61,8 @@ task('create-user-policy', 'Creates a policy for the given user')
   .addParam('coverageAmount', 'The coverage amount')
   .addParam('metadata', 'The human-readable policy identifier')
   .addOptionalParam('ipfsHash', 'The IPFS policy hash')
+  .addOptionalParam('claimsAllowedFrom', 'Claims are allowed from this datetime')
+  .addOptionalParam('claimsAllowedUntil', 'Claims are allowed until this datetime')
   .setAction(async (args, hre) => {
     const userAddress = args.address;
     const accounts = await hre.ethers.getSigners();
@@ -69,12 +71,17 @@ task('create-user-policy', 'Creates a policy for the given user')
     const manager = accounts[1];
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
+
+    const claimsAllowedFrom = args.claimsAllowedFrom ? parseISO(args.claimsAllowedFrom) : addDays(new Date(), -1);
+    const claimsAllowedUntil = args.claimsAllowedUntil
+      ? parseISO(args.claimsAllowedUntil)
+      : addDays(claimsAllowedFrom, 30);
     const tx = await claimsManager.createPolicy(
       userAddress,
       userAddress,
       args.coverageAmount,
-      BigNumber.from(Math.round(addDays(new Date(), -1).getTime() / 1000)),
-      BigNumber.from(Math.round(addDays(new Date(), 30).getTime() / 1000)),
+      BigNumber.from(Math.round(claimsAllowedFrom.getTime() / 1000)),
+      BigNumber.from(Math.round(claimsAllowedUntil.getTime() / 1000)),
       args.ipfsHash || 'Qm' + randomBytes(22).toString('hex'),
       args.metadata
     );
