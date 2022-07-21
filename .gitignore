@@ -48,3 +48,6 @@ cypress-shared.json
 cypress/videos
 cypress/screenshots
 cypress/fixtures
+
+# A folder for temporary project related files
+/tmp
