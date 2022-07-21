@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { addDays, isBefore } from 'date-fns';
+import { isWithinInterval } from 'date-fns';
 import { go } from '@api3/promise-utils';
 import { blockTimestampToDate, messages } from '../../utils';
 import { Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
@@ -14,7 +14,7 @@ export function useUserPolicies() {
     // Sort by policy end time in descending order
     return policies.userPolicyIds
       .map((policyId) => policies.byId![policyId]!)
-      .sort((a, b) => b.endTime.getTime() - a.endTime.getTime());
+      .sort((a, b) => b.claimsAllowedUntil.getTime() - a.claimsAllowedUntil.getTime());
   }, [policies]);
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
@@ -101,9 +101,10 @@ async function loadPolicies(
       claimant: eventArgs.claimant,
       beneficiary: eventArgs.beneficiary,
       coverageAmountInUsd: eventArgs.coverageAmountInUsd,
-      startTime: blockTimestampToDate(eventArgs.claimsAllowedFrom),
-      endTime: blockTimestampToDate(eventArgs.claimsAllowedUntil),
+      claimsAllowedFrom: blockTimestampToDate(eventArgs.claimsAllowedFrom),
+      claimsAllowedUntil: blockTimestampToDate(eventArgs.claimsAllowedUntil),
       ipfsHash: eventArgs.policy,
+      metadata: eventArgs.metadata,
     };
 
     acc[policy.policyId] = policy;
@@ -117,9 +118,7 @@ async function loadPolicies(
 }
 
 export function isActive(policy: Policy) {
-  return isBefore(new Date(), policy.endTime);
+  return isWithinInterval(new Date(), { start: policy.claimsAllowedFrom, end: policy.claimsAllowedUntil });
 }
 
-export function canCreateClaim(policy: Policy) {
-  return isBefore(new Date(), addDays(policy.endTime, 3));
-}
+export const canCreateClaim = isActive;
