@@ -9,9 +9,7 @@ export default defineConfig({
     openMode: 0,
   },
 
-  video: true,
-  videoUploadOnPasses: false,
-  screenshotOnRunFailure: false,
+  video: false,
 
   e2e: {
     setupNodeEvents(on, config) {

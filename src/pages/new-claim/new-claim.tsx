@@ -57,8 +57,8 @@ export default function NewClaim() {
       claimsManager.createClaim(
         policy.beneficiary,
         policy.coverageAmount,
-        Math.round(policy.startTime.getTime() / 1000),
-        Math.round(policy.endTime.getTime() / 1000),
+        Math.round(policy.claimsAllowedFrom.getTime() / 1000),
+        Math.round(policy.claimsAllowedUntil.getTime() / 1000),
         policy.ipfsHash,
         parseClaimAmount(form.amount),
         form.evidence.trim()

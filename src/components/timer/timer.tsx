@@ -93,13 +93,13 @@ const Timer = (props: Props) => {
           <>
             <div className={styles.timerColon}>:</div>
             <div className={styles.timerWrap}>
-              <div className={styles.timerNumber}>{timerSeconds}</div>
+              <div className={`visual-test:invisible ${styles.timerNumber}`}>{timerSeconds}</div>
               <div className={globalStyles.tertiaryColor}>SEC</div>
             </div>
           </>
         )}
       </div>
-      {showDeadline && <div className={globalStyles.tertiaryColor}>{formattedDeadline}</div>}
+      {showDeadline && <div className={`visual-test:invisible ${globalStyles.tertiaryColor}`}>{formattedDeadline}</div>}
     </div>
   );
 };
