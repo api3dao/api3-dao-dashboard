@@ -3,13 +3,14 @@ import { useParams } from 'react-router';
 import { Link, Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
 import ClaimEvidenceInstructions from './claim-evidence-instructions';
-import NewClaimForm, { FormState, FormStatus, parseClaimAmount } from './new-claim-form';
+import NewClaimForm, { FormState, FormStatus } from './new-claim-form';
 import Confirmation from './confirmation';
 import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManagerWithKlerosArbitration';
 import { handleTransactionError } from '../../utils';
 import { useChainData } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
 import { useUserPolicyById, canCreateClaim } from '../../logic/policies';
+import { parseUsd } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim.module.scss';
 
@@ -56,11 +57,11 @@ export default function NewClaim() {
     const tx = await handleTransactionError(
       claimsManager.createClaim(
         policy.beneficiary,
-        policy.coverageAmount,
+        policy.coverageAmountInUsd,
         Math.round(policy.claimsAllowedFrom.getTime() / 1000),
         Math.round(policy.claimsAllowedUntil.getTime() / 1000),
         policy.ipfsHash,
-        parseClaimAmount(form.amount),
+        parseUsd(form.amount),
         form.evidence.trim()
       )
     );

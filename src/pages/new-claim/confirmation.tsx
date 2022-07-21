@@ -2,6 +2,7 @@ import { utils } from 'ethers';
 import Button from '../../components/button';
 import { Acknowledgement, FormState } from './new-claim-form';
 import { Policy } from '../../chain-data';
+import { formatUsd } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim-form.module.scss';
 
@@ -26,7 +27,7 @@ export default function Confirmation(props: Props) {
         <li>
           <p>Requested relief amount, in USD</p>
           <p className={globalStyles.secondaryColor}>
-            How much USD do you wish to receive? (Max of ${utils.commify(policy.coverageAmount.toString())})
+            How much USD do you wish to receive? (Max of ${formatUsd(policy.coverageAmountInUsd)})
           </p>
           <p className={styles.confirmValue}>${utils.commify(form.amount)}</p>
         </li>

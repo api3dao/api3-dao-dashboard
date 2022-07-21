@@ -100,7 +100,7 @@ async function loadPolicies(
       policyId: eventArgs.policyHash,
       claimant: eventArgs.claimant,
       beneficiary: eventArgs.beneficiary,
-      coverageAmount: eventArgs.coverageAmount,
+      coverageAmountInUsd: eventArgs.coverageAmountInUsd,
       claimsAllowedFrom: blockTimestampToDate(eventArgs.claimsAllowedFrom),
       claimsAllowedUntil: blockTimestampToDate(eventArgs.claimsAllowedUntil),
       ipfsHash: eventArgs.policy,
