@@ -10,7 +10,7 @@ export const formatEther = (value: BigNumberish, commify = true) => {
 // API3 Token has the same denomination as ETH.
 export const formatApi3 = formatEther;
 
-// USD amounts have the same denomination as ETH.
+// We store the USD amounts in the same denomination as ETH.
 export const formatUsd = formatEther;
 
 export const formatAndRoundApi3 = (tokens: BigNumberish, decimals = DEFAULT_DECIMALS) => {
@@ -25,7 +25,7 @@ export const parseEther = utils.parseEther;
 // API3 Token has the same denomination as ETH.
 export const parseApi3 = parseEther;
 
-// USD amounts have the same denomination as ETH.
+// We store the USD amounts in the same denomination as ETH.
 export const parseUsd = parseEther;
 
 export const round = (value: number | string, decimals = DEFAULT_DECIMALS) => {
