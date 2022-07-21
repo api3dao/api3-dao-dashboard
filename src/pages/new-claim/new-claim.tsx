@@ -1,14 +1,15 @@
-import { FormEventHandler, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router';
-import { goSync } from '@api3/promise-utils';
-import { BigNumber, utils } from 'ethers';
+import { Link, Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
-import Input from '../../components/input';
-import Button from '../../components/button';
-import { isEmpty } from 'lodash';
-import { Policy } from '../../chain-data';
+import ClaimEvidenceInstructions from './claim-evidence-instructions';
+import NewClaimForm, { FormState, FormStatus, parseClaimAmount } from './new-claim-form';
+import Confirmation from './confirmation';
+import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManagerWithKlerosArbitration';
+import { handleTransactionError } from '../../utils';
+import { useChainData } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
-import { useUserPolicyById } from '../../logic/policies';
+import { useUserPolicyById, canCreateClaim } from '../../logic/policies';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim.module.scss';
 
@@ -16,40 +17,17 @@ interface Params {
   policyId: string;
 }
 
-interface FormState {
-  evidence: string;
-  amount: string;
-}
-
-function getValidationMessages(form: FormState, policy: Policy) {
-  const messages: ValidationMessages<FormState> = {};
-
-  if (form.evidence.trim().length === 0) {
-    messages.evidence = 'Please fill in this field';
-  }
-
-  const result = goSync(() => parseClaimAmount(form.amount));
-  if (!result.success) {
-    messages.amount = 'Please enter a valid number';
-  } else {
-    const parsed = result.data;
-    if (parsed.lte(0)) {
-      messages.amount = 'Amount must be greater than zero';
-    } else if (parsed.gt(policy.coverageAmount)) {
-      messages.amount = 'Amount must not exceed the coverage amount';
-    }
-  }
-
-  return messages;
-}
-
 export default function NewClaim() {
   const { policyId } = useParams<Params>();
+  const [step, setStep] = useState<'instructions' | 'capture' | 'confirmation'>('instructions');
+
+  const { setChainData, transactions } = useChainData();
   const claimsManager = useClaimsManager();
   const { data: policy, status: loadStatus } = useUserPolicyById(policyId);
 
   const [form, setForm] = useState<FormState>({ evidence: '', amount: '' });
-  const [status, setStatus] = useState<'idle' | 'validation_failed' | 'submitting' | 'submitted' | 'failed'>('idle');
+  const [status, setStatus] = useState<FormStatus>('idle');
+  const [newClaimId, setNewClaimId] = useState<null | string>(null);
 
   if (!claimsManager) {
     return (
@@ -69,18 +47,14 @@ export default function NewClaim() {
     );
   }
 
-  const messages = getValidationMessages(form, policy);
-  const handleSubmit: FormEventHandler = async (ev) => {
-    ev.preventDefault();
-    if (!isEmpty(messages)) {
-      setStatus('validation_failed');
-      return;
-    }
+  if (!canCreateClaim(policy)) {
+    return <Redirect to={'/policies/' + policy.policyId} />;
+  }
 
+  const handleSubmit = async () => {
     setStatus('submitting');
-    // TODO DOA-151 Handle properly and show success screen
-    try {
-      await claimsManager.createClaim(
+    const tx = await handleTransactionError(
+      claimsManager.createClaim(
         policy.beneficiary,
         policy.coverageAmount,
         Math.round(policy.claimsAllowedFrom.getTime() / 1000),
@@ -88,54 +62,74 @@ export default function NewClaim() {
         policy.ipfsHash,
         parseClaimAmount(form.amount),
         form.evidence.trim()
-      );
+      )
+    );
 
+    if (tx) {
+      setChainData('Save create claim transaction', {
+        transactions: [...transactions, { type: 'create-claim', tx }],
+      });
+      const receipt = await tx.wait();
+      const event = receipt.events?.find((ev) => ev.event === 'CreatedClaim') as CreatedClaimEvent;
+      setNewClaimId(event?.args.claimIndex.toString());
       setStatus('submitted');
-    } catch (err) {
+    } else {
       setStatus('failed');
     }
   };
 
-  const showMessages = status === 'validation_failed';
-  return (
-    <BaseLayout subtitle="New Claim">
-      <h4 className={styles.heading}>New Claim</h4>
-      <h5 className={styles.subHeading}>Submit Claim</h5>
-      <form onSubmit={handleSubmit} noValidate className={styles.form}>
-        <ol className={styles.formList}>
-          <li>
-            <label htmlFor="evidence">Enter the IPFS hash to your Claim Evidence form</label>
-            <p className={globalStyles.secondaryColor}>You created this hash in the previous step</p>
-            <Input
-              id="evidence"
-              value={form.evidence}
-              onChange={(ev) => setForm({ ...form, evidence: ev.target.value })}
-              block
-            />
-            {showMessages && messages.evidence && <p className={styles.validation}>{messages.evidence}</p>}
-          </li>
-          <li>
-            <label htmlFor="amount">Requested relief amount, in USD</label>
-            <p className={globalStyles.secondaryColor}>
-              How much USD do you wish to receive? (Max of ${utils.commify(policy.coverageAmount.toString())})
-            </p>
-            <Input
-              id="amount"
-              type="number"
-              value={form.amount}
-              onChange={(ev) => setForm({ ...form, amount: ev.target.value })}
-            />
-            {showMessages && messages.amount && <p className={styles.validation}>{messages.amount}</p>}
-          </li>
-        </ol>
-        <Button disabled={status === 'submitting'}>Submit Claim</Button>
-      </form>
-    </BaseLayout>
-  );
-}
+  if (status === 'submitted') {
+    return (
+      <BaseLayout subtitle="New Claim">
+        <div className={styles.successContainer}>
+          <h5 className={styles.subHeading}>Thank you for submitting your claim</h5>
+          <p className={globalStyles.bold}>Your claim ID is: {newClaimId}</p>
+          <p className={styles.processMessage}>
+            Your claim is being processed and will be voted on within 72 hours. Please check back for any updates and{' '}
+            <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer">
+              read about the claim process here
+            </a>{' '}
+            to familiarize yourself with the next steps.
+          </p>
+          <Link to="/">Return Home</Link>
+        </div>
+      </BaseLayout>
+    );
+  }
 
-type ValidationMessages<T> = { [key in keyof T]?: string };
+  switch (step) {
+    case 'instructions':
+      return (
+        <BaseLayout subtitle="New Claim">
+          <h4 className={styles.heading}>New Claim</h4>
+          <h5 className={styles.subHeading}>Creating Evidence</h5>
+          <ClaimEvidenceInstructions onNext={() => setStep('capture')} />
+        </BaseLayout>
+      );
 
-function parseClaimAmount(amount: string) {
-  return BigNumber.from(Math.round(parseFloat(amount.trim())));
+    case 'capture':
+      return (
+        <BaseLayout subtitle="New Claim">
+          <h4 className={styles.heading}>New Claim</h4>
+          <h5 className={styles.subHeading}>Enter Claim Details</h5>
+          <NewClaimForm
+            form={form}
+            onChange={setForm}
+            status={status}
+            policy={policy}
+            onValidationFailed={() => setStatus('validation_failed')}
+            onNext={() => setStep('confirmation')}
+          />
+        </BaseLayout>
+      );
+
+    case 'confirmation':
+      return (
+        <BaseLayout subtitle="New Claim">
+          <h4 className={styles.heading}>New Claim</h4>
+          <h5 className={styles.subHeading}>Review Your Claim</h5>
+          <Confirmation form={form} policy={policy} onSubmit={handleSubmit} onCancel={() => setStep('capture')} />
+        </BaseLayout>
+      );
+  }
 }
