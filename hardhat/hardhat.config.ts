@@ -59,8 +59,8 @@ task('create-user-policy', 'Creates a policy for the given user')
   .addParam('address', 'The user address')
   .addParam('coverageAmount', 'The coverage amount')
   .addParam('ipfsHash', 'The IPFS policy hash')
-  .addOptionalParam('startTime', 'The policy start time')
-  .addOptionalParam('endTime', 'The policy end time')
+  .addOptionalParam('claimsAllowedFrom', 'Claims are allowed from this datetime')
+  .addOptionalParam('claimsAllowedUntil', 'Claims are allowed until this datetime')
   .setAction(async (args, hre) => {
     const userAddress = args.address;
     const accounts = await hre.ethers.getSigners();
@@ -70,14 +70,16 @@ task('create-user-policy', 'Creates a policy for the given user')
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
 
-    const startTime = args.startTime ? parseISO(args.startTime) : addDays(new Date(), -1);
-    const endTime = args.endTime ? parseISO(args.endTime) : addDays(startTime, 30);
+    const claimsAllowedFrom = args.claimsAllowedFrom ? parseISO(args.claimsAllowedFrom) : addDays(new Date(), -1);
+    const claimsAllowedUntil = args.claimsAllowedUntil
+      ? parseISO(args.claimsAllowedUntil)
+      : addDays(claimsAllowedFrom, 30);
     const tx = await claimsManager.createPolicy(
       userAddress,
       userAddress,
       args.coverageAmount,
-      BigNumber.from(Math.round(startTime.getTime() / 1000)),
-      BigNumber.from(Math.round(endTime.getTime() / 1000)),
+      BigNumber.from(Math.round(claimsAllowedFrom.getTime() / 1000)),
+      BigNumber.from(Math.round(claimsAllowedUntil.getTime() / 1000)),
       args.ipfsHash,
       'Some policy metadata'
     );

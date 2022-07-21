@@ -17,7 +17,6 @@
 .env.development.local
 .env.test.local
 .env.production.local
-/tmp
 
 # logs
 npm-debug.log*
@@ -49,3 +48,6 @@ cypress-shared.json
 cypress/videos
 cypress/screenshots
 cypress/fixtures
+
+# A folder for temporary project related files
+/tmp
