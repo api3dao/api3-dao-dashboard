@@ -161,6 +161,7 @@ export interface Policy {
   claimsAllowedFrom: Date;
   claimsAllowedUntil: Date;
   ipfsHash: string;
+  metadata: string;
 }
 
 export interface ChainData {

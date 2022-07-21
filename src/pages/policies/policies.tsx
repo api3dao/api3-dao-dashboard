@@ -27,7 +27,7 @@ export default function Policies() {
     if (!policies || filter === 'none') return [];
 
     const results = query
-      ? policies.filter((policy) => policy.ipfsHash.toLowerCase().includes(query.toLowerCase()))
+      ? policies.filter((policy) => policy.metadata.toLowerCase().includes(query.toLowerCase()))
       : policies;
 
     switch (filter) {

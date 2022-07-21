@@ -59,7 +59,7 @@ We use the `main` branch to develop new features. For production code, see the
 You need a policy that is linked to your account in order to create a claim. You can create a policy for your account by
 running:
 
-`yarn create-user-policy --address <address> --coverage-amount 500 --ipfs-hash some-hash-001`
+`yarn create-user-policy --address <address> --coverage-amount 500 --metadata 'BTC/USD'`
 
 ### Supported networks
 
