@@ -120,7 +120,7 @@ export default function ClaimActions(props: Props) {
           <p>API3 Multi-sig</p>
           <div className={styles.actionMainInfo}>
             Countered with <br />
-            {formatApi3(claim.counterOfferAmount!)} API3
+            {formatApi3(claim.counterOfferAmountInApi3!)} API3
           </div>
           <div className={styles.actionPanel}>
             <Button variant="primary" disabled={disableActions} onClick={handleAcceptCounter}>
@@ -143,7 +143,7 @@ export default function ClaimActions(props: Props) {
           <div className={styles.actionMainInfo}>
             Accepted <br />
             counter of <br />
-            {formatApi3(claim.counterOfferAmount!)} API3
+            {formatApi3(claim.counterOfferAmountInApi3!)} API3
           </div>
         </div>
       );
@@ -167,10 +167,10 @@ export default function ClaimActions(props: Props) {
       return (
         <div className={styles.actionSection}>
           <p>{abbrStr(claim.claimant)}</p>
-          {claim.counterOfferAmount?.gt(0) ? (
+          {claim.counterOfferAmountInApi3?.gt(0) ? (
             <div className={styles.actionMainInfo}>
               Escalated counter of <br />
-              {formatApi3(claim.counterOfferAmount)} API3 <br />
+              {formatApi3(claim.counterOfferAmountInApi3)} API3 <br />
               to Kleros
             </div>
           ) : (
@@ -207,7 +207,7 @@ export default function ClaimActions(props: Props) {
             <br />
             {' counter of '}
             <br />
-            {formatApi3(claim.counterOfferAmount!)} API3
+            {formatApi3(claim.counterOfferAmountInApi3!)} API3
           </div>
           <div className={styles.actionPanel}>
             <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>

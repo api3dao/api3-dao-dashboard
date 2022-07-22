@@ -1,10 +1,10 @@
 import { FormEventHandler } from 'react';
 import { goSync } from '@api3/promise-utils';
-import { BigNumber, utils } from 'ethers';
 import isEmpty from 'lodash/isEmpty';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import { Policy } from '../../chain-data';
+import { formatUsd, parseUsd } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim-form.module.scss';
 
@@ -22,14 +22,14 @@ function getValidationMessages(form: FormState, policy: Policy) {
     messages.evidence = 'Please fill in this field';
   }
 
-  const result = goSync(() => parseClaimAmount(form.amount));
+  const result = goSync(() => parseUsd(form.amount));
   if (!result.success) {
     messages.amount = 'Please enter a valid number';
   } else {
     const parsed = result.data;
     if (parsed.lte(0)) {
       messages.amount = 'Amount must be greater than zero';
-    } else if (parsed.gt(policy.coverageAmount)) {
+    } else if (parsed.gt(policy.coverageAmountInUsd)) {
       messages.amount = 'Amount must not exceed the coverage amount';
     }
   }
@@ -77,7 +77,7 @@ export default function NewClaimForm(props: Props) {
         <li>
           <label htmlFor="amount">Requested relief amount, in USD</label>
           <p className={globalStyles.secondaryColor}>
-            How much USD do you wish to receive? (Max of ${utils.commify(policy.coverageAmount.toString())})
+            How much USD do you wish to receive? (Max of ${formatUsd(policy.coverageAmountInUsd)})
           </p>
           <Input
             id="amount"
@@ -108,7 +108,3 @@ export function Acknowledgement() {
 }
 
 type ValidationMessages<T> = { [key in keyof T]?: string };
-
-export function parseClaimAmount(amount: string) {
-  return BigNumber.from(Math.round(parseFloat(amount.trim())));
-}

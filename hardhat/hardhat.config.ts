@@ -5,7 +5,7 @@ import { randomBytes } from 'crypto';
 import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
 import { addDays, parseISO } from 'date-fns';
-import { parseApi3 } from '../src/utils/api3-format';
+import { parseUsd } from '../src/utils/api3-format';
 import { ClaimsManagerWithKlerosArbitration__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
 import { ChainData } from '../src/chain-data';
 
@@ -58,7 +58,7 @@ task('send-to-account', 'Sends ether or API3 tokens to a specified account')
 
 task('create-user-policy', 'Creates a policy for the given user')
   .addParam('address', 'The user address')
-  .addParam('coverageAmount', 'The coverage amount')
+  .addParam('coverageAmount', 'The coverage amount (USD)')
   .addParam('metadata', 'The human-readable policy identifier')
   .addOptionalParam('ipfsHash', 'The IPFS policy hash')
   .addOptionalParam('claimsAllowedFrom', 'Claims are allowed from this datetime')
@@ -79,7 +79,7 @@ task('create-user-policy', 'Creates a policy for the given user')
     const tx = await claimsManager.createPolicy(
       userAddress,
       userAddress,
-      args.coverageAmount,
+      parseUsd(args.coverageAmount),
       BigNumber.from(Math.round(claimsAllowedFrom.getTime() / 1000)),
       BigNumber.from(Math.round(claimsAllowedUntil.getTime() / 1000)),
       args.ipfsHash || 'Qm' + randomBytes(22).toString('hex'),
@@ -110,7 +110,7 @@ task('accept-claim', 'Accepts the given claim')
 
 task('propose-settlement', 'Proposes a settlement amount for the claim')
   .addParam('claimId', 'The claim ID')
-  .addParam('amount', 'The settlement amount')
+  .addParam('amount', 'The settlement amount (USD)')
   .setAction(async (args, hre) => {
     const accounts = await hre.ethers.getSigners();
 
@@ -118,8 +118,8 @@ task('propose-settlement', 'Proposes a settlement amount for the claim')
     const manager = accounts[1];
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
-    await claimsManager.proposeSettlement(args.claimId, parseApi3(args.amount));
-    console.info(`Proposed a settlement of ${args.amount} API3 for Claim: ${args.claimId}`);
+    await claimsManager.proposeSettlement(args.claimId, parseUsd(args.amount));
+    console.info(`Proposed a settlement of ${args.amount} USD for Claim: ${args.claimId}`);
   });
 
 task('resolve-dispute', 'Resolves the dispute for the claim')

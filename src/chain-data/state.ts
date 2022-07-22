@@ -129,8 +129,9 @@ export interface Claim {
   timestamp: Date;
   claimant: string;
   beneficiary: string;
-  claimAmount: BigNumber;
-  counterOfferAmount: null | BigNumber;
+  claimAmountInUsd: BigNumber;
+  counterOfferAmountInUsd: null | BigNumber;
+  counterOfferAmountInApi3: null | BigNumber;
   status: ClaimStatus;
   statusUpdatedAt: Date;
   deadline: null | Date;
@@ -157,7 +158,7 @@ export interface Policy {
   policyId: string;
   claimant: string;
   beneficiary: string;
-  coverageAmount: BigNumber;
+  coverageAmountInUsd: BigNumber;
   claimsAllowedFrom: Date;
   claimsAllowedUntil: Date;
   ipfsHash: string;

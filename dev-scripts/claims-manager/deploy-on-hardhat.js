@@ -13,11 +13,11 @@ async function deploy() {
   const mockApi3PoolFactory = await hre.ethers.getContractFactory('MockApi3Pool', roles.deployer);
   const mockApi3Pool = await mockApi3PoolFactory.deploy();
 
-  const claimsManagerWithKlerosArbitratorFactory = await hre.ethers.getContractFactory(
+  const claimsManagerWithKlerosArbitrationFactory = await hre.ethers.getContractFactory(
     'ClaimsManagerWithKlerosArbitration',
     roles.deployer
   );
-  const claimsManager = await claimsManagerWithKlerosArbitratorFactory.deploy(
+  const claimsManager = await claimsManagerWithKlerosArbitrationFactory.deploy(
     accessControlRegistry.address,
     'ClaimsManager admin',
     roles.manager.address,
@@ -29,6 +29,22 @@ async function deploy() {
     '/ipfs/Qm...testhash/metaEvidence.json',
     40 * 24 * 60 * 60
   );
+
+  const mockDapiServerFactory = await hre.ethers.getContractFactory('MockDapiServer', roles.deployer);
+  const mockDapiServer = await mockDapiServerFactory.deploy();
+  // Create mock data feed
+  const dataFeed = {
+    id: hre.ethers.utils.formatBytes32String('API3-USD-feed-01'),
+    name: hre.ethers.utils.formatBytes32String('API3/USD'),
+    value: hre.ethers.utils.parseEther('0.5'),
+    timestamp: Math.round(new Date().getTime() / 1000),
+  };
+  await mockDapiServer.mockDataFeed(dataFeed.id, dataFeed.value, dataFeed.timestamp);
+  await mockDapiServer.mockDapiName(dataFeed.name, dataFeed.id);
+
+  const api3ToUsdReaderFactory = await hre.ethers.getContractFactory('Api3ToUsdReader', roles.deployer);
+  const api3ToUsdReader = await api3ToUsdReaderFactory.deploy(mockDapiServer.address, claimsManager.address);
+  await claimsManager.connect(roles.manager).setApi3ToUsdReader(api3ToUsdReader.address);
 
   console.info('DEPLOYED ADDRESSES:');
   console.info(JSON.stringify({ claimsManager: claimsManager.address }, null, 2));
