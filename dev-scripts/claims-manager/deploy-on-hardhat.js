@@ -18,9 +18,10 @@ async function deploy() {
     'ClaimsManagerWithKlerosArbitration',
     roles.deployer
   );
+  const adminRoleDescription = 'ClaimsManager admin';
   const claimsManager = await claimsManagerWithKlerosArbitrationFactory.deploy(
     accessControlRegistry.address,
-    'ClaimsManager admin',
+    adminRoleDescription,
     roles.manager.address,
     mockApi3Pool.address,
     3 * 24 * 60 * 60,
@@ -37,7 +38,8 @@ async function deploy() {
   const { rootRole } = event.args;
 
   const [adminRole, arbitratorRole] = await Promise.all([claimsManager.adminRole(), claimsManager.arbitratorRole()]);
-  await accessControlRegistry.connect(roles.manager).initializeRoleAndGrantToSender(rootRole, 'ClaimsManager admin');
+  await accessControlRegistry.connect(roles.manager).initializeRoleAndGrantToSender(rootRole, adminRoleDescription);
+  // NOTE: The role description ("Arbitrator") needs to be in sync with the description given in the ClaimsManager contract
   await accessControlRegistry.connect(roles.manager).initializeRoleAndGrantToSender(adminRole, 'Arbitrator');
   await accessControlRegistry.connect(roles.manager).grantRole(arbitratorRole, mockKlerosArbitrator.address);
 
