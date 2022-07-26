@@ -7,6 +7,7 @@ import { BigNumber } from 'ethers';
 import { addDays, parseISO } from 'date-fns';
 import { parseUsd } from '../src/utils/api3-format';
 import { ClaimsManagerWithKlerosArbitration__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
+import { MockKlerosArbitrator__factory as MockKlerosArbitratorFactory } from '../src/contracts/tmp/factories/mock/MockKlerosArbitrator__factory';
 import { ChainData } from '../src/chain-data';
 
 dotenv.config({ path: '../.env' });
@@ -122,19 +123,31 @@ task('propose-settlement', 'Proposes a settlement amount for the claim')
     console.info(`Proposed a settlement of ${args.amount} USD for Claim: ${args.claimId}`);
   });
 
-task('resolve-dispute', 'Resolves the dispute for the claim')
+task('give-dispute-ruling', 'Gives a ruling for the dispute')
   .addParam('disputeId', 'The arbitrator dispute ID')
   .addParam('ruling', 'The arbitrator decision (0|1|2)')
   .setAction(async (args, hre) => {
     const accounts = await hre.ethers.getSigners();
 
-    // The index for the arbitrator needs to be in sync with the deploy script
-    const arbitrator = accounts[2];
+    // The index for the deployer needs to be in sync with the deploy script
+    const deployer = accounts[0];
     const contracts = getContractAddresses(hre.network.name);
-    // const arbitrator = new hre.ethers.providers.JsonRpcProvider().getSigner(contracts.arbitrator);
-    const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, arbitrator);
-    await claimsManager.rule(args.disputeId, args.ruling);
-    console.info(`Resolved dispute: ${args.disputeId} with ruling: ${args.ruling}`);
+    const arbitrator = MockKlerosArbitratorFactory.connect(contracts.arbitrator, deployer);
+    await arbitrator.giveRuling(args.disputeId, args.ruling);
+    console.info(`Dispute: ${args.disputeId} has been given a ruling: ${args.ruling}`);
+  });
+
+task('resolve-dispute', 'Resolves the dispute for the claim')
+  .addParam('disputeId', 'The arbitrator dispute ID')
+  .setAction(async (args, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    // The index for the deployer needs to be in sync with the deploy script
+    const deployer = accounts[0];
+    const contracts = getContractAddresses(hre.network.name);
+    const arbitrator = MockKlerosArbitratorFactory.connect(contracts.arbitrator, deployer);
+    await arbitrator.executeRuling(args.disputeId);
+    console.info(`Resolved dispute: ${args.disputeId}`);
   });
 
 // See https://hardhat.org/config/
