@@ -6,12 +6,13 @@ async function deploy() {
   const roles = {
     deployer: accounts[0],
     manager: accounts[1],
-    kleros: accounts[2],
   };
   const accessControlRegistryFactory = await hre.ethers.getContractFactory('AccessControlRegistry', roles.deployer);
   const accessControlRegistry = await accessControlRegistryFactory.deploy();
   const mockApi3PoolFactory = await hre.ethers.getContractFactory('MockApi3Pool', roles.deployer);
   const mockApi3Pool = await mockApi3PoolFactory.deploy();
+  const mockKlerosArbitratorFactory = await hre.ethers.getContractFactory('MockKlerosArbitrator', roles.deployer);
+  const mockKlerosArbitrator = await mockKlerosArbitratorFactory.deploy();
 
   const claimsManagerWithKlerosArbitrationFactory = await hre.ethers.getContractFactory(
     'ClaimsManagerWithKlerosArbitration',
@@ -24,11 +25,21 @@ async function deploy() {
     mockApi3Pool.address,
     3 * 24 * 60 * 60,
     3 * 24 * 60 * 60,
-    roles.kleros.address,
+    mockKlerosArbitrator.address,
     '0x123456',
     '/ipfs/Qm...testhash/metaEvidence.json',
     40 * 24 * 60 * 60
   );
+
+  const tx = await accessControlRegistry.connect(roles.manager).initializeManager(roles.manager.address);
+  const receipt = await tx.wait();
+  const event = receipt.events.find((ev) => ev.event === 'InitializedManager');
+  const { rootRole } = event.args;
+
+  const [adminRole, arbitratorRole] = await Promise.all([claimsManager.adminRole(), claimsManager.arbitratorRole()]);
+  await accessControlRegistry.connect(roles.manager).initializeRoleAndGrantToSender(rootRole, 'ClaimsManager admin');
+  await accessControlRegistry.connect(roles.manager).initializeRoleAndGrantToSender(adminRole, 'Arbitrator');
+  await accessControlRegistry.connect(roles.manager).grantRole(arbitratorRole, mockKlerosArbitrator.address);
 
   const mockDapiServerFactory = await hre.ethers.getContractFactory('MockDapiServer', roles.deployer);
   const mockDapiServer = await mockDapiServerFactory.deploy();
@@ -47,7 +58,9 @@ async function deploy() {
   await claimsManager.connect(roles.manager).setApi3ToUsdReader(api3ToUsdReader.address);
 
   console.info('DEPLOYED ADDRESSES:');
-  console.info(JSON.stringify({ claimsManager: claimsManager.address }, null, 2));
+  console.info(
+    JSON.stringify({ claimsManager: claimsManager.address, arbitrator: mockKlerosArbitrator.address }, null, 2)
+  );
 }
 
 promiseWrapper(deploy);

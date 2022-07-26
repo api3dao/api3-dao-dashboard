@@ -131,6 +131,7 @@ task('resolve-dispute', 'Resolves the dispute for the claim')
     // The index for the arbitrator needs to be in sync with the deploy script
     const arbitrator = accounts[2];
     const contracts = getContractAddresses(hre.network.name);
+    // const arbitrator = new hre.ethers.providers.JsonRpcProvider().getSigner(contracts.arbitrator);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, arbitrator);
     await claimsManager.rule(args.disputeId, args.ruling);
     console.info(`Resolved dispute: ${args.disputeId} with ruling: ${args.ruling}`);
