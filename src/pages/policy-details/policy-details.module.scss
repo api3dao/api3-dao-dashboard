@@ -1,6 +1,27 @@
 @import '../../styles/variables.module.scss';
 
 .heading {
-  margin-bottom: $space-xxl;
+  margin-bottom: 100px;
   word-break: break-word;
+}
+
+.detailsSection {
+  margin: 0 2 * $space-xl 2 * $space-xl;
+
+  @media (max-width: $max-md) {
+    font-size: $text-small;
+    line-height: $lh-small;
+    margin: 0 0 $space-xxl;
+  }
+}
+
+.detailsItem {
+  margin-top: $space-xl;
+  word-break: break-word;
+  & > * {
+    margin-bottom: $space-xxs;
+  }
+  & > *:last-child {
+    margin-bottom: 0;
+  }
 }
