@@ -31,7 +31,7 @@ export default function ClaimList(props: Props) {
                 ) : (
                   <span>{format(claim.timestamp, DATE_FORMAT)}</span>
                 )}
-                <Link to={`/policies/${claim.policyId}`}>Policy</Link>
+                <Link to={{ pathname: `/policies/${claim.policyId}`, search: 'from=claims' }}>Policy</Link>
               </div>
             </div>
 

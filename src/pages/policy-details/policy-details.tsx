@@ -1,11 +1,13 @@
-import { useHistory, useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import Button from '../../components/button';
 import { Tooltip } from '../../components/tooltip';
 import ExternalLink from '../../components/external-link';
+import ArrowLeftIcon from '../../components/icons/ArrowLeftIcon';
 import { format } from 'date-fns';
-import { formatUsd } from '../../utils';
+import { formatUsd, useQueryParams } from '../../utils';
+import { useHistory, useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { canCreateClaim, useUserPolicyById } from '../../logic/policies';
 import globalStyles from '../../styles/global-styles.module.scss';
@@ -19,6 +21,7 @@ export default function PolicyDetails() {
   const { policyId } = useParams<Params>();
   const { provider } = useChainData();
   const history = useHistory();
+  const params = useQueryParams();
   const { data: policy, status } = useUserPolicyById(policyId);
 
   if (!provider) {
@@ -42,6 +45,19 @@ export default function PolicyDetails() {
   const policyIpfsHref = `https://ipfs.io/ipfs/${policy.ipfsHash}`;
   return (
     <BaseLayout subtitle={`Policy ${policyId}`}>
+      <div>
+        {params.get('from') === 'claims' ? (
+          <Link to="/claims" className={styles.backLink}>
+            <ArrowLeftIcon aria-hidden />
+            Back to My Claims
+          </Link>
+        ) : (
+          <Link to="/policies" className={styles.backLink}>
+            <ArrowLeftIcon aria-hidden />
+            Back to My Policies
+          </Link>
+        )}
+      </div>
       <h4 className={styles.heading}>{policy.metadata}</h4>
       <BorderedBox
         noMobileBorders
