@@ -99,11 +99,11 @@ export default function PolicyDetails() {
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claims Allowed From</p>
-              <p className={globalStyles.secondaryColor}>{format(policy.claimsAllowedFrom, 'dd MMMM yyyy HH:mm')}</p>
+              <p className={globalStyles.secondaryColor}>{format(policy.claimsAllowedFrom, 'do MMMM yyyy HH:mm')}</p>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claims Allowed Until</p>
-              <p className={globalStyles.secondaryColor}>{format(policy.claimsAllowedUntil, 'dd MMMM yyyy HH:mm')}</p>
+              <p className={globalStyles.secondaryColor}>{format(policy.claimsAllowedUntil, 'do MMMM yyyy HH:mm')}</p>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Policy Hash</p>
