@@ -6,7 +6,7 @@ import { Tooltip } from '../../components/tooltip';
 import ExternalLink from '../../components/external-link';
 import ArrowLeftIcon from '../../components/icons/ArrowLeftIcon';
 import { format } from 'date-fns';
-import { formatUsd, useQueryParams } from '../../utils';
+import { formatUsd, getIpfsUrl, useQueryParams } from '../../utils';
 import { useHistory, useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { canCreateClaim, useUserPolicyById } from '../../logic/policies';
@@ -42,7 +42,7 @@ export default function PolicyDetails() {
     );
   }
 
-  const policyIpfsHref = `https://ipfs.io/ipfs/${policy.ipfsHash}`;
+  const policyIpfsHref = getIpfsUrl(policy.ipfsHash);
   return (
     <BaseLayout subtitle={`Policy ${policyId}`}>
       <div>
