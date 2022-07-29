@@ -9,7 +9,7 @@ import { useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { useUserClaimById, getCurrentDeadline } from '../../logic/claims';
 import { format } from 'date-fns';
-import { formatUsd, images, useForceUpdate, useScrollToTop } from '../../utils';
+import { formatUsd, getIpfsUrl, images, useForceUpdate, useScrollToTop } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-details.module.scss';
 
@@ -46,7 +46,7 @@ export default function ClaimDetails() {
     );
   }
 
-  const evidenceHref = `https://ipfs.io/ipfs/${claim.evidence}`;
+  const evidenceHref = getIpfsUrl(claim.evidence);
   const deadline = getCurrentDeadline(claim);
   return (
     <ClaimDetailsLayout claimId={claimId}>
