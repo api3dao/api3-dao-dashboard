@@ -9,5 +9,6 @@
   "votingAppSecondary": "0x1c8058e72e4902b3431ef057e8d9a58a73f26372",
   "agentAppPrimary": "0xd9f80bdb37e6bad114d747e60ce6d2aaf26704ae",
   "agentAppSecondary": "0x556ecbb0311d350491ba0ec7e019c354d7723ce0",
-  "claimsManager": ""
+  "claimsManager": "",
+  "arbitrator": ""
 }
