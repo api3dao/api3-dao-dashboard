@@ -12,7 +12,7 @@ export interface Treasuries {
 }
 
 const formatTreasuryAmount = (amount: BigNumberish, decimals: number, symbol: string) =>
-  `${utils.formatUnits(amount, decimals)} ${symbol}`;
+  `${utils.commify(utils.formatUnits(amount, decimals))} ${symbol}`;
 
 export const useTreasuries = (): Treasuries => {
   const { treasuries } = useChainData();
