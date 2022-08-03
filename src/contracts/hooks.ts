@@ -183,6 +183,11 @@ export const usePossibleChainDataUpdate = (
   });
 };
 
+/**
+ * A hook that behaves like the useEffect hook, except that it also triggers the effect
+ *  1) after a new block is mined
+ *  2) when the network or account changes
+ */
 export function useChainUpdateEffect(effectFn: () => void | (() => void), effectDeps: any[]) {
   const { provider, networkName, userAccount } = useChainData();
 

@@ -1,11 +1,11 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { go } from '@api3/promise-utils';
 import { addDays, isAfter, isBefore } from 'date-fns';
 import { blockTimestampToDate, messages } from '../../utils';
 import { Claim, ClaimStatusCode, ClaimStatuses, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { notifications } from '../../components/notifications';
-import { useClaimsManager, ClaimsManagerWithKlerosArbitration, usePossibleChainDataUpdate } from '../../contracts';
+import { useClaimsManager, ClaimsManagerWithKlerosArbitration, useChainUpdateEffect } from '../../contracts';
 
 export function useUserClaims() {
   const { userAccount, claims, setChainData } = useChainData();
@@ -20,29 +20,31 @@ export function useUserClaims() {
   }, [claims]);
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
-  const loadUserClaims = useCallback(async () => {
+  useChainUpdateEffect(() => {
     if (!claimsManager) return;
 
-    setStatus('loading');
-    const result = await go(() => loadClaims(claimsManager, { userAccount }));
+    const load = async () => {
+      setStatus('loading');
+      const result = await go(() => loadClaims(claimsManager, { userAccount }));
 
-    if (!result.success) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
-      setStatus('failed');
-      return;
-    }
+      if (!result.success) {
+        notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
+        setStatus('failed');
+        return;
+      }
 
-    setChainData(
-      'Loaded claims',
-      updateImmutablyCurried((state) => {
-        state.claims.userClaimIds = result.data.ids;
-        state.claims.byId = { ...state.claims.byId, ...result.data.byId };
-      })
-    );
-    setStatus('loaded');
+      setChainData(
+        'Loaded claims',
+        updateImmutablyCurried((state) => {
+          state.claims.userClaimIds = result.data.ids;
+          state.claims.byId = { ...state.claims.byId, ...result.data.byId };
+        })
+      );
+      setStatus('loaded');
+    };
+
+    load();
   }, [claimsManager, userAccount, setChainData]);
-
-  usePossibleChainDataUpdate(loadUserClaims);
 
   return {
     data: sortedClaims,
@@ -56,28 +58,30 @@ export function useUserClaimById(claimId: string) {
   const data = claims.byId?.[claimId] || null;
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
-  const loadUserClaim = useCallback(async () => {
+  useChainUpdateEffect(() => {
     if (!claimsManager) return;
 
-    setStatus('loading');
-    const result = await go(() => loadClaims(claimsManager, { userAccount, claimId: BigNumber.from(claimId) }));
+    const load = async () => {
+      setStatus('loading');
+      const result = await go(() => loadClaims(claimsManager, { userAccount, claimId: BigNumber.from(claimId) }));
 
-    if (!result.success) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
-      setStatus('failed');
-      return;
-    }
+      if (!result.success) {
+        notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
+        setStatus('failed');
+        return;
+      }
 
-    setChainData(
-      'Loaded claim',
-      updateImmutablyCurried((state) => {
-        state.claims.byId = { ...state.claims.byId, ...result.data.byId };
-      })
-    );
-    setStatus('loaded');
+      setChainData(
+        'Loaded claim',
+        updateImmutablyCurried((state) => {
+          state.claims.byId = { ...state.claims.byId, ...result.data.byId };
+        })
+      );
+      setStatus('loaded');
+    };
+
+    load();
   }, [claimsManager, userAccount, claimId, setChainData]);
-
-  usePossibleChainDataUpdate(loadUserClaim);
 
   return {
     data,
