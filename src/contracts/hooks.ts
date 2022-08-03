@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { transactionMessages, usePrevious, useIsMount, useOnMountEffect } from '../utils';
 import { getNetworkData, useChainData, displayPendingTransaction } from '../chain-data';
 import {
@@ -182,6 +182,40 @@ export const usePossibleChainDataUpdate = (
     }
   });
 };
+
+export function useChainUpdateEffect(effectFn: () => void | (() => void), effectDeps: any[]) {
+  const { provider, networkName, userAccount } = useChainData();
+
+  const effectFnRef = useRef(effectFn);
+  useEffect(() => {
+    effectFnRef.current = effectFn;
+  });
+
+  useEffect(() => {
+    let cleanup = effectFnRef.current();
+
+    if (!provider) {
+      return () => cleanup?.();
+    }
+
+    const blockMinedListener = () => {
+      cleanup?.();
+      cleanup = effectFnRef.current();
+    };
+
+    provider.on('block', blockMinedListener);
+    return () => {
+      provider.removeListener('block', blockMinedListener);
+      cleanup?.();
+    };
+  }, [
+    provider,
+    networkName,
+    userAccount,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    ...effectDeps,
+  ]);
+}
 
 /*
  * Hook that will trigger a notification when a new transaction is added to the state.
