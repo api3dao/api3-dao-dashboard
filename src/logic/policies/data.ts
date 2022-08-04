@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { isWithinInterval } from 'date-fns';
 import { go } from '@api3/promise-utils';
 import { blockTimestampToDate, messages } from '../../utils';
 import { Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
-import { ClaimsManagerWithKlerosArbitration, useClaimsManager, usePossibleChainDataUpdate } from '../../contracts';
+import { ClaimsManagerWithKlerosArbitration, useClaimsManager, useChainUpdateEffect } from '../../contracts';
 import { notifications } from '../../components/notifications';
 
 export function useUserPolicies() {
@@ -18,29 +18,31 @@ export function useUserPolicies() {
   }, [policies]);
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
-  const loadUserPolicies = useCallback(async () => {
+  useChainUpdateEffect(() => {
     if (!claimsManager) return;
 
-    setStatus('loading');
-    const result = await go(() => loadPolicies(claimsManager, { userAccount }));
+    const load = async () => {
+      setStatus('loading');
+      const result = await go(() => loadPolicies(claimsManager, { userAccount }));
 
-    if (!result.success) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_POLICIES, errorOrMessage: result.error });
-      setStatus('failed');
-      return;
-    }
+      if (!result.success) {
+        notifications.error({ message: messages.FAILED_TO_LOAD_POLICIES, errorOrMessage: result.error });
+        setStatus('failed');
+        return;
+      }
 
-    setChainData(
-      'Loaded policies',
-      updateImmutablyCurried((state) => {
-        state.policies.userPolicyIds = result.data.ids;
-        state.policies.byId = { ...state.policies.byId, ...result.data.byId };
-      })
-    );
-    setStatus('loaded');
+      setChainData(
+        'Loaded policies',
+        updateImmutablyCurried((state) => {
+          state.policies.userPolicyIds = result.data.ids;
+          state.policies.byId = { ...state.policies.byId, ...result.data.byId };
+        })
+      );
+      setStatus('loaded');
+    };
+
+    load();
   }, [claimsManager, userAccount, setChainData]);
-
-  usePossibleChainDataUpdate(loadUserPolicies);
 
   return {
     data: sortedPolicies,
@@ -54,28 +56,30 @@ export function useUserPolicyById(policyId: string) {
   const data = policies.byId?.[policyId] || null;
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
-  const loadPolicy = useCallback(async () => {
+  useChainUpdateEffect(() => {
     if (!claimsManager) return;
 
-    setStatus('loading');
-    const result = await go(() => loadPolicies(claimsManager, { userAccount, policyId }));
+    const load = async () => {
+      setStatus('loading');
+      const result = await go(() => loadPolicies(claimsManager, { userAccount, policyId }));
 
-    if (!result.success) {
-      notifications.error({ message: messages.FAILED_TO_LOAD_POLICIES, errorOrMessage: result.error });
-      setStatus('failed');
-      return;
-    }
+      if (!result.success) {
+        notifications.error({ message: messages.FAILED_TO_LOAD_POLICIES, errorOrMessage: result.error });
+        setStatus('failed');
+        return;
+      }
 
-    setChainData(
-      'Loaded policy',
-      updateImmutablyCurried((state) => {
-        state.policies.byId = { ...state.policies.byId, ...result.data.byId };
-      })
-    );
-    setStatus('loaded');
+      setChainData(
+        'Loaded policy',
+        updateImmutablyCurried((state) => {
+          state.policies.byId = { ...state.policies.byId, ...result.data.byId };
+        })
+      );
+      setStatus('loaded');
+    };
+
+    load();
   }, [claimsManager, userAccount, policyId, setChainData]);
-
-  usePossibleChainDataUpdate(loadPolicy);
 
   return {
     data,
