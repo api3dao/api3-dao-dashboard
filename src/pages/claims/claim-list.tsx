@@ -67,8 +67,15 @@ function ClaimStatus(props: ClaimStatusProps) {
     case 'DisputeResolvedWithClaimPayout':
       return <>Approved</>;
     case 'DisputeCreated':
-      if (isAfter(new Date(), claim.deadline!)) {
-        return <>Rejected</>;
+      if (claim.disputeStatus !== 'Waiting') {
+        switch (claim.arbitratorRuling) {
+          case 'PayClaim':
+            return <>Approved</>;
+          case 'PaySettlement':
+            return <>Approved Counter</>;
+          case 'DoNotPay':
+            return <>Rejected</>;
+        }
       }
       return <>Kleros Processing</>;
     case 'SettlementAccepted':

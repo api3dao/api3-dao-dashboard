@@ -3,9 +3,23 @@ import { BigNumber } from 'ethers';
 import { go } from '@api3/promise-utils';
 import { addDays, isAfter, isBefore } from 'date-fns';
 import { blockTimestampToDate, messages } from '../../utils';
-import { Claim, ClaimStatusCode, ClaimStatuses, updateImmutablyCurried, useChainData } from '../../chain-data';
+import {
+  Claim,
+  ClaimStatuses,
+  ClaimStatusCode,
+  DisputeStatuses,
+  DisputeStatusCode,
+  ArbitratorRulings,
+  ArbitratorRulingCode,
+  updateImmutablyCurried,
+  useChainData,
+} from '../../chain-data';
 import { notifications } from '../../components/notifications';
 import { useClaimsManager, ClaimsManagerWithKlerosArbitration, useChainUpdateEffect } from '../../contracts';
+import {
+  CreatedClaimEvent,
+  CreatedDisputeWithKlerosArbitratorEvent,
+} from '../../contracts/tmp/ClaimsManagerWithKlerosArbitration';
 
 export function useUserClaims() {
   const { userAccount, claims, setChainData } = useChainData();
@@ -105,22 +119,18 @@ async function loadClaims(
     return { ids: [], byId: {} };
   }
 
-  // Get all the dynamic data (status etc) via a single call
-  const calls = createdEvents.map((event) => {
-    return contract.interface.encodeFunctionData('claims', [event.args.claimIndex]);
-  });
-  const encodedResults = await contract.callStatic.multicall(calls);
-  const claims = encodedResults.map((res) => {
-    return contract.interface.decodeFunctionResult('claims', res);
-  });
+  const [claims, disputes] = await Promise.all([
+    getClaimContractData(contract, createdEvents),
+    getDisputeContractData(contract, disputeEvents),
+  ]);
 
   // Combine the static and dynamic data
   const claimsById = createdEvents.reduce((acc, event, index) => {
     const eventArgs = event.args;
     const claimId = eventArgs.claimIndex.toString();
-    const counterOfferEvent = counterOfferEvents.find((ev) => ev.args.claimIndex.toString() === claimId);
-    const disputeEvent = disputeEvents.find((ev) => ev.args.claimIndex.toString() === claimId);
     const claimData = claims[index]!;
+    const counterOfferEvent = counterOfferEvents.find((ev) => ev.args.claimIndex.toString() === claimId);
+    const dispute = disputes.find((dispute) => dispute.claimIndex.toString() === claimId);
 
     const claim: Claim = {
       claimId,
@@ -136,7 +146,9 @@ async function loadClaims(
       statusUpdatedAt: new Date(claimData.updateTime * 1000),
       deadline: null,
       transactionHash: event.transactionHash,
-      arbitratorDisputeId: disputeEvent?.args.disputeId ?? null,
+      disputeId: dispute?.id ?? null,
+      disputeStatus: dispute ? DisputeStatuses[dispute.status] : null,
+      arbitratorRuling: dispute ? ArbitratorRulings[dispute.ruling] : null,
     };
 
     claim.deadline = calculateDeadline(claim);
@@ -154,11 +166,17 @@ function calculateDeadline(claim: Claim) {
   switch (claim.status) {
     case 'ClaimCreated':
     case 'SettlementProposed':
-    case 'DisputeResolvedWithoutPayout':
-    case 'DisputeResolvedWithSettlementPayout':
       return addDays(claim.statusUpdatedAt, 3);
     case 'DisputeCreated':
-      return addDays(claim.statusUpdatedAt, 40);
+      if (claim.disputeStatus !== 'Waiting') {
+        switch (claim.arbitratorRuling) {
+          case 'DoNotPay':
+          case 'PaySettlement':
+            // TODO Implement
+            return addDays(claim.statusUpdatedAt, 3);
+        }
+      }
+      return null;
     default:
       return null;
   }
@@ -167,19 +185,19 @@ function calculateDeadline(claim: Claim) {
 export function isActive(claim: Claim): boolean {
   const deadline = getCurrentDeadline(claim);
   switch (claim.status) {
-    case 'SettlementProposed':
+    case 'DisputeCreated':
       return true;
+    case 'ClaimCreated':
+    case 'SettlementProposed':
+      return isBefore(new Date(), deadline!);
     case 'ClaimAccepted':
     case 'SettlementAccepted':
     case 'DisputeResolvedWithClaimPayout':
+    case 'DisputeResolvedWithSettlementPayout':
+    case 'DisputeResolvedWithoutPayout':
     case 'TimedOut':
     case 'None':
       return false;
-    case 'ClaimCreated':
-    case 'DisputeCreated':
-    case 'DisputeResolvedWithoutPayout':
-    case 'DisputeResolvedWithSettlementPayout':
-      return isBefore(new Date(), deadline!);
   }
 }
 
@@ -191,4 +209,52 @@ export function getCurrentDeadline(claim: Claim) {
     }
   }
   return claim.deadline;
+}
+
+async function getClaimContractData(contract: ClaimsManagerWithKlerosArbitration, claimEvents: CreatedClaimEvent[]) {
+  const calls = claimEvents.map((event) => {
+    return contract.interface.encodeFunctionData('claims', [event.args.claimIndex]);
+  });
+
+  const encodedResults = await contract.callStatic.multicall(calls);
+
+  return encodedResults.map((res) => {
+    return contract.interface.decodeFunctionResult('claims', res);
+  });
+}
+
+async function getDisputeContractData(
+  contract: ClaimsManagerWithKlerosArbitration,
+  disputeEvents: CreatedDisputeWithKlerosArbitratorEvent[]
+) {
+  const disputeStatusCalls = disputeEvents.map((ev) => {
+    return contract.interface.encodeFunctionData('disputeStatus', [ev.args.claimIndex, ev.args.disputeId]);
+  });
+
+  const currentRulingCalls = disputeEvents.map((ev) => {
+    return contract.interface.encodeFunctionData('currentRuling', [ev.args.claimIndex, ev.args.disputeId]);
+  });
+
+  // Combine all calls so that we can make a single multicall
+  const allCalls = [...disputeStatusCalls, ...currentRulingCalls];
+  const encodedResults = await contract.callStatic.multicall(allCalls);
+
+  const disputeStatuses = encodedResults
+    // Get the first batch of results
+    .slice(0, disputeEvents.length)
+    .map((res) => contract.interface.decodeFunctionResult('disputeStatus', res));
+
+  const currentRulings = encodedResults
+    // Get the second batch of results
+    .slice(disputeEvents.length, 2 * disputeEvents.length)
+    .map((res) => contract.interface.decodeFunctionResult('currentRuling', res));
+
+  return disputeEvents.map((ev, index) => {
+    return {
+      claimIndex: ev.args.claimIndex,
+      id: ev.args.disputeId,
+      status: disputeStatuses[index]?.[0] as DisputeStatusCode,
+      ruling: currentRulings[index]?.[0]?.toNumber() as ArbitratorRulingCode,
+    };
+  });
 }
