@@ -15,6 +15,7 @@ interface Props {
 
 export default function ClaimActions(props: Props) {
   const { claim } = props;
+  const { dispute } = claim;
   const { setChainData, transactions } = useChainData();
   const claimsManager = useClaimsManager()!;
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
@@ -50,9 +51,7 @@ export default function ClaimActions(props: Props) {
 
   const handleAppeal = async () => {
     setStatus('submitting');
-    const tx = await handleTransactionError(
-      claimsManager.appealKlerosArbitratorRuling(claim.claimId, claim.disputeId!)
-    );
+    const tx = await handleTransactionError(claimsManager.appealKlerosArbitratorRuling(claim.claimId, dispute!.id));
     if (tx) {
       setChainData('Save appeal claim transaction', {
         transactions: [...transactions, { type: 'appeal-claim-decision', tx }],
@@ -149,7 +148,7 @@ export default function ClaimActions(props: Props) {
       );
 
     case 'DisputeCreated':
-      if (claim.disputeStatus === 'Waiting') {
+      if (!dispute || dispute.status === 'Waiting') {
         return (
           <div className={styles.actionSection}>
             <p>{abbrStr(claim.claimant)}</p>
@@ -166,7 +165,7 @@ export default function ClaimActions(props: Props) {
         );
       }
 
-      switch (claim.arbitratorRuling) {
+      switch (dispute.ruling) {
         case 'PayClaim':
           return (
             <div className={styles.actionSection}>

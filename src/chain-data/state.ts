@@ -136,9 +136,11 @@ export interface Claim {
   statusUpdatedAt: Date;
   deadline: null | Date;
   transactionHash: null | string;
-  disputeId: null | BigNumber;
-  disputeStatus: null | DisputeStatus;
-  arbitratorRuling: null | ArbitratorRuling;
+  dispute: null | {
+    id: string;
+    status: DisputeStatus;
+    ruling: ArbitratorRuling;
+  };
 }
 
 export const ClaimStatuses = {

@@ -22,9 +22,7 @@ describe('<ClaimActions />', () => {
       evidence: 'evidence-001',
       transactionHash: null,
       deadline: null,
-      disputeId: null,
-      disputeStatus: null,
-      arbitratorRuling: null,
+      dispute: null,
     };
   });
 
@@ -115,7 +113,11 @@ describe('<ClaimActions />', () => {
     });
 
     it('shows claimant has escalated to Kleros', () => {
-      claim.disputeStatus = 'Waiting';
+      claim.dispute = {
+        id: '1',
+        status: 'Waiting',
+        ruling: 'DoNotPay',
+      };
 
       render(<ClaimActions claim={claim} />);
 
@@ -125,9 +127,13 @@ describe('<ClaimActions />', () => {
     });
 
     it('shows counter offer amount when present', () => {
-      claim.disputeStatus = 'Waiting';
       claim.counterOfferAmountInUsd = parseUsd('500');
       claim.counterOfferAmountInApi3 = parseApi3('250');
+      claim.dispute = {
+        id: '1',
+        status: 'Waiting',
+        ruling: 'DoNotPay',
+      };
 
       render(<ClaimActions claim={claim} />);
 
@@ -136,8 +142,11 @@ describe('<ClaimActions />', () => {
 
     describe('with "PayClaim" arbitrator ruling', () => {
       it('shows the claim has been approved', () => {
-        claim.disputeStatus = 'Solved';
-        claim.arbitratorRuling = 'PayClaim';
+        claim.dispute = {
+          id: '1',
+          status: 'Solved',
+          ruling: 'PayClaim',
+        };
 
         render(<ClaimActions claim={claim} />);
 
@@ -151,11 +160,14 @@ describe('<ClaimActions />', () => {
       beforeEach(() => {
         claim.counterOfferAmountInUsd = parseUsd('500');
         claim.counterOfferAmountInApi3 = parseApi3('250');
+        claim.dispute = {
+          id: '1',
+          status: 'Appealable',
+          ruling: 'PaySettlement',
+        };
       });
 
       it('provides an Appeal action', () => {
-        claim.disputeStatus = 'Appealable';
-        claim.arbitratorRuling = 'PaySettlement';
         claim.deadline = addMinutes(new Date(), 1);
 
         render(<ClaimActions claim={claim} />);
@@ -167,8 +179,6 @@ describe('<ClaimActions />', () => {
       });
 
       it('disables the Appeal button when the deadline has passed', () => {
-        claim.disputeStatus = 'Appealable';
-        claim.arbitratorRuling = 'PaySettlement';
         claim.deadline = addMinutes(new Date(), -1);
 
         render(<ClaimActions claim={claim} />);
@@ -179,9 +189,15 @@ describe('<ClaimActions />', () => {
     });
 
     describe('with "DoNotPay" arbitrator ruling', () => {
+      beforeEach(() => {
+        claim.dispute = {
+          id: '1',
+          status: 'Appealable',
+          ruling: 'DoNotPay',
+        };
+      });
+
       it('provides an Appeal action', () => {
-        claim.disputeStatus = 'Appealable';
-        claim.arbitratorRuling = 'DoNotPay';
         claim.deadline = addMinutes(new Date(), 1);
 
         render(<ClaimActions claim={claim} />);
@@ -193,8 +209,6 @@ describe('<ClaimActions />', () => {
       });
 
       it('disables the Appeal button when the deadline has passed', () => {
-        claim.disputeStatus = 'Appealable';
-        claim.arbitratorRuling = 'DoNotPay';
         claim.deadline = addMinutes(new Date(), -1);
 
         render(<ClaimActions claim={claim} />);

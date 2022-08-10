@@ -146,9 +146,7 @@ async function loadClaims(
       statusUpdatedAt: new Date(claimData.updateTime * 1000),
       deadline: null,
       transactionHash: event.transactionHash,
-      disputeId: dispute?.id ?? null,
-      disputeStatus: dispute ? DisputeStatuses[dispute.status] : null,
-      arbitratorRuling: dispute ? ArbitratorRulings[dispute.ruling] : null,
+      dispute: dispute || null,
     };
 
     claim.deadline = calculateDeadline(claim);
@@ -163,16 +161,18 @@ async function loadClaims(
 }
 
 function calculateDeadline(claim: Claim) {
+  const { dispute } = claim;
+
   switch (claim.status) {
     case 'ClaimCreated':
     case 'SettlementProposed':
       return addDays(claim.statusUpdatedAt, 3);
     case 'DisputeCreated':
-      if (claim.disputeStatus !== 'Waiting') {
-        switch (claim.arbitratorRuling) {
+      if (dispute && dispute.status !== 'Waiting') {
+        switch (dispute.ruling) {
           case 'DoNotPay':
           case 'PaySettlement':
-            // TODO Implement
+            // TODO DAO-185 Calculate appeal deadline
             return addDays(claim.statusUpdatedAt, 3);
         }
       }
@@ -250,11 +250,13 @@ async function getDisputeContractData(
     .map((res) => contract.interface.decodeFunctionResult('currentRuling', res));
 
   return disputeEvents.map((ev, index) => {
+    const statusCode = disputeStatuses[index]?.[0] as DisputeStatusCode;
+    const rulingCode = currentRulings[index]?.[0]?.toNumber() as ArbitratorRulingCode;
     return {
       claimIndex: ev.args.claimIndex,
-      id: ev.args.disputeId,
-      status: disputeStatuses[index]?.[0] as DisputeStatusCode,
-      ruling: currentRulings[index]?.[0]?.toNumber() as ArbitratorRulingCode,
+      id: ev.args.disputeId.toString(),
+      status: DisputeStatuses[statusCode],
+      ruling: ArbitratorRulings[rulingCode],
     };
   });
 }
