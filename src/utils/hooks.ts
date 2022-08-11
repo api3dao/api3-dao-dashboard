@@ -1,5 +1,6 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useMemo, useReducer, useRef } from 'react';
 import { useLocation } from 'react-router';
+import isEqual from 'lodash/isEqual';
 
 // Allows access to the previous to the previous value when re-rendering
 // https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
@@ -45,3 +46,23 @@ export const useScrollToTop = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 };
+
+export function useStableIds<T, Id>(data: T[], idMapperFn: (entry: T) => Id) {
+  const stableIdsRef = useRef<Id[]>();
+
+  const stableIds = useMemo(() => {
+    const ids = data.map(idMapperFn);
+    if (!stableIdsRef.current) {
+      return ids;
+    }
+
+    return isEqual(stableIdsRef.current, ids) ? stableIdsRef.current : ids;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  useEffect(() => {
+    stableIdsRef.current = stableIds;
+  });
+
+  return stableIds;
+}

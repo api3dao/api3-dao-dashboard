@@ -159,6 +159,7 @@ export interface Policy {
   claimant: string;
   beneficiary: string;
   coverageAmountInUsd: BigNumber;
+  remainingCoverageInUsd?: BigNumber;
   claimsAllowedFrom: Date;
   claimsAllowedUntil: Date;
   ipfsHash: string;
@@ -190,6 +191,7 @@ export interface ChainData {
   policies: {
     userPolicyIds: null | string[]; // All the policy ids that are linked to the user's account
     byId: null | { [policyId: string]: Policy };
+    remainingCoverageById: null | { [policyId: string]: BigNumber };
   };
 }
 
@@ -223,6 +225,7 @@ export const initialChainData: ChainData = {
   policies: {
     userPolicyIds: null,
     byId: null,
+    remainingCoverageById: null,
   },
 };
 
