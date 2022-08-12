@@ -22,7 +22,7 @@ describe('<ClaimActions />', () => {
       evidence: 'evidence-001',
       transactionHash: null,
       deadline: null,
-      arbitratorDisputeId: null,
+      dispute: null,
     };
   });
 
@@ -108,8 +108,16 @@ describe('<ClaimActions />', () => {
   });
 
   describe('"DisputeCreated" status', () => {
-    it('shows claimant has escalated to Kleros', () => {
+    beforeEach(() => {
       claim.status = 'DisputeCreated';
+    });
+
+    it('shows claimant has escalated to Kleros', () => {
+      claim.dispute = {
+        id: '1',
+        status: 'Waiting',
+        ruling: 'DoNotPay',
+      };
 
       render(<ClaimActions claim={claim} />);
 
@@ -119,31 +127,100 @@ describe('<ClaimActions />', () => {
     });
 
     it('shows counter offer amount when present', () => {
-      claim.status = 'DisputeCreated';
       claim.counterOfferAmountInUsd = parseUsd('500');
       claim.counterOfferAmountInApi3 = parseApi3('250');
+      claim.dispute = {
+        id: '1',
+        status: 'Waiting',
+        ruling: 'DoNotPay',
+      };
 
       render(<ClaimActions claim={claim} />);
 
-      expect(screen.getByText(/Escalated counter of 250.0 API3 to Kleros/i)).toBeInTheDocument();
+      expect(screen.getByText(/Escalated counter of \$500.0 to Kleros/i)).toBeInTheDocument();
     });
 
-    describe('when the claim has been ignored by Kleros', () => {
-      it('shows that the claim has been rejected', () => {
-        claim.status = 'DisputeCreated';
+    describe('with "PayClaim" arbitrator ruling', () => {
+      it('shows the claim has been approved', () => {
+        claim.dispute = {
+          id: '1',
+          status: 'Solved',
+          ruling: 'PayClaim',
+        };
+
+        render(<ClaimActions claim={claim} />);
+
+        expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
+        expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved full amount/i);
+        expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+      });
+    });
+
+    describe('with "PaySettlement" arbitrator ruling', () => {
+      beforeEach(() => {
+        claim.counterOfferAmountInUsd = parseUsd('500');
+        claim.counterOfferAmountInApi3 = parseApi3('250');
+        claim.dispute = {
+          id: '1',
+          status: 'Appealable',
+          ruling: 'PaySettlement',
+        };
+      });
+
+      it('provides an Appeal action', () => {
+        claim.deadline = addMinutes(new Date(), 1);
+
+        render(<ClaimActions claim={claim} />);
+
+        expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
+        expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of \$500.0/i);
+        const appealButton = screen.getByRole('button', { name: /Appeal/i });
+        expect(appealButton).not.toBeDisabled();
+      });
+
+      it('disables the Appeal button when the deadline has passed', () => {
         claim.deadline = addMinutes(new Date(), -1);
+
+        render(<ClaimActions claim={claim} />);
+
+        const appealButton = screen.getByRole('button', { name: /Appeal/i });
+        expect(appealButton).toBeDisabled();
+      });
+    });
+
+    describe('with "DoNotPay" arbitrator ruling', () => {
+      beforeEach(() => {
+        claim.dispute = {
+          id: '1',
+          status: 'Appealable',
+          ruling: 'DoNotPay',
+        };
+      });
+
+      it('provides an Appeal action', () => {
+        claim.deadline = addMinutes(new Date(), 1);
 
         render(<ClaimActions claim={claim} />);
 
         expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
         expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
-        expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+        const appealButton = screen.getByRole('button', { name: /Appeal/i });
+        expect(appealButton).not.toBeDisabled();
+      });
+
+      it('disables the Appeal button when the deadline has passed', () => {
+        claim.deadline = addMinutes(new Date(), -1);
+
+        render(<ClaimActions claim={claim} />);
+
+        const appealButton = screen.getByRole('button', { name: /Appeal/i });
+        expect(appealButton).toBeDisabled();
       });
     });
   });
 
   describe('"DisputeResolvedWithoutPayout" status', () => {
-    it('enables the Appeal action', () => {
+    it('shows the claim has been rejected by Kleros', () => {
       claim.status = 'DisputeResolvedWithoutPayout';
       claim.deadline = addMinutes(new Date(), 1);
 
@@ -151,18 +228,7 @@ describe('<ClaimActions />', () => {
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
       expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
-      const appealButton = screen.getByRole('button', { name: /Appeal/i });
-      expect(appealButton).not.toBeDisabled();
-    });
-
-    it('disables the Appeal button when the deadline has passed', () => {
-      claim.status = 'DisputeResolvedWithoutPayout';
-      claim.deadline = addMinutes(new Date(), -1);
-
-      render(<ClaimActions claim={claim} />);
-
-      const appealButton = screen.getByRole('button', { name: /Appeal/i });
-      expect(appealButton).toBeDisabled();
+      expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
   });
 
@@ -191,7 +257,7 @@ describe('<ClaimActions />', () => {
   });
 
   describe('"DisputeResolvedWithSettlementPayout" status', () => {
-    it('provides an Appeal action', () => {
+    it('shows the claim counter offer has been approved', () => {
       claim.status = 'DisputeResolvedWithSettlementPayout';
       claim.counterOfferAmountInUsd = parseUsd('500');
       claim.counterOfferAmountInApi3 = parseApi3('250');
@@ -200,21 +266,8 @@ describe('<ClaimActions />', () => {
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-      expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of 250.0 API3/i);
-      const appealButton = screen.getByRole('button', { name: /Appeal/i });
-      expect(appealButton).not.toBeDisabled();
-    });
-
-    it('disables the Appeal button when the deadline has passed', () => {
-      claim.status = 'DisputeResolvedWithSettlementPayout';
-      claim.counterOfferAmountInUsd = parseUsd('500');
-      claim.counterOfferAmountInApi3 = parseApi3('250');
-      claim.deadline = addMinutes(new Date(), -1);
-
-      render(<ClaimActions claim={claim} />);
-
-      const appealButton = screen.getByRole('button', { name: /Appeal/i });
-      expect(appealButton).toBeDisabled();
+      expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of \$500.0/i);
+      expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
   });
 });

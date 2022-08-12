@@ -4,7 +4,7 @@ import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
 import { abbrStr, Claim, useChainData } from '../../chain-data';
 import styles from './claim-actions.module.scss';
-import { formatApi3, handleTransactionError } from '../../utils';
+import { formatApi3, formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
 import { useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
@@ -15,6 +15,7 @@ interface Props {
 
 export default function ClaimActions(props: Props) {
   const { claim } = props;
+  const { dispute } = claim;
   const { setChainData, transactions } = useChainData();
   const claimsManager = useClaimsManager()!;
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
@@ -50,9 +51,7 @@ export default function ClaimActions(props: Props) {
 
   const handleAppeal = async () => {
     setStatus('submitting');
-    const tx = await handleTransactionError(
-      claimsManager.appealKlerosArbitratorRuling(claim.claimId, claim.arbitratorDisputeId!)
-    );
+    const tx = await handleTransactionError(claimsManager.appealKlerosArbitratorRuling(claim.claimId, dispute!.id));
     if (tx) {
       setChainData('Save appeal claim transaction', {
         transactions: [...transactions, { type: 'appeal-claim-decision', tx }],
@@ -149,36 +148,82 @@ export default function ClaimActions(props: Props) {
       );
 
     case 'DisputeCreated':
-      if (isPastDeadline) {
-        // The claim has been ignored (most likely judged to be spam), so we show that it has been rejected
+      if (!dispute || dispute.status === 'Waiting') {
         return (
           <div className={styles.actionSection}>
-            <p>Kleros</p>
-            <div className={styles.actionMainInfo}>
-              <span className={styles.rejected}>
-                <CloseIcon aria-hidden />
-                Rejected
-              </span>
-            </div>
+            <p>{abbrStr(claim.claimant)}</p>
+            {claim.counterOfferAmountInUsd?.gt(0) ? (
+              <div className={styles.actionMainInfo}>
+                Escalated counter of <br />${formatUsd(claim.counterOfferAmountInUsd!)} <br />
+                to Kleros
+              </div>
+            ) : (
+              <div className={styles.actionMainInfo}>Escalated to Kleros</div>
+            )}
+            <p className={styles.actionMessage}>Kleros will decide the outcome of your claim.</p>
           </div>
         );
       }
 
-      return (
-        <div className={styles.actionSection}>
-          <p>{abbrStr(claim.claimant)}</p>
-          {claim.counterOfferAmountInApi3?.gt(0) ? (
-            <div className={styles.actionMainInfo}>
-              Escalated counter of <br />
-              {formatApi3(claim.counterOfferAmountInApi3)} API3 <br />
-              to Kleros
+      switch (dispute.ruling) {
+        case 'PayClaim':
+          return (
+            <div className={styles.actionSection}>
+              <p>Kleros</p>
+              <div className={styles.actionMainInfo} data-testid="status-message">
+                <span className={styles.approved}>
+                  <CheckIcon aria-hidden />
+                  Approved
+                </span>
+                <br />
+                {' full amount'}
+              </div>
             </div>
-          ) : (
-            <div className={styles.actionMainInfo}>Escalated to Kleros</div>
-          )}
-          <p className={styles.actionMessage}>Kleros will decide the outcome of your claim.</p>
-        </div>
-      );
+          );
+
+        case 'PaySettlement':
+          return (
+            <div className={styles.actionSection}>
+              <p>Kleros</p>
+              <div className={styles.actionMainInfo} data-testid="status-message">
+                <span className={styles.approved}>
+                  <CheckIcon aria-hidden />
+                  Approved
+                </span>
+                <br />
+                {' counter of '}
+                <br />${formatUsd(claim.counterOfferAmountInUsd!)}
+              </div>
+              <div className={styles.actionPanel}>
+                <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>
+                  Appeal
+                </Button>
+              </div>
+              <p className={styles.actionMessage}>
+                You can appeal within the given time frame or the counter offer will be automatically accepted.
+              </p>
+            </div>
+          );
+
+        case 'DoNotPay':
+          return (
+            <div className={styles.actionSection}>
+              <p>Kleros</p>
+              <div className={styles.actionMainInfo}>Rejected</div>
+              <div className={styles.actionPanel}>
+                <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>
+                  Appeal
+                </Button>
+              </div>
+              <p className={styles.actionMessage}>
+                You can appeal within the given time frame or the rejection will be automatically accepted.
+              </p>
+            </div>
+          );
+
+        default:
+          return null;
+      }
 
     case 'DisputeResolvedWithClaimPayout':
       return (
@@ -206,17 +251,8 @@ export default function ClaimActions(props: Props) {
             </span>
             <br />
             {' counter of '}
-            <br />
-            {formatApi3(claim.counterOfferAmountInApi3!)} API3
+            <br />${formatUsd(claim.counterOfferAmountInUsd!)}
           </div>
-          <div className={styles.actionPanel}>
-            <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>
-              Appeal
-            </Button>
-          </div>
-          <p className={styles.actionMessage}>
-            You can appeal within the given time frame or the counter offer will be automatically accepted.
-          </p>
         </div>
       );
 
@@ -225,14 +261,6 @@ export default function ClaimActions(props: Props) {
         <div className={styles.actionSection}>
           <p>Kleros</p>
           <div className={styles.actionMainInfo}>Rejected</div>
-          <div className={styles.actionPanel}>
-            <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>
-              Appeal
-            </Button>
-          </div>
-          <p className={styles.actionMessage}>
-            You can appeal within the given time frame or the rejection will be automatically accepted.
-          </p>
         </div>
       );
 
