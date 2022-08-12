@@ -7,19 +7,27 @@ import { Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { ClaimsManagerWithKlerosArbitration, useClaimsManager, useChainUpdateEffect } from '../../contracts';
 import { notifications } from '../../components/notifications';
 
+/**
+ * Loads all policies that are linked to the user's account. The remaining coverage amount for each policy does not
+ * get loaded with this hook. We omit its loading so that we are able to only load the remaining coverage for the
+ * current page of policies the user is viewing (the user can have a large number of policies).
+ */
 export function useUserPolicies() {
   const { userAccount, policies, setChainData } = useChainData();
   const claimsManager = useClaimsManager();
+
   const sortedPolicies = useMemo(() => {
     if (!policies.userPolicyIds) return null;
-    // Sort by policy end time in descending order
-    return policies.userPolicyIds
-      .map((policyId) => {
-        const policy = policies.byId![policyId]!;
-        const remainingCoverageInUsd = policies.remainingCoverageById?.[policyId];
-        return remainingCoverageInUsd ? { ...policy, remainingCoverageInUsd } : policy;
-      })
-      .sort((a, b) => b.claimsAllowedUntil.getTime() - a.claimsAllowedUntil.getTime());
+    return (
+      policies.userPolicyIds
+        .map((policyId) => {
+          const policy = policies.byId![policyId]!;
+          const remainingCoverageInUsd = policies.remainingCoverageById?.[policyId];
+          return remainingCoverageInUsd ? { ...policy, remainingCoverageInUsd } : policy;
+        })
+        // Sort by the claimsAllowedUntil date in descending order
+        .sort((a, b) => b.claimsAllowedUntil.getTime() - a.claimsAllowedUntil.getTime())
+    );
   }, [policies.userPolicyIds, policies.byId, policies.remainingCoverageById]);
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
@@ -55,9 +63,15 @@ export function useUserPolicies() {
   };
 }
 
+/**
+ * Loads the policy (that is linked to the user's account) by its id. The policy will not be found if it is not linked
+ * to the user's account. The remaining coverage also gets loaded and the returned policy will always have the
+ * remaining coverage present.
+ */
 export function useUserPolicyById(policyId: string) {
   const { userAccount, policies, setChainData } = useChainData();
   const claimsManager = useClaimsManager();
+
   const data = useMemo(() => {
     const policy = policies.byId?.[policyId];
     const remainingCoverageInUsd = policies.remainingCoverageById?.[policyId];
@@ -179,15 +193,13 @@ async function loadRemainingCoverage(contract: ClaimsManagerWithKlerosArbitratio
   const calls = policyIds.map((id) => {
     return contract.interface.encodeFunctionData('policyHashToRemainingCoverageAmountInUsd', [id]);
   });
-
   const encodedResults = await contract.callStatic.multicall(calls);
-
   const amounts = encodedResults.map((res) => {
     return contract.interface.decodeFunctionResult('policyHashToRemainingCoverageAmountInUsd', res);
   });
 
   const amountsById = policyIds.reduce((acc, policyId, index) => {
-    acc[policyId] = amounts[index]?.[0];
+    acc[policyId] = amounts[index]![0];
     return acc;
   }, {} as { [policyId: string]: BigNumber });
 

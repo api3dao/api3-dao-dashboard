@@ -47,6 +47,13 @@ export const useScrollToTop = () => {
   }, [pathname]);
 };
 
+/**
+ * Useful for when you derive the ids from data which updates often, and you need the id array reference
+ * to remain stable.
+ *
+ * Use case: You have chain data that gets refreshed often, and you use the derived ids in the dependencies
+ * of a useEffect() hook.
+ */
 export function useStableIds<T, Id>(data: T[], idMapperFn: (entry: T) => Id) {
   const stableIdsRef = useRef<Id[]>();
 
@@ -57,6 +64,7 @@ export function useStableIds<T, Id>(data: T[], idMapperFn: (entry: T) => Id) {
     }
 
     return isEqual(stableIdsRef.current, ids) ? stableIdsRef.current : ids;
+    // We omit idMapperFn from the dependencies as it would cause the effect to trigger on every render
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
