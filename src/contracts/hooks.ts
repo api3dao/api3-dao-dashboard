@@ -10,7 +10,10 @@ import {
   TimelockManager__factory as TimelockManagerFactory,
 } from '../generated-contracts';
 // TODO DA0-151 Delete tmp folder and import from claims-manager package
-import { ClaimsManagerWithKlerosArbitration__factory as ClaimsManagerFactory } from './tmp';
+import {
+  ClaimsManager__factory as ClaimsManagerFactory,
+  KlerosLiquidProxy__factory as KlerosLiquidProxyFactory,
+} from './tmp';
 import { initialChainData } from '../chain-data/state';
 
 export const useApi3Pool = () => {
@@ -87,6 +90,16 @@ export const useClaimsManager = () => {
     if (!provider || !contracts) return null;
 
     return ClaimsManagerFactory.connect(contracts.claimsManager, provider.getSigner());
+  }, [provider, contracts]);
+};
+
+export const useArbitratorProxy = () => {
+  const { provider, contracts } = useChainData();
+
+  return useMemo(() => {
+    if (!provider || !contracts) return null;
+
+    return KlerosLiquidProxyFactory.connect(contracts.arbitratorProxy, provider.getSigner());
   }, [provider, contracts]);
 };
 

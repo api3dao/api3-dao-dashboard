@@ -15,15 +15,20 @@ import {
   useChainData,
 } from '../../chain-data';
 import { notifications } from '../../components/notifications';
-import { useClaimsManager, ClaimsManagerWithKlerosArbitration, useChainUpdateEffect } from '../../contracts';
 import {
-  CreatedClaimEvent,
-  CreatedDisputeWithKlerosArbitratorEvent,
-} from '../../contracts/tmp/ClaimsManagerWithKlerosArbitration';
+  useClaimsManager,
+  ClaimsManager,
+  useChainUpdateEffect,
+  KlerosLiquidProxy,
+  useArbitratorProxy,
+} from '../../contracts';
+import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManager';
+import { CreatedDisputeEvent } from '../../contracts/tmp/arbitrators/KlerosLiquidProxy';
 
 export function useUserClaims() {
   const { userAccount, claims, setChainData } = useChainData();
   const claimsManager = useClaimsManager();
+  const arbitratorProxy = useArbitratorProxy();
 
   const sortedClaims = useMemo(() => {
     if (!claims.userClaimIds) return null;
@@ -35,11 +40,11 @@ export function useUserClaims() {
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
   useChainUpdateEffect(() => {
-    if (!claimsManager) return;
+    if (!claimsManager || !arbitratorProxy) return;
 
     const load = async () => {
       setStatus('loading');
-      const result = await go(() => loadClaims(claimsManager, { userAccount }));
+      const result = await go(() => loadClaims(claimsManager, arbitratorProxy, { userAccount }));
 
       if (!result.success) {
         notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
@@ -58,7 +63,7 @@ export function useUserClaims() {
     };
 
     load();
-  }, [claimsManager, userAccount, setChainData]);
+  }, [claimsManager, arbitratorProxy, userAccount, setChainData]);
 
   return {
     data: sortedClaims,
@@ -69,15 +74,19 @@ export function useUserClaims() {
 export function useUserClaimById(claimId: string) {
   const { userAccount, claims, setChainData } = useChainData();
   const claimsManager = useClaimsManager();
+  const arbitratorProxy = useArbitratorProxy();
+
   const data = claims.byId?.[claimId] || null;
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
   useChainUpdateEffect(() => {
-    if (!claimsManager) return;
+    if (!claimsManager || !arbitratorProxy) return;
 
     const load = async () => {
       setStatus('loading');
-      const result = await go(() => loadClaims(claimsManager, { userAccount, claimId: BigNumber.from(claimId) }));
+      const result = await go(() =>
+        loadClaims(claimsManager, arbitratorProxy, { userAccount, claimId: BigNumber.from(claimId) })
+      );
 
       if (!result.success) {
         notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
@@ -95,7 +104,7 @@ export function useUserClaimById(claimId: string) {
     };
 
     load();
-  }, [claimsManager, userAccount, claimId, setChainData]);
+  }, [claimsManager, arbitratorProxy, userAccount, claimId, setChainData]);
 
   return {
     data,
@@ -104,15 +113,16 @@ export function useUserClaimById(claimId: string) {
 }
 
 async function loadClaims(
-  contract: ClaimsManagerWithKlerosArbitration,
+  claimsManager: ClaimsManager,
+  arbitratorProxy: KlerosLiquidProxy,
   params: { userAccount?: string; claimId?: BigNumber }
 ): Promise<{ ids: string[]; byId: Record<string, Claim> }> {
   const { userAccount = null, claimId = null } = params;
   // Get all the static data via events
   const [createdEvents, counterOfferEvents, disputeEvents] = await Promise.all([
-    contract.queryFilter(contract.filters.CreatedClaim(claimId, userAccount)),
-    contract.queryFilter(contract.filters.ProposedSettlement(claimId, userAccount)),
-    contract.queryFilter(contract.filters.CreatedDisputeWithKlerosArbitrator(claimId, userAccount)),
+    claimsManager.queryFilter(claimsManager.filters.CreatedClaim(claimId, userAccount)),
+    claimsManager.queryFilter(claimsManager.filters.ProposedSettlement(claimId, userAccount)),
+    arbitratorProxy.queryFilter(arbitratorProxy.filters.CreatedDispute(claimId, userAccount)),
   ]);
 
   if (!createdEvents.length) {
@@ -120,8 +130,8 @@ async function loadClaims(
   }
 
   const [claims, disputes] = await Promise.all([
-    getClaimContractData(contract, createdEvents),
-    getDisputeContractData(contract, disputeEvents),
+    getClaimContractData(claimsManager, createdEvents),
+    getDisputeContractData(arbitratorProxy, disputeEvents),
   ]);
 
   // Combine the static and dynamic data
@@ -211,7 +221,7 @@ export function getCurrentDeadline(claim: Claim) {
   return claim.deadline;
 }
 
-async function getClaimContractData(contract: ClaimsManagerWithKlerosArbitration, claimEvents: CreatedClaimEvent[]) {
+async function getClaimContractData(contract: ClaimsManager, claimEvents: CreatedClaimEvent[]) {
   const calls = claimEvents.map((event) => {
     return contract.interface.encodeFunctionData('claims', [event.args.claimIndex]);
   });
@@ -223,16 +233,13 @@ async function getClaimContractData(contract: ClaimsManagerWithKlerosArbitration
   });
 }
 
-async function getDisputeContractData(
-  contract: ClaimsManagerWithKlerosArbitration,
-  disputeEvents: CreatedDisputeWithKlerosArbitratorEvent[]
-) {
+async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents: CreatedDisputeEvent[]) {
   const disputeStatusCalls = disputeEvents.map((ev) => {
-    return contract.interface.encodeFunctionData('disputeStatus', [ev.args.claimIndex, ev.args.disputeId]);
+    return contract.interface.encodeFunctionData('disputeStatus', [ev.args.claimIndex]);
   });
 
   const currentRulingCalls = disputeEvents.map((ev) => {
-    return contract.interface.encodeFunctionData('currentRuling', [ev.args.claimIndex, ev.args.disputeId]);
+    return contract.interface.encodeFunctionData('currentRuling', [ev.args.claimIndex]);
   });
 
   // Combine all calls so that we can make a single multicall
