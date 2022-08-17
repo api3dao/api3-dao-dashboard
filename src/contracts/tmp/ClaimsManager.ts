@@ -36,7 +36,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'claimIndexToProposedSettlementAmountInUsd(uint256)': FunctionFragment;
     'claimantResponsePeriod()': FunctionFragment;
     'claims(uint256)': FunctionFragment;
-    'createClaim(address,uint256,uint256,uint256,string,uint256,string)': FunctionFragment;
+    'createClaim(address,uint256,string,uint256,string)': FunctionFragment;
     'createDispute(uint256)': FunctionFragment;
     'createPolicy(address,address,uint256,uint256,uint256,string,string)': FunctionFragment;
     'getQuotaUsage(address)': FunctionFragment;
@@ -46,7 +46,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'mediatorRole()': FunctionFragment;
     'multicall(bytes[])': FunctionFragment;
     'policyCreatorRole()': FunctionFragment;
-    'policyHashToRemainingCoverageAmountInUsd(bytes32)': FunctionFragment;
+    'policyHashToState(bytes32)': FunctionFragment;
     'proposeSettlement(uint256,uint256)': FunctionFragment;
     'resetQuota(address)': FunctionFragment;
     'resolveDispute(uint256,uint8)': FunctionFragment;
@@ -56,7 +56,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'setClaimantResponsePeriod(uint256)': FunctionFragment;
     'setMediatorResponsePeriod(uint256)': FunctionFragment;
     'setQuota(address,uint32,uint224)': FunctionFragment;
-    'timeOutClaim(uint256)': FunctionFragment;
+    'upgradePolicy(address,address,uint256,uint256,uint256,string,string)': FunctionFragment;
   };
 
   getFunction(
@@ -88,7 +88,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
       | 'mediatorRole'
       | 'multicall'
       | 'policyCreatorRole'
-      | 'policyHashToRemainingCoverageAmountInUsd'
+      | 'policyHashToState'
       | 'proposeSettlement'
       | 'resetQuota'
       | 'resolveDispute'
@@ -98,7 +98,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
       | 'setClaimantResponsePeriod'
       | 'setMediatorResponsePeriod'
       | 'setQuota'
-      | 'timeOutClaim'
+      | 'upgradePolicy'
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: 'acceptClaim', values: [PromiseOrValue<BigNumberish>]): string;
@@ -132,8 +132,6 @@ export interface ClaimsManagerInterface extends utils.Interface {
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>
@@ -159,10 +157,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'mediatorRole', values?: undefined): string;
   encodeFunctionData(functionFragment: 'multicall', values: [PromiseOrValue<BytesLike>[]]): string;
   encodeFunctionData(functionFragment: 'policyCreatorRole', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'policyHashToRemainingCoverageAmountInUsd',
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
+  encodeFunctionData(functionFragment: 'policyHashToState', values: [PromiseOrValue<BytesLike>]): string;
   encodeFunctionData(
     functionFragment: 'proposeSettlement',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
@@ -184,7 +179,18 @@ export interface ClaimsManagerInterface extends utils.Interface {
     functionFragment: 'setQuota',
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: 'timeOutClaim', values: [PromiseOrValue<BigNumberish>]): string;
+  encodeFunctionData(
+    functionFragment: 'upgradePolicy',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
+  ): string;
 
   decodeFunctionResult(functionFragment: 'acceptClaim', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'acceptSettlement', data: BytesLike): Result;
@@ -213,7 +219,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'mediatorRole', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'multicall', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'policyCreatorRole', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'policyHashToRemainingCoverageAmountInUsd', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'policyHashToState', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'proposeSettlement', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'resetQuota', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'resolveDispute', data: BytesLike): Result;
@@ -223,12 +229,12 @@ export interface ClaimsManagerInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'setClaimantResponsePeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setMediatorResponsePeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setQuota', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'timeOutClaim', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'upgradePolicy', data: BytesLike): Result;
 
   events: {
     'AcceptedClaim(uint256,address,address,uint256,address)': EventFragment;
     'AcceptedSettlement(uint256,address,uint256)': EventFragment;
-    'CreatedClaim(uint256,address,bytes32,address,uint256,uint256,uint256,string,uint256,string,uint256)': EventFragment;
+    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,uint256)': EventFragment;
     'CreatedDispute(uint256,address,address)': EventFragment;
     'CreatedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)': EventFragment;
     'ProposedSettlement(uint256,address,uint256,uint256,address)': EventFragment;
@@ -242,7 +248,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'SetClaimantResponsePeriod(uint256)': EventFragment;
     'SetMediatorResponsePeriod(uint256)': EventFragment;
     'SetQuota(address,uint32,uint224,address)': EventFragment;
-    'TimedOutClaim(uint256,address)': EventFragment;
+    'UpgradedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'AcceptedClaim'): EventFragment;
@@ -261,7 +267,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'SetClaimantResponsePeriod'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SetMediatorResponsePeriod'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SetQuota'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TimedOutClaim'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'UpgradedPolicy'): EventFragment;
 }
 
 export interface AcceptedClaimEventObject {
@@ -289,16 +295,14 @@ export interface CreatedClaimEventObject {
   claimant: string;
   policyHash: string;
   beneficiary: string;
-  coverageAmountInUsd: BigNumber;
   claimsAllowedFrom: BigNumber;
-  claimsAllowedUntil: BigNumber;
   policy: string;
   claimAmountInUsd: BigNumber;
   evidence: string;
   claimCreationTime: BigNumber;
 }
 export type CreatedClaimEvent = TypedEvent<
-  [BigNumber, string, string, string, BigNumber, BigNumber, BigNumber, string, BigNumber, string, BigNumber],
+  [BigNumber, string, string, string, BigNumber, string, BigNumber, string, BigNumber],
   CreatedClaimEventObject
 >;
 
@@ -444,13 +448,23 @@ export type SetQuotaEvent = TypedEvent<[string, number, BigNumber, string], SetQ
 
 export type SetQuotaEventFilter = TypedEventFilter<SetQuotaEvent>;
 
-export interface TimedOutClaimEventObject {
-  claimIndex: BigNumber;
+export interface UpgradedPolicyEventObject {
+  beneficiary: string;
   claimant: string;
+  policyHash: string;
+  coverageAmountInUsd: BigNumber;
+  claimsAllowedFrom: BigNumber;
+  claimsAllowedUntil: BigNumber;
+  policy: string;
+  metadata: string;
+  sender: string;
 }
-export type TimedOutClaimEvent = TypedEvent<[BigNumber, string], TimedOutClaimEventObject>;
+export type UpgradedPolicyEvent = TypedEvent<
+  [string, string, string, BigNumber, BigNumber, BigNumber, string, string, string],
+  UpgradedPolicyEventObject
+>;
 
-export type TimedOutClaimEventFilter = TypedEventFilter<TimedOutClaimEvent>;
+export type UpgradedPolicyEventFilter = TypedEventFilter<UpgradedPolicyEvent>;
 
 export interface ClaimsManager extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -543,9 +557,7 @@ export interface ClaimsManager extends BaseContract {
 
     createClaim(
       beneficiary: PromiseOrValue<string>,
-      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
-      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
@@ -585,10 +597,15 @@ export interface ClaimsManager extends BaseContract {
 
     policyCreatorRole(overrides?: CallOverrides): Promise<[string]>;
 
-    policyHashToRemainingCoverageAmountInUsd(
+    policyHashToState(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<
+      [number, BigNumber] & {
+        claimsAllowedUntil: number;
+        coverageAmountInUsd: BigNumber;
+      }
+    >;
 
     proposeSettlement(
       claimIndex: PromiseOrValue<BigNumberish>,
@@ -640,8 +657,14 @@ export interface ClaimsManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    timeOutClaim(
-      claimIndex: PromiseOrValue<BigNumberish>,
+    upgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -714,9 +737,7 @@ export interface ClaimsManager extends BaseContract {
 
   createClaim(
     beneficiary: PromiseOrValue<string>,
-    coverageAmountInUsd: PromiseOrValue<BigNumberish>,
     claimsAllowedFrom: PromiseOrValue<BigNumberish>,
-    claimsAllowedUntil: PromiseOrValue<BigNumberish>,
     policy: PromiseOrValue<string>,
     claimAmountInUsd: PromiseOrValue<BigNumberish>,
     evidence: PromiseOrValue<string>,
@@ -756,10 +777,15 @@ export interface ClaimsManager extends BaseContract {
 
   policyCreatorRole(overrides?: CallOverrides): Promise<string>;
 
-  policyHashToRemainingCoverageAmountInUsd(
+  policyHashToState(
     arg0: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<
+    [number, BigNumber] & {
+      claimsAllowedUntil: number;
+      coverageAmountInUsd: BigNumber;
+    }
+  >;
 
   proposeSettlement(
     claimIndex: PromiseOrValue<BigNumberish>,
@@ -811,8 +837,14 @@ export interface ClaimsManager extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  timeOutClaim(
-    claimIndex: PromiseOrValue<BigNumberish>,
+  upgradePolicy(
+    claimant: PromiseOrValue<string>,
+    beneficiary: PromiseOrValue<string>,
+    coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+    claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+    claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+    policy: PromiseOrValue<string>,
+    metadata: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -879,9 +911,7 @@ export interface ClaimsManager extends BaseContract {
 
     createClaim(
       beneficiary: PromiseOrValue<string>,
-      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
-      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
@@ -915,10 +945,15 @@ export interface ClaimsManager extends BaseContract {
 
     policyCreatorRole(overrides?: CallOverrides): Promise<string>;
 
-    policyHashToRemainingCoverageAmountInUsd(
+    policyHashToState(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [number, BigNumber] & {
+        claimsAllowedUntil: number;
+        coverageAmountInUsd: BigNumber;
+      }
+    >;
 
     proposeSettlement(
       claimIndex: PromiseOrValue<BigNumberish>,
@@ -961,7 +996,16 @@ export interface ClaimsManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    timeOutClaim(claimIndex: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
+    upgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
   };
 
   filters: {
@@ -991,14 +1035,12 @@ export interface ClaimsManager extends BaseContract {
       amountInApi3?: null
     ): AcceptedSettlementEventFilter;
 
-    'CreatedClaim(uint256,address,bytes32,address,uint256,uint256,uint256,string,uint256,string,uint256)'(
+    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,uint256)'(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       policyHash?: PromiseOrValue<BytesLike> | null,
       beneficiary?: null,
-      coverageAmountInUsd?: null,
       claimsAllowedFrom?: null,
-      claimsAllowedUntil?: null,
       policy?: null,
       claimAmountInUsd?: null,
       evidence?: null,
@@ -1009,9 +1051,7 @@ export interface ClaimsManager extends BaseContract {
       claimant?: PromiseOrValue<string> | null,
       policyHash?: PromiseOrValue<BytesLike> | null,
       beneficiary?: null,
-      coverageAmountInUsd?: null,
       claimsAllowedFrom?: null,
-      claimsAllowedUntil?: null,
       policy?: null,
       claimAmountInUsd?: null,
       evidence?: null,
@@ -1147,14 +1187,28 @@ export interface ClaimsManager extends BaseContract {
       sender?: null
     ): SetQuotaEventFilter;
 
-    'TimedOutClaim(uint256,address)'(
-      claimIndex?: PromiseOrValue<BigNumberish> | null,
-      claimant?: PromiseOrValue<string> | null
-    ): TimedOutClaimEventFilter;
-    TimedOutClaim(
-      claimIndex?: PromiseOrValue<BigNumberish> | null,
-      claimant?: PromiseOrValue<string> | null
-    ): TimedOutClaimEventFilter;
+    'UpgradedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)'(
+      beneficiary?: null,
+      claimant?: PromiseOrValue<string> | null,
+      policyHash?: PromiseOrValue<BytesLike> | null,
+      coverageAmountInUsd?: null,
+      claimsAllowedFrom?: null,
+      claimsAllowedUntil?: null,
+      policy?: null,
+      metadata?: null,
+      sender?: null
+    ): UpgradedPolicyEventFilter;
+    UpgradedPolicy(
+      beneficiary?: null,
+      claimant?: PromiseOrValue<string> | null,
+      policyHash?: PromiseOrValue<BytesLike> | null,
+      coverageAmountInUsd?: null,
+      claimsAllowedFrom?: null,
+      claimsAllowedUntil?: null,
+      policy?: null,
+      metadata?: null,
+      sender?: null
+    ): UpgradedPolicyEventFilter;
   };
 
   estimateGas: {
@@ -1210,9 +1264,7 @@ export interface ClaimsManager extends BaseContract {
 
     createClaim(
       beneficiary: PromiseOrValue<string>,
-      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
-      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
@@ -1252,10 +1304,7 @@ export interface ClaimsManager extends BaseContract {
 
     policyCreatorRole(overrides?: CallOverrides): Promise<BigNumber>;
 
-    policyHashToRemainingCoverageAmountInUsd(
-      arg0: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    policyHashToState(arg0: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>;
 
     proposeSettlement(
       claimIndex: PromiseOrValue<BigNumberish>,
@@ -1307,8 +1356,14 @@ export interface ClaimsManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    timeOutClaim(
-      claimIndex: PromiseOrValue<BigNumberish>,
+    upgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -1369,9 +1424,7 @@ export interface ClaimsManager extends BaseContract {
 
     createClaim(
       beneficiary: PromiseOrValue<string>,
-      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
-      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
@@ -1411,10 +1464,7 @@ export interface ClaimsManager extends BaseContract {
 
     policyCreatorRole(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    policyHashToRemainingCoverageAmountInUsd(
-      arg0: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    policyHashToState(arg0: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     proposeSettlement(
       claimIndex: PromiseOrValue<BigNumberish>,
@@ -1466,8 +1516,14 @@ export interface ClaimsManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    timeOutClaim(
-      claimIndex: PromiseOrValue<BigNumberish>,
+    upgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

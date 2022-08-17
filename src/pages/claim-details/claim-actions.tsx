@@ -265,13 +265,6 @@ export default function ClaimActions(props: Props) {
         </div>
       );
 
-    case 'TimedOut':
-      return (
-        <div className={styles.actionSection}>
-          <div className={styles.actionMainInfo}>Timed Out</div>
-        </div>
-      );
-
     case 'None':
       return null;
   }

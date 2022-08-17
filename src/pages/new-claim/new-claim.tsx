@@ -57,9 +57,7 @@ export default function NewClaim() {
     const tx = await handleTransactionError(
       claimsManager.createClaim(
         policy.beneficiary,
-        policy.coverageAmountInUsd,
         Math.round(policy.claimsAllowedFrom.getTime() / 1000),
-        Math.round(policy.claimsAllowedUntil.getTime() / 1000),
         policy.ipfsHash,
         parseUsd(form.amount),
         form.evidence.trim()

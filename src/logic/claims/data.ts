@@ -205,7 +205,6 @@ export function isActive(claim: Claim): boolean {
     case 'DisputeResolvedWithClaimPayout':
     case 'DisputeResolvedWithSettlementPayout':
     case 'DisputeResolvedWithoutPayout':
-    case 'TimedOut':
     case 'None':
       return false;
   }

@@ -85,8 +85,6 @@ function ClaimStatus(props: ClaimStatusProps) {
       return <>Approved Counter</>;
     case 'DisputeResolvedWithoutPayout':
       return <>Rejected</>;
-    case 'TimedOut':
-      return <>Timed Out</>;
     case 'None':
       return null;
   }
