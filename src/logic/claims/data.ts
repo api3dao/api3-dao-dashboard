@@ -131,7 +131,11 @@ async function loadClaims(
 
   const [claims, disputes] = await Promise.all([
     getClaimContractData(claimsManager, createdEvents),
-    getDisputeContractData(arbitratorProxy, disputeEvents),
+    getDisputeContractData(
+      arbitratorProxy,
+      // TODO DAO-189 Remove filter. See https://github.com/api3dao/claims-manager/issues/43
+      disputeEvents.filter((ev) => ev.args.disputeId.gt(0))
+    ),
   ]);
 
   // Combine the static and dynamic data
