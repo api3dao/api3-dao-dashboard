@@ -54,6 +54,7 @@ interface ClaimStatusProps {
 
 function ClaimStatus(props: ClaimStatusProps) {
   const { claim } = props;
+  const { dispute } = claim;
 
   switch (claim.status) {
     case 'ClaimCreated':
@@ -67,8 +68,15 @@ function ClaimStatus(props: ClaimStatusProps) {
     case 'DisputeResolvedWithClaimPayout':
       return <>Approved</>;
     case 'DisputeCreated':
-      if (isAfter(new Date(), claim.deadline!)) {
-        return <>Rejected</>;
+      if (dispute && dispute.status !== 'Waiting') {
+        switch (dispute.ruling) {
+          case 'PayClaim':
+            return <>Approved</>;
+          case 'PaySettlement':
+            return <>Approved Counter</>;
+          case 'DoNotPay':
+            return <>Rejected</>;
+        }
       }
       return <>Kleros Processing</>;
     case 'SettlementAccepted':

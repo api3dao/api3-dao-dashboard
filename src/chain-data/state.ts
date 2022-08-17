@@ -136,7 +136,11 @@ export interface Claim {
   statusUpdatedAt: Date;
   deadline: null | Date;
   transactionHash: null | string;
-  arbitratorDisputeId: null | BigNumber;
+  dispute: null | {
+    id: string;
+    status: DisputeStatus;
+    ruling: ArbitratorRuling;
+  };
 }
 
 export const ClaimStatuses = {
@@ -153,6 +157,22 @@ export const ClaimStatuses = {
 } as const;
 export type ClaimStatusCode = keyof typeof ClaimStatuses;
 export type ClaimStatus = typeof ClaimStatuses[ClaimStatusCode];
+
+export const DisputeStatuses = {
+  0: 'Waiting',
+  1: 'Appealable',
+  2: 'Solved',
+} as const;
+export type DisputeStatusCode = keyof typeof DisputeStatuses;
+export type DisputeStatus = typeof DisputeStatuses[DisputeStatusCode];
+
+export const ArbitratorRulings = {
+  0: 'DoNotPay',
+  1: 'PayClaim',
+  2: 'PaySettlement',
+} as const;
+export type ArbitratorRulingCode = keyof typeof ArbitratorRulings;
+export type ArbitratorRuling = typeof ArbitratorRulings[ArbitratorRulingCode];
 
 export interface Policy {
   policyId: string;
