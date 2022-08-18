@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
 import { addDays, parseISO } from 'date-fns';
 import { parseUsd } from '../src/utils/api3-format';
-import { ClaimsManagerWithKlerosArbitration__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
+import { ClaimsManager__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
 import { MockKlerosArbitrator__factory as MockKlerosArbitratorFactory } from '../src/contracts/tmp/factories/mock/MockKlerosArbitrator__factory';
 import { ChainData } from '../src/chain-data';
 

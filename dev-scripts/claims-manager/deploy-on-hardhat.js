@@ -14,22 +14,23 @@ async function deploy() {
   const mockKlerosArbitratorFactory = await hre.ethers.getContractFactory('MockKlerosArbitrator', roles.deployer);
   const mockKlerosArbitrator = await mockKlerosArbitratorFactory.deploy();
 
-  const claimsManagerWithKlerosArbitrationFactory = await hre.ethers.getContractFactory(
-    'ClaimsManagerWithKlerosArbitration',
-    roles.deployer
-  );
+  const claimsManagerFactory = await hre.ethers.getContractFactory('ClaimsManager', roles.deployer);
   const adminRoleDescription = 'ClaimsManager admin';
-  const claimsManager = await claimsManagerWithKlerosArbitrationFactory.deploy(
+  const claimsManager = await claimsManagerFactory.deploy(
     accessControlRegistry.address,
     adminRoleDescription,
     roles.manager.address,
     mockApi3Pool.address,
     3 * 24 * 60 * 60,
-    3 * 24 * 60 * 60,
+    3 * 24 * 60 * 60
+  );
+
+  const klerosLiquidProxyFactory = await hre.ethers.getContractFactory('KlerosLiquidProxy', roles.deployer);
+  const klerosLiquidProxy = await klerosLiquidProxyFactory.deploy(
+    claimsManager.address,
     mockKlerosArbitrator.address,
     '0x123456',
-    '/ipfs/Qm...testhash/metaEvidence.json',
-    40 * 24 * 60 * 60
+    '/ipfs/Qm...testhash/metaEvidence.json'
   );
 
   const tx = await accessControlRegistry.connect(roles.manager).initializeManager(roles.manager.address);
@@ -41,7 +42,7 @@ async function deploy() {
   await accessControlRegistry.connect(roles.manager).initializeRoleAndGrantToSender(rootRole, adminRoleDescription);
   // NOTE: The role description ("Arbitrator") needs to be in sync with the description given in the ClaimsManager contract
   await accessControlRegistry.connect(roles.manager).initializeRoleAndGrantToSender(adminRole, 'Arbitrator');
-  await accessControlRegistry.connect(roles.manager).grantRole(arbitratorRole, mockKlerosArbitrator.address);
+  await accessControlRegistry.connect(roles.manager).grantRole(arbitratorRole, klerosLiquidProxy.address);
 
   const mockDapiServerFactory = await hre.ethers.getContractFactory('MockDapiServer', roles.deployer);
   const mockDapiServer = await mockDapiServerFactory.deploy();
@@ -58,10 +59,19 @@ async function deploy() {
   const api3ToUsdReaderFactory = await hre.ethers.getContractFactory('Api3ToUsdReader', roles.deployer);
   const api3ToUsdReader = await api3ToUsdReaderFactory.deploy(mockDapiServer.address, claimsManager.address);
   await claimsManager.connect(roles.manager).setApi3ToUsdReader(api3ToUsdReader.address);
+  await claimsManager.connect(roles.manager).setArbitratorResponsePeriod(klerosLiquidProxy.address, 30 * 24 * 60 * 60);
 
   console.info('DEPLOYED ADDRESSES:');
   console.info(
-    JSON.stringify({ claimsManager: claimsManager.address, arbitrator: mockKlerosArbitrator.address }, null, 2)
+    JSON.stringify(
+      {
+        claimsManager: claimsManager.address,
+        arbitratorProxy: klerosLiquidProxy.address,
+        arbitrator: mockKlerosArbitrator.address,
+      },
+      null,
+      2
+    )
   );
 }
 

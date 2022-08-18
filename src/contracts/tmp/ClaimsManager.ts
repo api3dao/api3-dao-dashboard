@@ -9,7 +9,6 @@ import type {
   CallOverrides,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -18,7 +17,7 @@ import type { FunctionFragment, Result, EventFragment } from '@ethersproject/abi
 import type { Listener, Provider } from '@ethersproject/providers';
 import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from './common';
 
-export interface ClaimsManagerWithKlerosArbitrationInterface extends utils.Interface {
+export interface ClaimsManagerInterface extends utils.Interface {
   functions: {
     'acceptClaim(uint256)': FunctionFragment;
     'acceptSettlement(uint256)': FunctionFragment;
@@ -29,53 +28,35 @@ export interface ClaimsManagerWithKlerosArbitrationInterface extends utils.Inter
     'adminRoleDescription()': FunctionFragment;
     'api3Pool()': FunctionFragment;
     'api3ToUsdReader()': FunctionFragment;
-    'appealCost(uint256,uint256)': FunctionFragment;
-    'appealKlerosArbitratorRuling(uint256,uint256)': FunctionFragment;
-    'arbitrationCost()': FunctionFragment;
     'arbitratorRole()': FunctionFragment;
     'arbitratorToResponsePeriod(address)': FunctionFragment;
     'claimCount()': FunctionFragment;
     'claimIndexToArbitrator(uint256)': FunctionFragment;
-    'claimIndexToKlerosArbitrationParametersHistoryIndex(uint256)': FunctionFragment;
     'claimIndexToProposedSettlementAmountInApi3(uint256)': FunctionFragment;
     'claimIndexToProposedSettlementAmountInUsd(uint256)': FunctionFragment;
     'claimantResponsePeriod()': FunctionFragment;
     'claims(uint256)': FunctionFragment;
-    'courts(uint256)': FunctionFragment;
-    'createClaim(address,uint256,uint256,uint256,string,uint256,string)': FunctionFragment;
-    'createDispute(uint256,address)': FunctionFragment;
-    'createDisputeWithKlerosArbitrator(uint256)': FunctionFragment;
+    'createClaim(address,uint256,string,uint256,string)': FunctionFragment;
+    'createDispute(uint256)': FunctionFragment;
     'createPolicy(address,address,uint256,uint256,uint256,string,string)': FunctionFragment;
-    'currentRuling(uint256,uint256)': FunctionFragment;
-    'disputeStatus(uint256,uint256)': FunctionFragment;
-    'disputes(uint256)': FunctionFragment;
-    'executeRuling(uint256,uint256)': FunctionFragment;
-    'getKlerosArbitrationParametersForClaimDisputePair(uint256,uint256)': FunctionFragment;
     'getQuotaUsage(address)': FunctionFragment;
-    'getSubCourt(uint96)': FunctionFragment;
-    'klerosArbitrationParametersHistory(uint256)': FunctionFragment;
-    'klerosArbitrator()': FunctionFragment;
-    'klerosArbitratorExtraData()': FunctionFragment;
-    'klerosArbitratorToDisputeIdToClaimIndex(address,uint256)': FunctionFragment;
+    'isManagerOrMediator(address)': FunctionFragment;
     'manager()': FunctionFragment;
     'mediatorResponsePeriod()': FunctionFragment;
     'mediatorRole()': FunctionFragment;
     'multicall(bytes[])': FunctionFragment;
     'policyCreatorRole()': FunctionFragment;
-    'policyHashToRemainingCoverageAmountInUsd(bytes32)': FunctionFragment;
+    'policyHashToState(bytes32)': FunctionFragment;
     'proposeSettlement(uint256,uint256)': FunctionFragment;
     'resetQuota(address)': FunctionFragment;
     'resolveDispute(uint256,uint8)': FunctionFragment;
-    'rule(uint256,uint256)': FunctionFragment;
     'setApi3Pool(address)': FunctionFragment;
     'setApi3ToUsdReader(address)': FunctionFragment;
     'setArbitratorResponsePeriod(address,uint256)': FunctionFragment;
     'setClaimantResponsePeriod(uint256)': FunctionFragment;
-    'setKlerosArbitrationParameters(address,bytes,string)': FunctionFragment;
     'setMediatorResponsePeriod(uint256)': FunctionFragment;
     'setQuota(address,uint32,uint224)': FunctionFragment;
-    'submitEvidenceToKlerosArbitrator(uint256,uint256,string)': FunctionFragment;
-    'timeOutClaim(uint256)': FunctionFragment;
+    'upgradePolicy(address,address,uint256,uint256,uint256,string,string)': FunctionFragment;
   };
 
   getFunction(
@@ -89,53 +70,35 @@ export interface ClaimsManagerWithKlerosArbitrationInterface extends utils.Inter
       | 'adminRoleDescription'
       | 'api3Pool'
       | 'api3ToUsdReader'
-      | 'appealCost'
-      | 'appealKlerosArbitratorRuling'
-      | 'arbitrationCost'
       | 'arbitratorRole'
       | 'arbitratorToResponsePeriod'
       | 'claimCount'
       | 'claimIndexToArbitrator'
-      | 'claimIndexToKlerosArbitrationParametersHistoryIndex'
       | 'claimIndexToProposedSettlementAmountInApi3'
       | 'claimIndexToProposedSettlementAmountInUsd'
       | 'claimantResponsePeriod'
       | 'claims'
-      | 'courts'
       | 'createClaim'
       | 'createDispute'
-      | 'createDisputeWithKlerosArbitrator'
       | 'createPolicy'
-      | 'currentRuling'
-      | 'disputeStatus'
-      | 'disputes'
-      | 'executeRuling'
-      | 'getKlerosArbitrationParametersForClaimDisputePair'
       | 'getQuotaUsage'
-      | 'getSubCourt'
-      | 'klerosArbitrationParametersHistory'
-      | 'klerosArbitrator'
-      | 'klerosArbitratorExtraData'
-      | 'klerosArbitratorToDisputeIdToClaimIndex'
+      | 'isManagerOrMediator'
       | 'manager'
       | 'mediatorResponsePeriod'
       | 'mediatorRole'
       | 'multicall'
       | 'policyCreatorRole'
-      | 'policyHashToRemainingCoverageAmountInUsd'
+      | 'policyHashToState'
       | 'proposeSettlement'
       | 'resetQuota'
       | 'resolveDispute'
-      | 'rule'
       | 'setApi3Pool'
       | 'setApi3ToUsdReader'
       | 'setArbitratorResponsePeriod'
       | 'setClaimantResponsePeriod'
-      | 'setKlerosArbitrationParameters'
       | 'setMediatorResponsePeriod'
       | 'setQuota'
-      | 'submitEvidenceToKlerosArbitrator'
-      | 'timeOutClaim'
+      | 'upgradePolicy'
   ): FunctionFragment;
 
   encodeFunctionData(functionFragment: 'acceptClaim', values: [PromiseOrValue<BigNumberish>]): string;
@@ -150,23 +113,10 @@ export interface ClaimsManagerWithKlerosArbitrationInterface extends utils.Inter
   encodeFunctionData(functionFragment: 'adminRoleDescription', values?: undefined): string;
   encodeFunctionData(functionFragment: 'api3Pool', values?: undefined): string;
   encodeFunctionData(functionFragment: 'api3ToUsdReader', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'appealCost',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'appealKlerosArbitratorRuling',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(functionFragment: 'arbitrationCost', values?: undefined): string;
   encodeFunctionData(functionFragment: 'arbitratorRole', values?: undefined): string;
   encodeFunctionData(functionFragment: 'arbitratorToResponsePeriod', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'claimCount', values?: undefined): string;
   encodeFunctionData(functionFragment: 'claimIndexToArbitrator', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(
-    functionFragment: 'claimIndexToKlerosArbitrationParametersHistoryIndex',
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
   encodeFunctionData(
     functionFragment: 'claimIndexToProposedSettlementAmountInApi3',
     values: [PromiseOrValue<BigNumberish>]
@@ -177,27 +127,17 @@ export interface ClaimsManagerWithKlerosArbitrationInterface extends utils.Inter
   ): string;
   encodeFunctionData(functionFragment: 'claimantResponsePeriod', values?: undefined): string;
   encodeFunctionData(functionFragment: 'claims', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(functionFragment: 'courts', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(
     functionFragment: 'createClaim',
     values: [
       PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>
     ]
   ): string;
-  encodeFunctionData(
-    functionFragment: 'createDispute',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'createDisputeWithKlerosArbitrator',
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
+  encodeFunctionData(functionFragment: 'createDispute', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(
     functionFragment: 'createPolicy',
     values: [
@@ -210,44 +150,14 @@ export interface ClaimsManagerWithKlerosArbitrationInterface extends utils.Inter
       PromiseOrValue<string>
     ]
   ): string;
-  encodeFunctionData(
-    functionFragment: 'currentRuling',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'disputeStatus',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(functionFragment: 'disputes', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(
-    functionFragment: 'executeRuling',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getKlerosArbitrationParametersForClaimDisputePair',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
   encodeFunctionData(functionFragment: 'getQuotaUsage', values: [PromiseOrValue<string>]): string;
-  encodeFunctionData(functionFragment: 'getSubCourt', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(
-    functionFragment: 'klerosArbitrationParametersHistory',
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(functionFragment: 'klerosArbitrator', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'klerosArbitratorExtraData', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'klerosArbitratorToDisputeIdToClaimIndex',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
+  encodeFunctionData(functionFragment: 'isManagerOrMediator', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'manager', values?: undefined): string;
   encodeFunctionData(functionFragment: 'mediatorResponsePeriod', values?: undefined): string;
   encodeFunctionData(functionFragment: 'mediatorRole', values?: undefined): string;
   encodeFunctionData(functionFragment: 'multicall', values: [PromiseOrValue<BytesLike>[]]): string;
   encodeFunctionData(functionFragment: 'policyCreatorRole', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'policyHashToRemainingCoverageAmountInUsd',
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
+  encodeFunctionData(functionFragment: 'policyHashToState', values: [PromiseOrValue<BytesLike>]): string;
   encodeFunctionData(
     functionFragment: 'proposeSettlement',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
@@ -257,10 +167,6 @@ export interface ClaimsManagerWithKlerosArbitrationInterface extends utils.Inter
     functionFragment: 'resolveDispute',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(
-    functionFragment: 'rule',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
   encodeFunctionData(functionFragment: 'setApi3Pool', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'setApi3ToUsdReader', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(
@@ -268,20 +174,23 @@ export interface ClaimsManagerWithKlerosArbitrationInterface extends utils.Inter
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: 'setClaimantResponsePeriod', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(
-    functionFragment: 'setKlerosArbitrationParameters',
-    values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>, PromiseOrValue<string>]
-  ): string;
   encodeFunctionData(functionFragment: 'setMediatorResponsePeriod', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(
     functionFragment: 'setQuota',
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: 'submitEvidenceToKlerosArbitrator',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    functionFragment: 'upgradePolicy',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
   ): string;
-  encodeFunctionData(functionFragment: 'timeOutClaim', values: [PromiseOrValue<BigNumberish>]): string;
 
   decodeFunctionResult(functionFragment: 'acceptClaim', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'acceptSettlement', data: BytesLike): Result;
@@ -292,108 +201,73 @@ export interface ClaimsManagerWithKlerosArbitrationInterface extends utils.Inter
   decodeFunctionResult(functionFragment: 'adminRoleDescription', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'api3Pool', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'api3ToUsdReader', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'appealCost', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'appealKlerosArbitratorRuling', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'arbitrationCost', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'arbitratorRole', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'arbitratorToResponsePeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'claimCount', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'claimIndexToArbitrator', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'claimIndexToKlerosArbitrationParametersHistoryIndex',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'claimIndexToProposedSettlementAmountInApi3', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'claimIndexToProposedSettlementAmountInUsd', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'claimantResponsePeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'claims', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'courts', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'createClaim', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'createDispute', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'createDisputeWithKlerosArbitrator', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'createPolicy', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'currentRuling', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'disputeStatus', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'disputes', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'executeRuling', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'getKlerosArbitrationParametersForClaimDisputePair', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getQuotaUsage', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'getSubCourt', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'klerosArbitrationParametersHistory', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'klerosArbitrator', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'klerosArbitratorExtraData', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'klerosArbitratorToDisputeIdToClaimIndex', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'isManagerOrMediator', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'manager', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'mediatorResponsePeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'mediatorRole', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'multicall', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'policyCreatorRole', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'policyHashToRemainingCoverageAmountInUsd', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'policyHashToState', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'proposeSettlement', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'resetQuota', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'resolveDispute', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'rule', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setApi3Pool', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setApi3ToUsdReader', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setArbitratorResponsePeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setClaimantResponsePeriod', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'setKlerosArbitrationParameters', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setMediatorResponsePeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setQuota', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'submitEvidenceToKlerosArbitrator', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'timeOutClaim', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'upgradePolicy', data: BytesLike): Result;
 
   events: {
     'AcceptedClaim(uint256,address,address,uint256,address)': EventFragment;
     'AcceptedSettlement(uint256,address,uint256)': EventFragment;
-    'AppealedKlerosArbitratorRuling(uint256,address,uint256)': EventFragment;
-    'CreatedClaim(uint256,address,bytes32,address,uint256,uint256,uint256,string,uint256,string,uint256)': EventFragment;
+    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,uint256)': EventFragment;
     'CreatedDispute(uint256,address,address)': EventFragment;
-    'CreatedDisputeWithKlerosArbitrator(uint256,address,uint256)': EventFragment;
     'CreatedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)': EventFragment;
-    'Dispute(address,uint256,uint256,uint256)': EventFragment;
-    'Evidence(address,uint256,address,string)': EventFragment;
-    'MetaEvidence(uint256,string)': EventFragment;
     'ProposedSettlement(uint256,address,uint256,uint256,address)': EventFragment;
     'ResetQuota(address,address)': EventFragment;
     'ResolvedDisputeByAcceptingClaim(uint256,address,address,uint256,address)': EventFragment;
     'ResolvedDisputeByAcceptingSettlement(uint256,address,address,uint256,address)': EventFragment;
     'ResolvedDisputeByRejectingClaim(uint256,address,address)': EventFragment;
-    'Ruling(address,uint256,uint256)': EventFragment;
     'SetApi3Pool(address)': EventFragment;
     'SetApi3ToUsdReader(address)': EventFragment;
     'SetArbitratorResponsePeriod(address,uint256,address)': EventFragment;
     'SetClaimantResponsePeriod(uint256)': EventFragment;
     'SetMediatorResponsePeriod(uint256)': EventFragment;
     'SetQuota(address,uint32,uint224,address)': EventFragment;
-    'SubmittedEvidenceToKlerosArbitrator(uint256,address,string)': EventFragment;
-    'TimedOutClaim(uint256,address)': EventFragment;
+    'UpgradedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'AcceptedClaim'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'AcceptedSettlement'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'AppealedKlerosArbitratorRuling'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CreatedClaim'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CreatedDispute'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'CreatedDisputeWithKlerosArbitrator'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CreatedPolicy'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Dispute'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Evidence'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MetaEvidence'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ProposedSettlement'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ResetQuota'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ResolvedDisputeByAcceptingClaim'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ResolvedDisputeByAcceptingSettlement'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ResolvedDisputeByRejectingClaim'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Ruling'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SetApi3Pool'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SetApi3ToUsdReader'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SetArbitratorResponsePeriod'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SetClaimantResponsePeriod'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SetMediatorResponsePeriod'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SetQuota'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'SubmittedEvidenceToKlerosArbitrator'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TimedOutClaim'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'UpgradedPolicy'): EventFragment;
 }
 
 export interface AcceptedClaimEventObject {
@@ -416,33 +290,19 @@ export type AcceptedSettlementEvent = TypedEvent<[BigNumber, string, BigNumber],
 
 export type AcceptedSettlementEventFilter = TypedEventFilter<AcceptedSettlementEvent>;
 
-export interface AppealedKlerosArbitratorRulingEventObject {
-  claimIndex: BigNumber;
-  sender: string;
-  disputeId: BigNumber;
-}
-export type AppealedKlerosArbitratorRulingEvent = TypedEvent<
-  [BigNumber, string, BigNumber],
-  AppealedKlerosArbitratorRulingEventObject
->;
-
-export type AppealedKlerosArbitratorRulingEventFilter = TypedEventFilter<AppealedKlerosArbitratorRulingEvent>;
-
 export interface CreatedClaimEventObject {
   claimIndex: BigNumber;
   claimant: string;
   policyHash: string;
   beneficiary: string;
-  coverageAmountInUsd: BigNumber;
   claimsAllowedFrom: BigNumber;
-  claimsAllowedUntil: BigNumber;
   policy: string;
   claimAmountInUsd: BigNumber;
   evidence: string;
   claimCreationTime: BigNumber;
 }
 export type CreatedClaimEvent = TypedEvent<
-  [BigNumber, string, string, string, BigNumber, BigNumber, BigNumber, string, BigNumber, string, BigNumber],
+  [BigNumber, string, string, string, BigNumber, string, BigNumber, string, BigNumber],
   CreatedClaimEventObject
 >;
 
@@ -456,18 +316,6 @@ export interface CreatedDisputeEventObject {
 export type CreatedDisputeEvent = TypedEvent<[BigNumber, string, string], CreatedDisputeEventObject>;
 
 export type CreatedDisputeEventFilter = TypedEventFilter<CreatedDisputeEvent>;
-
-export interface CreatedDisputeWithKlerosArbitratorEventObject {
-  claimIndex: BigNumber;
-  claimant: string;
-  disputeId: BigNumber;
-}
-export type CreatedDisputeWithKlerosArbitratorEvent = TypedEvent<
-  [BigNumber, string, BigNumber],
-  CreatedDisputeWithKlerosArbitratorEventObject
->;
-
-export type CreatedDisputeWithKlerosArbitratorEventFilter = TypedEventFilter<CreatedDisputeWithKlerosArbitratorEvent>;
 
 export interface CreatedPolicyEventObject {
   beneficiary: string;
@@ -486,34 +334,6 @@ export type CreatedPolicyEvent = TypedEvent<
 >;
 
 export type CreatedPolicyEventFilter = TypedEventFilter<CreatedPolicyEvent>;
-
-export interface DisputeEventObject {
-  _arbitrator: string;
-  _disputeID: BigNumber;
-  _metaEvidenceID: BigNumber;
-  _evidenceGroupID: BigNumber;
-}
-export type DisputeEvent = TypedEvent<[string, BigNumber, BigNumber, BigNumber], DisputeEventObject>;
-
-export type DisputeEventFilter = TypedEventFilter<DisputeEvent>;
-
-export interface EvidenceEventObject {
-  _arbitrator: string;
-  _evidenceGroupID: BigNumber;
-  _party: string;
-  _evidence: string;
-}
-export type EvidenceEvent = TypedEvent<[string, BigNumber, string, string], EvidenceEventObject>;
-
-export type EvidenceEventFilter = TypedEventFilter<EvidenceEvent>;
-
-export interface MetaEvidenceEventObject {
-  _metaEvidenceID: BigNumber;
-  _evidence: string;
-}
-export type MetaEvidenceEvent = TypedEvent<[BigNumber, string], MetaEvidenceEventObject>;
-
-export type MetaEvidenceEventFilter = TypedEventFilter<MetaEvidenceEvent>;
 
 export interface ProposedSettlementEventObject {
   claimIndex: BigNumber;
@@ -578,15 +398,6 @@ export type ResolvedDisputeByRejectingClaimEvent = TypedEvent<
 
 export type ResolvedDisputeByRejectingClaimEventFilter = TypedEventFilter<ResolvedDisputeByRejectingClaimEvent>;
 
-export interface RulingEventObject {
-  _arbitrator: string;
-  _disputeID: BigNumber;
-  _ruling: BigNumber;
-}
-export type RulingEvent = TypedEvent<[string, BigNumber, BigNumber], RulingEventObject>;
-
-export type RulingEventFilter = TypedEventFilter<RulingEvent>;
-
 export interface SetApi3PoolEventObject {
   api3Pool: string;
 }
@@ -637,32 +448,30 @@ export type SetQuotaEvent = TypedEvent<[string, number, BigNumber, string], SetQ
 
 export type SetQuotaEventFilter = TypedEventFilter<SetQuotaEvent>;
 
-export interface SubmittedEvidenceToKlerosArbitratorEventObject {
-  claimIndex: BigNumber;
+export interface UpgradedPolicyEventObject {
+  beneficiary: string;
+  claimant: string;
+  policyHash: string;
+  coverageAmountInUsd: BigNumber;
+  claimsAllowedFrom: BigNumber;
+  claimsAllowedUntil: BigNumber;
+  policy: string;
+  metadata: string;
   sender: string;
-  evidence: string;
 }
-export type SubmittedEvidenceToKlerosArbitratorEvent = TypedEvent<
-  [BigNumber, string, string],
-  SubmittedEvidenceToKlerosArbitratorEventObject
+export type UpgradedPolicyEvent = TypedEvent<
+  [string, string, string, BigNumber, BigNumber, BigNumber, string, string, string],
+  UpgradedPolicyEventObject
 >;
 
-export type SubmittedEvidenceToKlerosArbitratorEventFilter = TypedEventFilter<SubmittedEvidenceToKlerosArbitratorEvent>;
+export type UpgradedPolicyEventFilter = TypedEventFilter<UpgradedPolicyEvent>;
 
-export interface TimedOutClaimEventObject {
-  claimIndex: BigNumber;
-  claimant: string;
-}
-export type TimedOutClaimEvent = TypedEvent<[BigNumber, string], TimedOutClaimEventObject>;
-
-export type TimedOutClaimEventFilter = TypedEventFilter<TimedOutClaimEvent>;
-
-export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
+export interface ClaimsManager extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: ClaimsManagerWithKlerosArbitrationInterface;
+  interface: ClaimsManagerInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -711,20 +520,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<[string]>;
 
-    appealCost(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    appealKlerosArbitratorRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    arbitrationCost(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     arbitratorRole(overrides?: CallOverrides): Promise<[string]>;
 
     arbitratorToResponsePeriod(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -732,11 +527,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     claimCount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     claimIndexToArbitrator(arg0: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<[string]>;
-
-    claimIndexToKlerosArbitrationParametersHistoryIndex(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     claimIndexToProposedSettlementAmountInApi3(
       arg0: PromiseOrValue<BigNumberish>,
@@ -765,25 +555,9 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       }
     >;
 
-    courts(
-      subCourtId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, boolean, BigNumber, BigNumber, BigNumber, BigNumber] & {
-        parent: BigNumber;
-        hiddenVotes: boolean;
-        minStake: BigNumber;
-        alpha: BigNumber;
-        feeForJuror: BigNumber;
-        jurorsForCourtJump: BigNumber;
-      }
-    >;
-
     createClaim(
       beneficiary: PromiseOrValue<string>,
-      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
-      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
@@ -792,13 +566,7 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     createDispute(
       claimIndex: PromiseOrValue<BigNumberish>,
-      arbitrator: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    createDisputeWithKlerosArbitrator(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     createPolicy(
@@ -812,72 +580,9 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    currentRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    disputeStatus(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[number]>;
-
-    disputes(
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, string, BigNumber, number, BigNumber, BigNumber, BigNumber, boolean] & {
-        subCourtId: BigNumber;
-        arbitrated: string;
-        numberOfChoices: BigNumber;
-        period: number;
-        lastPeriodChange: BigNumber;
-        drawsInRound: BigNumber;
-        commitsInRound: BigNumber;
-        ruled: boolean;
-      }
-    >;
-
-    executeRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    getKlerosArbitrationParametersForClaimDisputePair(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string, string] & { arbitrator: string; extraData: string }>;
-
     getQuotaUsage(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getSubCourt(
-      subCourtId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber[], [BigNumber, BigNumber, BigNumber, BigNumber]] & {
-        children: BigNumber[];
-        timesPerPeriod: [BigNumber, BigNumber, BigNumber, BigNumber];
-      }
-    >;
-
-    klerosArbitrationParametersHistory(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string, string] & { arbitrator: string; extraData: string }>;
-
-    klerosArbitrator(overrides?: CallOverrides): Promise<[string]>;
-
-    klerosArbitratorExtraData(overrides?: CallOverrides): Promise<[string]>;
-
-    klerosArbitratorToDisputeIdToClaimIndex(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    isManagerOrMediator(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<[boolean]>;
 
     manager(overrides?: CallOverrides): Promise<[string]>;
 
@@ -892,10 +597,15 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     policyCreatorRole(overrides?: CallOverrides): Promise<[string]>;
 
-    policyHashToRemainingCoverageAmountInUsd(
+    policyHashToState(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<
+      [number, BigNumber] & {
+        claimsAllowedUntil: number;
+        coverageAmountInUsd: BigNumber;
+      }
+    >;
 
     proposeSettlement(
       claimIndex: PromiseOrValue<BigNumberish>,
@@ -911,12 +621,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     resolveDispute(
       claimIndex: PromiseOrValue<BigNumberish>,
       result: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    rule(
-      disputeId: PromiseOrValue<BigNumberish>,
-      ruling: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -941,13 +645,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setKlerosArbitrationParameters(
-      _klerosArbitrator: PromiseOrValue<string>,
-      _klerosArbitratorExtraData: PromiseOrValue<BytesLike>,
-      _klerosArbitratorMetaEvidence: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     setMediatorResponsePeriod(
       _mediatorResponsePeriod: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -960,15 +657,14 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    submitEvidenceToKlerosArbitrator(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      evidence: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    timeOutClaim(
-      claimIndex: PromiseOrValue<BigNumberish>,
+    upgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -1004,20 +700,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
   api3ToUsdReader(overrides?: CallOverrides): Promise<string>;
 
-  appealCost(
-    claimIndex: PromiseOrValue<BigNumberish>,
-    disputeId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  appealKlerosArbitratorRuling(
-    claimIndex: PromiseOrValue<BigNumberish>,
-    disputeId: PromiseOrValue<BigNumberish>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  arbitrationCost(overrides?: CallOverrides): Promise<BigNumber>;
-
   arbitratorRole(overrides?: CallOverrides): Promise<string>;
 
   arbitratorToResponsePeriod(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1025,11 +707,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
   claimCount(overrides?: CallOverrides): Promise<BigNumber>;
 
   claimIndexToArbitrator(arg0: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<string>;
-
-  claimIndexToKlerosArbitrationParametersHistoryIndex(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   claimIndexToProposedSettlementAmountInApi3(
     arg0: PromiseOrValue<BigNumberish>,
@@ -1058,25 +735,9 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     }
   >;
 
-  courts(
-    subCourtId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, boolean, BigNumber, BigNumber, BigNumber, BigNumber] & {
-      parent: BigNumber;
-      hiddenVotes: boolean;
-      minStake: BigNumber;
-      alpha: BigNumber;
-      feeForJuror: BigNumber;
-      jurorsForCourtJump: BigNumber;
-    }
-  >;
-
   createClaim(
     beneficiary: PromiseOrValue<string>,
-    coverageAmountInUsd: PromiseOrValue<BigNumberish>,
     claimsAllowedFrom: PromiseOrValue<BigNumberish>,
-    claimsAllowedUntil: PromiseOrValue<BigNumberish>,
     policy: PromiseOrValue<string>,
     claimAmountInUsd: PromiseOrValue<BigNumberish>,
     evidence: PromiseOrValue<string>,
@@ -1085,13 +746,7 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
   createDispute(
     claimIndex: PromiseOrValue<BigNumberish>,
-    arbitrator: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  createDisputeWithKlerosArbitrator(
-    claimIndex: PromiseOrValue<BigNumberish>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   createPolicy(
@@ -1105,72 +760,9 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  currentRuling(
-    claimIndex: PromiseOrValue<BigNumberish>,
-    disputeId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  disputeStatus(
-    claimIndex: PromiseOrValue<BigNumberish>,
-    disputeId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<number>;
-
-  disputes(
-    disputeId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, string, BigNumber, number, BigNumber, BigNumber, BigNumber, boolean] & {
-      subCourtId: BigNumber;
-      arbitrated: string;
-      numberOfChoices: BigNumber;
-      period: number;
-      lastPeriodChange: BigNumber;
-      drawsInRound: BigNumber;
-      commitsInRound: BigNumber;
-      ruled: boolean;
-    }
-  >;
-
-  executeRuling(
-    claimIndex: PromiseOrValue<BigNumberish>,
-    disputeId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  getKlerosArbitrationParametersForClaimDisputePair(
-    claimIndex: PromiseOrValue<BigNumberish>,
-    disputeId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<[string, string] & { arbitrator: string; extraData: string }>;
-
   getQuotaUsage(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
 
-  getSubCourt(
-    subCourtId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber[], [BigNumber, BigNumber, BigNumber, BigNumber]] & {
-      children: BigNumber[];
-      timesPerPeriod: [BigNumber, BigNumber, BigNumber, BigNumber];
-    }
-  >;
-
-  klerosArbitrationParametersHistory(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<[string, string] & { arbitrator: string; extraData: string }>;
-
-  klerosArbitrator(overrides?: CallOverrides): Promise<string>;
-
-  klerosArbitratorExtraData(overrides?: CallOverrides): Promise<string>;
-
-  klerosArbitratorToDisputeIdToClaimIndex(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  isManagerOrMediator(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<boolean>;
 
   manager(overrides?: CallOverrides): Promise<string>;
 
@@ -1185,10 +777,15 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
   policyCreatorRole(overrides?: CallOverrides): Promise<string>;
 
-  policyHashToRemainingCoverageAmountInUsd(
+  policyHashToState(
     arg0: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<
+    [number, BigNumber] & {
+      claimsAllowedUntil: number;
+      coverageAmountInUsd: BigNumber;
+    }
+  >;
 
   proposeSettlement(
     claimIndex: PromiseOrValue<BigNumberish>,
@@ -1204,12 +801,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
   resolveDispute(
     claimIndex: PromiseOrValue<BigNumberish>,
     result: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  rule(
-    disputeId: PromiseOrValue<BigNumberish>,
-    ruling: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1234,13 +825,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setKlerosArbitrationParameters(
-    _klerosArbitrator: PromiseOrValue<string>,
-    _klerosArbitratorExtraData: PromiseOrValue<BytesLike>,
-    _klerosArbitratorMetaEvidence: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   setMediatorResponsePeriod(
     _mediatorResponsePeriod: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1253,15 +837,14 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  submitEvidenceToKlerosArbitrator(
-    claimIndex: PromiseOrValue<BigNumberish>,
-    disputeId: PromiseOrValue<BigNumberish>,
-    evidence: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  timeOutClaim(
-    claimIndex: PromiseOrValue<BigNumberish>,
+  upgradePolicy(
+    claimant: PromiseOrValue<string>,
+    beneficiary: PromiseOrValue<string>,
+    coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+    claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+    claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+    policy: PromiseOrValue<string>,
+    metadata: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1291,20 +874,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<string>;
 
-    appealCost(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    appealKlerosArbitratorRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    arbitrationCost(overrides?: CallOverrides): Promise<BigNumber>;
-
     arbitratorRole(overrides?: CallOverrides): Promise<string>;
 
     arbitratorToResponsePeriod(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1312,11 +881,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     claimCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     claimIndexToArbitrator(arg0: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<string>;
-
-    claimIndexToKlerosArbitrationParametersHistoryIndex(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     claimIndexToProposedSettlementAmountInApi3(
       arg0: PromiseOrValue<BigNumberish>,
@@ -1345,41 +909,16 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       }
     >;
 
-    courts(
-      subCourtId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, boolean, BigNumber, BigNumber, BigNumber, BigNumber] & {
-        parent: BigNumber;
-        hiddenVotes: boolean;
-        minStake: BigNumber;
-        alpha: BigNumber;
-        feeForJuror: BigNumber;
-        jurorsForCourtJump: BigNumber;
-      }
-    >;
-
     createClaim(
       beneficiary: PromiseOrValue<string>,
-      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
-      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    createDispute(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      arbitrator: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    createDisputeWithKlerosArbitrator(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    createDispute(claimIndex: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
 
     createPolicy(
       claimant: PromiseOrValue<string>,
@@ -1392,72 +931,9 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    currentRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    disputeStatus(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<number>;
-
-    disputes(
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, string, BigNumber, number, BigNumber, BigNumber, BigNumber, boolean] & {
-        subCourtId: BigNumber;
-        arbitrated: string;
-        numberOfChoices: BigNumber;
-        period: number;
-        lastPeriodChange: BigNumber;
-        drawsInRound: BigNumber;
-        commitsInRound: BigNumber;
-        ruled: boolean;
-      }
-    >;
-
-    executeRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    getKlerosArbitrationParametersForClaimDisputePair(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string, string] & { arbitrator: string; extraData: string }>;
-
     getQuotaUsage(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getSubCourt(
-      subCourtId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber[], [BigNumber, BigNumber, BigNumber, BigNumber]] & {
-        children: BigNumber[];
-        timesPerPeriod: [BigNumber, BigNumber, BigNumber, BigNumber];
-      }
-    >;
-
-    klerosArbitrationParametersHistory(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string, string] & { arbitrator: string; extraData: string }>;
-
-    klerosArbitrator(overrides?: CallOverrides): Promise<string>;
-
-    klerosArbitratorExtraData(overrides?: CallOverrides): Promise<string>;
-
-    klerosArbitratorToDisputeIdToClaimIndex(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    isManagerOrMediator(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<boolean>;
 
     manager(overrides?: CallOverrides): Promise<string>;
 
@@ -1469,10 +945,15 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     policyCreatorRole(overrides?: CallOverrides): Promise<string>;
 
-    policyHashToRemainingCoverageAmountInUsd(
+    policyHashToState(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [number, BigNumber] & {
+        claimsAllowedUntil: number;
+        coverageAmountInUsd: BigNumber;
+      }
+    >;
 
     proposeSettlement(
       claimIndex: PromiseOrValue<BigNumberish>,
@@ -1485,12 +966,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     resolveDispute(
       claimIndex: PromiseOrValue<BigNumberish>,
       result: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    rule(
-      disputeId: PromiseOrValue<BigNumberish>,
-      ruling: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1509,13 +984,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setKlerosArbitrationParameters(
-      _klerosArbitrator: PromiseOrValue<string>,
-      _klerosArbitratorExtraData: PromiseOrValue<BytesLike>,
-      _klerosArbitratorMetaEvidence: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setMediatorResponsePeriod(
       _mediatorResponsePeriod: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1528,14 +996,16 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    submitEvidenceToKlerosArbitrator(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      evidence: PromiseOrValue<string>,
+    upgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
-
-    timeOutClaim(claimIndex: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
+    ): Promise<string>;
   };
 
   filters: {
@@ -1565,25 +1035,12 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       amountInApi3?: null
     ): AcceptedSettlementEventFilter;
 
-    'AppealedKlerosArbitratorRuling(uint256,address,uint256)'(
-      claimIndex?: PromiseOrValue<BigNumberish> | null,
-      sender?: PromiseOrValue<string> | null,
-      disputeId?: PromiseOrValue<BigNumberish> | null
-    ): AppealedKlerosArbitratorRulingEventFilter;
-    AppealedKlerosArbitratorRuling(
-      claimIndex?: PromiseOrValue<BigNumberish> | null,
-      sender?: PromiseOrValue<string> | null,
-      disputeId?: PromiseOrValue<BigNumberish> | null
-    ): AppealedKlerosArbitratorRulingEventFilter;
-
-    'CreatedClaim(uint256,address,bytes32,address,uint256,uint256,uint256,string,uint256,string,uint256)'(
+    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,uint256)'(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       policyHash?: PromiseOrValue<BytesLike> | null,
       beneficiary?: null,
-      coverageAmountInUsd?: null,
       claimsAllowedFrom?: null,
-      claimsAllowedUntil?: null,
       policy?: null,
       claimAmountInUsd?: null,
       evidence?: null,
@@ -1594,9 +1051,7 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       claimant?: PromiseOrValue<string> | null,
       policyHash?: PromiseOrValue<BytesLike> | null,
       beneficiary?: null,
-      coverageAmountInUsd?: null,
       claimsAllowedFrom?: null,
-      claimsAllowedUntil?: null,
       policy?: null,
       claimAmountInUsd?: null,
       evidence?: null,
@@ -1613,17 +1068,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       claimant?: PromiseOrValue<string> | null,
       arbitrator?: null
     ): CreatedDisputeEventFilter;
-
-    'CreatedDisputeWithKlerosArbitrator(uint256,address,uint256)'(
-      claimIndex?: PromiseOrValue<BigNumberish> | null,
-      claimant?: PromiseOrValue<string> | null,
-      disputeId?: PromiseOrValue<BigNumberish> | null
-    ): CreatedDisputeWithKlerosArbitratorEventFilter;
-    CreatedDisputeWithKlerosArbitrator(
-      claimIndex?: PromiseOrValue<BigNumberish> | null,
-      claimant?: PromiseOrValue<string> | null,
-      disputeId?: PromiseOrValue<BigNumberish> | null
-    ): CreatedDisputeWithKlerosArbitratorEventFilter;
 
     'CreatedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)'(
       beneficiary?: null,
@@ -1647,38 +1091,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       metadata?: null,
       sender?: null
     ): CreatedPolicyEventFilter;
-
-    'Dispute(address,uint256,uint256,uint256)'(
-      _arbitrator?: PromiseOrValue<string> | null,
-      _disputeID?: PromiseOrValue<BigNumberish> | null,
-      _metaEvidenceID?: null,
-      _evidenceGroupID?: null
-    ): DisputeEventFilter;
-    Dispute(
-      _arbitrator?: PromiseOrValue<string> | null,
-      _disputeID?: PromiseOrValue<BigNumberish> | null,
-      _metaEvidenceID?: null,
-      _evidenceGroupID?: null
-    ): DisputeEventFilter;
-
-    'Evidence(address,uint256,address,string)'(
-      _arbitrator?: PromiseOrValue<string> | null,
-      _evidenceGroupID?: PromiseOrValue<BigNumberish> | null,
-      _party?: PromiseOrValue<string> | null,
-      _evidence?: null
-    ): EvidenceEventFilter;
-    Evidence(
-      _arbitrator?: PromiseOrValue<string> | null,
-      _evidenceGroupID?: PromiseOrValue<BigNumberish> | null,
-      _party?: PromiseOrValue<string> | null,
-      _evidence?: null
-    ): EvidenceEventFilter;
-
-    'MetaEvidence(uint256,string)'(
-      _metaEvidenceID?: PromiseOrValue<BigNumberish> | null,
-      _evidence?: null
-    ): MetaEvidenceEventFilter;
-    MetaEvidence(_metaEvidenceID?: PromiseOrValue<BigNumberish> | null, _evidence?: null): MetaEvidenceEventFilter;
 
     'ProposedSettlement(uint256,address,uint256,uint256,address)'(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
@@ -1739,17 +1151,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       arbitrator?: null
     ): ResolvedDisputeByRejectingClaimEventFilter;
 
-    'Ruling(address,uint256,uint256)'(
-      _arbitrator?: PromiseOrValue<string> | null,
-      _disputeID?: PromiseOrValue<BigNumberish> | null,
-      _ruling?: null
-    ): RulingEventFilter;
-    Ruling(
-      _arbitrator?: PromiseOrValue<string> | null,
-      _disputeID?: PromiseOrValue<BigNumberish> | null,
-      _ruling?: null
-    ): RulingEventFilter;
-
     'SetApi3Pool(address)'(api3Pool?: null): SetApi3PoolEventFilter;
     SetApi3Pool(api3Pool?: null): SetApi3PoolEventFilter;
 
@@ -1786,25 +1187,28 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       sender?: null
     ): SetQuotaEventFilter;
 
-    'SubmittedEvidenceToKlerosArbitrator(uint256,address,string)'(
-      claimIndex?: PromiseOrValue<BigNumberish> | null,
-      sender?: PromiseOrValue<string> | null,
-      evidence?: null
-    ): SubmittedEvidenceToKlerosArbitratorEventFilter;
-    SubmittedEvidenceToKlerosArbitrator(
-      claimIndex?: PromiseOrValue<BigNumberish> | null,
-      sender?: PromiseOrValue<string> | null,
-      evidence?: null
-    ): SubmittedEvidenceToKlerosArbitratorEventFilter;
-
-    'TimedOutClaim(uint256,address)'(
-      claimIndex?: PromiseOrValue<BigNumberish> | null,
-      claimant?: PromiseOrValue<string> | null
-    ): TimedOutClaimEventFilter;
-    TimedOutClaim(
-      claimIndex?: PromiseOrValue<BigNumberish> | null,
-      claimant?: PromiseOrValue<string> | null
-    ): TimedOutClaimEventFilter;
+    'UpgradedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)'(
+      beneficiary?: null,
+      claimant?: PromiseOrValue<string> | null,
+      policyHash?: PromiseOrValue<BytesLike> | null,
+      coverageAmountInUsd?: null,
+      claimsAllowedFrom?: null,
+      claimsAllowedUntil?: null,
+      policy?: null,
+      metadata?: null,
+      sender?: null
+    ): UpgradedPolicyEventFilter;
+    UpgradedPolicy(
+      beneficiary?: null,
+      claimant?: PromiseOrValue<string> | null,
+      policyHash?: PromiseOrValue<BytesLike> | null,
+      coverageAmountInUsd?: null,
+      claimsAllowedFrom?: null,
+      claimsAllowedUntil?: null,
+      policy?: null,
+      metadata?: null,
+      sender?: null
+    ): UpgradedPolicyEventFilter;
   };
 
   estimateGas: {
@@ -1836,20 +1240,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<BigNumber>;
 
-    appealCost(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    appealKlerosArbitratorRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    arbitrationCost(overrides?: CallOverrides): Promise<BigNumber>;
-
     arbitratorRole(overrides?: CallOverrides): Promise<BigNumber>;
 
     arbitratorToResponsePeriod(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1857,11 +1247,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     claimCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     claimIndexToArbitrator(arg0: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
-
-    claimIndexToKlerosArbitrationParametersHistoryIndex(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     claimIndexToProposedSettlementAmountInApi3(
       arg0: PromiseOrValue<BigNumberish>,
@@ -1877,13 +1262,9 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     claims(arg0: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
 
-    courts(subCourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
-
     createClaim(
       beneficiary: PromiseOrValue<string>,
-      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
-      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
@@ -1892,13 +1273,7 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     createDispute(
       claimIndex: PromiseOrValue<BigNumberish>,
-      arbitrator: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    createDisputeWithKlerosArbitrator(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     createPolicy(
@@ -1912,50 +1287,9 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    currentRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    disputeStatus(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    disputes(disputeId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
-
-    executeRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getKlerosArbitrationParametersForClaimDisputePair(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getQuotaUsage(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getSubCourt(subCourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
-
-    klerosArbitrationParametersHistory(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    klerosArbitrator(overrides?: CallOverrides): Promise<BigNumber>;
-
-    klerosArbitratorExtraData(overrides?: CallOverrides): Promise<BigNumber>;
-
-    klerosArbitratorToDisputeIdToClaimIndex(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    isManagerOrMediator(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
 
     manager(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1970,10 +1304,7 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     policyCreatorRole(overrides?: CallOverrides): Promise<BigNumber>;
 
-    policyHashToRemainingCoverageAmountInUsd(
-      arg0: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    policyHashToState(arg0: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>;
 
     proposeSettlement(
       claimIndex: PromiseOrValue<BigNumberish>,
@@ -1989,12 +1320,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     resolveDispute(
       claimIndex: PromiseOrValue<BigNumberish>,
       result: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    rule(
-      disputeId: PromiseOrValue<BigNumberish>,
-      ruling: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2019,13 +1344,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setKlerosArbitrationParameters(
-      _klerosArbitrator: PromiseOrValue<string>,
-      _klerosArbitratorExtraData: PromiseOrValue<BytesLike>,
-      _klerosArbitratorMetaEvidence: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     setMediatorResponsePeriod(
       _mediatorResponsePeriod: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -2038,15 +1356,14 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    submitEvidenceToKlerosArbitrator(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      evidence: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    timeOutClaim(
-      claimIndex: PromiseOrValue<BigNumberish>,
+    upgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -2080,20 +1397,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    appealCost(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    appealKlerosArbitratorRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    arbitrationCost(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     arbitratorRole(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     arbitratorToResponsePeriod(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2101,11 +1404,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     claimCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     claimIndexToArbitrator(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    claimIndexToKlerosArbitrationParametersHistoryIndex(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2124,13 +1422,9 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     claims(arg0: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    courts(subCourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     createClaim(
       beneficiary: PromiseOrValue<string>,
-      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
-      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
@@ -2139,13 +1433,7 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     createDispute(
       claimIndex: PromiseOrValue<BigNumberish>,
-      arbitrator: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    createDisputeWithKlerosArbitrator(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     createPolicy(
@@ -2159,50 +1447,9 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    currentRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    disputeStatus(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    disputes(disputeId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    executeRuling(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getKlerosArbitrationParametersForClaimDisputePair(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getQuotaUsage(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getSubCourt(subCourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    klerosArbitrationParametersHistory(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    klerosArbitrator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    klerosArbitratorExtraData(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    klerosArbitratorToDisputeIdToClaimIndex(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    isManagerOrMediator(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     manager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2217,10 +1464,7 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
 
     policyCreatorRole(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    policyHashToRemainingCoverageAmountInUsd(
-      arg0: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    policyHashToState(arg0: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     proposeSettlement(
       claimIndex: PromiseOrValue<BigNumberish>,
@@ -2236,12 +1480,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
     resolveDispute(
       claimIndex: PromiseOrValue<BigNumberish>,
       result: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    rule(
-      disputeId: PromiseOrValue<BigNumberish>,
-      ruling: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2266,13 +1504,6 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setKlerosArbitrationParameters(
-      _klerosArbitrator: PromiseOrValue<string>,
-      _klerosArbitratorExtraData: PromiseOrValue<BytesLike>,
-      _klerosArbitratorMetaEvidence: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     setMediatorResponsePeriod(
       _mediatorResponsePeriod: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -2285,15 +1516,14 @@ export interface ClaimsManagerWithKlerosArbitration extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    submitEvidenceToKlerosArbitrator(
-      claimIndex: PromiseOrValue<BigNumberish>,
-      disputeId: PromiseOrValue<BigNumberish>,
-      evidence: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    timeOutClaim(
-      claimIndex: PromiseOrValue<BigNumberish>,
+    upgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

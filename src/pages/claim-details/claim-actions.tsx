@@ -6,7 +6,7 @@ import { abbrStr, Claim, useChainData } from '../../chain-data';
 import styles from './claim-actions.module.scss';
 import { formatApi3, formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
-import { useClaimsManager } from '../../contracts';
+import { useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
 
 interface Props {
@@ -18,6 +18,7 @@ export default function ClaimActions(props: Props) {
   const { dispute } = claim;
   const { setChainData, transactions } = useChainData();
   const claimsManager = useClaimsManager()!;
+  const arbitratorProxy = useArbitratorProxy()!;
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
 
   const isPastDeadline = claim.deadline ? isAfter(new Date(), claim.deadline) : false;
@@ -38,7 +39,7 @@ export default function ClaimActions(props: Props) {
 
   const handleEscalateToArbitrator = async () => {
     setStatus('submitting');
-    const tx = await handleTransactionError(claimsManager.createDisputeWithKlerosArbitrator(claim.claimId));
+    const tx = await handleTransactionError(arbitratorProxy.createDispute(claim.claimId));
     if (tx) {
       setChainData('Save escalate claim transaction', {
         transactions: [...transactions, { type: 'escalate-claim-to-arbitrator', tx }],
@@ -51,7 +52,7 @@ export default function ClaimActions(props: Props) {
 
   const handleAppeal = async () => {
     setStatus('submitting');
-    const tx = await handleTransactionError(claimsManager.appealKlerosArbitratorRuling(claim.claimId, dispute!.id));
+    const tx = await handleTransactionError(arbitratorProxy.appealKlerosArbitratorRuling(claim.claimId));
     if (tx) {
       setChainData('Save appeal claim transaction', {
         transactions: [...transactions, { type: 'appeal-claim-decision', tx }],
@@ -261,13 +262,6 @@ export default function ClaimActions(props: Props) {
         <div className={styles.actionSection}>
           <p>Kleros</p>
           <div className={styles.actionMainInfo}>Rejected</div>
-        </div>
-      );
-
-    case 'TimedOut':
-      return (
-        <div className={styles.actionSection}>
-          <div className={styles.actionMainInfo}>Timed Out</div>
         </div>
       );
 
