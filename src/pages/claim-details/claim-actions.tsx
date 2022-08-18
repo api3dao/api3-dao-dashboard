@@ -4,7 +4,7 @@ import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
 import { abbrStr, Claim, useChainData } from '../../chain-data';
 import styles from './claim-actions.module.scss';
-import { formatApi3, formatUsd, handleTransactionError } from '../../utils';
+import { formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
 import { useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
