@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import ClaimActions from './claim-actions';
 import { Claim } from '../../chain-data';
 import { addDays, addMinutes } from 'date-fns';
-import { parseApi3, parseUsd } from '../../utils';
+import { parseUsd } from '../../utils';
 
 let claim: Claim;
 
@@ -15,7 +15,6 @@ describe('<ClaimActions />', () => {
       beneficiary: '0x153EF0B488148k0aB0FED112334',
       claimAmountInUsd: parseUsd('1000'),
       counterOfferAmountInUsd: null,
-      counterOfferAmountInApi3: null,
       timestamp: addDays(new Date(), -2),
       status: 'ClaimCreated',
       statusUpdatedAt: addDays(new Date(), -1),
@@ -65,13 +64,12 @@ describe('<ClaimActions />', () => {
     it('enables Accept and Escalate actions', () => {
       claim.status = 'SettlementProposed';
       claim.counterOfferAmountInUsd = parseUsd('500');
-      claim.counterOfferAmountInApi3 = parseApi3('250');
       claim.deadline = addMinutes(new Date(), 1);
 
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
-      expect(screen.getByText(/Countered with 250.0 API3/i)).toBeInTheDocument();
+      expect(screen.getByText(/Countered with \$500.0/i)).toBeInTheDocument();
       const acceptButton = screen.getByRole('button', { name: /Accept Counter/i });
       const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
       expect(acceptButton).not.toBeDisabled();
@@ -81,7 +79,6 @@ describe('<ClaimActions />', () => {
     it('disables the buttons when the deadline has passed', () => {
       claim.status = 'SettlementProposed';
       claim.counterOfferAmountInUsd = parseUsd('500');
-      claim.counterOfferAmountInApi3 = parseApi3('250');
       claim.deadline = addMinutes(new Date(), -1);
 
       render(<ClaimActions claim={claim} />);
@@ -97,12 +94,11 @@ describe('<ClaimActions />', () => {
     it('shows claimant has accepted the counter', () => {
       claim.status = 'SettlementAccepted';
       claim.counterOfferAmountInUsd = parseUsd('500');
-      claim.counterOfferAmountInApi3 = parseApi3('250');
 
       render(<ClaimActions claim={claim} />);
 
       expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
-      expect(screen.getByText(/Accepted counter of 250.0 API3/i)).toBeInTheDocument();
+      expect(screen.getByText(/Accepted counter of \$500.0/i)).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
   });
@@ -128,7 +124,6 @@ describe('<ClaimActions />', () => {
 
     it('shows counter offer amount when present', () => {
       claim.counterOfferAmountInUsd = parseUsd('500');
-      claim.counterOfferAmountInApi3 = parseApi3('250');
       claim.dispute = {
         id: '1',
         status: 'Waiting',
@@ -159,7 +154,6 @@ describe('<ClaimActions />', () => {
     describe('with "PaySettlement" arbitrator ruling', () => {
       beforeEach(() => {
         claim.counterOfferAmountInUsd = parseUsd('500');
-        claim.counterOfferAmountInApi3 = parseApi3('250');
         claim.dispute = {
           id: '1',
           status: 'Appealable',
@@ -260,7 +254,6 @@ describe('<ClaimActions />', () => {
     it('shows the claim counter offer has been approved', () => {
       claim.status = 'DisputeResolvedWithSettlementPayout';
       claim.counterOfferAmountInUsd = parseUsd('500');
-      claim.counterOfferAmountInApi3 = parseApi3('250');
       claim.deadline = addMinutes(new Date(), 1);
 
       render(<ClaimActions claim={claim} />);

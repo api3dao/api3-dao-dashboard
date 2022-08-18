@@ -22,7 +22,8 @@ async function deploy() {
     roles.manager.address,
     mockApi3Pool.address,
     3 * 24 * 60 * 60,
-    3 * 24 * 60 * 60
+    3 * 24 * 60 * 60,
+    30 * 24 * 60 * 60
   );
 
   const klerosLiquidProxyFactory = await hre.ethers.getContractFactory('KlerosLiquidProxy', roles.deployer);
@@ -59,7 +60,6 @@ async function deploy() {
   const api3ToUsdReaderFactory = await hre.ethers.getContractFactory('Api3ToUsdReader', roles.deployer);
   const api3ToUsdReader = await api3ToUsdReaderFactory.deploy(mockDapiServer.address, claimsManager.address);
   await claimsManager.connect(roles.manager).setApi3ToUsdReader(api3ToUsdReader.address);
-  await claimsManager.connect(roles.manager).setArbitratorResponsePeriod(klerosLiquidProxy.address, 30 * 24 * 60 * 60);
 
   console.info('DEPLOYED ADDRESSES:');
   console.info(

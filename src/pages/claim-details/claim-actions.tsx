@@ -119,8 +119,7 @@ export default function ClaimActions(props: Props) {
         <div className={styles.actionSection}>
           <p>API3 Multi-sig</p>
           <div className={styles.actionMainInfo}>
-            Countered with <br />
-            {formatApi3(claim.counterOfferAmountInApi3!)} API3
+            Countered with <br />${formatUsd(claim.counterOfferAmountInUsd!)}
           </div>
           <div className={styles.actionPanel}>
             <Button variant="primary" disabled={disableActions} onClick={handleAcceptCounter}>
@@ -142,8 +141,7 @@ export default function ClaimActions(props: Props) {
           <p>{abbrStr(claim.claimant)}</p>
           <div className={styles.actionMainInfo}>
             Accepted <br />
-            counter of <br />
-            {formatApi3(claim.counterOfferAmountInApi3!)} API3
+            counter of <br />${formatUsd(claim.counterOfferAmountInUsd!)}
           </div>
         </div>
       );
