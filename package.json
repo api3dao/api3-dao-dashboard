@@ -23,6 +23,7 @@
     "prepare": "husky install",
     "send-to-account": "cd hardhat && npx hardhat send-to-account --address",
     "create-user-policy": "cd hardhat && npx hardhat create-user-policy",
+    "upgrade-user-policy": "cd hardhat && npx hardhat upgrade-user-policy",
     "claims:accept-claim": "cd hardhat && npx hardhat accept-claim",
     "claims:propose-settlement": "cd hardhat && npx hardhat propose-settlement",
     "claims:arbitrator-decide-not-to-pay": "cd hardhat && npx hardhat give-dispute-ruling --ruling 0",

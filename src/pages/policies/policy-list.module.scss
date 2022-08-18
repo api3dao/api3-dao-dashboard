@@ -51,25 +51,35 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  max-width: 54ch;
   font-size: $text-xsmall;
   line-height: $lh-xsmall;
   margin-top: -0.75rem;
 
   @media (min-width: $min-lg) {
     margin-top: 0;
+    max-width: 80ch;
   }
 
-  & > *:first-child {
+  & > *:nth-child(1) {
     width: 10ch;
+  }
+
+  & > *:nth-child(2) {
+    width: 35%;
+    @media (min-width: $min-lg) {
+      width: 27%;
+    }
+  }
+
+  & > *:nth-child(3) {
+    flex: 1;
   }
 }
 
 .infoEntry {
   display: flex;
   flex-direction: column;
-  width: 40%;
-  @media (min-width: $min-md) {
+  @media (min-width: $min-lg) {
     flex-direction: row;
     gap: 1ch;
   }

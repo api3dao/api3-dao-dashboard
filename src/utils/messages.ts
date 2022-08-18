@@ -39,6 +39,7 @@ export const messages = {
   // Claims errors
   FAILED_TO_LOAD_CLAIMS: 'Failed to load claims. Please try again later.',
   FAILED_TO_LOAD_POLICIES: 'Failed to load policies. Please try again later.',
+  FAILED_TO_LOAD_REMAINING_COVERAGE: 'Failed to load remaining policy coverage. Please try again later.',
 };
 
 // TODO: these messages should change depending on the final designs

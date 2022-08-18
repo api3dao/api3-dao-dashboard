@@ -27,7 +27,7 @@ export default function Confirmation(props: Props) {
         <li>
           <p>Requested relief amount, in USD</p>
           <p className={globalStyles.secondaryColor}>
-            How much USD do you wish to receive? (Max of ${formatUsd(policy.coverageAmountInUsd)})
+            How much USD do you wish to receive? (Max of ${formatUsd(policy.remainingCoverageInUsd)})
           </p>
           <p className={styles.confirmValue}>${utils.commify(form.amount)}</p>
         </li>
