@@ -153,7 +153,6 @@ export const ClaimStatuses = {
   6: 'DisputeResolvedWithoutPayout',
   7: 'DisputeResolvedWithClaimPayout',
   8: 'DisputeResolvedWithSettlementPayout',
-  9: 'TimedOut',
 } as const;
 export type ClaimStatusCode = keyof typeof ClaimStatuses;
 export type ClaimStatus = typeof ClaimStatuses[ClaimStatusCode];

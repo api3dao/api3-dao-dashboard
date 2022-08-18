@@ -4,7 +4,7 @@ import { isWithinInterval } from 'date-fns';
 import { go } from '@api3/promise-utils';
 import { blockTimestampToDate, messages } from '../../utils';
 import { Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
-import { ClaimsManagerWithKlerosArbitration, useClaimsManager, useChainUpdateEffect } from '../../contracts';
+import { ClaimsManager, useClaimsManager, useChainUpdateEffect } from '../../contracts';
 import { notifications } from '../../components/notifications';
 
 /**
@@ -120,7 +120,7 @@ export function useUserPolicyById(policyId: string) {
 }
 
 async function loadPolicies(
-  contract: ClaimsManagerWithKlerosArbitration,
+  contract: ClaimsManager,
   params: { userAccount?: string; policyId?: string }
 ): Promise<{ ids: string[]; byId: Record<string, Policy> }> {
   const { userAccount = null, policyId = null } = params;

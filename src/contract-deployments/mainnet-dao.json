@@ -10,5 +10,6 @@
   "agentAppPrimary": "0xd9f80bdb37e6bad114d747e60ce6d2aaf26704ae",
   "agentAppSecondary": "0x556ecbb0311d350491ba0ec7e019c354d7723ce0",
   "claimsManager": "",
+  "arbitratorProxy": "",
   "arbitrator": ""
 }

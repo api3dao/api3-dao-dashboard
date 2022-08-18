@@ -5,7 +5,7 @@ import { BaseLayout } from '../../components/layout';
 import ClaimEvidenceInstructions from './claim-evidence-instructions';
 import NewClaimForm, { FormState, FormStatus } from './new-claim-form';
 import Confirmation from './confirmation';
-import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManagerWithKlerosArbitration';
+import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManager';
 import { handleTransactionError } from '../../utils';
 import { useChainData } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';
@@ -57,9 +57,7 @@ export default function NewClaim() {
     const tx = await handleTransactionError(
       claimsManager.createClaim(
         policy.beneficiary,
-        policy.coverageAmountInUsd,
         Math.round(policy.claimsAllowedFrom.getTime() / 1000),
-        Math.round(policy.claimsAllowedUntil.getTime() / 1000),
         policy.ipfsHash,
         parseUsd(form.amount),
         form.evidence.trim()
