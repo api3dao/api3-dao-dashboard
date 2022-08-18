@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
+import last from 'lodash/last';
 import { BigNumber } from 'ethers';
 import { isWithinInterval } from 'date-fns';
 import { go } from '@api3/promise-utils';
 import { blockTimestampToDate, messages } from '../../utils';
-import { Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
+import { BasePolicy, Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { ClaimsManager, useClaimsManager, useChainUpdateEffect } from '../../contracts';
 import { notifications } from '../../components/notifications';
 
@@ -16,14 +17,16 @@ export function useUserPolicies() {
   const { userAccount, policies, setChainData } = useChainData();
   const claimsManager = useClaimsManager();
 
-  const sortedPolicies = useMemo(() => {
+  const sortedPolicies: BasePolicy[] | null = useMemo(() => {
     if (!policies.userPolicyIds) return null;
     return (
       policies.userPolicyIds
         .map((policyId) => {
           const policy = policies.byId![policyId]!;
-          const remainingCoverageInUsd = policies.remainingCoverageById?.[policyId];
-          return remainingCoverageInUsd ? { ...policy, remainingCoverageInUsd } : policy;
+          return {
+            ...policy,
+            remainingCoverageInUsd: policies.remainingCoverageById?.[policyId],
+          };
         })
         // Sort by the claimsAllowedUntil date in descending order
         .sort((a, b) => b.claimsAllowedUntil.getTime() - a.claimsAllowedUntil.getTime())
@@ -72,7 +75,7 @@ export function useUserPolicyById(policyId: string) {
   const { userAccount, policies, setChainData } = useChainData();
   const claimsManager = useClaimsManager();
 
-  const data = useMemo(() => {
+  const data: Policy | null = useMemo(() => {
     const policy = policies.byId?.[policyId];
     const remainingCoverageInUsd = policies.remainingCoverageById?.[policyId];
     if (!policy || !remainingCoverageInUsd) {
@@ -119,12 +122,12 @@ export function useUserPolicyById(policyId: string) {
   };
 }
 
-async function loadPolicies(
-  contract: ClaimsManager,
-  params: { userAccount?: string; policyId?: string }
-): Promise<{ ids: string[]; byId: Record<string, Policy> }> {
+async function loadPolicies(contract: ClaimsManager, params: { userAccount?: string; policyId?: string }) {
   const { userAccount = null, policyId = null } = params;
-  const createdEvents = await contract.queryFilter(contract.filters.CreatedPolicy(null, userAccount, policyId));
+  const [createdEvents, upgradedEvents] = await Promise.all([
+    contract.queryFilter(contract.filters.CreatedPolicy(null, userAccount, policyId)),
+    contract.queryFilter(contract.filters.UpgradedPolicy(null, userAccount, policyId)),
+  ]);
 
   if (!createdEvents.length) {
     return { ids: [], byId: {} };
@@ -132,20 +135,24 @@ async function loadPolicies(
 
   const policiesById = createdEvents.reduce((acc, event) => {
     const eventArgs = event.args;
-    const policy: Policy = {
+    // The policy can be upgraded multiple times, and we only care about the last upgrade event
+    const upgradedEvent = last(upgradedEvents.filter((ev) => ev.args.policyHash === eventArgs.policyHash));
+
+    const policy = {
       policyId: eventArgs.policyHash,
       claimant: eventArgs.claimant,
       beneficiary: eventArgs.beneficiary,
-      coverageAmountInUsd: eventArgs.coverageAmountInUsd,
       claimsAllowedFrom: blockTimestampToDate(eventArgs.claimsAllowedFrom),
-      claimsAllowedUntil: blockTimestampToDate(eventArgs.claimsAllowedUntil),
+      claimsAllowedUntil: blockTimestampToDate(
+        upgradedEvent ? upgradedEvent.args.claimsAllowedUntil : eventArgs.claimsAllowedUntil
+      ),
       ipfsHash: eventArgs.policy,
       metadata: eventArgs.metadata,
     };
 
     acc[policy.policyId] = policy;
     return acc;
-  }, {} as { [policyId: string]: Policy });
+  }, {} as { [policyId: string]: Omit<Policy, 'remainingCoverageInUsd'> });
 
   return {
     ids: createdEvents.map((event) => event.args.policyHash),
@@ -153,7 +160,7 @@ async function loadPolicies(
   };
 }
 
-export function isActive(policy: Policy) {
+export function isActive(policy: BasePolicy) {
   return isWithinInterval(new Date(), { start: policy.claimsAllowedFrom, end: policy.claimsAllowedUntil });
 }
 
@@ -189,17 +196,18 @@ export function useRemainingCoverageLoader(policyIds: string[]) {
   }, [claimsManager, policyIds, setChainData]);
 }
 
-async function loadRemainingCoverage(contract: ClaimsManagerWithKlerosArbitration, policyIds: string[]) {
+async function loadRemainingCoverage(contract: ClaimsManager, policyIds: string[]) {
   const calls = policyIds.map((id) => {
-    return contract.interface.encodeFunctionData('policyHashToRemainingCoverageAmountInUsd', [id]);
+    return contract.interface.encodeFunctionData('policyHashToState', [id]);
   });
+
   const encodedResults = await contract.callStatic.multicall(calls);
-  const amounts = encodedResults.map((res) => {
-    return contract.interface.decodeFunctionResult('policyHashToRemainingCoverageAmountInUsd', res);
+  const decodedResults = encodedResults.map((res) => {
+    return contract.interface.decodeFunctionResult('policyHashToState', res);
   });
 
   const amountsById = policyIds.reduce((acc, policyId, index) => {
-    acc[policyId] = amounts[index]![0];
+    acc[policyId] = decodedResults[index]!.coverageAmountInUsd;
     return acc;
   }, {} as { [policyId: string]: BigNumber });
 

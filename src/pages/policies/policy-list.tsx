@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Policy } from '../../chain-data';
+import { BasePolicy } from '../../chain-data';
 import { isActive, useRemainingCoverageLoader } from '../../logic/policies';
 import { useStableIds, formatUsd, images } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './policy-list.module.scss';
 
 interface Props {
-  policies: Policy[];
+  policies: BasePolicy[];
 }
 
 export default function PolicyList(props: Props) {
@@ -34,12 +34,7 @@ export default function PolicyList(props: Props) {
               </div>
               <div className={styles.infoEntry}>
                 <span className={globalStyles.tertiaryColor}>Coverage: </span>
-                <span>${formatUsd(policy.coverageAmountInUsd)}</span>
-                {policy.remainingCoverageInUsd && (
-                  <span className={globalStyles.tertiaryColor}>
-                    (${formatUsd(policy.remainingCoverageInUsd)} remaining)
-                  </span>
-                )}
+                {policy.remainingCoverageInUsd && <span>${formatUsd(policy.remainingCoverageInUsd)}</span>}
               </div>
             </div>
           </div>

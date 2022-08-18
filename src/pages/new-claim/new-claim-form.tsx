@@ -29,7 +29,7 @@ function getValidationMessages(form: FormState, policy: Policy) {
     const parsed = result.data;
     if (parsed.lte(0)) {
       messages.amount = 'Amount must be greater than zero';
-    } else if (parsed.gt(policy.coverageAmountInUsd)) {
+    } else if (parsed.gt(policy.remainingCoverageInUsd)) {
       messages.amount = 'Amount must not exceed the coverage amount';
     }
   }
@@ -77,7 +77,7 @@ export default function NewClaimForm(props: Props) {
         <li>
           <label htmlFor="amount">Requested relief amount, in USD</label>
           <p className={globalStyles.secondaryColor}>
-            How much USD do you wish to receive? (Max of ${formatUsd(policy.coverageAmountInUsd)})
+            How much USD do you wish to receive? (Max of ${formatUsd(policy.remainingCoverageInUsd)})
           </p>
           <Input
             id="amount"

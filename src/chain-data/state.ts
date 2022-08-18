@@ -173,16 +173,21 @@ export const ArbitratorRulings = {
 export type ArbitratorRulingCode = keyof typeof ArbitratorRulings;
 export type ArbitratorRuling = typeof ArbitratorRulings[ArbitratorRulingCode];
 
-export interface Policy {
+// Represents a policy that may or may not have its dynamic data loaded
+export interface BasePolicy {
   policyId: string;
   claimant: string;
   beneficiary: string;
-  coverageAmountInUsd: BigNumber;
-  remainingCoverageInUsd?: BigNumber;
   claimsAllowedFrom: Date;
   claimsAllowedUntil: Date;
   ipfsHash: string;
   metadata: string;
+  // Dynamic data
+  remainingCoverageInUsd?: BigNumber;
+}
+
+export interface Policy extends BasePolicy {
+  remainingCoverageInUsd: BigNumber;
 }
 
 export interface ChainData {
@@ -209,7 +214,7 @@ export interface ChainData {
   };
   policies: {
     userPolicyIds: null | string[]; // All the policy ids that are linked to the user's account
-    byId: null | { [policyId: string]: Policy };
+    byId: null | { [policyId: string]: Omit<Policy, 'remainingCoverageInUsd'> };
     remainingCoverageById: null | { [policyId: string]: BigNumber };
   };
 }
