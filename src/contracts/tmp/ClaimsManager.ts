@@ -35,7 +35,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'claimIndexToProposedSettlementAmountInUsd(uint256)': FunctionFragment;
     'claimantResponsePeriod()': FunctionFragment;
     'claims(uint256)': FunctionFragment;
-    'createClaim(address,uint256,string,uint256,string)': FunctionFragment;
+    'createClaim(address,uint256,string,uint256,string,string)': FunctionFragment;
     'createDispute(uint256)': FunctionFragment;
     'createPolicy(address,address,uint256,uint256,uint256,string,string)': FunctionFragment;
     'getQuotaUsage(address)': FunctionFragment;
@@ -128,6 +128,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
       PromiseOrValue<string>
     ]
   ): string;
@@ -224,7 +225,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
   events: {
     'AcceptedClaim(uint256,address,address,uint256,uint256,address)': EventFragment;
     'AcceptedSettlement(uint256,address,uint256,uint256)': EventFragment;
-    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,uint256)': EventFragment;
+    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,string,uint256)': EventFragment;
     'CreatedDispute(uint256,address,address)': EventFragment;
     'CreatedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)': EventFragment;
     'ProposedSettlement(uint256,address,uint256,address)': EventFragment;
@@ -297,10 +298,11 @@ export interface CreatedClaimEventObject {
   policy: string;
   claimAmountInUsd: BigNumber;
   evidence: string;
+  metadata: string;
   claimCreationTime: BigNumber;
 }
 export type CreatedClaimEvent = TypedEvent<
-  [BigNumber, string, string, string, BigNumber, string, BigNumber, string, BigNumber],
+  [BigNumber, string, string, string, BigNumber, string, BigNumber, string, string, BigNumber],
   CreatedClaimEventObject
 >;
 
@@ -552,6 +554,7 @@ export interface ClaimsManager extends BaseContract {
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -726,6 +729,7 @@ export interface ClaimsManager extends BaseContract {
     policy: PromiseOrValue<string>,
     claimAmountInUsd: PromiseOrValue<BigNumberish>,
     evidence: PromiseOrValue<string>,
+    metadata: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -894,6 +898,7 @@ export interface ClaimsManager extends BaseContract {
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1017,7 +1022,7 @@ export interface ClaimsManager extends BaseContract {
       clippedAmountInApi3?: null
     ): AcceptedSettlementEventFilter;
 
-    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,uint256)'(
+    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,string,uint256)'(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       policyHash?: PromiseOrValue<BytesLike> | null,
@@ -1026,6 +1031,7 @@ export interface ClaimsManager extends BaseContract {
       policy?: null,
       claimAmountInUsd?: null,
       evidence?: null,
+      metadata?: null,
       claimCreationTime?: null
     ): CreatedClaimEventFilter;
     CreatedClaim(
@@ -1037,6 +1043,7 @@ export interface ClaimsManager extends BaseContract {
       policy?: null,
       claimAmountInUsd?: null,
       evidence?: null,
+      metadata?: null,
       claimCreationTime?: null
     ): CreatedClaimEventFilter;
 
@@ -1248,6 +1255,7 @@ export interface ClaimsManager extends BaseContract {
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1402,6 +1410,7 @@ export interface ClaimsManager extends BaseContract {
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
