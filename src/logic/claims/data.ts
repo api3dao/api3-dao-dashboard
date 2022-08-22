@@ -155,7 +155,6 @@ async function loadClaims(
       beneficiary: eventArgs.beneficiary,
       claimAmountInUsd: eventArgs.claimAmountInUsd,
       counterOfferAmountInUsd: counterOfferEvent?.args.amountInUsd ?? null,
-      counterOfferAmountInApi3: counterOfferEvent?.args.amountInApi3 ?? null,
       status: ClaimStatuses[claimData.status as ClaimStatusCode],
       statusUpdatedAt: new Date(claimData.updateTime * 1000),
       deadline: null,

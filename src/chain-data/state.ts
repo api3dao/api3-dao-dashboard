@@ -131,7 +131,6 @@ export interface Claim {
   beneficiary: string;
   claimAmountInUsd: BigNumber;
   counterOfferAmountInUsd: null | BigNumber;
-  counterOfferAmountInApi3: null | BigNumber;
   status: ClaimStatus;
   statusUpdatedAt: Date;
   deadline: null | Date;

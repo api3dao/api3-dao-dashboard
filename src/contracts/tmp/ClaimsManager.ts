@@ -28,15 +28,14 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'adminRoleDescription()': FunctionFragment;
     'api3Pool()': FunctionFragment;
     'api3ToUsdReader()': FunctionFragment;
+    'arbitratorResponsePeriod()': FunctionFragment;
     'arbitratorRole()': FunctionFragment;
-    'arbitratorToResponsePeriod(address)': FunctionFragment;
     'claimCount()': FunctionFragment;
     'claimIndexToArbitrator(uint256)': FunctionFragment;
-    'claimIndexToProposedSettlementAmountInApi3(uint256)': FunctionFragment;
     'claimIndexToProposedSettlementAmountInUsd(uint256)': FunctionFragment;
     'claimantResponsePeriod()': FunctionFragment;
     'claims(uint256)': FunctionFragment;
-    'createClaim(address,uint256,string,uint256,string)': FunctionFragment;
+    'createClaim(address,uint256,string,uint256,string,string)': FunctionFragment;
     'createDispute(uint256)': FunctionFragment;
     'createPolicy(address,address,uint256,uint256,uint256,string,string)': FunctionFragment;
     'getQuotaUsage(address)': FunctionFragment;
@@ -52,7 +51,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'resolveDispute(uint256,uint8)': FunctionFragment;
     'setApi3Pool(address)': FunctionFragment;
     'setApi3ToUsdReader(address)': FunctionFragment;
-    'setArbitratorResponsePeriod(address,uint256)': FunctionFragment;
+    'setArbitratorResponsePeriod(uint256)': FunctionFragment;
     'setClaimantResponsePeriod(uint256)': FunctionFragment;
     'setMediatorResponsePeriod(uint256)': FunctionFragment;
     'setQuota(address,uint32,uint224)': FunctionFragment;
@@ -70,11 +69,10 @@ export interface ClaimsManagerInterface extends utils.Interface {
       | 'adminRoleDescription'
       | 'api3Pool'
       | 'api3ToUsdReader'
+      | 'arbitratorResponsePeriod'
       | 'arbitratorRole'
-      | 'arbitratorToResponsePeriod'
       | 'claimCount'
       | 'claimIndexToArbitrator'
-      | 'claimIndexToProposedSettlementAmountInApi3'
       | 'claimIndexToProposedSettlementAmountInUsd'
       | 'claimantResponsePeriod'
       | 'claims'
@@ -113,14 +111,10 @@ export interface ClaimsManagerInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'adminRoleDescription', values?: undefined): string;
   encodeFunctionData(functionFragment: 'api3Pool', values?: undefined): string;
   encodeFunctionData(functionFragment: 'api3ToUsdReader', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'arbitratorResponsePeriod', values?: undefined): string;
   encodeFunctionData(functionFragment: 'arbitratorRole', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'arbitratorToResponsePeriod', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'claimCount', values?: undefined): string;
   encodeFunctionData(functionFragment: 'claimIndexToArbitrator', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(
-    functionFragment: 'claimIndexToProposedSettlementAmountInApi3',
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
   encodeFunctionData(
     functionFragment: 'claimIndexToProposedSettlementAmountInUsd',
     values: [PromiseOrValue<BigNumberish>]
@@ -134,6 +128,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
       PromiseOrValue<string>
     ]
   ): string;
@@ -169,10 +164,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'setApi3Pool', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'setApi3ToUsdReader', values: [PromiseOrValue<string>]): string;
-  encodeFunctionData(
-    functionFragment: 'setArbitratorResponsePeriod',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
+  encodeFunctionData(functionFragment: 'setArbitratorResponsePeriod', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(functionFragment: 'setClaimantResponsePeriod', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(functionFragment: 'setMediatorResponsePeriod', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(
@@ -201,11 +193,10 @@ export interface ClaimsManagerInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'adminRoleDescription', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'api3Pool', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'api3ToUsdReader', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'arbitratorResponsePeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'arbitratorRole', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'arbitratorToResponsePeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'claimCount', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'claimIndexToArbitrator', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'claimIndexToProposedSettlementAmountInApi3', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'claimIndexToProposedSettlementAmountInUsd', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'claimantResponsePeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'claims', data: BytesLike): Result;
@@ -232,21 +223,21 @@ export interface ClaimsManagerInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'upgradePolicy', data: BytesLike): Result;
 
   events: {
-    'AcceptedClaim(uint256,address,address,uint256,address)': EventFragment;
-    'AcceptedSettlement(uint256,address,uint256)': EventFragment;
-    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,uint256)': EventFragment;
+    'AcceptedClaim(uint256,address,address,uint256,uint256,address)': EventFragment;
+    'AcceptedSettlement(uint256,address,uint256,uint256)': EventFragment;
+    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,string,uint256)': EventFragment;
     'CreatedDispute(uint256,address,address)': EventFragment;
     'CreatedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)': EventFragment;
-    'ProposedSettlement(uint256,address,uint256,uint256,address)': EventFragment;
+    'ProposedSettlement(uint256,address,uint256,address)': EventFragment;
     'ResetQuota(address,address)': EventFragment;
-    'ResolvedDisputeByAcceptingClaim(uint256,address,address,uint256,address)': EventFragment;
-    'ResolvedDisputeByAcceptingSettlement(uint256,address,address,uint256,address)': EventFragment;
+    'ResolvedDisputeByAcceptingClaim(uint256,address,address,uint256,uint256,address)': EventFragment;
+    'ResolvedDisputeByAcceptingSettlement(uint256,address,address,uint256,uint256,address)': EventFragment;
     'ResolvedDisputeByRejectingClaim(uint256,address,address)': EventFragment;
-    'SetApi3Pool(address)': EventFragment;
-    'SetApi3ToUsdReader(address)': EventFragment;
-    'SetArbitratorResponsePeriod(address,uint256,address)': EventFragment;
-    'SetClaimantResponsePeriod(uint256)': EventFragment;
-    'SetMediatorResponsePeriod(uint256)': EventFragment;
+    'SetApi3Pool(address,address)': EventFragment;
+    'SetApi3ToUsdReader(address,address)': EventFragment;
+    'SetArbitratorResponsePeriod(uint256,address)': EventFragment;
+    'SetClaimantResponsePeriod(uint256,address)': EventFragment;
+    'SetMediatorResponsePeriod(uint256,address)': EventFragment;
     'SetQuota(address,uint32,uint224,address)': EventFragment;
     'UpgradedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)': EventFragment;
   };
@@ -274,19 +265,27 @@ export interface AcceptedClaimEventObject {
   claimIndex: BigNumber;
   claimant: string;
   beneficiary: string;
-  amountInApi3: BigNumber;
+  clippedAmountInUsd: BigNumber;
+  clippedAmountInApi3: BigNumber;
   sender: string;
 }
-export type AcceptedClaimEvent = TypedEvent<[BigNumber, string, string, BigNumber, string], AcceptedClaimEventObject>;
+export type AcceptedClaimEvent = TypedEvent<
+  [BigNumber, string, string, BigNumber, BigNumber, string],
+  AcceptedClaimEventObject
+>;
 
 export type AcceptedClaimEventFilter = TypedEventFilter<AcceptedClaimEvent>;
 
 export interface AcceptedSettlementEventObject {
   claimIndex: BigNumber;
   claimant: string;
-  amountInApi3: BigNumber;
+  clippedAmountInUsd: BigNumber;
+  clippedAmountInApi3: BigNumber;
 }
-export type AcceptedSettlementEvent = TypedEvent<[BigNumber, string, BigNumber], AcceptedSettlementEventObject>;
+export type AcceptedSettlementEvent = TypedEvent<
+  [BigNumber, string, BigNumber, BigNumber],
+  AcceptedSettlementEventObject
+>;
 
 export type AcceptedSettlementEventFilter = TypedEventFilter<AcceptedSettlementEvent>;
 
@@ -299,10 +298,11 @@ export interface CreatedClaimEventObject {
   policy: string;
   claimAmountInUsd: BigNumber;
   evidence: string;
+  metadata: string;
   claimCreationTime: BigNumber;
 }
 export type CreatedClaimEvent = TypedEvent<
-  [BigNumber, string, string, string, BigNumber, string, BigNumber, string, BigNumber],
+  [BigNumber, string, string, string, BigNumber, string, BigNumber, string, string, BigNumber],
   CreatedClaimEventObject
 >;
 
@@ -339,13 +339,9 @@ export interface ProposedSettlementEventObject {
   claimIndex: BigNumber;
   claimant: string;
   amountInUsd: BigNumber;
-  amountInApi3: BigNumber;
   sender: string;
 }
-export type ProposedSettlementEvent = TypedEvent<
-  [BigNumber, string, BigNumber, BigNumber, string],
-  ProposedSettlementEventObject
->;
+export type ProposedSettlementEvent = TypedEvent<[BigNumber, string, BigNumber, string], ProposedSettlementEventObject>;
 
 export type ProposedSettlementEventFilter = TypedEventFilter<ProposedSettlementEvent>;
 
@@ -361,11 +357,12 @@ export interface ResolvedDisputeByAcceptingClaimEventObject {
   claimIndex: BigNumber;
   claimant: string;
   beneficiary: string;
-  amountInApi3: BigNumber;
+  clippedAmountInUsd: BigNumber;
+  clippedAmountInApi3: BigNumber;
   arbitrator: string;
 }
 export type ResolvedDisputeByAcceptingClaimEvent = TypedEvent<
-  [BigNumber, string, string, BigNumber, string],
+  [BigNumber, string, string, BigNumber, BigNumber, string],
   ResolvedDisputeByAcceptingClaimEventObject
 >;
 
@@ -375,11 +372,12 @@ export interface ResolvedDisputeByAcceptingSettlementEventObject {
   claimIndex: BigNumber;
   claimant: string;
   beneficiary: string;
-  amountInApi3: BigNumber;
+  clippedAmountInUsd: BigNumber;
+  clippedAmountInApi3: BigNumber;
   arbitrator: string;
 }
 export type ResolvedDisputeByAcceptingSettlementEvent = TypedEvent<
-  [BigNumber, string, string, BigNumber, string],
+  [BigNumber, string, string, BigNumber, BigNumber, string],
   ResolvedDisputeByAcceptingSettlementEventObject
 >;
 
@@ -400,41 +398,41 @@ export type ResolvedDisputeByRejectingClaimEventFilter = TypedEventFilter<Resolv
 
 export interface SetApi3PoolEventObject {
   api3Pool: string;
+  sender: string;
 }
-export type SetApi3PoolEvent = TypedEvent<[string], SetApi3PoolEventObject>;
+export type SetApi3PoolEvent = TypedEvent<[string, string], SetApi3PoolEventObject>;
 
 export type SetApi3PoolEventFilter = TypedEventFilter<SetApi3PoolEvent>;
 
 export interface SetApi3ToUsdReaderEventObject {
   api3ToUsdReader: string;
+  sender: string;
 }
-export type SetApi3ToUsdReaderEvent = TypedEvent<[string], SetApi3ToUsdReaderEventObject>;
+export type SetApi3ToUsdReaderEvent = TypedEvent<[string, string], SetApi3ToUsdReaderEventObject>;
 
 export type SetApi3ToUsdReaderEventFilter = TypedEventFilter<SetApi3ToUsdReaderEvent>;
 
 export interface SetArbitratorResponsePeriodEventObject {
-  arbitrator: string;
   arbitratorResponsePeriod: BigNumber;
   sender: string;
 }
-export type SetArbitratorResponsePeriodEvent = TypedEvent<
-  [string, BigNumber, string],
-  SetArbitratorResponsePeriodEventObject
->;
+export type SetArbitratorResponsePeriodEvent = TypedEvent<[BigNumber, string], SetArbitratorResponsePeriodEventObject>;
 
 export type SetArbitratorResponsePeriodEventFilter = TypedEventFilter<SetArbitratorResponsePeriodEvent>;
 
 export interface SetClaimantResponsePeriodEventObject {
   claimantResponsePeriod: BigNumber;
+  sender: string;
 }
-export type SetClaimantResponsePeriodEvent = TypedEvent<[BigNumber], SetClaimantResponsePeriodEventObject>;
+export type SetClaimantResponsePeriodEvent = TypedEvent<[BigNumber, string], SetClaimantResponsePeriodEventObject>;
 
 export type SetClaimantResponsePeriodEventFilter = TypedEventFilter<SetClaimantResponsePeriodEvent>;
 
 export interface SetMediatorResponsePeriodEventObject {
   mediatorResponsePeriod: BigNumber;
+  sender: string;
 }
-export type SetMediatorResponsePeriodEvent = TypedEvent<[BigNumber], SetMediatorResponsePeriodEventObject>;
+export type SetMediatorResponsePeriodEvent = TypedEvent<[BigNumber, string], SetMediatorResponsePeriodEventObject>;
 
 export type SetMediatorResponsePeriodEventFilter = TypedEventFilter<SetMediatorResponsePeriodEvent>;
 
@@ -520,18 +518,13 @@ export interface ClaimsManager extends BaseContract {
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<[string]>;
 
-    arbitratorRole(overrides?: CallOverrides): Promise<[string]>;
+    arbitratorResponsePeriod(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    arbitratorToResponsePeriod(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<[BigNumber]>;
+    arbitratorRole(overrides?: CallOverrides): Promise<[string]>;
 
     claimCount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     claimIndexToArbitrator(arg0: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<[string]>;
-
-    claimIndexToProposedSettlementAmountInApi3(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     claimIndexToProposedSettlementAmountInUsd(
       arg0: PromiseOrValue<BigNumberish>,
@@ -561,6 +554,7 @@ export interface ClaimsManager extends BaseContract {
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -635,8 +629,7 @@ export interface ClaimsManager extends BaseContract {
     ): Promise<ContractTransaction>;
 
     setArbitratorResponsePeriod(
-      arbitrator: PromiseOrValue<string>,
-      arbitratorResponsePeriod: PromiseOrValue<BigNumberish>,
+      _arbitratorResponsePeriod: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -700,18 +693,13 @@ export interface ClaimsManager extends BaseContract {
 
   api3ToUsdReader(overrides?: CallOverrides): Promise<string>;
 
-  arbitratorRole(overrides?: CallOverrides): Promise<string>;
+  arbitratorResponsePeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
-  arbitratorToResponsePeriod(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
+  arbitratorRole(overrides?: CallOverrides): Promise<string>;
 
   claimCount(overrides?: CallOverrides): Promise<BigNumber>;
 
   claimIndexToArbitrator(arg0: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<string>;
-
-  claimIndexToProposedSettlementAmountInApi3(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   claimIndexToProposedSettlementAmountInUsd(
     arg0: PromiseOrValue<BigNumberish>,
@@ -741,6 +729,7 @@ export interface ClaimsManager extends BaseContract {
     policy: PromiseOrValue<string>,
     claimAmountInUsd: PromiseOrValue<BigNumberish>,
     evidence: PromiseOrValue<string>,
+    metadata: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -815,8 +804,7 @@ export interface ClaimsManager extends BaseContract {
   ): Promise<ContractTransaction>;
 
   setArbitratorResponsePeriod(
-    arbitrator: PromiseOrValue<string>,
-    arbitratorResponsePeriod: PromiseOrValue<BigNumberish>,
+    _arbitratorResponsePeriod: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -851,7 +839,7 @@ export interface ClaimsManager extends BaseContract {
   callStatic: {
     acceptClaim(claimIndex: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
 
-    acceptSettlement(claimIndex: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
+    acceptSettlement(claimIndex: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
 
     accessControlRegistry(overrides?: CallOverrides): Promise<string>;
 
@@ -874,18 +862,13 @@ export interface ClaimsManager extends BaseContract {
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<string>;
 
-    arbitratorRole(overrides?: CallOverrides): Promise<string>;
+    arbitratorResponsePeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
-    arbitratorToResponsePeriod(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
+    arbitratorRole(overrides?: CallOverrides): Promise<string>;
 
     claimCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     claimIndexToArbitrator(arg0: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<string>;
-
-    claimIndexToProposedSettlementAmountInApi3(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     claimIndexToProposedSettlementAmountInUsd(
       arg0: PromiseOrValue<BigNumberish>,
@@ -915,6 +898,7 @@ export interface ClaimsManager extends BaseContract {
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -967,15 +951,14 @@ export interface ClaimsManager extends BaseContract {
       claimIndex: PromiseOrValue<BigNumberish>,
       result: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     setApi3Pool(_api3Pool: PromiseOrValue<string>, overrides?: CallOverrides): Promise<void>;
 
     setApi3ToUsdReader(_api3ToUsdReader: PromiseOrValue<string>, overrides?: CallOverrides): Promise<void>;
 
     setArbitratorResponsePeriod(
-      arbitrator: PromiseOrValue<string>,
-      arbitratorResponsePeriod: PromiseOrValue<BigNumberish>,
+      _arbitratorResponsePeriod: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1009,33 +992,37 @@ export interface ClaimsManager extends BaseContract {
   };
 
   filters: {
-    'AcceptedClaim(uint256,address,address,uint256,address)'(
+    'AcceptedClaim(uint256,address,address,uint256,uint256,address)'(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       beneficiary?: null,
-      amountInApi3?: null,
+      clippedAmountInUsd?: null,
+      clippedAmountInApi3?: null,
       sender?: null
     ): AcceptedClaimEventFilter;
     AcceptedClaim(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       beneficiary?: null,
-      amountInApi3?: null,
+      clippedAmountInUsd?: null,
+      clippedAmountInApi3?: null,
       sender?: null
     ): AcceptedClaimEventFilter;
 
-    'AcceptedSettlement(uint256,address,uint256)'(
+    'AcceptedSettlement(uint256,address,uint256,uint256)'(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
-      amountInApi3?: null
+      clippedAmountInUsd?: null,
+      clippedAmountInApi3?: null
     ): AcceptedSettlementEventFilter;
     AcceptedSettlement(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
-      amountInApi3?: null
+      clippedAmountInUsd?: null,
+      clippedAmountInApi3?: null
     ): AcceptedSettlementEventFilter;
 
-    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,uint256)'(
+    'CreatedClaim(uint256,address,bytes32,address,uint256,string,uint256,string,string,uint256)'(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       policyHash?: PromiseOrValue<BytesLike> | null,
@@ -1044,6 +1031,7 @@ export interface ClaimsManager extends BaseContract {
       policy?: null,
       claimAmountInUsd?: null,
       evidence?: null,
+      metadata?: null,
       claimCreationTime?: null
     ): CreatedClaimEventFilter;
     CreatedClaim(
@@ -1055,6 +1043,7 @@ export interface ClaimsManager extends BaseContract {
       policy?: null,
       claimAmountInUsd?: null,
       evidence?: null,
+      metadata?: null,
       claimCreationTime?: null
     ): CreatedClaimEventFilter;
 
@@ -1092,51 +1081,53 @@ export interface ClaimsManager extends BaseContract {
       sender?: null
     ): CreatedPolicyEventFilter;
 
-    'ProposedSettlement(uint256,address,uint256,uint256,address)'(
+    'ProposedSettlement(uint256,address,uint256,address)'(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       amountInUsd?: null,
-      amountInApi3?: null,
       sender?: null
     ): ProposedSettlementEventFilter;
     ProposedSettlement(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       amountInUsd?: null,
-      amountInApi3?: null,
       sender?: null
     ): ProposedSettlementEventFilter;
 
     'ResetQuota(address,address)'(account?: PromiseOrValue<string> | null, sender?: null): ResetQuotaEventFilter;
     ResetQuota(account?: PromiseOrValue<string> | null, sender?: null): ResetQuotaEventFilter;
 
-    'ResolvedDisputeByAcceptingClaim(uint256,address,address,uint256,address)'(
+    'ResolvedDisputeByAcceptingClaim(uint256,address,address,uint256,uint256,address)'(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       beneficiary?: null,
-      amountInApi3?: null,
+      clippedAmountInUsd?: null,
+      clippedAmountInApi3?: null,
       arbitrator?: null
     ): ResolvedDisputeByAcceptingClaimEventFilter;
     ResolvedDisputeByAcceptingClaim(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       beneficiary?: null,
-      amountInApi3?: null,
+      clippedAmountInUsd?: null,
+      clippedAmountInApi3?: null,
       arbitrator?: null
     ): ResolvedDisputeByAcceptingClaimEventFilter;
 
-    'ResolvedDisputeByAcceptingSettlement(uint256,address,address,uint256,address)'(
+    'ResolvedDisputeByAcceptingSettlement(uint256,address,address,uint256,uint256,address)'(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       beneficiary?: null,
-      amountInApi3?: null,
+      clippedAmountInUsd?: null,
+      clippedAmountInApi3?: null,
       arbitrator?: null
     ): ResolvedDisputeByAcceptingSettlementEventFilter;
     ResolvedDisputeByAcceptingSettlement(
       claimIndex?: PromiseOrValue<BigNumberish> | null,
       claimant?: PromiseOrValue<string> | null,
       beneficiary?: null,
-      amountInApi3?: null,
+      clippedAmountInUsd?: null,
+      clippedAmountInApi3?: null,
       arbitrator?: null
     ): ResolvedDisputeByAcceptingSettlementEventFilter;
 
@@ -1151,28 +1142,29 @@ export interface ClaimsManager extends BaseContract {
       arbitrator?: null
     ): ResolvedDisputeByRejectingClaimEventFilter;
 
-    'SetApi3Pool(address)'(api3Pool?: null): SetApi3PoolEventFilter;
-    SetApi3Pool(api3Pool?: null): SetApi3PoolEventFilter;
+    'SetApi3Pool(address,address)'(api3Pool?: null, sender?: null): SetApi3PoolEventFilter;
+    SetApi3Pool(api3Pool?: null, sender?: null): SetApi3PoolEventFilter;
 
-    'SetApi3ToUsdReader(address)'(api3ToUsdReader?: null): SetApi3ToUsdReaderEventFilter;
-    SetApi3ToUsdReader(api3ToUsdReader?: null): SetApi3ToUsdReaderEventFilter;
+    'SetApi3ToUsdReader(address,address)'(api3ToUsdReader?: null, sender?: null): SetApi3ToUsdReaderEventFilter;
+    SetApi3ToUsdReader(api3ToUsdReader?: null, sender?: null): SetApi3ToUsdReaderEventFilter;
 
-    'SetArbitratorResponsePeriod(address,uint256,address)'(
-      arbitrator?: PromiseOrValue<string> | null,
+    'SetArbitratorResponsePeriod(uint256,address)'(
       arbitratorResponsePeriod?: null,
       sender?: null
     ): SetArbitratorResponsePeriodEventFilter;
-    SetArbitratorResponsePeriod(
-      arbitrator?: PromiseOrValue<string> | null,
-      arbitratorResponsePeriod?: null,
+    SetArbitratorResponsePeriod(arbitratorResponsePeriod?: null, sender?: null): SetArbitratorResponsePeriodEventFilter;
+
+    'SetClaimantResponsePeriod(uint256,address)'(
+      claimantResponsePeriod?: null,
       sender?: null
-    ): SetArbitratorResponsePeriodEventFilter;
+    ): SetClaimantResponsePeriodEventFilter;
+    SetClaimantResponsePeriod(claimantResponsePeriod?: null, sender?: null): SetClaimantResponsePeriodEventFilter;
 
-    'SetClaimantResponsePeriod(uint256)'(claimantResponsePeriod?: null): SetClaimantResponsePeriodEventFilter;
-    SetClaimantResponsePeriod(claimantResponsePeriod?: null): SetClaimantResponsePeriodEventFilter;
-
-    'SetMediatorResponsePeriod(uint256)'(mediatorResponsePeriod?: null): SetMediatorResponsePeriodEventFilter;
-    SetMediatorResponsePeriod(mediatorResponsePeriod?: null): SetMediatorResponsePeriodEventFilter;
+    'SetMediatorResponsePeriod(uint256,address)'(
+      mediatorResponsePeriod?: null,
+      sender?: null
+    ): SetMediatorResponsePeriodEventFilter;
+    SetMediatorResponsePeriod(mediatorResponsePeriod?: null, sender?: null): SetMediatorResponsePeriodEventFilter;
 
     'SetQuota(address,uint32,uint224,address)'(
       account?: PromiseOrValue<string> | null,
@@ -1240,18 +1232,13 @@ export interface ClaimsManager extends BaseContract {
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<BigNumber>;
 
-    arbitratorRole(overrides?: CallOverrides): Promise<BigNumber>;
+    arbitratorResponsePeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
-    arbitratorToResponsePeriod(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
+    arbitratorRole(overrides?: CallOverrides): Promise<BigNumber>;
 
     claimCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     claimIndexToArbitrator(arg0: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
-
-    claimIndexToProposedSettlementAmountInApi3(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     claimIndexToProposedSettlementAmountInUsd(
       arg0: PromiseOrValue<BigNumberish>,
@@ -1268,6 +1255,7 @@ export interface ClaimsManager extends BaseContract {
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1334,8 +1322,7 @@ export interface ClaimsManager extends BaseContract {
     ): Promise<BigNumber>;
 
     setArbitratorResponsePeriod(
-      arbitrator: PromiseOrValue<string>,
-      arbitratorResponsePeriod: PromiseOrValue<BigNumberish>,
+      _arbitratorResponsePeriod: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1397,18 +1384,13 @@ export interface ClaimsManager extends BaseContract {
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    arbitratorRole(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    arbitratorResponsePeriod(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    arbitratorToResponsePeriod(arg0: PromiseOrValue<string>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    arbitratorRole(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     claimCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     claimIndexToArbitrator(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    claimIndexToProposedSettlementAmountInApi3(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1428,6 +1410,7 @@ export interface ClaimsManager extends BaseContract {
       policy: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1494,8 +1477,7 @@ export interface ClaimsManager extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     setArbitratorResponsePeriod(
-      arbitrator: PromiseOrValue<string>,
-      arbitratorResponsePeriod: PromiseOrValue<BigNumberish>,
+      _arbitratorResponsePeriod: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

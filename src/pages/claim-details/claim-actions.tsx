@@ -4,7 +4,7 @@ import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
 import { abbrStr, Claim, useChainData } from '../../chain-data';
 import styles from './claim-actions.module.scss';
-import { formatApi3, formatUsd, handleTransactionError } from '../../utils';
+import { formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
 import { useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
@@ -119,8 +119,7 @@ export default function ClaimActions(props: Props) {
         <div className={styles.actionSection}>
           <p>API3 Multi-sig</p>
           <div className={styles.actionMainInfo}>
-            Countered with <br />
-            {formatApi3(claim.counterOfferAmountInApi3!)} API3
+            Countered with <br />${formatUsd(claim.counterOfferAmountInUsd!)}
           </div>
           <div className={styles.actionPanel}>
             <Button variant="primary" disabled={disableActions} onClick={handleAcceptCounter}>
@@ -142,8 +141,7 @@ export default function ClaimActions(props: Props) {
           <p>{abbrStr(claim.claimant)}</p>
           <div className={styles.actionMainInfo}>
             Accepted <br />
-            counter of <br />
-            {formatApi3(claim.counterOfferAmountInApi3!)} API3
+            counter of <br />${formatUsd(claim.counterOfferAmountInUsd!)}
           </div>
         </div>
       );

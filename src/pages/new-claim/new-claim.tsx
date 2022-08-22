@@ -60,7 +60,8 @@ export default function NewClaim() {
         Math.round(policy.claimsAllowedFrom.getTime() / 1000),
         policy.ipfsHash,
         parseUsd(form.amount),
-        form.evidence.trim()
+        form.evidence.trim(),
+        policy.metadata
       )
     );
 
