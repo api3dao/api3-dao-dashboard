@@ -118,3 +118,22 @@
     font-size: $text-small;
   }
 }
+
+.malicious {
+  display: flex;
+  align-items: start;
+  background: $pink-color;
+  padding: 1.5rem 1.8rem;
+  border-radius: 3px;
+  margin-bottom: $space-xxl;
+
+  svg {
+    display: none;
+    margin-top: 0.2ch;
+    margin-right: 0.5ch;
+
+    @media (min-width: $min-md) {
+      display: inline;
+    }
+  }
+}
