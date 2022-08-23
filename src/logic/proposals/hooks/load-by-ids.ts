@@ -20,13 +20,13 @@ interface DynamicVotingData {
 }
 
 /**
- * Hook which loads proposals by ids and voting app type. It will also refetch dynamic voting data from chain after
+ * Hook which loads a proposal by its id and voting app type. It will also refetch dynamic voting data from chain after
  * every mined block.
  *
  * @param type The type of the voting app (primary or secondary)
- * @param ids Array of vote ids of proposals to be loaded
+ * @param id Id of the proposal to be loaded
  */
-export const useProposalsByIds = (type: ProposalType, id: BigNumber) => {
+export const useProposalById = (type: ProposalType, id: BigNumber) => {
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
   const { userAccount, setChainData, provider } = useChainData();
