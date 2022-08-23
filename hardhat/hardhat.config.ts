@@ -3,7 +3,6 @@ import { task, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
 import dotenv from 'dotenv';
 import { encodeMetadata, goEncodeEvmScript } from '../src/logic/proposals/encoding';
-import { Api3Voting__factory as Api3VotingFactory } from '../src/generated-contracts';
 
 dotenv.config({ path: '../.env' });
 
@@ -79,7 +78,13 @@ task('create-proposal', 'Creates a proposal')
     }
 
     const contracts = require(deploymentFileName);
-    const api3Voting = await Api3VotingFactory.connect(contracts.votingAppSecondary, accounts[0]);
+    const api3Voting = new hre.ethers.Contract(
+      contracts.votingAppSecondary,
+      [
+        'function newVote(bytes _executionScript, string _metadata, bool _castVote, bool _executesIfDecided) returns (uint256 voteId)',
+      ],
+      accounts[0]
+    );
 
     const formData = {
       type: args.type,
