@@ -1,5 +1,5 @@
 import { BigNumber, utils } from 'ethers';
-import { ComponentProps, useEffect, useState } from 'react';
+import { ComponentProps, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -16,7 +16,7 @@ import BorderedBox, { Header } from '../../../components/bordered-box/bordered-b
 import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndVoteId, isEvmScriptValid } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
-import { useProposalsByIds } from '../../../logic/proposals/hooks';
+import { useProposalById } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
 import ProposalStatus from '../proposal-list/proposal-status';
 import globalStyles from '../../../styles/global-styles.module.scss';
@@ -61,7 +61,7 @@ const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
   const { type, voteId } = props;
   const { proposals, provider } = useChainData();
 
-  useProposalsByIds(type, voteId);
+  useProposalById(type, voteId);
 
   const proposal = proposalDetailsSelector(provider, proposals, type, voteId);
   return (
@@ -78,7 +78,7 @@ interface RouterParameters {
 const ProposalDetailsPage = () => {
   useScrollToTop();
   const { typeAndVoteId } = useParams<RouterParameters>();
-  const decoded = decodeProposalTypeAndVoteId(typeAndVoteId);
+  const decoded = useMemo(() => decodeProposalTypeAndVoteId(typeAndVoteId), [typeAndVoteId]);
 
   if (!decoded) return <NotFoundPage />;
   return <ProposalDetailsLayout {...decoded} />;
