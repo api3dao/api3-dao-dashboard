@@ -75,8 +75,9 @@ jobs:
           REACT_APP_NODE_ENV: development
         run: yarn ci:cypress
       - name: Store artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: cypress-videos
-          path: cypress/videos
+          name: cypress-artifacts
+          path: cypress/screenshots
+          if-no-files-found: ignore
