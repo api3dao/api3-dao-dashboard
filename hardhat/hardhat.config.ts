@@ -2,6 +2,7 @@ import '@nomiclabs/hardhat-ethers';
 import { task, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
 import dotenv from 'dotenv';
+import { encodeMetadata, goEncodeEvmScript } from '../src/logic/proposals/encoding';
 
 dotenv.config({ path: '../.env' });
 
@@ -55,6 +56,63 @@ task('send-to-account', 'Sends ether or API3 tokens to a specified account')
     console.info(`Sent ${hre.ethers.utils.formatEther(tokens)} API3 tokens to address ${receiver}`);
     await deployer.sendTransaction({ to: receiver, value: ether });
     console.info(`Sent ${hre.ethers.utils.formatEther(ether)} ETH to address ${receiver}`);
+  });
+
+task('create-proposal', 'Creates a proposal')
+  .addParam('type', 'The proposal type (primary|secondary)')
+  .addParam('title', 'The proposal title')
+  .addParam('description', 'The proposal description')
+  .addParam('targetSignature', 'The signature of the function to call when the proposal executes')
+  .addParam('parameters', 'The parameters of the function')
+  .addParam('targetAddress', 'The address of the contract to call')
+  .addParam('targetValue', 'The value to send when making the call')
+  .addOptionalParam('script', 'The EVM script')
+  .setAction(async (args, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    const network = hre.network.name;
+    const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
+
+    if (!existsSync(deploymentFileName)) {
+      throw new Error(`Couldn't find deployment file for network: '${network}'.`);
+    }
+
+    if (!['primary', 'secondary'].includes(args.type)) {
+      throw new TypeError(`Invalid type argument: ${args.type}`);
+    }
+
+    const contracts = require(deploymentFileName);
+    const api3Voting = new hre.ethers.Contract(
+      args.type === 'primary' ? contracts.votingAppPrimary : contracts.votingAppSecondary,
+      [
+        'function newVote(bytes _executionScript, string _metadata, bool _castVote, bool _executesIfDecided) returns (uint256 voteId)',
+      ],
+      accounts[0]
+    );
+
+    const formData = {
+      type: args.type,
+      title: args.title,
+      description: args.description,
+      targetSignature: args.targetSignature,
+      parameters: args.parameters,
+      targetAddress: args.targetAddress,
+      targetValue: args.targetValue,
+    };
+
+    let script = args.script;
+    if (!script) {
+      const agents = { primary: contracts.agentAppPrimary, secondary: contracts.agentAppSecondary };
+      const result = await goEncodeEvmScript(hre.ethers.provider, formData, agents);
+      if (result.success) {
+        script = result.data;
+      } else {
+        throw result.error;
+      }
+    }
+
+    await api3Voting['newVote(bytes,string,bool,bool)'](script, encodeMetadata(formData), true, true);
+    console.info(`Successfully created a ${formData.type} proposal: ${formData.title}`);
   });
 
 // See https://hardhat.org/config/

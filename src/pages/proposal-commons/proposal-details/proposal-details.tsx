@@ -1,5 +1,5 @@
 import { BigNumber, utils } from 'ethers';
-import { useMemo, useState } from 'react';
+import { ComponentProps, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -13,8 +13,8 @@ import Button from '../../../components/button';
 import Tag from '../../../components/tag';
 import { TooltipChecklist } from '../../../components/tooltip';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
-import { getEtherscanAddressUrl, useApi3Voting } from '../../../contracts';
-import { decodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
+import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting } from '../../../contracts';
+import { decodeProposalTypeAndVoteId, isEvmScriptValid } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useProposalById } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
@@ -91,6 +91,7 @@ interface ProposalDetailsProps {
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const { chainId } = useChainData();
   const { proposal } = props;
+  const isMalicious = useMaliciousProposalCheck(typeof proposal === 'string' ? null : proposal);
   const [voteModalOpen, setVoteModalOpen] = useState(false);
   const { transactions, setChainData } = useChainData();
   const voting = useApi3Voting();
@@ -157,6 +158,15 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
           <Timer size="large" deadline={proposal.deadline} showDeadline />
         </div>
       </div>
+
+      {isMalicious && (
+        <div className={styles.malicious}>
+          <WarningIcon aria-hidden />
+          <p>
+            <b>This proposal is potentially malicious.</b> A suspicious EVM script has been detected.
+          </p>
+        </div>
+      )}
 
       <ProposalStatus proposal={proposal} large />
       <div className={styles.proposalDetailsVoteSection}>
@@ -256,3 +266,35 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
 };
 
 export default ProposalDetailsPage;
+
+// TODO Move into ~/components/icons folder
+function WarningIcon(props: ComponentProps<'svg'>) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <path
+        d="M12 1.5C6.20156 1.5 1.5 6.20156 1.5 12C1.5 17.7984 6.20156 22.5 12 22.5C17.7984 22.5 22.5 17.7984 22.5 12C22.5 6.20156 17.7984 1.5 12 1.5ZM12 20.7188C7.18594 20.7188 3.28125 16.8141 3.28125 12C3.28125 7.18594 7.18594 3.28125 12 3.28125C16.8141 3.28125 20.7188 7.18594 20.7188 12C20.7188 16.8141 16.8141 20.7188 12 20.7188Z"
+        fill="currentColor"
+      />
+      <path
+        d="M10.875 16.125C10.875 16.4234 10.9935 16.7095 11.2045 16.9205C11.4155 17.1315 11.7016 17.25 12 17.25C12.2984 17.25 12.5845 17.1315 12.7955 16.9205C13.0065 16.7095 13.125 16.4234 13.125 16.125C13.125 15.8266 13.0065 15.5405 12.7955 15.3295C12.5845 15.1185 12.2984 15 12 15C11.7016 15 11.4155 15.1185 11.2045 15.3295C10.9935 15.5405 10.875 15.8266 10.875 16.125ZM11.4375 13.5H12.5625C12.6656 13.5 12.75 13.4156 12.75 13.3125V6.9375C12.75 6.83437 12.6656 6.75 12.5625 6.75H11.4375C11.3344 6.75 11.25 6.83437 11.25 6.9375V13.3125C11.25 13.4156 11.3344 13.5 11.4375 13.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function useMaliciousProposalCheck(proposal: Proposal | null) {
+  const { provider } = useChainData();
+  const agents = useApi3AgentAddresses();
+  const [isMalicious, setIsMalicious] = useState(false);
+
+  useEffect(() => {
+    if (!provider || !agents || !proposal) return;
+
+    isEvmScriptValid(provider, agents, proposal).then((valid) => {
+      setIsMalicious(!valid);
+    });
+  }, [provider, agents, proposal]);
+
+  return isMalicious;
+}

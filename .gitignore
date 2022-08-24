@@ -45,4 +45,5 @@ cypress-shared.json
 
 # Cypress unused folders
 cypress/videos
+cypress/screenshots
 cypress/fixtures
