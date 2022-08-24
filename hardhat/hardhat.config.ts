@@ -77,9 +77,13 @@ task('create-proposal', 'Creates a proposal')
       throw new Error(`Couldn't find deployment file for network: '${network}'.`);
     }
 
+    if (!['primary', 'secondary'].includes(args.type)) {
+      throw new TypeError(`Invalid type argument: ${args.type}`);
+    }
+
     const contracts = require(deploymentFileName);
     const api3Voting = new hre.ethers.Contract(
-      contracts.votingAppSecondary,
+      args.type === 'primary' ? contracts.votingAppPrimary : contracts.votingAppSecondary,
       [
         'function newVote(bytes _executionScript, string _metadata, bool _castVote, bool _executesIfDecided) returns (uint256 voteId)',
       ],
