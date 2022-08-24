@@ -9,7 +9,13 @@ interface Props {
 }
 
 const ExternalLink = (props: Props) => {
-  const { className, href, children } = props;
+  const { className, children } = props;
+
+  let href = props.href.trim();
+  const urlRegex = /^https:\/\//i; // Starts with https:// (case insensitive)
+  if (!urlRegex.test(href)) {
+    href = 'about:blank';
+  }
 
   return (
     <a href={href} className={classNames(className, styles.link)} target="_blank" rel="noopener noreferrer">
