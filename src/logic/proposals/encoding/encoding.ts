@@ -19,7 +19,7 @@
 import { go, GoResult, goSync, fail, success } from '@api3/promise-utils';
 import { BigNumber, providers, utils } from 'ethers';
 import range from 'lodash/range';
-import { DecodedEvmScript, ProposalMetadata } from '../../../chain-data';
+import { DecodedEvmScript, Proposal, ProposalMetadata } from '../../../chain-data';
 import { Api3Agent } from '../../../contracts';
 import { convertToAddressOrThrow, tryConvertToEnsName } from './ens-name';
 import { NewProposalFormData } from './types';
@@ -248,3 +248,30 @@ export const decodeEvmScript = async (
   if (goResponse.success) return goResponse.data;
   else return null;
 };
+
+export async function isEvmScriptValid(
+  provider: providers.Provider,
+  api3Agent: Api3Agent,
+  proposal: Pick<Proposal, 'type' | 'metadata' | 'decodedEvmScript' | 'script'>
+) {
+  const { metadata, decodedEvmScript } = proposal;
+  if (!decodedEvmScript) {
+    return false;
+  }
+
+  const result = await goEncodeEvmScript(
+    provider,
+    {
+      type: proposal.type,
+      targetSignature: metadata.targetSignature,
+      description: metadata.description,
+      title: metadata.title,
+      parameters: JSON.stringify(decodedEvmScript.parameters),
+      targetAddress: decodedEvmScript.targetAddress,
+      targetValue: decodedEvmScript.value.toString(),
+    },
+    api3Agent
+  );
+
+  return result.success && result.data === proposal.script;
+}
