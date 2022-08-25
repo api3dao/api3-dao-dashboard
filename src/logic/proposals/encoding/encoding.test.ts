@@ -336,4 +336,64 @@ describe('isEvmScriptValid()', () => {
 
     expect(result).toBe(false);
   });
+
+  describe('when the proposal has a non-zero ETH value', () => {
+    it('returns true if the EVM script matches the original proposal data', async () => {
+      const script =
+        '0x00000001bb4c8c398288f2309b32dd83bc7dd3e4f93c605f000000e4b61d27f6000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000008ac7230489e8000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000cb943e4fb0bcf7ec3c2e6d263c275b27f07701c600000000000000000000000000000000000000000000000000000019edcabff000000000000000000000000000000000000000000000000000000000';
+      const metadata = {
+        description: 'https://ipfs.fleek.co/ipfs/bafybeicfguu3bfhk3fyz5zn5wlujpksqxsaokse37674fhylouvsqnwd2m',
+        targetSignature: 'transfer(address,uint256)',
+        title: 'API3 DAO BD-API Team Proposal',
+        version: '1',
+      };
+      const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);
+      expect(decodedEvmScript).not.toBeNull();
+      expect(decodedEvmScript!.value).toEqual(utils.parseEther('10'));
+
+      const result = await isEvmScriptValid(
+        mockedProvider,
+        { ...api3Agent, primary: '0xbb4c8c398288f2309b32dd83bc7dd3e4f93c605f' },
+        {
+          type: 'primary',
+          metadata,
+          decodedEvmScript,
+          script,
+        }
+      );
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false if the EVM script does not match the original proposal data', async () => {
+      const script =
+        '0x00000001bb4c8c398288f2309b32dd83bc7dd3e4f93c605f000000e4b61d27f6000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000008ac7230489e8000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000cb943e4fb0bcf7ec3c2e6d263c275b27f07701c600000000000000000000000000000000000000000000000000000019edcabff000000000000000000000000000000000000000000000000000000000';
+      /*
+        Original EVM script: transfer(address,uint256)
+        Decoded EVM script: transfer(address,int32)
+      */
+      const metadata = {
+        description: 'https://ipfs.fleek.co/ipfs/bafybeicfguu3bfhk3fyz5zn5wlujpksqxsaokse37674fhylouvsqnwd2m',
+        targetSignature: 'transfer(address,int32)',
+        title: 'API3 DAO BD-API Team Proposal',
+        version: '1',
+      };
+      const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);
+      expect(decodedEvmScript).not.toBeNull();
+      expect(decodedEvmScript!.value).toEqual(utils.parseEther('10'));
+
+      const result = await isEvmScriptValid(
+        mockedProvider,
+        { ...api3Agent, primary: '0xbb4c8c398288f2309b32dd83bc7dd3e4f93c605f' },
+        {
+          type: 'primary',
+          metadata,
+          decodedEvmScript,
+          script,
+        }
+      );
+
+      expect(result).toBe(false);
+    });
+  });
 });

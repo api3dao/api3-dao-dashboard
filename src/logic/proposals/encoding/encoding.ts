@@ -268,7 +268,7 @@ export async function isEvmScriptValid(
       title: metadata.title,
       parameters: JSON.stringify(decodedEvmScript.parameters),
       targetAddress: decodedEvmScript.targetAddress,
-      targetValue: decodedEvmScript.value.toString(),
+      targetValue: utils.formatEther(decodedEvmScript.value),
     },
     api3Agent
   );
