@@ -70,18 +70,11 @@ task('create-proposal', 'Creates a proposal')
   .setAction(async (args, hre) => {
     const accounts = await hre.ethers.getSigners();
 
-    const network = hre.network.name;
-    const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
-
-    if (!existsSync(deploymentFileName)) {
-      throw new Error(`Couldn't find deployment file for network: '${network}'.`);
-    }
-
     if (!['primary', 'secondary'].includes(args.type)) {
       throw new TypeError(`Invalid type argument: ${args.type}`);
     }
 
-    const contracts = require(deploymentFileName);
+    const contracts = getContractAddresses(hre.network.name);
     const api3Voting = new hre.ethers.Contract(
       args.type === 'primary' ? contracts.votingAppPrimary : contracts.votingAppSecondary,
       [
