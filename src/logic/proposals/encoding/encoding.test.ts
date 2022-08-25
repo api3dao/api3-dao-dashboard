@@ -162,7 +162,9 @@ it('checks for positive ETH amount', async () => {
   const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
 
   assertGoError(goRes);
-  expect(goRes.error).toEqual(new EncodedEvmScriptError('targetValue', 'Please enter valid non-negative ETH amount'));
+  expect(goRes.error).toEqual(
+    new EncodedEvmScriptError('targetValue', 'Please enter a valid non-negative amount in Wei')
+  );
 });
 
 test('decoding', async () => {
@@ -172,7 +174,7 @@ test('decoding', async () => {
   assertGoSuccess(goRes);
   expect(await decodeEvmScript(mockedProvider, goRes.data, metadata)).toEqual({
     targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
-    value: utils.parseEther('12'),
+    value: BigNumber.from('12'),
     parameters: ['arg1', '123'],
   });
 });
@@ -189,7 +191,7 @@ describe('ENS name support', () => {
     assertGoSuccess(goRes);
     expect(await decodeEvmScript(mockedProvider, goRes.data, metadata)).toEqual({
       targetAddress: MOCKED_ENS_ENTRY.ensName,
-      value: utils.parseEther('12'),
+      value: BigNumber.from('12'),
       parameters: ['arg1', '123'],
     });
   });
@@ -206,7 +208,7 @@ describe('ENS name support', () => {
     assertGoSuccess(goRes);
     expect(await decodeEvmScript(mockedProvider, goRes.data, metadata)).toEqual({
       targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
-      value: utils.parseEther('12'),
+      value: BigNumber.from('12'),
       parameters: [MOCKED_ENS_ENTRY.ensName],
     });
   });
@@ -224,7 +226,7 @@ describe('ENS name support', () => {
 
     expect(await decodeEvmScript(mockedProvider, goRes.data, metadata)).toEqual({
       targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
-      value: utils.parseEther('12'),
+      value: BigNumber.from('12'),
       parameters: [address],
     });
   });

@@ -48,7 +48,7 @@ it('new proposal form validation', () => {
   cy.findByText('Create').click();
 
   // Fix the ETH value and create the proposal
-  cy.findByText('Please enter valid non-negative ETH amount').should('exist');
+  cy.findByText('Please enter a valid non-negative amount in Wei').should('exist');
   cy.findByLabelText('ETH Value').clear().type('123');
   cy.findByText('Create').click();
 

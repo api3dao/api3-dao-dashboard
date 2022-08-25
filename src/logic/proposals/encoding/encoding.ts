@@ -139,14 +139,14 @@ export const goEncodeEvmScript = async (
   }
   const targetAddress = goTargetAddress.data;
 
-  // Ensure value is non negative ether amount
+  // Ensure value is a non-negative amount (in Wei)
   const goValue = goSync(() => {
-    const parsed = utils.parseEther(formData.targetValue);
+    const parsed = BigNumber.from(formData.targetValue);
     if (parsed.lt(0)) throw new Error();
     return parsed;
   });
   if (!goValue.success) {
-    return fail(new EncodedEvmScriptError('targetValue', 'Please enter valid non-negative ETH amount'));
+    return fail(new EncodedEvmScriptError('targetValue', 'Please enter a valid non-negative amount in Wei'));
   }
   const targetValue = goValue.data;
 
@@ -268,7 +268,7 @@ export async function isEvmScriptValid(
       title: metadata.title,
       parameters: JSON.stringify(decodedEvmScript.parameters),
       targetAddress: decodedEvmScript.targetAddress,
-      targetValue: utils.formatEther(decodedEvmScript.value),
+      targetValue: decodedEvmScript.value.toString(),
     },
     api3Agent
   );
