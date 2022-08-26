@@ -1,4 +1,4 @@
-import { BigNumber, utils } from 'ethers';
+import { BigNumber } from 'ethers';
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -248,7 +248,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             {value.gt(0) && (
               <div className={styles.proposalDetailsItem}>
                 <p className={globalStyles.bold}>ETH Value</p>
-                <p className={globalStyles.secondaryColor}>{utils.formatEther(value)}</p>
+                <p className={globalStyles.secondaryColor}>{value.toString()}</p>
               </div>
             )}
             <div className={styles.proposalDetailsItem}>
