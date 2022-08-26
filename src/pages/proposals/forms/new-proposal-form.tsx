@@ -148,7 +148,7 @@ const NewProposalForm = (props: Props) => {
       </ProposalFormItem>
 
       <ProposalFormItem
-        name={<label htmlFor="target-value">ETH Value</label>}
+        name={<label htmlFor="target-value">Value (Wei)</label>}
         tooltip={`The amount of ETH you want to send along with the function call in Wei (use 0 unless the target function is "payable").`}
       >
         <Input
