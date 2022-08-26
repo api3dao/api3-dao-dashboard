@@ -44,12 +44,12 @@ it('new proposal form validation', () => {
   // Fill target address and value
   cy.findByText('Please specify a valid account address').should('exist');
   cy.findByLabelText('Target Contract Address').type(ACCOUNTS[1]);
-  cy.findByLabelText('ETH Value').type('-123456');
+  cy.findByLabelText('Value (Wei)').type('-123456');
   cy.findByText('Create').click();
 
-  // Fix the ETH value and create the proposal
-  cy.findByText('Please enter a valid non-negative amount in Wei').should('exist');
-  cy.findByLabelText('ETH Value').clear().type('123');
+  // Fix the value and create the proposal
+  cy.findByText('Please enter a valid amount in Wei').should('exist');
+  cy.findByLabelText('Value (Wei)').clear().type('123');
   cy.findByText('Create').click();
 
   // Expect the proposal to be created

@@ -146,7 +146,7 @@ export const goEncodeEvmScript = async (
     return parsed;
   });
   if (!goValue.success) {
-    return fail(new EncodedEvmScriptError('targetValue', 'Please enter a valid non-negative amount in Wei'));
+    return fail(new EncodedEvmScriptError('targetValue', 'Please enter a valid amount in Wei'));
   }
   const targetValue = goValue.data;
 
