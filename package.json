@@ -112,11 +112,10 @@
     "hardhat": "^2.8.3",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.3",
-    "node-sass": "^7.0.1",
-    "npx": "^10.2.2",
     "prettier": "^2.5.1",
     "react-scripts": "4.0.3",
     "replace-in-file": "^6.3.2",
+    "sass": "^1.54.5",
     "start-server-and-test": "^1.14.0",
     "ts-node": "^10.4.0",
     "typechain": "^6.0.2",
@@ -125,6 +124,8 @@
   },
   "resolutions": {
     "//": "Remove once upgraded to react-scripts v5. See https://github.com/facebook/create-react-app/issues/11773",
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.9",
+    "//": "Remove once upgraded to react v18. react-router and react-input-autosize cause @types/react to install v18",
+    "@types/react": "^17.0.39"
   }
 }
