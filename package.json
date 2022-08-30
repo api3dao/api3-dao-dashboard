@@ -124,7 +124,6 @@
   },
   "resolutions": {
     "@types/jest": "^26.0.24",
-    "@types/react": "^17.0.39",
     "react-error-overlay": "6.0.9"
   }
 }
