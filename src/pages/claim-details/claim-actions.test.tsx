@@ -113,6 +113,7 @@ describe('<ClaimActions />', () => {
         id: '1',
         status: 'Waiting',
         ruling: 'DoNotPay',
+        appealedBy: null,
       };
 
       render(<ClaimActions claim={claim} />);
@@ -128,6 +129,7 @@ describe('<ClaimActions />', () => {
         id: '1',
         status: 'Waiting',
         ruling: 'DoNotPay',
+        appealedBy: null,
       };
 
       render(<ClaimActions claim={claim} />);
@@ -141,6 +143,7 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Solved',
           ruling: 'PayClaim',
+          appealedBy: null,
         };
 
         render(<ClaimActions claim={claim} />);
@@ -158,6 +161,7 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Appealable',
           ruling: 'PaySettlement',
+          appealedBy: null,
         };
       });
 
@@ -188,6 +192,7 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Appealable',
           ruling: 'DoNotPay',
+          appealedBy: null,
         };
       });
 
