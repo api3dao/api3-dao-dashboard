@@ -24,6 +24,7 @@ import {
 } from '../../contracts';
 import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManager';
 import { CreatedDisputeEvent } from '../../contracts/tmp/arbitrators/KlerosLiquidProxy';
+import last from 'lodash/last';
 
 export function useUserClaims() {
   const { userAccount, claims, setChainData } = useChainData();
@@ -246,7 +247,10 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
 
   // Combine all calls so that we can make a single multicall
   const allCalls = [...disputeStatusCalls, ...currentRulingCalls];
-  const encodedResults = await contract.callStatic.multicall(allCalls);
+  const [encodedResults, appealEvents] = await Promise.all([
+    contract.callStatic.multicall(allCalls),
+    getAppealEvents(contract, disputeEvents),
+  ]);
 
   const disputeStatuses = encodedResults
     // Get the first batch of results
@@ -259,13 +263,27 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
     .map((res) => contract.interface.decodeFunctionResult('currentRuling', res));
 
   return disputeEvents.map((ev, index) => {
+    const disputeId = ev.args.disputeId.toString();
     const statusCode = disputeStatuses[index]?.[0] as DisputeStatusCode;
     const rulingCode = currentRulings[index]?.[0]?.toNumber() as ArbitratorRulingCode;
+    const appealers = appealEvents
+      .filter((appealEv) => appealEv.args.disputeId.toString() === disputeId)
+      .map((appealEv) => appealEv.args.sender);
+
     return {
       claimIndex: ev.args.claimIndex,
-      id: ev.args.disputeId.toString(),
+      id: disputeId,
       status: DisputeStatuses[statusCode],
       ruling: ArbitratorRulings[rulingCode],
+      appealedBy: last(appealers) ?? null,
     };
   });
+}
+
+async function getAppealEvents(contract: KlerosLiquidProxy, disputeEvents: CreatedDisputeEvent[]) {
+  const disputeIds = disputeEvents.map((ev) => ev.args.disputeId);
+  return await contract.queryFilter(
+    // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
+    contract.filters.AppealedKlerosArbitratorRuling(null, null, disputeIds)
+  );
 }

@@ -113,6 +113,7 @@ describe('<ClaimActions />', () => {
         id: '1',
         status: 'Waiting',
         ruling: 'DoNotPay',
+        appealedBy: null,
       };
 
       render(<ClaimActions claim={claim} />);
@@ -128,6 +129,7 @@ describe('<ClaimActions />', () => {
         id: '1',
         status: 'Waiting',
         ruling: 'DoNotPay',
+        appealedBy: null,
       };
 
       render(<ClaimActions claim={claim} />);
@@ -141,6 +143,7 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Solved',
           ruling: 'PayClaim',
+          appealedBy: null,
         };
 
         render(<ClaimActions claim={claim} />);
@@ -158,6 +161,7 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Appealable',
           ruling: 'PaySettlement',
+          appealedBy: null,
         };
       });
 
@@ -188,6 +192,7 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Appealable',
           ruling: 'DoNotPay',
+          appealedBy: null,
         };
       });
 
@@ -209,6 +214,39 @@ describe('<ClaimActions />', () => {
 
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).toBeDisabled();
+      });
+    });
+
+    describe('when the ruling has been appealed', () => {
+      it('shows that it has been appealed to Kleros', () => {
+        claim.dispute = {
+          id: '1',
+          status: 'Waiting',
+          ruling: 'PaySettlement',
+          appealedBy: '0x153EF0B488148k0aB0FED112334',
+        };
+
+        render(<ClaimActions claim={claim} />);
+
+        expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
+        expect(screen.getByText(/Appealed to Kleros/i)).toBeInTheDocument();
+        expect(screen.queryByText('API3 Multi-sig')).not.toBeInTheDocument();
+        expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+      });
+
+      it('shows that API3 has appealed when it is not the claimant', () => {
+        claim.dispute = {
+          id: '1',
+          status: 'Waiting',
+          ruling: 'PayClaim',
+          appealedBy: '0xD6b040736e948621c5b6E0a4944',
+        };
+
+        render(<ClaimActions claim={claim} />);
+
+        expect(screen.getByText('API3 Multi-sig')).toBeInTheDocument();
+        expect(screen.getByText(/Appealed to Kleros/i)).toBeInTheDocument();
+        expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
     });
   });

@@ -139,6 +139,7 @@ export interface Claim {
     id: string;
     status: DisputeStatus;
     ruling: ArbitratorRuling;
+    appealedBy: null | string;
   };
 }
 

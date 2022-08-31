@@ -4,7 +4,7 @@ import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
 import { abbrStr, Claim, useChainData } from '../../chain-data';
 import styles from './claim-actions.module.scss';
-import { formatUsd, handleTransactionError } from '../../utils';
+import { formatUsd, handleTransactionError, parseEther } from '../../utils';
 import { isAfter } from 'date-fns';
 import { useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
@@ -52,7 +52,11 @@ export default function ClaimActions(props: Props) {
 
   const handleAppeal = async () => {
     setStatus('submitting');
-    const tx = await handleTransactionError(arbitratorProxy.appealKlerosArbitratorRuling(claim.claimId));
+    // TODO DAO-176 Handle in appeal confirmation modal
+    const appealCost = parseEther('0.004');
+    const tx = await handleTransactionError(
+      arbitratorProxy.appealKlerosArbitratorRuling(claim.claimId, { value: appealCost })
+    );
     if (tx) {
       setChainData('Save appeal claim transaction', {
         transactions: [...transactions, { type: 'appeal-claim-decision', tx }],
@@ -148,6 +152,16 @@ export default function ClaimActions(props: Props) {
 
     case 'DisputeCreated':
       if (!dispute || dispute.status === 'Waiting') {
+        if (dispute?.appealedBy) {
+          return (
+            <div className={styles.actionSection}>
+              <p>{dispute.appealedBy === claim.claimant ? abbrStr(claim.claimant) : 'API3 Multi-sig'}</p>
+              <div className={styles.actionMainInfo}>Appealed to Kleros</div>
+              <p className={styles.actionMessage}>Kleros will decide the outcome of your claim again.</p>
+            </div>
+          );
+        }
+
         return (
           <div className={styles.actionSection}>
             <p>{abbrStr(claim.claimant)}</p>
