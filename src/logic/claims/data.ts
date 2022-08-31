@@ -283,7 +283,7 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
 async function getAppealEvents(contract: KlerosLiquidProxy, disputeEvents: CreatedDisputeEvent[]) {
   const disputeIds = disputeEvents.map((ev) => ev.args.disputeId);
   return await contract.queryFilter(
-    // @ts-expect-error For some reason Typechain doesn't recognise that you can provide an array
+    // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
     contract.filters.AppealedKlerosArbitratorRuling(null, null, disputeIds)
   );
 }
