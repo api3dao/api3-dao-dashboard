@@ -1,27 +1,23 @@
-import { FormEventHandler, ReactNode, useMemo } from 'react';
-import { useHistory } from 'react-router';
-import Layout from '../layout';
-import BorderedBox, { Header } from '../bordered-box';
-import RadioButton from '../radio-button';
+import { useMemo } from 'react';
 import Button from '../button';
-import Input from '../input';
-import CloseIcon from '../icons/close-icon';
-import SearchIcon from '../icons/search-icon';
 import PolicyList from './policy-list';
 import Pagination, { usePagedData } from './pagination';
-import { useQueryParams } from '../../utils';
 import { connectWallet } from '../sign-in/sign-in';
 import { useChainData } from '../../chain-data';
 import { useUserPolicies, isActive } from '../../logic/policies';
 import styles from './policies.module.scss';
 
-export default function Policies() {
-  const { data: policies, status } = useUserPolicies();
+interface Props {
+  query: string | null;
+  filter: Filter;
+  currentPage: number;
+}
 
-  const params = useQueryParams();
-  const query = params.get('query');
-  const filter = params.get('filter');
-  const currentPage = parseInt(params.get('page') || '1');
+export type Filter = 'active' | 'inactive' | 'none' | null;
+
+export default function Policies(props: Props) {
+  const { query, filter, currentPage } = props;
+  const { data: policies, status } = useUserPolicies();
 
   const filteredPolicies = useMemo(() => {
     if (!policies || filter === 'none') return [];
@@ -45,23 +41,17 @@ export default function Policies() {
   const { provider, setChainData } = useChainData();
   if (!provider) {
     return (
-      <PoliciesLayout>
-        <div className={styles.emptyState}>
-          You need to be connected to view your policies.
-          <Button variant="link" onClick={connectWallet(setChainData)} className={styles.connectButton}>
-            Connect your wallet
-          </Button>
-        </div>
-      </PoliciesLayout>
+      <div className={styles.emptyState}>
+        You need to be connected to view your policies.
+        <Button variant="link" onClick={connectWallet(setChainData)} className={styles.connectButton}>
+          Connect your wallet
+        </Button>
+      </div>
     );
   }
 
   if (!policies) {
-    return (
-      <PoliciesLayout>
-        <p className={styles.emptyState}>{status === 'loading' ? 'Loading...' : null}</p>
-      </PoliciesLayout>
-    );
+    return <p className={styles.emptyState}>{status === 'loading' ? 'Loading...' : null}</p>;
   }
 
   if (!filteredPolicies.length) {
@@ -73,139 +63,36 @@ export default function Policies() {
     }
 
     return (
-      <PoliciesLayout>
-        <p className={styles.emptyState}>
-          {policies.length === 0 ? (
-            <>
-              You don't have any policies associated with the connected address.
-              <br />
-              Connect an address associated with a policy to start a claim.
-            </>
-          ) : filter === 'none' ? (
-            <>Please select a filter.</>
-          ) : query ? (
-            <>
-              We couldn't find any {policyQualifier}policies with <span className={styles.highlight}>"{query}"</span>.
-              <br />
-              Please try a different search term.
-            </>
-          ) : (
-            <>
-              You don't have any {policyQualifier}policies associated with the connected address.
-              <br />
-              Connect an address associated with a policy to start a claim.
-            </>
-          )}
-        </p>
-      </PoliciesLayout>
+      <p className={styles.emptyState}>
+        {policies.length === 0 ? (
+          <>
+            You don't have any policies associated with the connected address.
+            <br />
+            Connect an address associated with a policy to start a claim.
+          </>
+        ) : filter === 'none' ? (
+          <>Please select a filter.</>
+        ) : query ? (
+          <>
+            We couldn't find any {policyQualifier}policies with <span className={styles.highlight}>"{query}"</span>.
+            <br />
+            Please try a different search term.
+          </>
+        ) : (
+          <>
+            You don't have any {policyQualifier}policies associated with the connected address.
+            <br />
+            Connect an address associated with a policy to start a claim.
+          </>
+        )}
+      </p>
     );
   }
 
   return (
-    <PoliciesLayout>
+    <>
       <PolicyList policies={pagedPolicies} />
       <Pagination totalResults={filteredPolicies.length} currentPage={currentPage} className={styles.pagination} />
-    </PoliciesLayout>
-  );
-}
-
-interface PoliciesLayoutProps {
-  children: ReactNode;
-}
-
-function PoliciesLayout(props: PoliciesLayoutProps) {
-  const params = useQueryParams();
-  const history = useHistory();
-
-  const handleFilterChange = (showActive: boolean, showInactive: boolean) => {
-    const newParams = new URLSearchParams(params);
-    // We only want to keep the "query" search param if present
-    newParams.delete('filter');
-    newParams.delete('page');
-
-    if (showActive && !showInactive) {
-      newParams.set('filter', 'active');
-    } else if (!showActive && showInactive) {
-      newParams.set('filter', 'inactive');
-    } else if (!showActive && !showInactive) {
-      newParams.set('filter', 'none');
-    }
-
-    history.replace('/policies?' + newParams.toString());
-  };
-
-  const filter = params.get('filter');
-  const activeChecked = !filter || filter === 'active';
-  const inactiveChecked = !filter || filter === 'inactive';
-
-  const query = params.get('query') || '';
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (ev) => {
-    ev.preventDefault();
-    const { value } = ev.currentTarget.query;
-    // We don't want to keep any search params
-    const newParams = new URLSearchParams();
-    newParams.set('query', value.trim());
-    history.replace('/policies?' + newParams.toString());
-  };
-
-  const handleClear = () => {
-    const newParams = new URLSearchParams(params);
-    // We only want to keep the "filter" search param if present
-    newParams.delete('query');
-    newParams.delete('page');
-    history.replace('/policies?' + newParams.toString());
-  };
-
-  return (
-    <Layout title="Policies">
-      <form className={styles.searchForm} onSubmit={handleSubmit}>
-        <div className={styles.inputContainer}>
-          <Input
-            key={query}
-            name="query"
-            defaultValue={query}
-            aria-label="Search your policies"
-            placeholder="Search your policies"
-            underline={false}
-            block
-          />
-        </div>
-        <button type="submit" className={styles.searchButton}>
-          <SearchIcon aria-hidden />
-          <span className="sr-only">Submit</span>
-        </button>
-        {query && (
-          <button tabIndex={-1} type="button" className={styles.clearButton} onClick={handleClear}>
-            <CloseIcon aria-hidden />
-            <span className="sr-only">Clear</span>
-          </button>
-        )}
-      </form>
-      <BorderedBox
-        noMobileBorders
-        header={
-          <Header>
-            <h5>My Policies</h5>
-            <div className={styles.filters}>
-              <RadioButton
-                type="checkbox"
-                label="Active"
-                checked={activeChecked}
-                onChange={() => handleFilterChange(!activeChecked, inactiveChecked)}
-                color="white"
-              />
-              <RadioButton
-                type="checkbox"
-                label="Inactive"
-                checked={inactiveChecked}
-                onChange={() => handleFilterChange(activeChecked, !inactiveChecked)}
-                color="white"
-              />
-            </div>
-          </Header>
-        }
-        content={props.children}
-      />
-    </Layout>
+    </>
   );
 }

@@ -14,10 +14,11 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
-import Policies from './components/policies';
+import Policies from './pages/my-policies';
 import Claims from './pages/claims';
 import ClaimDetails from './pages/claim-details';
 import PolicyDetails from './pages/policy-details';
+import PolicySelect from './pages/policy-select';
 import NewClaim from './pages/new-claim';
 import './styles/variables.module.scss';
 
@@ -66,6 +67,9 @@ const AppContent = () => {
           </Route>
           <Route path="/policies" exact>
             <Policies />
+          </Route>
+          <Route path="/claims/new" exact>
+            <PolicySelect />
           </Route>
           <Route path="/claims/:claimId" exact>
             <ClaimDetails />

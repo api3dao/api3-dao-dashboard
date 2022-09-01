@@ -109,6 +109,9 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
                 onChange={() => handleFilterChange(activeChecked, !inactiveChecked)}
                 color="white"
               />
+              <Button variant="secondary" onClick={() => history.push('/claims/new')}>
+                New Claim
+              </Button>
             </div>
           </Header>
         }
