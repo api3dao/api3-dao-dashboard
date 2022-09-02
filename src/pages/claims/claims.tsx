@@ -9,6 +9,7 @@ import { useQueryParams } from '../../utils';
 import { useHistory } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { isActive, useUserClaims } from '../../logic/claims';
+import { useUserPolicies, isActive as isPolicyActive } from '../../logic/policies';
 import styles from './claims.module.scss';
 
 export default function Claims() {
@@ -70,6 +71,9 @@ interface ClaimsLayoutProps {
 }
 
 function ClaimsLayout(props: ClaimsLayoutProps) {
+  const { data: policies } = useUserPolicies();
+  const activePolicies = policies?.filter((policy) => isPolicyActive(policy));
+
   const history = useHistory();
   const handleFilterChange = (showActive: boolean, showInactive: boolean) => {
     if (showActive && !showInactive) {
@@ -109,7 +113,17 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
                 onChange={() => handleFilterChange(activeChecked, !inactiveChecked)}
                 color="white"
               />
-              <Button className={styles.newClaimButton} variant="secondary" onClick={() => history.push('/claims/new')}>
+              <Button
+                className={styles.newClaimButton}
+                variant="secondary"
+                onClick={() => {
+                  if (activePolicies?.length === 1) {
+                    history.push(`/policies/${activePolicies[0]!.policyId}`);
+                  } else {
+                    history.push('/claims/new');
+                  }
+                }}
+              >
                 New Claim
               </Button>
             </div>
