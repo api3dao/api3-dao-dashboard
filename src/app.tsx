@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BaseLayout } from './components/layout';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
@@ -5,6 +6,7 @@ import { images, preloadImageList, useOnMountEffect } from './utils';
 import { FallbackRender } from '@sentry/react/dist/errorboundary';
 import { ToastContainer } from 'react-toastify';
 import { useTransactionNotifications } from './contracts';
+import { identifyAppEntryPage } from './components/back-button';
 import * as Sentry from '@sentry/react';
 import ChainDataContextProvider from './chain-data';
 import Dashboard from './pages/dashboard';
@@ -97,6 +99,10 @@ const AppContent = () => {
 };
 
 const App = () => {
+  useEffect(() => {
+    identifyAppEntryPage();
+  }, []);
+
   return (
     <ChainDataContextProvider>
       <HelmetProvider>

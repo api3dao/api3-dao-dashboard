@@ -1,16 +1,5 @@
 @import '../../styles/variables.module.scss';
 
-.backLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 1ch;
-  color: $tertiary-color;
-  text-decoration: none;
-  font-size: $text-small;
-  line-height: $lh-small;
-  margin-bottom: $space-lg;
-}
-
 .heading {
   margin-bottom: 100px;
   word-break: break-word;

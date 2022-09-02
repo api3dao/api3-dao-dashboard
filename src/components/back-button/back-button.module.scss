@@ -1,0 +1,21 @@
+@import '../../styles/variables.module.scss';
+
+.backButton,
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 1ch;
+  color: $secondary-color;
+  text-decoration: none;
+  font-size: $text-small;
+  line-height: $lh-small;
+  margin-bottom: $space-lg;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.backButton:disabled {
+  color: $tertiary-color;
+  cursor: default;
+}

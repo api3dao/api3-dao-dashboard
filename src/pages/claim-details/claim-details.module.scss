@@ -1,14 +1,5 @@
 @import '../../styles/variables.module.scss';
 
-.backLink {
-  display: inline-flex;
-  align-items: center;
-  color: $secondary-color;
-  text-decoration: none;
-  font-size: $text-small;
-  line-height: $lh-small;
-}
-
 .detailsHeader {
   @media (min-width: $min-md) {
     display: flex;
