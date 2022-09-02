@@ -61,13 +61,16 @@
   }
 
   & > *:nth-child(1) {
-    width: 10ch;
+    width: 8ch;
+    @media (min-width: $min-lg) {
+      width: 10ch;
+    }
   }
 
   & > *:nth-child(2) {
-    width: 35%;
+    width: 20ch;
     @media (min-width: $min-lg) {
-      width: 27%;
+      width: 34ch;
     }
   }
 
