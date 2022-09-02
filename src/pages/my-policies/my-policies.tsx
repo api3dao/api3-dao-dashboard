@@ -3,10 +3,8 @@ import { useHistory } from 'react-router';
 import Layout from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import RadioButton from '../../components/radio-button';
-import Input from '../../components/input';
-import CloseIcon from '../../components/icons/close-icon';
-import SearchIcon from '../../components/icons/search-icon';
 import Policies, { Filter } from '../../components/policies';
+import SearchForm from '../../components/policies/search-form';
 import { useQueryParams } from '../../utils';
 import styles from './my-policies.module.scss';
 
@@ -57,29 +55,7 @@ export default function MyPolicies() {
 
   return (
     <Layout title="Policies">
-      <form className={styles.searchForm} onSubmit={handleSubmit}>
-        <div className={styles.inputContainer}>
-          <Input
-            key={query}
-            name="query"
-            defaultValue={query}
-            aria-label="Search your policies"
-            placeholder="Search your policies"
-            underline={false}
-            block
-          />
-        </div>
-        <button type="submit" className={styles.searchButton}>
-          <SearchIcon aria-hidden />
-          <span className="sr-only">Submit</span>
-        </button>
-        {query && (
-          <button tabIndex={-1} type="button" className={styles.clearButton} onClick={handleClear}>
-            <CloseIcon aria-hidden />
-            <span className="sr-only">Clear</span>
-          </button>
-        )}
-      </form>
+      <SearchForm query={query} onSubmit={handleSubmit} onClear={handleClear} />
       <BorderedBox
         noMobileBorders
         header={

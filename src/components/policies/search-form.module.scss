@@ -1,0 +1,55 @@
+@import '../../styles/variables.module.scss';
+
+.searchForm {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  position: relative;
+  border: 1px solid $tertiary-color;
+  max-width: 25ch;
+  padding: 3px 40px 3px 8px;
+  margin-bottom: 4rem;
+  transition: all 0.3s;
+
+  input {
+    transition: all 0.3s;
+    &::placeholder {
+      transition: all 0.3s;
+    }
+    &:focus::placeholder {
+      color: $secondary-color;
+    }
+  }
+
+  &:focus-within {
+    border-color: $secondary-color;
+  }
+
+  button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.searchButton {
+  color: $secondary-color;
+  margin-right: 3px;
+}
+
+.inputContainer {
+  flex: 1;
+  padding-top: 3px;
+}
+
+.clearButton {
+  position: absolute;
+  right: 10px;
+  color: $tertiary-color;
+  svg {
+    width: 11px;
+    height: 11px;
+  }
+}

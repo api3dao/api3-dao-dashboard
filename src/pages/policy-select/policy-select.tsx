@@ -1,13 +1,11 @@
 import { FormEventHandler } from 'react';
 import { useHistory } from 'react-router';
-import Layout from '../../components/layout';
+import { BaseLayout } from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
-import Input from '../../components/input';
-import CloseIcon from '../../components/icons/close-icon';
-import SearchIcon from '../../components/icons/search-icon';
+import Policies from '../../components/policies';
+import SearchForm from '../../components/policies/search-form';
 import { useQueryParams } from '../../utils';
 import styles from './policy-select.module.scss';
-import Policies from '../../components/policies';
 
 export default function PolicySelect() {
   const history = useHistory();
@@ -29,30 +27,9 @@ export default function PolicySelect() {
   };
 
   return (
-    <Layout title="New Claim">
-      <form className={styles.searchForm} onSubmit={handleSubmit}>
-        <div className={styles.inputContainer}>
-          <Input
-            key={query}
-            name="query"
-            defaultValue={query}
-            aria-label="Search your policies"
-            placeholder="Search your policies"
-            underline={false}
-            block
-          />
-        </div>
-        <button type="submit" className={styles.searchButton}>
-          <SearchIcon aria-hidden />
-          <span className="sr-only">Submit</span>
-        </button>
-        {query && (
-          <button tabIndex={-1} type="button" className={styles.clearButton} onClick={handleClear}>
-            <CloseIcon aria-hidden />
-            <span className="sr-only">Clear</span>
-          </button>
-        )}
-      </form>
+    <BaseLayout subtitle="New Claim">
+      <h4 className={styles.heading}>New Claim</h4>
+      <SearchForm query={query} onSubmit={handleSubmit} onClear={handleClear} />
       <BorderedBox
         noMobileBorders
         header={
@@ -62,6 +39,6 @@ export default function PolicySelect() {
         }
         content={<Policies query={query} filter="active" currentPage={currentPage} />}
       />
-    </Layout>
+    </BaseLayout>
   );
 }
