@@ -100,6 +100,9 @@ const AppContent = () => {
 
 const App = () => {
   useEffect(() => {
+    // When the app mounts we want to identify the current page as the one the user first visited
+    // (i.e. the entry page), so that if the custom back button is present on the entry page,
+    // that it knows that it can't go back.
     identifyAppEntryPage();
   }, []);
 

@@ -34,12 +34,13 @@ export default function BackButton(props: Props) {
 }
 
 /*
-  When the app mounts we want to identify the current page as the one the user first visited (i.e. the entry page),
-  so that if the custom back button is present on the entry page, that it knows that it can't go back.
+  Identify the current page as the one the user first visited (i.e. the entry page).
  */
 export function identifyAppEntryPage() {
-  // We use session storage so that if the user refreshes the browser tab, that we don't identify another entry page
+  // We use session storage so that if the user refreshes the browser tab, that we don't
+  // identify another entry page
   if (window.sessionStorage.getItem('has_identified_app_entry_page') !== 'true') {
+    // The HashRouter (from react-router) doesn't support history/location state: https://v5.reactrouter.com/web/api/HashRouter
     window.history.replaceState({ _app_entry_page: true }, '');
     window.sessionStorage.setItem('has_identified_app_entry_page', 'true');
   }
