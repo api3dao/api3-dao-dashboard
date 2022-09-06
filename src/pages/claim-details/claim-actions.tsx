@@ -32,7 +32,8 @@ export default function ClaimActions(props: Props) {
         claim.claimant,
         claim.beneficiary,
         claim.claimAmountInUsd,
-        claim.evidence
+        claim.evidence,
+        '0'
       )
     );
     if (tx) {

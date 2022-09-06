@@ -59,9 +59,9 @@ export default function NewClaim() {
         policy.beneficiary,
         Math.round(policy.claimsAllowedFrom.getTime() / 1000),
         policy.ipfsHash,
+        policy.metadata,
         parseUsd(form.amount),
-        form.evidence.trim(),
-        policy.metadata
+        form.evidence.trim()
       )
     );
 
