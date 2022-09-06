@@ -26,7 +26,15 @@ export default function ClaimActions(props: Props) {
 
   const handleAcceptCounter = async () => {
     setStatus('submitting');
-    const tx = await handleTransactionError(claimsManager.acceptSettlement(claim.claimId));
+    const tx = await handleTransactionError(
+      claimsManager.acceptSettlement(
+        claim.policyId,
+        claim.claimant,
+        claim.beneficiary,
+        claim.claimAmountInUsd,
+        claim.evidence
+      )
+    );
     if (tx) {
       setChainData('Save accept claim settlement transaction', {
         transactions: [...transactions, { type: 'accept-claim-settlement', tx }],
@@ -39,7 +47,15 @@ export default function ClaimActions(props: Props) {
 
   const handleEscalateToArbitrator = async () => {
     setStatus('submitting');
-    const tx = await handleTransactionError(arbitratorProxy.createDispute(claim.claimId));
+    const tx = await handleTransactionError(
+      arbitratorProxy.createDispute(
+        claim.policyId,
+        claim.claimant,
+        claim.beneficiary,
+        claim.claimAmountInUsd,
+        claim.evidence
+      )
+    );
     if (tx) {
       setChainData('Save escalate claim transaction', {
         transactions: [...transactions, { type: 'escalate-claim-to-arbitrator', tx }],
@@ -55,7 +71,14 @@ export default function ClaimActions(props: Props) {
     // TODO DAO-176 Handle in appeal confirmation modal
     const appealCost = parseEther('0.004');
     const tx = await handleTransactionError(
-      arbitratorProxy.appealKlerosArbitratorRuling(claim.claimId, { value: appealCost })
+      arbitratorProxy.appealKlerosArbitratorRuling(
+        claim.policyId,
+        claim.claimant,
+        claim.beneficiary,
+        claim.claimAmountInUsd,
+        claim.evidence,
+        { value: appealCost }
+      )
     );
     if (tx) {
       setChainData('Save appeal claim transaction', {

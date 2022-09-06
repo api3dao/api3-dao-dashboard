@@ -71,7 +71,7 @@ export default function NewClaim() {
       });
       const receipt = await tx.wait();
       const event = receipt.events?.find((ev) => ev.event === 'CreatedClaim') as CreatedClaimEvent;
-      setNewClaimId(event?.args.claimIndex.toString());
+      setNewClaimId(event?.args.claimHash);
       setStatus('submitted');
     } else {
       setStatus('failed');

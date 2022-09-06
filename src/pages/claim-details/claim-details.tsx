@@ -6,7 +6,7 @@ import BackButton from '../../components/back-button';
 import Timer, { DATE_FORMAT } from '../../components/timer';
 import ClaimActions from './claim-actions';
 import { useParams } from 'react-router';
-import { useChainData } from '../../chain-data';
+import { abbrStr, useChainData } from '../../chain-data';
 import { useUserClaimById, getCurrentDeadline } from '../../logic/claims';
 import { format } from 'date-fns';
 import { formatUsd, getIpfsUrl, useForceUpdate, useScrollToTop } from '../../utils';
@@ -38,7 +38,7 @@ export default function ClaimDetails() {
     return (
       <ClaimDetailsLayout claimId={claimId}>
         <div className={styles.detailsHeader}>
-          <h4>Claim {claimId}</h4>
+          <h4>Claim {abbrStr(claimId)}</h4>
         </div>
         {status === 'loading' && <p className={globalStyles.secondaryColor}>Loading...</p>}
         {status === 'loaded' && <p>Unable to find your claim with given id.</p>}
@@ -51,7 +51,7 @@ export default function ClaimDetails() {
   return (
     <ClaimDetailsLayout claimId={claimId}>
       <div className={styles.detailsHeader}>
-        <h4>Claim {claimId}</h4>
+        <h4>Claim {abbrStr(claimId)}</h4>
         {deadline && <Timer size="large" deadline={deadline} onDeadlineExceeded={forceUpdate} showDeadline />}
       </div>
       <ClaimActions key={claim.status} claim={claim} />

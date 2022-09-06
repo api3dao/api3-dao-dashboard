@@ -188,7 +188,19 @@ task('accept-claim', 'Accepts the given claim')
     const manager = accounts[1];
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
-    await claimsManager.acceptClaim(args.claimId);
+
+    const createdEvent = (await claimsManager.queryFilter(claimsManager.filters.CreatedClaim(args.claimId)))[0];
+    if (!createdEvent) {
+      throw new Error('Claim does not exist');
+    }
+
+    await claimsManager.acceptClaim(
+      createdEvent.args.policyHash,
+      createdEvent.args.claimant,
+      createdEvent.args.beneficiary,
+      createdEvent.args.claimAmountInUsd,
+      createdEvent.args.evidence
+    );
     console.info(`Accepted Claim: ${args.claimId}`);
   });
 
@@ -202,7 +214,20 @@ task('propose-settlement', 'Proposes a settlement amount for the claim')
     const manager = accounts[1];
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
-    await claimsManager.proposeSettlement(args.claimId, parseUsd(args.amount));
+
+    const createdEvent = (await claimsManager.queryFilter(claimsManager.filters.CreatedClaim(args.claimId)))[0];
+    if (!createdEvent) {
+      throw new Error('Claim does not exist');
+    }
+
+    await claimsManager.proposeSettlement(
+      createdEvent.args.policyHash,
+      createdEvent.args.claimant,
+      createdEvent.args.beneficiary,
+      createdEvent.args.claimAmountInUsd,
+      createdEvent.args.evidence,
+      parseUsd(args.amount)
+    );
     console.info(`Proposed a settlement of ${args.amount} USD for Claim: ${args.claimId}`);
   });
 
