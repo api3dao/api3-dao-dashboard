@@ -35,6 +35,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'createClaim(address,uint256,string,uint256,string,string)': FunctionFragment;
     'createDispute(bytes32,address,address,uint256,string)': FunctionFragment;
     'createPolicy(address,address,uint256,uint256,uint256,string,string)': FunctionFragment;
+    'downgradePolicy(address,address,uint256,uint256,uint256,string,string)': FunctionFragment;
     'getQuotaUsage(address)': FunctionFragment;
     'isManagerOrMediator(address)': FunctionFragment;
     'manager()': FunctionFragment;
@@ -73,6 +74,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
       | 'createClaim'
       | 'createDispute'
       | 'createPolicy'
+      | 'downgradePolicy'
       | 'getQuotaUsage'
       | 'isManagerOrMediator'
       | 'manager'
@@ -160,6 +162,18 @@ export interface ClaimsManagerInterface extends utils.Interface {
       PromiseOrValue<string>
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: 'downgradePolicy',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
+  ): string;
   encodeFunctionData(functionFragment: 'getQuotaUsage', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'isManagerOrMediator', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'manager', values?: undefined): string;
@@ -229,6 +243,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'createClaim', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'createDispute', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'createPolicy', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'downgradePolicy', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getQuotaUsage', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'isManagerOrMediator', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'manager', data: BytesLike): Result;
@@ -254,6 +269,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'CreatedClaim(bytes32,address,bytes32,address,uint256,string,uint256,string,string,uint256)': EventFragment;
     'CreatedDispute(bytes32,address,address)': EventFragment;
     'CreatedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string,address)': EventFragment;
+    'DowngradedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string)': EventFragment;
     'ProposedSettlement(bytes32,address,uint256,address)': EventFragment;
     'ResetQuota(address,address)': EventFragment;
     'ResolvedDisputeByAcceptingClaim(bytes32,address,address,uint256,uint256,address)': EventFragment;
@@ -273,6 +289,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'CreatedClaim'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CreatedDispute'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CreatedPolicy'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'DowngradedPolicy'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ProposedSettlement'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ResetQuota'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ResolvedDisputeByAcceptingClaim'): EventFragment;
@@ -357,6 +374,23 @@ export type CreatedPolicyEvent = TypedEvent<
 >;
 
 export type CreatedPolicyEventFilter = TypedEventFilter<CreatedPolicyEvent>;
+
+export interface DowngradedPolicyEventObject {
+  beneficiary: string;
+  claimant: string;
+  policyHash: string;
+  coverageAmountInUsd: BigNumber;
+  claimsAllowedFrom: BigNumber;
+  claimsAllowedUntil: BigNumber;
+  policy: string;
+  metadata: string;
+}
+export type DowngradedPolicyEvent = TypedEvent<
+  [string, string, string, BigNumber, BigNumber, BigNumber, string, string],
+  DowngradedPolicyEventObject
+>;
+
+export type DowngradedPolicyEventFilter = TypedEventFilter<DowngradedPolicyEvent>;
 
 export interface ProposedSettlementEventObject {
   claimHash: string;
@@ -597,6 +631,17 @@ export interface ClaimsManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    downgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     getQuotaUsage(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     isManagerOrMediator(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<[boolean]>;
@@ -770,6 +815,17 @@ export interface ClaimsManager extends BaseContract {
   ): Promise<ContractTransaction>;
 
   createPolicy(
+    claimant: PromiseOrValue<string>,
+    beneficiary: PromiseOrValue<string>,
+    coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+    claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+    claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+    policy: PromiseOrValue<string>,
+    metadata: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  downgradePolicy(
     claimant: PromiseOrValue<string>,
     beneficiary: PromiseOrValue<string>,
     coverageAmountInUsd: PromiseOrValue<BigNumberish>,
@@ -963,6 +1019,17 @@ export interface ClaimsManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    downgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     getQuotaUsage(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
 
     isManagerOrMediator(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<boolean>;
@@ -1136,6 +1203,27 @@ export interface ClaimsManager extends BaseContract {
       metadata?: null,
       sender?: null
     ): CreatedPolicyEventFilter;
+
+    'DowngradedPolicy(address,address,bytes32,uint256,uint256,uint256,string,string)'(
+      beneficiary?: null,
+      claimant?: PromiseOrValue<string> | null,
+      policyHash?: PromiseOrValue<BytesLike> | null,
+      coverageAmountInUsd?: null,
+      claimsAllowedFrom?: null,
+      claimsAllowedUntil?: null,
+      policy?: null,
+      metadata?: null
+    ): DowngradedPolicyEventFilter;
+    DowngradedPolicy(
+      beneficiary?: null,
+      claimant?: PromiseOrValue<string> | null,
+      policyHash?: PromiseOrValue<BytesLike> | null,
+      coverageAmountInUsd?: null,
+      claimsAllowedFrom?: null,
+      claimsAllowedUntil?: null,
+      policy?: null,
+      metadata?: null
+    ): DowngradedPolicyEventFilter;
 
     'ProposedSettlement(bytes32,address,uint256,address)'(
       claimHash?: PromiseOrValue<BytesLike> | null,
@@ -1334,6 +1422,17 @@ export interface ClaimsManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    downgradePolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     getQuotaUsage(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
 
     isManagerOrMediator(account: PromiseOrValue<string>, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1487,6 +1586,17 @@ export interface ClaimsManager extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     createPolicy(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      coverageAmountInUsd: PromiseOrValue<BigNumberish>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      claimsAllowedUntil: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    downgradePolicy(
       claimant: PromiseOrValue<string>,
       beneficiary: PromiseOrValue<string>,
       coverageAmountInUsd: PromiseOrValue<BigNumberish>,

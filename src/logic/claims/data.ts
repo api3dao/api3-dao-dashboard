@@ -129,11 +129,7 @@ async function loadClaims(
 
   const [claims, disputes] = await Promise.all([
     getClaimContractData(claimsManager, createdEvents),
-    getDisputeContractData(
-      arbitratorProxy,
-      // TODO DAO-189 Remove filter. See https://github.com/api3dao/claims-manager/issues/43
-      disputeEvents.filter((ev) => ev.args.disputeId.gt(0))
-    ),
+    getDisputeContractData(arbitratorProxy, disputeEvents),
   ]);
 
   // Combine the static and dynamic data
@@ -235,11 +231,11 @@ async function getClaimContractData(contract: ClaimsManager, claimEvents: Create
 
 async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents: CreatedDisputeEvent[]) {
   const disputeStatusCalls = disputeEvents.map((ev) => {
-    return contract.interface.encodeFunctionData('disputeStatus', [ev.args.claimHash]);
+    return contract.interface.encodeFunctionData('disputeStatus', [ev.args.disputeId]);
   });
 
   const currentRulingCalls = disputeEvents.map((ev) => {
-    return contract.interface.encodeFunctionData('currentRuling', [ev.args.claimHash]);
+    return contract.interface.encodeFunctionData('currentRuling', [ev.args.disputeId]);
   });
 
   // Combine all calls so that we can make a single multicall
