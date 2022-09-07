@@ -35,3 +35,10 @@
     margin-right: 0;
   }
 }
+
+.newClaimButton {
+  display: none;
+  @media (min-width: $min-md) {
+    display: inline-block;
+  }
+}

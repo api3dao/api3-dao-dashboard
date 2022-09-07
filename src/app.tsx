@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BaseLayout } from './components/layout';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
@@ -5,6 +6,7 @@ import { images, preloadImageList, useOnMountEffect } from './utils';
 import { FallbackRender } from '@sentry/react/dist/errorboundary';
 import { ToastContainer } from 'react-toastify';
 import { useTransactionNotifications } from './contracts';
+import { identifyAppEntryPage } from './components/back-button';
 import * as Sentry from '@sentry/react';
 import ChainDataContextProvider from './chain-data';
 import Dashboard from './pages/dashboard';
@@ -14,10 +16,11 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
-import Policies from './pages/policies';
+import Policies from './pages/my-policies';
 import Claims from './pages/claims';
 import ClaimDetails from './pages/claim-details';
 import PolicyDetails from './pages/policy-details';
+import PolicySelect from './pages/policy-select';
 import NewClaim from './pages/new-claim';
 import './styles/variables.module.scss';
 
@@ -67,6 +70,9 @@ const AppContent = () => {
           <Route path="/policies" exact>
             <Policies />
           </Route>
+          <Route path="/claims/new" exact>
+            <PolicySelect />
+          </Route>
           <Route path="/claims/:claimId" exact>
             <ClaimDetails />
           </Route>
@@ -93,6 +99,13 @@ const AppContent = () => {
 };
 
 const App = () => {
+  useEffect(() => {
+    // When the app mounts we want to identify the current page as the one the user first visited
+    // (i.e. the entry page), so that if the custom back button is present on the entry page,
+    // that it knows that it can't go back.
+    identifyAppEntryPage();
+  }, []);
+
   return (
     <ChainDataContextProvider>
       <HelmetProvider>

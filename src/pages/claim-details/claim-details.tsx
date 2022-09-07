@@ -1,15 +1,15 @@
 import { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import ExternalLink from '../../components/external-link';
+import BackButton from '../../components/back-button';
 import Timer, { DATE_FORMAT } from '../../components/timer';
 import ClaimActions from './claim-actions';
 import { useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { useUserClaimById, getCurrentDeadline } from '../../logic/claims';
 import { format } from 'date-fns';
-import { formatUsd, getIpfsUrl, images, useForceUpdate, useScrollToTop } from '../../utils';
+import { formatUsd, getIpfsUrl, useForceUpdate, useScrollToTop } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-details.module.scss';
 
@@ -102,10 +102,7 @@ function ClaimDetailsLayout(props: ClaimDetailsLayoutProps) {
   return (
     <BaseLayout subtitle={`Claim ${props.claimId}`}>
       <div>
-        <Link to="/claims" className={styles.backLink}>
-          <img src={images.arrowLeft} alt="back" />
-          Back
-        </Link>
+        <BackButton fallback={{ href: '/claims' }}>Back</BackButton>
       </div>
       {props.children}
     </BaseLayout>

@@ -26,7 +26,7 @@ export default function PolicyList(props: Props) {
             <div className={styles.policyItemInfo}>
               {isActive(policy) ? <span>Active</span> : <span className={globalStyles.tertiaryColor}>Inactive</span>}
               <div className={styles.infoEntry}>
-                <span className={globalStyles.tertiaryColor}>Ends: </span>
+                <span className={globalStyles.tertiaryColor}>Claims Allowed Until: </span>
                 <span>
                   {format(policy.claimsAllowedUntil, 'dd MMM yyyy')}
                   <span className={globalStyles.tertiaryColor}> {format(policy.claimsAllowedUntil, 'HH:mm')}</span>
