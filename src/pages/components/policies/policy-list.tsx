@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { BasePolicy } from '../../chain-data';
-import { isActive, useRemainingCoverageLoader } from '../../logic/policies';
-import { useStableIds, formatUsd, images } from '../../utils';
-import globalStyles from '../../styles/global-styles.module.scss';
+import { BasePolicy } from '../../../chain-data';
+import { isActive, useRemainingCoverageLoader } from '../../../logic/policies';
+import { useStableIds, formatUsd, images } from '../../../utils';
+import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './policy-list.module.scss';
 
 interface Props {
