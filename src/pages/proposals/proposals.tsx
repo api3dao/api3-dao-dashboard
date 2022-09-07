@@ -4,11 +4,11 @@ import Layout from '../../components/layout';
 import { Modal } from '../../components/modal';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import { TooltipChecklist } from '../../components/tooltip';
-import Treasury from '../proposal-commons/treasury';
+import Treasury from '../components/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useActiveProposals, useLoadGenesisEpoch } from '../../logic/proposals/hooks';
 import { goEncodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
-import ProposalList from '../proposal-commons/proposal-list';
+import ProposalList from '../components/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import {
