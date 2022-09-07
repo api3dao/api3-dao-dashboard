@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import Button from '../button';
+import Button from '../../../components/button';
 import PolicyList from './policy-list';
 import Pagination, { usePagedData } from './pagination';
-import { connectWallet } from '../sign-in/sign-in';
-import { useChainData } from '../../chain-data';
-import { useUserPolicies, isActive } from '../../logic/policies';
+import { connectWallet } from '../../../components/sign-in/sign-in';
+import { useChainData } from '../../../chain-data';
+import { useUserPolicies, isActive } from '../../../logic/policies';
 import styles from './policies.module.scss';
 
 interface Props {

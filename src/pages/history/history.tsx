@@ -7,7 +7,7 @@ import { historyProposalsSelector, OptionalProposalType } from '../../logic/prop
 import { useChainData } from '../../chain-data';
 import BorderedBox from '../../components/bordered-box/bordered-box';
 import RadioButton from '../../components/radio-button/radio-button';
-import ProposalList from '../proposal-commons/proposal-list';
+import ProposalList from '../components/proposal-list';
 import styles from './history.module.scss';
 import { useHistory } from 'react-router';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';

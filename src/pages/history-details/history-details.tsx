@@ -1,1 +1,1 @@
-export { default } from '../proposal-commons/proposal-details';
+export { default } from '../components/proposal-details';
