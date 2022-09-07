@@ -1,6 +1,9 @@
 import { BigNumber } from 'ethers';
 
-export const blockTimestampToDate = (timestamp: BigNumber) => new Date(timestamp.mul(1000).toNumber());
+export const blockTimestampToDate = (value: BigNumber | number) => {
+  const timestamp = typeof value === 'number' ? value : value.toNumber();
+  return new Date(timestamp * 1000);
+};
 
 const ONE_MINUTE_AS_MS = 1000 * 60;
 const ONE_HOUR_AS_MS = ONE_MINUTE_AS_MS * 60;

@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { BigNumber } from 'ethers';
 import { go } from '@api3/promise-utils';
 import { addDays, isAfter, isBefore } from 'date-fns';
 import { blockTimestampToDate, messages } from '../../utils';
@@ -36,7 +35,7 @@ export function useUserClaims() {
     // Sort by claim id in descending order
     return claims.userClaimIds
       .map((claimId) => claims.byId![claimId]!)
-      .sort((a, b) => parseInt(b.claimId) - parseInt(a.claimId));
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }, [claims]);
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
@@ -85,9 +84,7 @@ export function useUserClaimById(claimId: string) {
 
     const load = async () => {
       setStatus('loading');
-      const result = await go(() =>
-        loadClaims(claimsManager, arbitratorProxy, { userAccount, claimId: BigNumber.from(claimId) })
-      );
+      const result = await go(() => loadClaims(claimsManager, arbitratorProxy, { userAccount, claimId }));
 
       if (!result.success) {
         notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
@@ -116,7 +113,7 @@ export function useUserClaimById(claimId: string) {
 async function loadClaims(
   claimsManager: ClaimsManager,
   arbitratorProxy: KlerosLiquidProxy,
-  params: { userAccount?: string; claimId?: BigNumber }
+  params: { userAccount?: string; claimId?: string }
 ): Promise<{ ids: string[]; byId: Record<string, Claim> }> {
   const { userAccount = null, claimId = null } = params;
   // Get all the static data via events
@@ -132,20 +129,16 @@ async function loadClaims(
 
   const [claims, disputes] = await Promise.all([
     getClaimContractData(claimsManager, createdEvents),
-    getDisputeContractData(
-      arbitratorProxy,
-      // TODO DAO-189 Remove filter. See https://github.com/api3dao/claims-manager/issues/43
-      disputeEvents.filter((ev) => ev.args.disputeId.gt(0))
-    ),
+    getDisputeContractData(arbitratorProxy, disputeEvents),
   ]);
 
   // Combine the static and dynamic data
   const claimsById = createdEvents.reduce((acc, event, index) => {
     const eventArgs = event.args;
-    const claimId = eventArgs.claimIndex.toString();
+    const claimId = eventArgs.claimHash;
     const claimData = claims[index]!;
-    const counterOfferEvent = counterOfferEvents.find((ev) => ev.args.claimIndex.toString() === claimId);
-    const dispute = disputes.find((dispute) => dispute.claimIndex.toString() === claimId);
+    const counterOfferEvent = counterOfferEvents.find((ev) => ev.args.claimHash === claimId);
+    const dispute = disputes.find((dispute) => dispute.claimId === claimId);
 
     const claim: Claim = {
       claimId,
@@ -155,9 +148,9 @@ async function loadClaims(
       claimant: eventArgs.claimant,
       beneficiary: eventArgs.beneficiary,
       claimAmountInUsd: eventArgs.claimAmountInUsd,
-      counterOfferAmountInUsd: counterOfferEvent?.args.amountInUsd ?? null,
+      counterOfferAmountInUsd: counterOfferEvent?.args.settlementAmountInUsd ?? null,
       status: ClaimStatuses[claimData.status as ClaimStatusCode],
-      statusUpdatedAt: new Date(claimData.updateTime * 1000),
+      statusUpdatedAt: blockTimestampToDate(claimData.updateTime),
       deadline: null,
       transactionHash: event.transactionHash,
       dispute: dispute || null,
@@ -169,7 +162,7 @@ async function loadClaims(
   }, {} as Record<string, Claim>);
 
   return {
-    ids: createdEvents.map((event) => event.args.claimIndex.toString()),
+    ids: createdEvents.map((event) => event.args.claimHash),
     byId: claimsById,
   };
 }
@@ -226,23 +219,23 @@ export function getCurrentDeadline(claim: Claim) {
 
 async function getClaimContractData(contract: ClaimsManager, claimEvents: CreatedClaimEvent[]) {
   const calls = claimEvents.map((event) => {
-    return contract.interface.encodeFunctionData('claims', [event.args.claimIndex]);
+    return contract.interface.encodeFunctionData('claimHashToState', [event.args.claimHash]);
   });
 
   const encodedResults = await contract.callStatic.multicall(calls);
 
   return encodedResults.map((res) => {
-    return contract.interface.decodeFunctionResult('claims', res);
+    return contract.interface.decodeFunctionResult('claimHashToState', res);
   });
 }
 
 async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents: CreatedDisputeEvent[]) {
   const disputeStatusCalls = disputeEvents.map((ev) => {
-    return contract.interface.encodeFunctionData('disputeStatus', [ev.args.claimIndex]);
+    return contract.interface.encodeFunctionData('disputeStatus', [ev.args.disputeId]);
   });
 
   const currentRulingCalls = disputeEvents.map((ev) => {
-    return contract.interface.encodeFunctionData('currentRuling', [ev.args.claimIndex]);
+    return contract.interface.encodeFunctionData('currentRuling', [ev.args.disputeId]);
   });
 
   // Combine all calls so that we can make a single multicall
@@ -271,7 +264,7 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
       .map((appealEv) => appealEv.args.sender);
 
     return {
-      claimIndex: ev.args.claimIndex,
+      claimId: ev.args.claimHash,
       id: disputeId,
       status: DisputeStatuses[statusCode],
       ruling: ArbitratorRulings[rulingCode],
