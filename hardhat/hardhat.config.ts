@@ -234,6 +234,7 @@ task('propose-settlement', 'Proposes a settlement amount for the claim')
 task('give-dispute-ruling', 'Gives a ruling for the dispute')
   .addParam('disputeId', 'The arbitrator dispute ID')
   .addParam('ruling', 'The arbitrator decision (0|1|2)')
+  .addOptionalParam('appealPeriodLength', 'The amount of time allowed to appeal (in seconds)')
   .setAction(async (args, hre) => {
     const accounts = await hre.ethers.getSigners();
 
@@ -243,7 +244,7 @@ task('give-dispute-ruling', 'Gives a ruling for the dispute')
     const arbitrator = MockKlerosArbitratorFactory.connect(contracts.arbitrator, deployer);
 
     // Set all the period times to zero before the appeal period
-    await arbitrator.__setSubcourtTimesPerPeriod(1, [0, 0, 0, 300]);
+    await arbitrator.__setSubcourtTimesPerPeriod(1, [0, 0, 0, args.appealPeriodLength ?? 300]);
     await arbitrator.__setCurrentRuling(args.disputeId, args.ruling);
     // Pass the periods so that we land in the appeal period
     await arbitrator.passPeriod(args.disputeId);
@@ -260,6 +261,9 @@ task('resolve-dispute', 'Resolves the dispute for the claim')
     const deployer = accounts[0];
     const contracts = getContractAddresses(hre.network.name);
     const arbitrator = MockKlerosArbitratorFactory.connect(contracts.arbitrator, deployer);
+
+    // Pass the appeal period so that we land in the execution period
+    await arbitrator.passPeriod(args.disputeId);
     await arbitrator.executeRuling(args.disputeId);
     console.info(`Resolved dispute: ${args.disputeId}`);
   });

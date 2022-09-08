@@ -78,8 +78,9 @@ async function deploy() {
 
 promiseWrapper(deploy);
 
-// Provided by https://kleros.gitbook.io/docs
-const generateArbitratorExtraData = (subCourtId, noOfVotes) =>
-  `0x${
+// Function provided by Kleros. @see https://kleros.gitbook.io/docs
+function generateArbitratorExtraData(subCourtId, noOfVotes) {
+  return `0x${
     parseInt(subCourtId, 10).toString(16).padStart(64, '0') + parseInt(noOfVotes, 10).toString(16).padStart(64, '0')
   }`;
+}
