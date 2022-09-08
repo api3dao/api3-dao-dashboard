@@ -1,6 +1,5 @@
 const hre = require('hardhat');
 const { promiseWrapper } = require('../utils');
-const { blockTimestampToDate } = require('../../src/utils');
 
 async function deploy() {
   const accounts = await hre.ethers.getSigners();

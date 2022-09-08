@@ -33,7 +33,7 @@ export interface KlerosLiquidProxyInterface extends utils.Interface {
     'disputeStatus(uint256)': FunctionFragment;
     'disputes(uint256)': FunctionFragment;
     'executeRuling(uint256)': FunctionFragment;
-    'getSubCourt(uint96)': FunctionFragment;
+    'getSubcourt(uint96)': FunctionFragment;
     'klerosArbitrator()': FunctionFragment;
     'klerosArbitratorExtraData()': FunctionFragment;
     'multicall(bytes[])': FunctionFragment;
@@ -56,7 +56,7 @@ export interface KlerosLiquidProxyInterface extends utils.Interface {
       | 'disputeStatus'
       | 'disputes'
       | 'executeRuling'
-      | 'getSubCourt'
+      | 'getSubcourt'
       | 'klerosArbitrator'
       | 'klerosArbitratorExtraData'
       | 'multicall'
@@ -95,7 +95,7 @@ export interface KlerosLiquidProxyInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'disputeStatus', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(functionFragment: 'disputes', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(functionFragment: 'executeRuling', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(functionFragment: 'getSubCourt', values: [PromiseOrValue<BigNumberish>]): string;
+  encodeFunctionData(functionFragment: 'getSubcourt', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(functionFragment: 'klerosArbitrator', values?: undefined): string;
   encodeFunctionData(functionFragment: 'klerosArbitratorExtraData', values?: undefined): string;
   encodeFunctionData(functionFragment: 'multicall', values: [PromiseOrValue<BytesLike>[]]): string;
@@ -121,7 +121,7 @@ export interface KlerosLiquidProxyInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'disputeStatus', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'disputes', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'executeRuling', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'getSubCourt', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getSubcourt', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'klerosArbitrator', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'klerosArbitratorExtraData', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'multicall', data: BytesLike): Result;
@@ -263,7 +263,7 @@ export interface KlerosLiquidProxy extends BaseContract {
     claimsManager(overrides?: CallOverrides): Promise<[string]>;
 
     courts(
-      subCourtId: PromiseOrValue<BigNumberish>,
+      subcourtId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, boolean, BigNumber, BigNumber, BigNumber, BigNumber] & {
@@ -307,7 +307,7 @@ export interface KlerosLiquidProxy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, string, BigNumber, number, BigNumber, BigNumber, BigNumber, boolean] & {
-        subCourtId: BigNumber;
+        subcourtId: BigNumber;
         arbitrated: string;
         numberOfChoices: BigNumber;
         period: number;
@@ -323,8 +323,8 @@ export interface KlerosLiquidProxy extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    getSubCourt(
-      subCourtId: PromiseOrValue<BigNumberish>,
+    getSubcourt(
+      subcourtId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber[], [BigNumber, BigNumber, BigNumber, BigNumber]] & {
@@ -378,7 +378,7 @@ export interface KlerosLiquidProxy extends BaseContract {
   claimsManager(overrides?: CallOverrides): Promise<string>;
 
   courts(
-    subCourtId: PromiseOrValue<BigNumberish>,
+    subcourtId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, boolean, BigNumber, BigNumber, BigNumber, BigNumber] & {
@@ -422,7 +422,7 @@ export interface KlerosLiquidProxy extends BaseContract {
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, string, BigNumber, number, BigNumber, BigNumber, BigNumber, boolean] & {
-      subCourtId: BigNumber;
+      subcourtId: BigNumber;
       arbitrated: string;
       numberOfChoices: BigNumber;
       period: number;
@@ -438,8 +438,8 @@ export interface KlerosLiquidProxy extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  getSubCourt(
-    subCourtId: PromiseOrValue<BigNumberish>,
+  getSubcourt(
+    subcourtId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber[], [BigNumber, BigNumber, BigNumber, BigNumber]] & {
@@ -493,7 +493,7 @@ export interface KlerosLiquidProxy extends BaseContract {
     claimsManager(overrides?: CallOverrides): Promise<string>;
 
     courts(
-      subCourtId: PromiseOrValue<BigNumberish>,
+      subcourtId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, boolean, BigNumber, BigNumber, BigNumber, BigNumber] & {
@@ -537,7 +537,7 @@ export interface KlerosLiquidProxy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, string, BigNumber, number, BigNumber, BigNumber, BigNumber, boolean] & {
-        subCourtId: BigNumber;
+        subcourtId: BigNumber;
         arbitrated: string;
         numberOfChoices: BigNumber;
         period: number;
@@ -550,8 +550,8 @@ export interface KlerosLiquidProxy extends BaseContract {
 
     executeRuling(disputeId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
 
-    getSubCourt(
-      subCourtId: PromiseOrValue<BigNumberish>,
+    getSubcourt(
+      subcourtId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber[], [BigNumber, BigNumber, BigNumber, BigNumber]] & {
@@ -677,7 +677,7 @@ export interface KlerosLiquidProxy extends BaseContract {
 
     claimsManager(overrides?: CallOverrides): Promise<BigNumber>;
 
-    courts(subCourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
+    courts(subcourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
 
     createDispute(
       policyHash: PromiseOrValue<BytesLike>,
@@ -701,7 +701,7 @@ export interface KlerosLiquidProxy extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    getSubCourt(subCourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
+    getSubcourt(subcourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
 
     klerosArbitrator(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -748,7 +748,7 @@ export interface KlerosLiquidProxy extends BaseContract {
 
     claimsManager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    courts(subCourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    courts(subcourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     createDispute(
       policyHash: PromiseOrValue<BytesLike>,
@@ -775,7 +775,7 @@ export interface KlerosLiquidProxy extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    getSubCourt(subCourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getSubcourt(subcourtId: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     klerosArbitrator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
