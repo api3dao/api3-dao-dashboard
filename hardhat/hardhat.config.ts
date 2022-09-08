@@ -7,7 +7,7 @@ import { BigNumber } from 'ethers';
 import { addDays, parseISO } from 'date-fns';
 import { parseUsd } from '../src/utils/api3-format';
 import { ClaimsManager__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
-import { MockKlerosArbitrator__factory as MockKlerosArbitratorFactory } from '../src/contracts/tmp/factories/mock/MockKlerosArbitrator__factory';
+import { MockKlerosLiquid__factory as MockKlerosArbitratorFactory } from '../src/contracts/tmp/factories/mock/MockKlerosLiquid__factory';
 import { ChainData } from '../src/chain-data';
 import { encodeMetadata, goEncodeEvmScript } from '../src/logic/proposals/encoding';
 
@@ -241,7 +241,13 @@ task('give-dispute-ruling', 'Gives a ruling for the dispute')
     const deployer = accounts[0];
     const contracts = getContractAddresses(hre.network.name);
     const arbitrator = MockKlerosArbitratorFactory.connect(contracts.arbitrator, deployer);
-    await arbitrator.giveRuling(args.disputeId, args.ruling);
+
+    // Set all the period times to zero before the appeal period
+    await arbitrator.__setSubcourtTimesPerPeriod(1, [0, 0, 0, 300]);
+    await arbitrator.__setCurrentRuling(args.disputeId, args.ruling);
+    // Pass the periods so that we land in the appeal period
+    await arbitrator.passPeriod(args.disputeId);
+    await arbitrator.passPeriod(args.disputeId);
     console.info(`Dispute: ${args.disputeId} has been given a ruling: ${args.ruling}`);
   });
 

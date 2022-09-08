@@ -4,7 +4,7 @@ import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
 import { abbrStr, Claim, useChainData } from '../../chain-data';
 import styles from './claim-actions.module.scss';
-import { formatUsd, handleTransactionError, parseEther } from '../../utils';
+import { formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
 import { useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
@@ -48,13 +48,16 @@ export default function ClaimActions(props: Props) {
 
   const handleEscalateToArbitrator = async () => {
     setStatus('submitting');
+    // TODO DAO-176 Handle in escalate confirmation modal
+    const arbitrationCost = await arbitratorProxy.arbitrationCost();
     const tx = await handleTransactionError(
       arbitratorProxy.createDispute(
         claim.policyId,
         claim.claimant,
         claim.beneficiary,
         claim.claimAmountInUsd,
-        claim.evidence
+        claim.evidence,
+        { value: arbitrationCost }
       )
     );
     if (tx) {
@@ -70,7 +73,7 @@ export default function ClaimActions(props: Props) {
   const handleAppeal = async () => {
     setStatus('submitting');
     // TODO DAO-176 Handle in appeal confirmation modal
-    const appealCost = parseEther('0.004');
+    const appealCost = await arbitratorProxy.appealCost(claim.dispute!.id);
     const tx = await handleTransactionError(
       arbitratorProxy.appealKlerosArbitratorRuling(
         claim.policyId,
