@@ -10,10 +10,10 @@ The decentralized approach of being a DAO member is to run API3 dashboard on you
 need `git` and `docker`. Note, that the production source code is on the `production` branch.
 
 ```
-git clone --depth=1 --branch production git@github.com:api3dao/api3-dao-dashboard.git
+git clone --depth=1 --branch production https://github.com/api3dao/api3-dao-dashboard.git
 cd api3-dao-dashboard
-docker build -t api3-dao-dashboard .
-docker run -d -p7770:80 --name api3-dao-dashboard api3-dao-dashboard
+docker build --tag api3-dao-dashboard .
+docker run --detach --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
 ```
 
 This will create a API3 dashboard running on port 7770 of your localhost where it is safe to connect your wallet.
@@ -26,6 +26,8 @@ latter command to remove the container, add the `--rm` flag to the above `docker
 
 We use the `main` branch to develop new features. For production code, see the
 [the production branch](https://github.com/api3dao/api3-dao-dashboard/tree/production).
+
+Currently, it's only possible to develop on UNIX-like OS. If you use Windows, you can use WSL2.
 
 ### Running on mainnet or testnets
 
