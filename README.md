@@ -13,14 +13,11 @@ need `git` and `docker`. Note, that the production source code is on the `produc
 git clone --depth=1 --branch production https://github.com/api3dao/api3-dao-dashboard.git
 cd api3-dao-dashboard
 docker build --tag api3-dao-dashboard .
-docker run --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
+docker run --rm --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
 ```
 
-This will create a API3 dashboard running on port 7770 of your localhost where it is safe to connect your wallet.
-
-Once you are finished interacting with the dashboard, the container can be stopped using
-`docker stop api3-dao-dashboard` and then removed using `docker rm api3-dao-dashboard`. To avoid having to execute the
-latter command to remove the container, add the `--rm` flag to the above `docker run` command.
+This will create a API3 dashboard running on port 7770 of your localhost where it is safe to connect your wallet. Once
+you are finished interacting with the dashboard, the container can be stopped using `docker stop api3-dao-dashboard`.
 
 ## Development instructions
 
