@@ -6,10 +6,12 @@ import {
   Claim,
   ClaimStatuses,
   ClaimStatusCode,
-  DisputeStatuses,
-  DisputeStatusCode,
+  DisputeStatus,
   ArbitratorRulings,
   ArbitratorRulingCode,
+  DisputePeriods,
+  DisputePeriodCode,
+  DisputePeriod,
   updateImmutablyCurried,
   useChainData,
 } from '../../chain-data';
@@ -175,15 +177,7 @@ function calculateDeadline(claim: Claim) {
     case 'SettlementProposed':
       return addDays(claim.statusUpdatedAt, 3);
     case 'DisputeCreated':
-      if (dispute && dispute.status !== 'Waiting') {
-        switch (dispute.ruling) {
-          case 'DoNotPay':
-          case 'PaySettlement':
-            // TODO DAO-185 Calculate appeal deadline
-            return addDays(claim.statusUpdatedAt, 3);
-        }
-      }
-      return null;
+      return dispute?.period === 'Appeal' ? dispute.periodEndDate! : null;
     default:
       return null;
   }
@@ -229,45 +223,56 @@ async function getClaimContractData(contract: ClaimsManager, claimEvents: Create
   });
 }
 
+export const SUB_COURT_ID = 1;
+
 async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents: CreatedDisputeEvent[]) {
-  const disputeStatusCalls = disputeEvents.map((ev) => {
-    return contract.interface.encodeFunctionData('disputeStatus', [ev.args.disputeId]);
+  const disputeCalls = disputeEvents.map((ev) => {
+    return contract.interface.encodeFunctionData('disputes', [ev.args.disputeId]);
   });
 
   const currentRulingCalls = disputeEvents.map((ev) => {
     return contract.interface.encodeFunctionData('currentRuling', [ev.args.disputeId]);
   });
 
+  const subCourtCall = contract.interface.encodeFunctionData('getSubcourt', [SUB_COURT_ID]);
+
   // Combine all calls so that we can make a single multicall
-  const allCalls = [...disputeStatusCalls, ...currentRulingCalls];
+  const allCalls = [...disputeCalls, ...currentRulingCalls, subCourtCall];
   const [encodedResults, appealEvents] = await Promise.all([
     contract.callStatic.multicall(allCalls),
     getAppealEvents(contract, disputeEvents),
   ]);
 
-  const disputeStatuses = encodedResults
+  const disputes = encodedResults
     // Get the first batch of results
     .slice(0, disputeEvents.length)
-    .map((res) => contract.interface.decodeFunctionResult('disputeStatus', res));
+    .map((res) => contract.interface.decodeFunctionResult('disputes', res));
 
   const currentRulings = encodedResults
     // Get the second batch of results
     .slice(disputeEvents.length, 2 * disputeEvents.length)
     .map((res) => contract.interface.decodeFunctionResult('currentRuling', res));
 
+  const subCourt = contract.interface.decodeFunctionResult('getSubcourt', last(encodedResults)!);
+
   return disputeEvents.map((ev, index) => {
     const disputeId = ev.args.disputeId.toString();
-    const statusCode = disputeStatuses[index]?.[0] as DisputeStatusCode;
+    const dispute = disputes[index]!;
     const rulingCode = currentRulings[index]?.[0]?.toNumber() as ArbitratorRulingCode;
     const appealers = appealEvents
       .filter((appealEv) => appealEv.args.disputeId.toString() === disputeId)
       .map((appealEv) => appealEv.args.sender);
 
+    const period = DisputePeriods[dispute.period as DisputePeriodCode];
+    const periodLength = subCourt.timesPerPeriod[dispute.period] ?? null;
+
     return {
-      claimId: ev.args.claimHash,
       id: disputeId,
-      status: DisputeStatuses[statusCode],
+      claimId: ev.args.claimHash,
+      status: getDisputeStatus(period),
       ruling: ArbitratorRulings[rulingCode],
+      period,
+      periodEndDate: periodLength ? blockTimestampToDate(dispute.lastPeriodChange.add(periodLength)) : null,
       appealedBy: last(appealers) ?? null,
     };
   });
@@ -279,4 +284,20 @@ async function getAppealEvents(contract: KlerosLiquidProxy, disputeEvents: Creat
     // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
     contract.filters.AppealedKlerosArbitratorRuling(null, null, disputeIds)
   );
+}
+
+/**
+ * Based on the KlerosLiquid implementation. @see https://github.com/kleros/kleros/blob/master/contracts/kleros/KlerosLiquid.sol#L829
+ */
+function getDisputeStatus(period: DisputePeriod): DisputeStatus {
+  switch (period) {
+    case 'Evidence':
+    case 'Commit':
+    case 'Vote':
+      return 'Waiting';
+    case 'Appeal':
+      return 'Appealable';
+    case 'Execution':
+      return 'Solved';
+  }
 }
