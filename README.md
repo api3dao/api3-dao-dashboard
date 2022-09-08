@@ -13,7 +13,7 @@ need `git` and `docker`. Note, that the production source code is on the `produc
 git clone --depth=1 --branch production https://github.com/api3dao/api3-dao-dashboard.git
 cd api3-dao-dashboard
 docker build --tag api3-dao-dashboard .
-docker run --detach --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
+docker run --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
 ```
 
 This will create a API3 dashboard running on port 7770 of your localhost where it is safe to connect your wallet.
