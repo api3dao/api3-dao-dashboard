@@ -1,6 +1,5 @@
 const hre = require('hardhat');
 const { promiseWrapper } = require('../utils');
-const { SUB_COURT_ID } = require('../../src/logic/claims');
 
 async function deploy() {
   const accounts = await hre.ethers.getSigners();
@@ -31,7 +30,7 @@ async function deploy() {
   const klerosLiquidProxy = await klerosLiquidProxyFactory.deploy(
     claimsManager.address,
     mockKlerosArbitrator.address,
-    generateArbitratorExtraData(SUB_COURT_ID, 3),
+    generateArbitratorExtraData(1, 3),
     '/ipfs/Qm...testhash/metaEvidence.json'
   );
 
