@@ -272,7 +272,7 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
       status: getDisputeStatus(period),
       ruling: ArbitratorRulings[rulingCode],
       period,
-      periodEndDate: periodLength ? blockTimestampToDate(dispute.lastPeriodChange.add(periodLength)) : null,
+      periodEndDate: periodLength != null ? blockTimestampToDate(dispute.lastPeriodChange.add(periodLength)) : null,
       appealedBy: last(appealers) ?? null,
     };
   });
