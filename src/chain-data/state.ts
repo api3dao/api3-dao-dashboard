@@ -139,6 +139,8 @@ export interface Claim {
     id: string;
     status: DisputeStatus;
     ruling: ArbitratorRuling;
+    period: DisputePeriod;
+    periodEndDate: null | Date; // The last period (execution) does not have an end date
     appealedBy: null | string;
   };
 }
@@ -172,6 +174,16 @@ export const ArbitratorRulings = {
 } as const;
 export type ArbitratorRulingCode = keyof typeof ArbitratorRulings;
 export type ArbitratorRuling = typeof ArbitratorRulings[ArbitratorRulingCode];
+
+export const DisputePeriods = {
+  0: 'Evidence',
+  1: 'Commit',
+  2: 'Vote',
+  3: 'Appeal',
+  4: 'Execution',
+} as const;
+export type DisputePeriodCode = keyof typeof DisputePeriods;
+export type DisputePeriod = typeof DisputePeriods[DisputePeriodCode];
 
 // Represents a policy that may or may not have its dynamic data loaded
 export interface BasePolicy {

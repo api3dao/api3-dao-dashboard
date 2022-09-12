@@ -11,7 +11,7 @@ async function deploy() {
   const accessControlRegistry = await accessControlRegistryFactory.deploy();
   const mockApi3PoolFactory = await hre.ethers.getContractFactory('MockApi3Pool', roles.deployer);
   const mockApi3Pool = await mockApi3PoolFactory.deploy();
-  const mockKlerosArbitratorFactory = await hre.ethers.getContractFactory('MockKlerosArbitrator', roles.deployer);
+  const mockKlerosArbitratorFactory = await hre.ethers.getContractFactory('MockKlerosLiquid', roles.deployer);
   const mockKlerosArbitrator = await mockKlerosArbitratorFactory.deploy();
 
   const claimsManagerFactory = await hre.ethers.getContractFactory('ClaimsManager', roles.deployer);
@@ -30,7 +30,7 @@ async function deploy() {
   const klerosLiquidProxy = await klerosLiquidProxyFactory.deploy(
     claimsManager.address,
     mockKlerosArbitrator.address,
-    '0x123456',
+    generateArbitratorExtraData(1, 3),
     '/ipfs/Qm...testhash/metaEvidence.json'
   );
 
@@ -76,3 +76,10 @@ async function deploy() {
 }
 
 promiseWrapper(deploy);
+
+// Function provided by Kleros. @see https://kleros.gitbook.io/docs
+function generateArbitratorExtraData(subCourtId, noOfVotes) {
+  return `0x${
+    parseInt(subCourtId, 10).toString(16).padStart(64, '0') + parseInt(noOfVotes, 10).toString(16).padStart(64, '0')
+  }`;
+}

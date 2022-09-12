@@ -113,6 +113,8 @@ describe('<ClaimActions />', () => {
         id: '1',
         status: 'Waiting',
         ruling: 'DoNotPay',
+        period: 'Evidence',
+        periodEndDate: addDays(new Date(), 2),
         appealedBy: null,
       };
 
@@ -129,6 +131,8 @@ describe('<ClaimActions />', () => {
         id: '1',
         status: 'Waiting',
         ruling: 'DoNotPay',
+        period: 'Evidence',
+        periodEndDate: addDays(new Date(), 2),
         appealedBy: null,
       };
 
@@ -143,6 +147,8 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Solved',
           ruling: 'PayClaim',
+          period: 'Execution',
+          periodEndDate: null,
           appealedBy: null,
         };
 
@@ -161,6 +167,8 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Appealable',
           ruling: 'PaySettlement',
+          period: 'Appeal',
+          periodEndDate: addDays(new Date(), 2),
           appealedBy: null,
         };
       });
@@ -192,6 +200,8 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Appealable',
           ruling: 'DoNotPay',
+          period: 'Appeal',
+          periodEndDate: addDays(new Date(), 2),
           appealedBy: null,
         };
       });
@@ -223,6 +233,8 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Waiting',
           ruling: 'PaySettlement',
+          period: 'Evidence',
+          periodEndDate: addDays(new Date(), 2),
           appealedBy: '0x153EF0B488148k0aB0FED112334',
         };
 
@@ -239,6 +251,8 @@ describe('<ClaimActions />', () => {
           id: '1',
           status: 'Waiting',
           ruling: 'PayClaim',
+          period: 'Vote',
+          periodEndDate: addDays(new Date(), 2),
           appealedBy: '0xD6b040736e948621c5b6E0a4944',
         };
 
