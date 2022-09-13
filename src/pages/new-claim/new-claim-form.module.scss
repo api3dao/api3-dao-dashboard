@@ -21,8 +21,20 @@
   }
 }
 
+.usdInput {
+  padding-top: 5px;
+  @media (min-width: $min-md) {
+    max-width: 50%;
+  }
+}
+
 .validation {
   color: $error-color;
+  font-size: $text-small;
+}
+
+.helpText {
+  color: $secondary-color;
   font-size: $text-small;
 }
 

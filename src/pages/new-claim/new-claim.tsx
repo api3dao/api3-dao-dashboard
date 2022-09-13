@@ -128,7 +128,7 @@ export default function NewClaim() {
         <BaseLayout subtitle="New Claim">
           <h4 className={styles.heading}>New Claim</h4>
           <h5 className={styles.subHeading}>Review Your Claim</h5>
-          <Confirmation form={form} policy={policy} onSubmit={handleSubmit} onCancel={() => setStep('capture')} />
+          <Confirmation form={form} onSubmit={handleSubmit} onCancel={() => setStep('capture')} />
         </BaseLayout>
       );
   }

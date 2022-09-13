@@ -1,20 +1,17 @@
 import { utils } from 'ethers';
 import Button from '../../components/button';
 import { Acknowledgement, FormState } from './new-claim-form';
-import { Policy } from '../../chain-data';
-import { formatUsd } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim-form.module.scss';
 
 interface Props {
   form: FormState;
-  policy: Policy;
   onSubmit: () => void;
   onCancel: () => void;
 }
 
 export default function Confirmation(props: Props) {
-  const { form, policy } = props;
+  const { form } = props;
 
   return (
     <div className={styles.container}>
@@ -25,9 +22,9 @@ export default function Confirmation(props: Props) {
           <p className={styles.confirmValue}>{form.evidence}</p>
         </li>
         <li>
-          <p>Requested relief amount, in USD</p>
+          <p>Requested payout amount, in USD</p>
           <p className={globalStyles.secondaryColor}>
-            How much USD do you wish to receive? (Max of ${formatUsd(policy.remainingCoverageInUsd)})
+            If your claim is approved, you will be paid the equivalent value in API3 tokens
           </p>
           <p className={styles.confirmValue}>${utils.commify(form.amount)}</p>
         </li>
