@@ -2,6 +2,7 @@ import { FormEventHandler } from 'react';
 import { goSync } from '@api3/promise-utils';
 import isEmpty from 'lodash/isEmpty';
 import Input from '../../components/input';
+import UsdInput from '../../components/usd-input';
 import Button from '../../components/button';
 import { Policy } from '../../chain-data';
 import { formatUsd, parseUsd } from '../../utils';
@@ -75,17 +76,15 @@ export default function NewClaimForm(props: Props) {
           {showMessages && messages.evidence && <p className={styles.validation}>{messages.evidence}</p>}
         </li>
         <li>
-          <label htmlFor="amount">Requested relief amount, in USD</label>
+          <label htmlFor="amount">Requested payout amount, in USD</label>
           <p className={globalStyles.secondaryColor}>
-            How much USD do you wish to receive? (Max of ${formatUsd(policy.remainingCoverageInUsd)})
+            If your claim is approved, you will be paid the equivalent value in API3 tokens
           </p>
-          <Input
-            id="amount"
-            type="number"
-            value={form.amount}
-            onChange={(ev) => onChange({ ...form, amount: ev.target.value })}
-          />
+          <div className={styles.usdInput}>
+            <UsdInput id="amount" value={form.amount} onValueChange={(amount) => onChange({ ...form, amount })} />
+          </div>
           {showMessages && messages.amount && <p className={styles.validation}>{messages.amount}</p>}
+          <p className={styles.helpText}>You can claim up to ${formatUsd(policy.remainingCoverageInUsd)}</p>
         </li>
       </ol>
       <Acknowledgement />

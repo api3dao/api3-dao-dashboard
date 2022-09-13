@@ -1,0 +1,41 @@
+@import '../../styles/variables.module.scss';
+
+.container {
+  padding-bottom: 5px;
+  border-bottom: 1px solid $secondary-color;
+}
+
+.input {
+  display: inline-block;
+  background-color: transparent;
+  color: $secondary-color;
+  font-size: $text-large;
+  line-height: 44px;
+  height: 44px;
+  width: 100%;
+  font-weight: 400;
+  border-width: 0;
+  outline: none;
+
+  &:focus {
+    box-shadow: none;
+    color: $primary-color;
+  }
+
+  &::placeholder {
+    color: $tertiary-color;
+    opacity: 1;
+  }
+
+  // removing input background color/text color for Chrome autocomplete
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    box-shadow: 0 0 0 30px #030303 inset !important;
+  }
+
+  &:-webkit-autofill {
+    -webkit-text-fill-color: #fff !important;
+  }
+}
