@@ -179,6 +179,38 @@ task('upgrade-user-policy', 'Upgrades the policy with given params')
     console.info(`Upgraded Policy: ${args.policyId}`);
   });
 
+task('downgrade-user-policy', 'Downgrades the policy with given params')
+  .addParam('policyId', 'The policy ID')
+  .addParam('coverageAmount', 'The coverage amount (USD)')
+  .addParam('claimsAllowedUntil', 'Claims are allowed until this datetime')
+  .setAction(async (args, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    // The index for the manager needs to be in sync with the deploy script
+    const manager = accounts[1];
+    const contracts = getContractAddresses(hre.network.name);
+    const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
+
+    const createdEvent = (
+      await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, null, args.policyId))
+    )[0];
+
+    if (!createdEvent) {
+      throw new Error('Policy does not exist');
+    }
+
+    await claimsManager.downgradePolicy(
+      createdEvent.args.claimant,
+      createdEvent.args.beneficiary,
+      parseUsd(args.coverageAmount),
+      createdEvent.args.claimsAllowedFrom,
+      BigNumber.from(Math.round(parseISO(args.claimsAllowedUntil).getTime() / 1000)),
+      createdEvent.args.policy,
+      createdEvent.args.metadata
+    );
+    console.info(`Downgraded Policy: ${args.policyId}`);
+  });
+
 task('accept-claim', 'Accepts the given claim')
   .addParam('claimId', 'The claim ID')
   .setAction(async (args, hre) => {

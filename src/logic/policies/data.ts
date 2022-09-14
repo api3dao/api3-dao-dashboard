@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import sortBy from 'lodash/sortBy';
 import last from 'lodash/last';
 import { BigNumber } from 'ethers';
 import { isWithinInterval } from 'date-fns';
@@ -124,19 +125,22 @@ export function useUserPolicyById(policyId: string) {
 
 async function loadPolicies(contract: ClaimsManager, params: { userAccount?: string; policyId?: string }) {
   const { userAccount = null, policyId = null } = params;
-  const [createdEvents, upgradedEvents] = await Promise.all([
+  const [createdEvents, upgradedEvents, downgradedEvents] = await Promise.all([
     contract.queryFilter(contract.filters.CreatedPolicy(null, userAccount, policyId)),
     contract.queryFilter(contract.filters.UpgradedPolicy(null, userAccount, policyId)),
+    contract.queryFilter(contract.filters.DowngradedPolicy(null, userAccount, policyId)),
   ]);
 
   if (!createdEvents.length) {
     return { ids: [], byId: {} };
   }
 
+  const stateChangedEvents = sortEvents([...upgradedEvents, ...downgradedEvents] as const);
+
   const policiesById = createdEvents.reduce((acc, event) => {
     const eventArgs = event.args;
-    // The policy can be upgraded multiple times, and we only care about the last upgrade event
-    const upgradedEvent = last(upgradedEvents.filter((ev) => ev.args.policyHash === eventArgs.policyHash));
+    // The policy can be upgraded or downgraded multiple times, and we only care about the last event
+    const stateChangedEvent = last(stateChangedEvents.filter((ev) => ev.args.policyHash === eventArgs.policyHash));
 
     const policy = {
       policyId: eventArgs.policyHash,
@@ -144,7 +148,7 @@ async function loadPolicies(contract: ClaimsManager, params: { userAccount?: str
       beneficiary: eventArgs.beneficiary,
       claimsAllowedFrom: blockTimestampToDate(eventArgs.claimsAllowedFrom),
       claimsAllowedUntil: blockTimestampToDate(
-        upgradedEvent ? upgradedEvent.args.claimsAllowedUntil : eventArgs.claimsAllowedUntil
+        stateChangedEvent ? stateChangedEvent.args.claimsAllowedUntil : eventArgs.claimsAllowedUntil
       ),
       ipfsHash: eventArgs.policy,
       metadata: eventArgs.metadata,
@@ -212,4 +216,12 @@ async function loadRemainingCoverage(contract: ClaimsManager, policyIds: string[
   }, {} as { [policyId: string]: BigNumber });
 
   return { byId: amountsById };
+}
+
+function sortEvents<T extends { blockNumber: number; logIndex: number }>(events: readonly T[]) {
+  return sortBy(events, [
+    (ev) => ev.blockNumber,
+    // If events are in the same block, then we sort by their log index
+    (ev) => ev.logIndex,
+  ]);
 }
