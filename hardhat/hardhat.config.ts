@@ -3,7 +3,6 @@ import { task, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
 import { randomBytes } from 'crypto';
 import dotenv from 'dotenv';
-import { BigNumber } from 'ethers';
 import { addDays, parseISO } from 'date-fns';
 import { parseUsd } from '../src/utils/api3-format';
 import { ClaimsManager__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
@@ -132,8 +131,8 @@ task('create-user-policy', 'Creates a policy for the given user')
       userAddress,
       userAddress,
       parseUsd(args.coverageAmount),
-      BigNumber.from(Math.round(claimsAllowedFrom.getTime() / 1000)),
-      BigNumber.from(Math.round(claimsAllowedUntil.getTime() / 1000)),
+      Math.round(claimsAllowedFrom.getTime() / 1000),
+      Math.round(claimsAllowedUntil.getTime() / 1000),
       args.ipfsHash || 'Qm' + randomBytes(22).toString('hex'),
       args.metadata
     );
@@ -172,7 +171,7 @@ task('upgrade-user-policy', 'Upgrades the policy with given params')
       createdEvent.args.beneficiary,
       parseUsd(args.coverageAmount),
       createdEvent.args.claimsAllowedFrom,
-      BigNumber.from(Math.round(parseISO(args.claimsAllowedUntil).getTime() / 1000)),
+      Math.round(parseISO(args.claimsAllowedUntil).getTime() / 1000),
       createdEvent.args.policy,
       createdEvent.args.metadata
     );
@@ -204,7 +203,7 @@ task('downgrade-user-policy', 'Downgrades the policy with given params')
       createdEvent.args.beneficiary,
       parseUsd(args.coverageAmount),
       createdEvent.args.claimsAllowedFrom,
-      BigNumber.from(Math.round(parseISO(args.claimsAllowedUntil).getTime() / 1000)),
+      Math.round(parseISO(args.claimsAllowedUntil).getTime() / 1000),
       createdEvent.args.policy,
       createdEvent.args.metadata
     );

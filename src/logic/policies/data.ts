@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import sortBy from 'lodash/sortBy';
 import last from 'lodash/last';
 import { BigNumber } from 'ethers';
 import { isWithinInterval } from 'date-fns';
 import { go } from '@api3/promise-utils';
-import { blockTimestampToDate, messages } from '../../utils';
+import { blockTimestampToDate, messages, sortEvents } from '../../utils';
 import { BasePolicy, Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { ClaimsManager, useClaimsManager, useChainUpdateEffect } from '../../contracts';
 import { notifications } from '../../components/notifications';
@@ -216,12 +215,4 @@ async function loadRemainingCoverage(contract: ClaimsManager, policyIds: string[
   }, {} as { [policyId: string]: BigNumber });
 
   return { byId: amountsById };
-}
-
-function sortEvents<T extends { blockNumber: number; logIndex: number }>(events: readonly T[]) {
-  return sortBy(events, [
-    (ev) => ev.blockNumber,
-    // If events are in the same block, then we sort by their log index
-    (ev) => ev.logIndex,
-  ]);
 }
