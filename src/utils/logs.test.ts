@@ -23,6 +23,6 @@ describe('sortEvents()', () => {
       { testId: 'F', blockNumber: 3, logIndex: 0 },
       { testId: 'G', blockNumber: 4, logIndex: 0 },
     ]);
-    expect(result === events).toBe(false); // Sanity check. The function should return a new array
+    expect(result === events).toBe(false); // sortEvents is immutable
   });
 });
