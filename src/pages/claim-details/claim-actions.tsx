@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { ComponentProps, CSSProperties, useEffect, useState } from 'react';
 import Button from '../../components/button';
 import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
 import { abbrStr, Claim, useChainData } from '../../chain-data';
 import styles from './claim-actions.module.scss';
-import { formatUsd, handleTransactionError } from '../../utils';
+import { formatEther, formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
 import { useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
+import { Modal, ModalFooter, ModalHeader } from '../../components/modal';
+import { BigNumber } from 'ethers';
 
 interface Props {
   claim: Claim;
@@ -19,6 +21,8 @@ export default function ClaimActions(props: Props) {
   const { setChainData, transactions } = useChainData();
   const claimsManager = useClaimsManager()!;
   const arbitratorProxy = useArbitratorProxy()!;
+
+  const [modalToShow, setModalToShow] = useState<'escalate' | 'appeal' | null>(null);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
 
   const isPastDeadline = claim.deadline ? isAfter(new Date(), claim.deadline) : false;
@@ -46,10 +50,8 @@ export default function ClaimActions(props: Props) {
     }
   };
 
-  const handleEscalateToArbitrator = async () => {
+  const handleEscalateToArbitrator = async (arbitrationCost: BigNumber) => {
     setStatus('submitting');
-    // TODO DAO-176 Handle in escalate confirmation modal
-    const arbitrationCost = await arbitratorProxy.arbitrationCost();
     const tx = await handleTransactionError(
       arbitratorProxy.createDispute(
         claim.policyId,
@@ -65,15 +67,14 @@ export default function ClaimActions(props: Props) {
         transactions: [...transactions, { type: 'escalate-claim-to-arbitrator', tx }],
       });
       setStatus('submitted');
+      setModalToShow(null);
     } else {
       setStatus('failed');
     }
   };
 
-  const handleAppeal = async () => {
+  const handleAppeal = async (appealCost: BigNumber) => {
     setStatus('submitting');
-    // TODO DAO-176 Handle in appeal confirmation modal
-    const appealCost = await arbitratorProxy.appealCost(claim.dispute!.id);
     const tx = await handleTransactionError(
       arbitratorProxy.appealKlerosArbitratorRuling(
         claim.policyId,
@@ -89,6 +90,7 @@ export default function ClaimActions(props: Props) {
         transactions: [...transactions, { type: 'appeal-claim-decision', tx }],
       });
       setStatus('submitted');
+      setModalToShow(null);
     } else {
       setStatus('failed');
     }
@@ -113,10 +115,17 @@ export default function ClaimActions(props: Props) {
               <Button
                 variant="secondary"
                 disabled={isPastNewDeadline || status === 'submitting' || status === 'submitted'}
-                onClick={handleEscalateToArbitrator}
+                onClick={() => setModalToShow('escalate')}
               >
                 Escalate to Kleros
               </Button>
+              <Modal open={modalToShow === 'escalate'} onClose={() => setModalToShow(null)}>
+                <EscalateConfirmation
+                  disableActions={disableActions}
+                  onConfirm={handleEscalateToArbitrator}
+                  onCancel={() => setModalToShow(null)}
+                />
+              </Modal>
             </div>
             <p className={styles.actionMessage}>
               You can escalate within the given time frame or the rejection will be automatically accepted.
@@ -156,9 +165,16 @@ export default function ClaimActions(props: Props) {
             <Button variant="primary" disabled={disableActions} onClick={handleAcceptCounter}>
               Accept Counter
             </Button>
-            <Button variant="secondary" disabled={disableActions} onClick={handleEscalateToArbitrator}>
+            <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('escalate')}>
               Escalate to Kleros
             </Button>
+            <Modal open={modalToShow === 'escalate'} onClose={() => setModalToShow(null)}>
+              <EscalateConfirmation
+                disableActions={disableActions}
+                onConfirm={handleEscalateToArbitrator}
+                onCancel={() => setModalToShow(null)}
+              />
+            </Modal>
           </div>
           <p className={styles.actionMessage}>
             You can take action within the given time frame or the counter offer will be automatically accepted.
@@ -235,9 +251,17 @@ export default function ClaimActions(props: Props) {
                 <br />${formatUsd(claim.counterOfferAmountInUsd!)}
               </div>
               <div className={styles.actionPanel}>
-                <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>
+                <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
                   Appeal
                 </Button>
+                <Modal open={modalToShow === 'appeal'} onClose={() => setModalToShow(null)}>
+                  <AppealConfirmation
+                    disputeId={claim.dispute!.id}
+                    disableActions={disableActions}
+                    onConfirm={handleAppeal}
+                    onCancel={() => setModalToShow(null)}
+                  />
+                </Modal>
               </div>
               <p className={styles.actionMessage}>
                 You can appeal within the given time frame or the counter offer will be automatically accepted.
@@ -251,9 +275,17 @@ export default function ClaimActions(props: Props) {
               <p>Kleros</p>
               <div className={styles.actionMainInfo}>Rejected</div>
               <div className={styles.actionPanel}>
-                <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>
+                <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
                   Appeal
                 </Button>
+                <Modal open={modalToShow === 'appeal'} onClose={() => setModalToShow(null)}>
+                  <AppealConfirmation
+                    disputeId={claim.dispute!.id}
+                    disableActions={disableActions}
+                    onConfirm={handleAppeal}
+                    onCancel={() => setModalToShow(null)}
+                  />
+                </Modal>
               </div>
               <p className={styles.actionMessage}>
                 You can appeal within the given time frame or the rejection will be automatically accepted.
@@ -307,4 +339,124 @@ export default function ClaimActions(props: Props) {
     case 'None':
       return null;
   }
+}
+
+interface EscalateConfirmationProps {
+  disableActions: boolean;
+  onConfirm: (cost: BigNumber) => void;
+  onCancel: () => void;
+}
+
+function EscalateConfirmation(props: EscalateConfirmationProps) {
+  const arbitratorProxy = useArbitratorProxy()!;
+
+  const [cost, setCost] = useState<BigNumber | null>(null);
+  useEffect(() => {
+    arbitratorProxy.arbitrationCost().then((data) => setCost(data));
+  }, [arbitratorProxy]);
+
+  return (
+    <>
+      <ModalHeader>Escalation Cost</ModalHeader>
+      <div className={styles.confirmationBody}>
+        <div className={styles.cost}>
+          {cost ? (
+            <>{formatEther(cost)} ETH</>
+          ) : (
+            <Skeleton width="7.5ch">
+              <span className="sr-only">Loading...</span>
+            </Skeleton>
+          )}
+        </div>
+        <p className={styles.info}>API3 uses Kleros for arbitration.</p>
+        <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer" className="link-primary">
+          Read more to understand Kleros’s fees and the appeal process (link to docs).
+        </a>
+      </div>
+      <ModalFooter>
+        <div style={{ display: 'flex', width: '100%', maxWidth: 340 }}>
+          <Button variant="text" style={{ width: '50%' }} onClick={props.onCancel}>
+            Cancel
+          </Button>
+          <Button
+            style={{ width: '50%' }}
+            variant="primary"
+            size="large"
+            disabled={!cost || props.disableActions}
+            onClick={() => props.onConfirm(cost!)}
+          >
+            Escalate
+          </Button>
+        </div>
+      </ModalFooter>
+    </>
+  );
+}
+
+interface AppealConfirmationProps {
+  disputeId: string;
+  disableActions: boolean;
+  onConfirm: (cost: BigNumber) => void;
+  onCancel: () => void;
+}
+
+function AppealConfirmation(props: AppealConfirmationProps) {
+  const arbitratorProxy = useArbitratorProxy()!;
+
+  const [cost, setCost] = useState<BigNumber | null>(null);
+  useEffect(() => {
+    arbitratorProxy.appealCost(props.disputeId).then((data) => setCost(data));
+  }, [arbitratorProxy, props.disputeId]);
+
+  return (
+    <>
+      <ModalHeader>Appeal Cost</ModalHeader>
+      <div className={styles.confirmationBody}>
+        <div className={styles.cost}>
+          {cost ? (
+            <>{formatEther(cost)} ETH</>
+          ) : (
+            <Skeleton width="7.5ch">
+              <span className="sr-only">Loading...</span>
+            </Skeleton>
+          )}
+        </div>
+        <p className={styles.info}>
+          API3 uses Kleros for arbitration. The cost of an appeal increases for every appeal.
+        </p>
+        <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer" className="link-primary">
+          Read more to understand Kleros’s fees and the appeal process (link to docs).
+        </a>
+      </div>
+      <ModalFooter>
+        <div style={{ display: 'flex', width: '100%', maxWidth: 340 }}>
+          <Button variant="text" style={{ width: '50%' }} onClick={props.onCancel}>
+            Cancel
+          </Button>
+          <Button
+            style={{ width: '50%' }}
+            variant="primary"
+            size="large"
+            disabled={!cost || props.disableActions}
+            onClick={() => props.onConfirm(cost!)}
+          >
+            Appeal
+          </Button>
+        </div>
+      </ModalFooter>
+    </>
+  );
+}
+
+interface SkeletonProps extends ComponentProps<'div'> {
+  width?: CSSProperties['width'];
+}
+
+function Skeleton(props: SkeletonProps) {
+  const { width = '100%', children, ...rest } = props;
+  return (
+    <div style={{ width }} {...rest} className={styles.skeleton}>
+      {children}&nbsp;
+    </div>
+  );
 }
