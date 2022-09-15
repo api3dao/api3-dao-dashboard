@@ -9,8 +9,11 @@ async function deploy() {
   };
   const accessControlRegistryFactory = await hre.ethers.getContractFactory('AccessControlRegistry', roles.deployer);
   const accessControlRegistry = await accessControlRegistryFactory.deploy();
+  const api3TokenFactory = await hre.ethers.getContractFactory('MockApi3Token', roles.deployer);
+  const api3Token = await api3TokenFactory.deploy();
   const mockApi3PoolFactory = await hre.ethers.getContractFactory('MockApi3Pool', roles.deployer);
-  const mockApi3Pool = await mockApi3PoolFactory.deploy();
+  const totalStake = hre.ethers.utils.parseEther('50000000');
+  const mockApi3Pool = await mockApi3PoolFactory.deploy(api3Token.address, totalStake);
   const mockKlerosArbitratorFactory = await hre.ethers.getContractFactory('MockKlerosLiquid', roles.deployer);
   const mockKlerosArbitrator = await mockKlerosArbitratorFactory.deploy();
 
@@ -51,7 +54,7 @@ async function deploy() {
   const dataFeed = {
     id: hre.ethers.utils.formatBytes32String('API3-USD-feed-01'),
     name: hre.ethers.utils.formatBytes32String('API3/USD'),
-    value: hre.ethers.utils.parseEther('0.5'),
+    value: hre.ethers.utils.parseEther('2'),
     timestamp: Math.round(new Date().getTime() / 1000),
   };
   await mockDapiServer.mockDataFeed(dataFeed.id, dataFeed.value, dataFeed.timestamp);
