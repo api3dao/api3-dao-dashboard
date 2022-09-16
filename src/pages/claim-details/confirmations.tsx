@@ -52,7 +52,12 @@ export function EscalateConfirmation(props: EscalateConfirmationProps) {
             </Skeleton>
           )}
         </div>
-        <p className={styles.info}>API3 uses Kleros for arbitration.</p>
+        <p className={styles.info}>
+          <a href="https://kleros.io" target="_blank" rel="noopener noreferrer" className="link-primary">
+            Kleros (link to home)
+          </a>{' '}
+          is used for arbitration.
+        </p>
         <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer" className="link-primary">
           Read more to understand Kleros’s fees and the appeal process (link to docs).
         </a>
@@ -121,7 +126,10 @@ export function AppealConfirmation(props: AppealConfirmationProps) {
           )}
         </div>
         <p className={styles.info}>
-          API3 uses Kleros for arbitration. The cost of an appeal increases for every appeal.
+          <a href="https://kleros.io" target="_blank" rel="noopener noreferrer" className="link-primary">
+            Kleros (link to home)
+          </a>{' '}
+          is used for arbitration. The cost of an appeal increases for every appeal.
         </p>
         <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer" className="link-primary">
           Read more to understand Kleros’s fees and the appeal process (link to docs).
