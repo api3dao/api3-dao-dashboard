@@ -3,7 +3,7 @@ import last from 'lodash/last';
 import { BigNumber } from 'ethers';
 import { isWithinInterval } from 'date-fns';
 import { go } from '@api3/promise-utils';
-import { blockTimestampToDate, messages } from '../../utils';
+import { blockTimestampToDate, messages, sortEvents } from '../../utils';
 import { BasePolicy, Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
 import { ClaimsManager, useClaimsManager, useChainUpdateEffect } from '../../contracts';
 import { notifications } from '../../components/notifications';
@@ -124,19 +124,22 @@ export function useUserPolicyById(policyId: string) {
 
 async function loadPolicies(contract: ClaimsManager, params: { userAccount?: string; policyId?: string }) {
   const { userAccount = null, policyId = null } = params;
-  const [createdEvents, upgradedEvents] = await Promise.all([
+  const [createdEvents, upgradedEvents, downgradedEvents] = await Promise.all([
     contract.queryFilter(contract.filters.CreatedPolicy(null, userAccount, policyId)),
     contract.queryFilter(contract.filters.UpgradedPolicy(null, userAccount, policyId)),
+    contract.queryFilter(contract.filters.DowngradedPolicy(null, userAccount, policyId)),
   ]);
 
   if (!createdEvents.length) {
     return { ids: [], byId: {} };
   }
 
+  const stateChangedEvents = sortEvents([...upgradedEvents, ...downgradedEvents] as const);
+
   const policiesById = createdEvents.reduce((acc, event) => {
     const eventArgs = event.args;
-    // The policy can be upgraded multiple times, and we only care about the last upgrade event
-    const upgradedEvent = last(upgradedEvents.filter((ev) => ev.args.policyHash === eventArgs.policyHash));
+    // The policy can be upgraded or downgraded multiple times, and we only care about the last event
+    const stateChangedEvent = last(stateChangedEvents.filter((ev) => ev.args.policyHash === eventArgs.policyHash));
 
     const policy = {
       policyId: eventArgs.policyHash,
@@ -144,7 +147,7 @@ async function loadPolicies(contract: ClaimsManager, params: { userAccount?: str
       beneficiary: eventArgs.beneficiary,
       claimsAllowedFrom: blockTimestampToDate(eventArgs.claimsAllowedFrom),
       claimsAllowedUntil: blockTimestampToDate(
-        upgradedEvent ? upgradedEvent.args.claimsAllowedUntil : eventArgs.claimsAllowedUntil
+        stateChangedEvent ? stateChangedEvent.args.claimsAllowedUntil : eventArgs.claimsAllowedUntil
       ),
       ipfsHash: eventArgs.policy,
       metadata: eventArgs.metadata,
