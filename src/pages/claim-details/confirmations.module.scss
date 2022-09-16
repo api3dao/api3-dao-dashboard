@@ -10,7 +10,7 @@
   font-weight: 600;
   margin-bottom: 3rem;
 
-  @media (min-width: $min-md) {
+  @media (min-width: $min-sm) {
     font-size: $text-xlarge;
     line-height: $lh-heading-4;
   }
@@ -18,4 +18,25 @@
 
 .info {
   margin-bottom: 1rem;
+}
+
+.buttonRow {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 300px;
+
+  button {
+    font-weight: 500;
+  }
+
+  @media (min-width: $min-sm) {
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+    button {
+      width: 50%;
+    }
+  }
 }

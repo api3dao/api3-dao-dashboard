@@ -58,12 +58,11 @@ export function EscalateConfirmation(props: EscalateConfirmationProps) {
         </a>
       </div>
       <ModalFooter>
-        <div style={{ display: 'flex', width: '100%', maxWidth: 340 }}>
-          <Button variant="text" style={{ width: '50%' }} onClick={props.onCancel}>
+        <div className={styles.buttonRow}>
+          <Button variant="text" onClick={props.onCancel}>
             Cancel
           </Button>
           <Button
-            style={{ width: '50%' }}
             variant="primary"
             size="large"
             disabled={!cost || props.disableActions}
@@ -129,12 +128,11 @@ export function AppealConfirmation(props: AppealConfirmationProps) {
         </a>
       </div>
       <ModalFooter>
-        <div style={{ display: 'flex', width: '100%', maxWidth: 340 }}>
-          <Button variant="text" style={{ width: '50%' }} onClick={props.onCancel}>
+        <div className={styles.buttonRow}>
+          <Button variant="text" onClick={props.onCancel}>
             Cancel
           </Button>
           <Button
-            style={{ width: '50%' }}
             variant="primary"
             size="large"
             disabled={!cost || props.disableActions}
