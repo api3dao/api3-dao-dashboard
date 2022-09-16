@@ -1,0 +1,21 @@
+@import '../../styles/variables.module.scss';
+
+.body {
+  text-align: center;
+}
+
+.cost {
+  font-size: $text-large;
+  line-height: $lh-large;
+  font-weight: 600;
+  margin-bottom: 3rem;
+
+  @media (min-width: $min-md) {
+    font-size: $text-xlarge;
+    line-height: $lh-heading-4;
+  }
+}
+
+.info {
+  margin-bottom: 1rem;
+}

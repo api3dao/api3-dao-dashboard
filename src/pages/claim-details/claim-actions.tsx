@@ -1,15 +1,16 @@
-import { ComponentProps, CSSProperties, useEffect, useState } from 'react';
+import { useState } from 'react';
+import { BigNumber } from 'ethers';
 import Button from '../../components/button';
+import { Modal } from '../../components/modal';
 import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
+import { AppealConfirmation, EscalateConfirmation } from './confirmations';
 import { abbrStr, Claim, useChainData } from '../../chain-data';
-import styles from './claim-actions.module.scss';
-import { formatEther, formatUsd, handleTransactionError } from '../../utils';
+import { formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
 import { useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
-import { Modal, ModalFooter, ModalHeader } from '../../components/modal';
-import { BigNumber } from 'ethers';
+import styles from './claim-actions.module.scss';
 
 interface Props {
   claim: Claim;
@@ -96,6 +97,8 @@ export default function ClaimActions(props: Props) {
     }
   };
 
+  const handleModalClose = () => setModalToShow(null);
+
   switch (claim.status) {
     case 'ClaimCreated':
       if (isPastDeadline) {
@@ -119,11 +122,11 @@ export default function ClaimActions(props: Props) {
               >
                 Escalate to Kleros
               </Button>
-              <Modal open={modalToShow === 'escalate'} onClose={() => setModalToShow(null)}>
+              <Modal open={modalToShow === 'escalate'} onClose={handleModalClose}>
                 <EscalateConfirmation
                   disableActions={disableActions}
                   onConfirm={handleEscalateToArbitrator}
-                  onCancel={() => setModalToShow(null)}
+                  onCancel={handleModalClose}
                 />
               </Modal>
             </div>
@@ -168,11 +171,11 @@ export default function ClaimActions(props: Props) {
             <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('escalate')}>
               Escalate to Kleros
             </Button>
-            <Modal open={modalToShow === 'escalate'} onClose={() => setModalToShow(null)}>
+            <Modal open={modalToShow === 'escalate'} onClose={handleModalClose}>
               <EscalateConfirmation
                 disableActions={disableActions}
                 onConfirm={handleEscalateToArbitrator}
-                onCancel={() => setModalToShow(null)}
+                onCancel={handleModalClose}
               />
             </Modal>
           </div>
@@ -254,12 +257,12 @@ export default function ClaimActions(props: Props) {
                 <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
                   Appeal
                 </Button>
-                <Modal open={modalToShow === 'appeal'} onClose={() => setModalToShow(null)}>
+                <Modal open={modalToShow === 'appeal'} onClose={handleModalClose}>
                   <AppealConfirmation
                     disputeId={claim.dispute!.id}
                     disableActions={disableActions}
                     onConfirm={handleAppeal}
-                    onCancel={() => setModalToShow(null)}
+                    onCancel={handleModalClose}
                   />
                 </Modal>
               </div>
@@ -278,12 +281,12 @@ export default function ClaimActions(props: Props) {
                 <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
                   Appeal
                 </Button>
-                <Modal open={modalToShow === 'appeal'} onClose={() => setModalToShow(null)}>
+                <Modal open={modalToShow === 'appeal'} onClose={handleModalClose}>
                   <AppealConfirmation
                     disputeId={claim.dispute!.id}
                     disableActions={disableActions}
                     onConfirm={handleAppeal}
-                    onCancel={() => setModalToShow(null)}
+                    onCancel={handleModalClose}
                   />
                 </Modal>
               </div>
@@ -339,124 +342,4 @@ export default function ClaimActions(props: Props) {
     case 'None':
       return null;
   }
-}
-
-interface EscalateConfirmationProps {
-  disableActions: boolean;
-  onConfirm: (cost: BigNumber) => void;
-  onCancel: () => void;
-}
-
-function EscalateConfirmation(props: EscalateConfirmationProps) {
-  const arbitratorProxy = useArbitratorProxy()!;
-
-  const [cost, setCost] = useState<BigNumber | null>(null);
-  useEffect(() => {
-    arbitratorProxy.arbitrationCost().then((data) => setCost(data));
-  }, [arbitratorProxy]);
-
-  return (
-    <>
-      <ModalHeader>Escalation Cost</ModalHeader>
-      <div className={styles.confirmationBody}>
-        <div className={styles.cost}>
-          {cost ? (
-            <>{formatEther(cost)} ETH</>
-          ) : (
-            <Skeleton width="7.5ch">
-              <span className="sr-only">Loading...</span>
-            </Skeleton>
-          )}
-        </div>
-        <p className={styles.info}>API3 uses Kleros for arbitration.</p>
-        <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer" className="link-primary">
-          Read more to understand Kleros’s fees and the appeal process (link to docs).
-        </a>
-      </div>
-      <ModalFooter>
-        <div style={{ display: 'flex', width: '100%', maxWidth: 340 }}>
-          <Button variant="text" style={{ width: '50%' }} onClick={props.onCancel}>
-            Cancel
-          </Button>
-          <Button
-            style={{ width: '50%' }}
-            variant="primary"
-            size="large"
-            disabled={!cost || props.disableActions}
-            onClick={() => props.onConfirm(cost!)}
-          >
-            Escalate
-          </Button>
-        </div>
-      </ModalFooter>
-    </>
-  );
-}
-
-interface AppealConfirmationProps {
-  disputeId: string;
-  disableActions: boolean;
-  onConfirm: (cost: BigNumber) => void;
-  onCancel: () => void;
-}
-
-function AppealConfirmation(props: AppealConfirmationProps) {
-  const arbitratorProxy = useArbitratorProxy()!;
-
-  const [cost, setCost] = useState<BigNumber | null>(null);
-  useEffect(() => {
-    arbitratorProxy.appealCost(props.disputeId).then((data) => setCost(data));
-  }, [arbitratorProxy, props.disputeId]);
-
-  return (
-    <>
-      <ModalHeader>Appeal Cost</ModalHeader>
-      <div className={styles.confirmationBody}>
-        <div className={styles.cost}>
-          {cost ? (
-            <>{formatEther(cost)} ETH</>
-          ) : (
-            <Skeleton width="7.5ch">
-              <span className="sr-only">Loading...</span>
-            </Skeleton>
-          )}
-        </div>
-        <p className={styles.info}>
-          API3 uses Kleros for arbitration. The cost of an appeal increases for every appeal.
-        </p>
-        <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer" className="link-primary">
-          Read more to understand Kleros’s fees and the appeal process (link to docs).
-        </a>
-      </div>
-      <ModalFooter>
-        <div style={{ display: 'flex', width: '100%', maxWidth: 340 }}>
-          <Button variant="text" style={{ width: '50%' }} onClick={props.onCancel}>
-            Cancel
-          </Button>
-          <Button
-            style={{ width: '50%' }}
-            variant="primary"
-            size="large"
-            disabled={!cost || props.disableActions}
-            onClick={() => props.onConfirm(cost!)}
-          >
-            Appeal
-          </Button>
-        </div>
-      </ModalFooter>
-    </>
-  );
-}
-
-interface SkeletonProps extends ComponentProps<'div'> {
-  width?: CSSProperties['width'];
-}
-
-function Skeleton(props: SkeletonProps) {
-  const { width = '100%', children, ...rest } = props;
-  return (
-    <div style={{ width }} {...rest} className={styles.skeleton}>
-      {children}&nbsp;
-    </div>
-  );
 }
