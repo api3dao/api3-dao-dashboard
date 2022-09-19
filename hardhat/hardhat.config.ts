@@ -218,6 +218,35 @@ task('downgrade-user-policy', 'Downgrades the policy with given params')
     console.info(`Downgraded Policy: ${args.policyId}`);
   });
 
+task('update-policy-metadata', 'Updates the policy metadata')
+  .addParam('policyId', 'The policy ID')
+  .addParam('metadata', 'The policy metadata')
+  .setAction(async (args, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    // The index for the manager needs to be in sync with the deploy script
+    const manager = accounts[1];
+    const contracts = getContractAddresses(hre.network.name);
+    const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
+
+    const createdEvent = (
+      await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, null, args.policyId))
+    )[0];
+
+    if (!createdEvent) {
+      throw new Error('Policy does not exist');
+    }
+
+    await claimsManager.announcePolicyMetadata(
+      createdEvent.args.claimant,
+      createdEvent.args.beneficiary,
+      createdEvent.args.claimsAllowedFrom,
+      createdEvent.args.policy,
+      args.metadata
+    );
+    console.info(`Updated Policy: ${args.policyId} metadata to: ${args.metadata}`);
+  });
+
 task('accept-claim', 'Accepts the given claim')
   .addParam('claimId', 'The claim ID')
   .setAction(async (args, hre) => {
