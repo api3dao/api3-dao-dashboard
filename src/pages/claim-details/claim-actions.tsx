@@ -1,13 +1,16 @@
 import { useState } from 'react';
+import { BigNumber } from 'ethers';
 import Button from '../../components/button';
+import { Modal } from '../../components/modal';
 import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
+import { AppealConfirmation, EscalateConfirmation } from './confirmations';
 import { abbrStr, Claim, useChainData } from '../../chain-data';
-import styles from './claim-actions.module.scss';
 import { formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
 import { useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
+import styles from './claim-actions.module.scss';
 
 interface Props {
   claim: Claim;
@@ -19,6 +22,8 @@ export default function ClaimActions(props: Props) {
   const { setChainData, transactions } = useChainData();
   const claimsManager = useClaimsManager()!;
   const arbitratorProxy = useArbitratorProxy()!;
+
+  const [modalToShow, setModalToShow] = useState<'escalate' | 'appeal' | null>(null);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
 
   const isPastDeadline = claim.deadline ? isAfter(new Date(), claim.deadline) : false;
@@ -46,10 +51,8 @@ export default function ClaimActions(props: Props) {
     }
   };
 
-  const handleEscalateToArbitrator = async () => {
+  const handleEscalateToArbitrator = async (arbitrationCost: BigNumber) => {
     setStatus('submitting');
-    // TODO DAO-176 Handle in escalate confirmation modal
-    const arbitrationCost = await arbitratorProxy.arbitrationCost();
     const tx = await handleTransactionError(
       arbitratorProxy.createDispute(
         claim.policyId,
@@ -65,15 +68,14 @@ export default function ClaimActions(props: Props) {
         transactions: [...transactions, { type: 'escalate-claim-to-arbitrator', tx }],
       });
       setStatus('submitted');
+      setModalToShow(null);
     } else {
       setStatus('failed');
     }
   };
 
-  const handleAppeal = async () => {
+  const handleAppeal = async (appealCost: BigNumber) => {
     setStatus('submitting');
-    // TODO DAO-176 Handle in appeal confirmation modal
-    const appealCost = await arbitratorProxy.appealCost(claim.dispute!.id);
     const tx = await handleTransactionError(
       arbitratorProxy.appealKlerosArbitratorRuling(
         claim.policyId,
@@ -89,10 +91,13 @@ export default function ClaimActions(props: Props) {
         transactions: [...transactions, { type: 'appeal-claim-decision', tx }],
       });
       setStatus('submitted');
+      setModalToShow(null);
     } else {
       setStatus('failed');
     }
   };
+
+  const handleModalClose = () => setModalToShow(null);
 
   switch (claim.status) {
     case 'ClaimCreated':
@@ -113,10 +118,17 @@ export default function ClaimActions(props: Props) {
               <Button
                 variant="secondary"
                 disabled={isPastNewDeadline || status === 'submitting' || status === 'submitted'}
-                onClick={handleEscalateToArbitrator}
+                onClick={() => setModalToShow('escalate')}
               >
                 Escalate to Kleros
               </Button>
+              <Modal open={modalToShow === 'escalate'} onClose={handleModalClose}>
+                <EscalateConfirmation
+                  disableActions={disableActions}
+                  onConfirm={handleEscalateToArbitrator}
+                  onCancel={handleModalClose}
+                />
+              </Modal>
             </div>
             <p className={styles.actionMessage}>
               You can escalate within the given time frame or the rejection will be automatically accepted.
@@ -156,9 +168,16 @@ export default function ClaimActions(props: Props) {
             <Button variant="primary" disabled={disableActions} onClick={handleAcceptCounter}>
               Accept Counter
             </Button>
-            <Button variant="secondary" disabled={disableActions} onClick={handleEscalateToArbitrator}>
+            <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('escalate')}>
               Escalate to Kleros
             </Button>
+            <Modal open={modalToShow === 'escalate'} onClose={handleModalClose}>
+              <EscalateConfirmation
+                disableActions={disableActions}
+                onConfirm={handleEscalateToArbitrator}
+                onCancel={handleModalClose}
+              />
+            </Modal>
           </div>
           <p className={styles.actionMessage}>
             You can take action within the given time frame or the counter offer will be automatically accepted.
@@ -235,9 +254,17 @@ export default function ClaimActions(props: Props) {
                 <br />${formatUsd(claim.counterOfferAmountInUsd!)}
               </div>
               <div className={styles.actionPanel}>
-                <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>
+                <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
                   Appeal
                 </Button>
+                <Modal open={modalToShow === 'appeal'} onClose={handleModalClose}>
+                  <AppealConfirmation
+                    disputeId={claim.dispute!.id}
+                    disableActions={disableActions}
+                    onConfirm={handleAppeal}
+                    onCancel={handleModalClose}
+                  />
+                </Modal>
               </div>
               <p className={styles.actionMessage}>
                 You can appeal within the given time frame or the counter offer will be automatically accepted.
@@ -251,9 +278,17 @@ export default function ClaimActions(props: Props) {
               <p>Kleros</p>
               <div className={styles.actionMainInfo}>Rejected</div>
               <div className={styles.actionPanel}>
-                <Button variant="secondary" disabled={disableActions} onClick={handleAppeal}>
+                <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
                   Appeal
                 </Button>
+                <Modal open={modalToShow === 'appeal'} onClose={handleModalClose}>
+                  <AppealConfirmation
+                    disputeId={claim.dispute!.id}
+                    disableActions={disableActions}
+                    onConfirm={handleAppeal}
+                    onCancel={handleModalClose}
+                  />
+                </Modal>
               </div>
               <p className={styles.actionMessage}>
                 You can appeal within the given time frame or the rejection will be automatically accepted.
