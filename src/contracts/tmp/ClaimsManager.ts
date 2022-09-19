@@ -26,6 +26,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'accountToQuota(address)': FunctionFragment;
     'adminRole()': FunctionFragment;
     'adminRoleDescription()': FunctionFragment;
+    'announcePolicyMetadata(address,address,uint32,string,string)': FunctionFragment;
     'api3Pool()': FunctionFragment;
     'api3ToUsdReader()': FunctionFragment;
     'arbitratorResponsePeriod()': FunctionFragment;
@@ -33,10 +34,10 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'claimHashToProposedSettlementAmountInUsd(bytes32)': FunctionFragment;
     'claimHashToState(bytes32)': FunctionFragment;
     'claimantResponsePeriod()': FunctionFragment;
-    'createClaim(address,uint32,string,string,uint224,string)': FunctionFragment;
+    'createClaim(address,uint32,string,uint224,string)': FunctionFragment;
     'createDispute(bytes32,address,address,uint224,string)': FunctionFragment;
-    'createPolicy(address,address,uint224,uint32,uint32,string,string)': FunctionFragment;
-    'downgradePolicy(address,address,uint224,uint32,uint32,string,string)': FunctionFragment;
+    'createPolicy(address,address,uint224,uint32,uint32,string)': FunctionFragment;
+    'downgradePolicy(address,address,uint224,uint32,uint32,string)': FunctionFragment;
     'getQuotaUsage(address)': FunctionFragment;
     'isMediatorOrAdmin(address)': FunctionFragment;
     'manager()': FunctionFragment;
@@ -54,7 +55,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'setClaimantResponsePeriod(uint32)': FunctionFragment;
     'setMediatorResponsePeriod(uint32)': FunctionFragment;
     'setQuota(address,uint32,uint224)': FunctionFragment;
-    'upgradePolicy(address,address,uint224,uint32,uint32,string,string)': FunctionFragment;
+    'upgradePolicy(address,address,uint224,uint32,uint32,string)': FunctionFragment;
   };
 
   getFunction(
@@ -66,6 +67,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
       | 'accountToQuota'
       | 'adminRole'
       | 'adminRoleDescription'
+      | 'announcePolicyMetadata'
       | 'api3Pool'
       | 'api3ToUsdReader'
       | 'arbitratorResponsePeriod'
@@ -126,6 +128,16 @@ export interface ClaimsManagerInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'accountToQuota', values: [PromiseOrValue<string>]): string;
   encodeFunctionData(functionFragment: 'adminRole', values?: undefined): string;
   encodeFunctionData(functionFragment: 'adminRoleDescription', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'announcePolicyMetadata',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
+  ): string;
   encodeFunctionData(functionFragment: 'api3Pool', values?: undefined): string;
   encodeFunctionData(functionFragment: 'api3ToUsdReader', values?: undefined): string;
   encodeFunctionData(functionFragment: 'arbitratorResponsePeriod', values?: undefined): string;
@@ -141,7 +153,6 @@ export interface ClaimsManagerInterface extends utils.Interface {
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>
@@ -165,7 +176,6 @@ export interface ClaimsManagerInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
       PromiseOrValue<string>
     ]
   ): string;
@@ -177,7 +187,6 @@ export interface ClaimsManagerInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
       PromiseOrValue<string>
     ]
   ): string;
@@ -229,7 +238,6 @@ export interface ClaimsManagerInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
       PromiseOrValue<string>
     ]
   ): string;
@@ -241,6 +249,7 @@ export interface ClaimsManagerInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'accountToQuota', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'adminRole', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'adminRoleDescription', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'announcePolicyMetadata', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'api3Pool', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'api3ToUsdReader', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'arbitratorResponsePeriod', data: BytesLike): Result;
@@ -274,10 +283,11 @@ export interface ClaimsManagerInterface extends utils.Interface {
   events: {
     'AcceptedClaim(bytes32,address,address,uint224,uint224,address)': EventFragment;
     'AcceptedSettlement(bytes32,address,uint224,uint224)': EventFragment;
-    'CreatedClaim(bytes32,address,bytes32,address,uint32,string,string,uint224,string,uint32)': EventFragment;
+    'AnnouncedPolicyMetadata(string,address,bytes32,address)': EventFragment;
+    'CreatedClaim(bytes32,address,bytes32,address,uint32,string,uint224,string,uint32)': EventFragment;
     'CreatedDispute(bytes32,address,address)': EventFragment;
-    'CreatedPolicy(address,address,bytes32,uint224,uint32,uint32,string,string,address)': EventFragment;
-    'DowngradedPolicy(address,address,bytes32,uint224,uint32,uint32,string,string,address)': EventFragment;
+    'CreatedPolicy(address,address,bytes32,uint224,uint32,uint32,string,address)': EventFragment;
+    'DowngradedPolicy(address,address,bytes32,uint224,uint32,uint32,string,address)': EventFragment;
     'ProposedSettlement(bytes32,address,uint224,address)': EventFragment;
     'ResetQuota(address,address)': EventFragment;
     'ResolvedDisputeByAcceptingClaim(bytes32,address,address,uint224,uint224,address)': EventFragment;
@@ -289,11 +299,12 @@ export interface ClaimsManagerInterface extends utils.Interface {
     'SetClaimantResponsePeriod(uint32,address)': EventFragment;
     'SetMediatorResponsePeriod(uint32,address)': EventFragment;
     'SetQuota(address,uint32,uint224,address)': EventFragment;
-    'UpgradedPolicy(address,address,bytes32,uint224,uint32,uint32,string,string,address)': EventFragment;
+    'UpgradedPolicy(address,address,bytes32,uint224,uint32,uint32,string,address)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'AcceptedClaim'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'AcceptedSettlement'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'AnnouncedPolicyMetadata'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CreatedClaim'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CreatedDispute'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CreatedPolicy'): EventFragment;
@@ -337,6 +348,19 @@ export type AcceptedSettlementEvent = TypedEvent<[string, string, BigNumber, Big
 
 export type AcceptedSettlementEventFilter = TypedEventFilter<AcceptedSettlementEvent>;
 
+export interface AnnouncedPolicyMetadataEventObject {
+  metadata: string;
+  claimant: string;
+  policyHash: string;
+  sender: string;
+}
+export type AnnouncedPolicyMetadataEvent = TypedEvent<
+  [string, string, string, string],
+  AnnouncedPolicyMetadataEventObject
+>;
+
+export type AnnouncedPolicyMetadataEventFilter = TypedEventFilter<AnnouncedPolicyMetadataEvent>;
+
 export interface CreatedClaimEventObject {
   claimHash: string;
   claimant: string;
@@ -344,13 +368,12 @@ export interface CreatedClaimEventObject {
   beneficiary: string;
   claimsAllowedFrom: number;
   policy: string;
-  metadata: string;
   claimAmountInUsd: BigNumber;
   evidence: string;
   claimCreationTime: number;
 }
 export type CreatedClaimEvent = TypedEvent<
-  [string, string, string, string, number, string, string, BigNumber, string, number],
+  [string, string, string, string, number, string, BigNumber, string, number],
   CreatedClaimEventObject
 >;
 
@@ -373,11 +396,10 @@ export interface CreatedPolicyEventObject {
   claimsAllowedFrom: number;
   claimsAllowedUntil: number;
   policy: string;
-  metadata: string;
   sender: string;
 }
 export type CreatedPolicyEvent = TypedEvent<
-  [string, string, string, BigNumber, number, number, string, string, string],
+  [string, string, string, BigNumber, number, number, string, string],
   CreatedPolicyEventObject
 >;
 
@@ -391,11 +413,10 @@ export interface DowngradedPolicyEventObject {
   claimsAllowedFrom: number;
   claimsAllowedUntil: number;
   policy: string;
-  metadata: string;
   sender: string;
 }
 export type DowngradedPolicyEvent = TypedEvent<
-  [string, string, string, BigNumber, number, number, string, string, string],
+  [string, string, string, BigNumber, number, number, string, string],
   DowngradedPolicyEventObject
 >;
 
@@ -520,11 +541,10 @@ export interface UpgradedPolicyEventObject {
   claimsAllowedFrom: number;
   claimsAllowedUntil: number;
   policy: string;
-  metadata: string;
   sender: string;
 }
 export type UpgradedPolicyEvent = TypedEvent<
-  [string, string, string, BigNumber, number, number, string, string, string],
+  [string, string, string, BigNumber, number, number, string, string],
   UpgradedPolicyEventObject
 >;
 
@@ -589,6 +609,15 @@ export interface ClaimsManager extends BaseContract {
 
     adminRoleDescription(overrides?: CallOverrides): Promise<[string]>;
 
+    announcePolicyMetadata(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     api3Pool(overrides?: CallOverrides): Promise<[string]>;
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<[string]>;
@@ -619,7 +648,6 @@ export interface ClaimsManager extends BaseContract {
       beneficiary: PromiseOrValue<string>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -641,7 +669,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -652,7 +679,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -747,7 +773,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -788,6 +813,15 @@ export interface ClaimsManager extends BaseContract {
 
   adminRoleDescription(overrides?: CallOverrides): Promise<string>;
 
+  announcePolicyMetadata(
+    claimant: PromiseOrValue<string>,
+    beneficiary: PromiseOrValue<string>,
+    claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+    policy: PromiseOrValue<string>,
+    metadata: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   api3Pool(overrides?: CallOverrides): Promise<string>;
 
   api3ToUsdReader(overrides?: CallOverrides): Promise<string>;
@@ -818,7 +852,6 @@ export interface ClaimsManager extends BaseContract {
     beneficiary: PromiseOrValue<string>,
     claimsAllowedFrom: PromiseOrValue<BigNumberish>,
     policy: PromiseOrValue<string>,
-    metadata: PromiseOrValue<string>,
     claimAmountInUsd: PromiseOrValue<BigNumberish>,
     evidence: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -840,7 +873,6 @@ export interface ClaimsManager extends BaseContract {
     claimsAllowedFrom: PromiseOrValue<BigNumberish>,
     claimsAllowedUntil: PromiseOrValue<BigNumberish>,
     policy: PromiseOrValue<string>,
-    metadata: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -851,7 +883,6 @@ export interface ClaimsManager extends BaseContract {
     claimsAllowedFrom: PromiseOrValue<BigNumberish>,
     claimsAllowedUntil: PromiseOrValue<BigNumberish>,
     policy: PromiseOrValue<string>,
-    metadata: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -946,7 +977,6 @@ export interface ClaimsManager extends BaseContract {
     claimsAllowedFrom: PromiseOrValue<BigNumberish>,
     claimsAllowedUntil: PromiseOrValue<BigNumberish>,
     policy: PromiseOrValue<string>,
-    metadata: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -987,6 +1017,15 @@ export interface ClaimsManager extends BaseContract {
 
     adminRoleDescription(overrides?: CallOverrides): Promise<string>;
 
+    announcePolicyMetadata(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     api3Pool(overrides?: CallOverrides): Promise<string>;
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<string>;
@@ -1017,7 +1056,6 @@ export interface ClaimsManager extends BaseContract {
       beneficiary: PromiseOrValue<string>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1039,7 +1077,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1050,7 +1087,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -1133,7 +1169,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
   };
@@ -1169,14 +1204,26 @@ export interface ClaimsManager extends BaseContract {
       clippedAmountInApi3?: null
     ): AcceptedSettlementEventFilter;
 
-    'CreatedClaim(bytes32,address,bytes32,address,uint32,string,string,uint224,string,uint32)'(
+    'AnnouncedPolicyMetadata(string,address,bytes32,address)'(
+      metadata?: null,
+      claimant?: PromiseOrValue<string> | null,
+      policyHash?: PromiseOrValue<BytesLike> | null,
+      sender?: null
+    ): AnnouncedPolicyMetadataEventFilter;
+    AnnouncedPolicyMetadata(
+      metadata?: null,
+      claimant?: PromiseOrValue<string> | null,
+      policyHash?: PromiseOrValue<BytesLike> | null,
+      sender?: null
+    ): AnnouncedPolicyMetadataEventFilter;
+
+    'CreatedClaim(bytes32,address,bytes32,address,uint32,string,uint224,string,uint32)'(
       claimHash?: PromiseOrValue<BytesLike> | null,
       claimant?: PromiseOrValue<string> | null,
       policyHash?: PromiseOrValue<BytesLike> | null,
       beneficiary?: null,
       claimsAllowedFrom?: null,
       policy?: null,
-      metadata?: null,
       claimAmountInUsd?: null,
       evidence?: null,
       claimCreationTime?: null
@@ -1188,7 +1235,6 @@ export interface ClaimsManager extends BaseContract {
       beneficiary?: null,
       claimsAllowedFrom?: null,
       policy?: null,
-      metadata?: null,
       claimAmountInUsd?: null,
       evidence?: null,
       claimCreationTime?: null
@@ -1205,7 +1251,7 @@ export interface ClaimsManager extends BaseContract {
       arbitrator?: null
     ): CreatedDisputeEventFilter;
 
-    'CreatedPolicy(address,address,bytes32,uint224,uint32,uint32,string,string,address)'(
+    'CreatedPolicy(address,address,bytes32,uint224,uint32,uint32,string,address)'(
       beneficiary?: null,
       claimant?: PromiseOrValue<string> | null,
       policyHash?: PromiseOrValue<BytesLike> | null,
@@ -1213,7 +1259,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom?: null,
       claimsAllowedUntil?: null,
       policy?: null,
-      metadata?: null,
       sender?: null
     ): CreatedPolicyEventFilter;
     CreatedPolicy(
@@ -1224,11 +1269,10 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom?: null,
       claimsAllowedUntil?: null,
       policy?: null,
-      metadata?: null,
       sender?: null
     ): CreatedPolicyEventFilter;
 
-    'DowngradedPolicy(address,address,bytes32,uint224,uint32,uint32,string,string,address)'(
+    'DowngradedPolicy(address,address,bytes32,uint224,uint32,uint32,string,address)'(
       beneficiary?: null,
       claimant?: PromiseOrValue<string> | null,
       policyHash?: PromiseOrValue<BytesLike> | null,
@@ -1236,7 +1280,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom?: null,
       claimsAllowedUntil?: null,
       policy?: null,
-      metadata?: null,
       sender?: null
     ): DowngradedPolicyEventFilter;
     DowngradedPolicy(
@@ -1247,7 +1290,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom?: null,
       claimsAllowedUntil?: null,
       policy?: null,
-      metadata?: null,
       sender?: null
     ): DowngradedPolicyEventFilter;
 
@@ -1349,7 +1391,7 @@ export interface ClaimsManager extends BaseContract {
       sender?: null
     ): SetQuotaEventFilter;
 
-    'UpgradedPolicy(address,address,bytes32,uint224,uint32,uint32,string,string,address)'(
+    'UpgradedPolicy(address,address,bytes32,uint224,uint32,uint32,string,address)'(
       beneficiary?: null,
       claimant?: PromiseOrValue<string> | null,
       policyHash?: PromiseOrValue<BytesLike> | null,
@@ -1357,7 +1399,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom?: null,
       claimsAllowedUntil?: null,
       policy?: null,
-      metadata?: null,
       sender?: null
     ): UpgradedPolicyEventFilter;
     UpgradedPolicy(
@@ -1368,7 +1409,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom?: null,
       claimsAllowedUntil?: null,
       policy?: null,
-      metadata?: null,
       sender?: null
     ): UpgradedPolicyEventFilter;
   };
@@ -1407,6 +1447,15 @@ export interface ClaimsManager extends BaseContract {
 
     adminRoleDescription(overrides?: CallOverrides): Promise<BigNumber>;
 
+    announcePolicyMetadata(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     api3Pool(overrides?: CallOverrides): Promise<BigNumber>;
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1428,7 +1477,6 @@ export interface ClaimsManager extends BaseContract {
       beneficiary: PromiseOrValue<string>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1450,7 +1498,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1461,7 +1508,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1548,7 +1594,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -1587,6 +1632,15 @@ export interface ClaimsManager extends BaseContract {
 
     adminRoleDescription(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    announcePolicyMetadata(
+      claimant: PromiseOrValue<string>,
+      beneficiary: PromiseOrValue<string>,
+      claimsAllowedFrom: PromiseOrValue<BigNumberish>,
+      policy: PromiseOrValue<string>,
+      metadata: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     api3Pool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     api3ToUsdReader(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1608,7 +1662,6 @@ export interface ClaimsManager extends BaseContract {
       beneficiary: PromiseOrValue<string>,
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       claimAmountInUsd: PromiseOrValue<BigNumberish>,
       evidence: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1630,7 +1683,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1641,7 +1693,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1728,7 +1779,6 @@ export interface ClaimsManager extends BaseContract {
       claimsAllowedFrom: PromiseOrValue<BigNumberish>,
       claimsAllowedUntil: PromiseOrValue<BigNumberish>,
       policy: PromiseOrValue<string>,
-      metadata: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

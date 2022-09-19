@@ -124,10 +124,11 @@ export function useUserPolicyById(policyId: string) {
 
 async function loadPolicies(contract: ClaimsManager, params: { userAccount?: string; policyId?: string }) {
   const { userAccount = null, policyId = null } = params;
-  const [createdEvents, upgradedEvents, downgradedEvents] = await Promise.all([
+  const [createdEvents, upgradedEvents, downgradedEvents, metadataEvents] = await Promise.all([
     contract.queryFilter(contract.filters.CreatedPolicy(null, userAccount, policyId)),
     contract.queryFilter(contract.filters.UpgradedPolicy(null, userAccount, policyId)),
     contract.queryFilter(contract.filters.DowngradedPolicy(null, userAccount, policyId)),
+    contract.queryFilter(contract.filters.AnnouncedPolicyMetadata(null, userAccount, policyId)),
   ]);
 
   if (!createdEvents.length) {
@@ -140,6 +141,8 @@ async function loadPolicies(contract: ClaimsManager, params: { userAccount?: str
     const eventArgs = event.args;
     // The policy can be upgraded or downgraded multiple times, and we only care about the last event
     const stateChangedEvent = last(stateChangedEvents.filter((ev) => ev.args.policyHash === eventArgs.policyHash));
+    // The policy metadata can be updated multiple times, and we only care about the last event
+    const metadataEvent = last(metadataEvents.filter((ev) => ev.args.policyHash === eventArgs.policyHash));
 
     const policy = {
       policyId: eventArgs.policyHash,
@@ -150,7 +153,7 @@ async function loadPolicies(contract: ClaimsManager, params: { userAccount?: str
         stateChangedEvent ? stateChangedEvent.args.claimsAllowedUntil : eventArgs.claimsAllowedUntil
       ),
       ipfsHash: eventArgs.policy,
-      metadata: eventArgs.metadata,
+      metadata: metadataEvent ? metadataEvent.args.metadata : 'Unknown', // We should always have a metadata event
     };
 
     acc[policy.policyId] = policy;
