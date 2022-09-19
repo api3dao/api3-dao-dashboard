@@ -1,0 +1,51 @@
+// CSS sourced from https://github.com/dvtng/react-loading-skeleton/blob/master/src/skeleton.css
+
+:root {
+  --skeleton-base-color: #141514;
+  --skeleton-highlight-color: #3d3d3b;
+  --skeleton-animation-duration: 1.5s;
+  --skeleton-animation-direction: normal;
+}
+
+.skeleton {
+  background-color: var(--skeleton-base-color);
+
+  width: 100%;
+  border-radius: 0.25rem;
+  display: inline-flex;
+  line-height: 0.85;
+
+  position: relative;
+  overflow: hidden;
+  z-index: 1; // Necessary for overflow: hidden to work correctly in Safari
+}
+
+.skeleton::after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(
+    90deg,
+    var(--skeleton-base-color),
+    var(--skeleton-highlight-color),
+    var(--skeleton-base-color)
+  );
+  transform: translateX(-100%);
+
+  animation-name: loading-skeleton;
+  animation-direction: var(--skeleton-animation-direction);
+  animation-duration: var(--skeleton-animation-duration);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes loading-skeleton {
+  100% {
+    transform: translateX(100%);
+  }
+}
