@@ -32,14 +32,7 @@ export default function ClaimActions(props: Props) {
   const handleAcceptCounter = async () => {
     setStatus('submitting');
     const tx = await handleTransactionError(
-      claimsManager.acceptSettlement(
-        claim.policy.id,
-        claim.claimant,
-        claim.beneficiary,
-        claim.claimAmountInUsd,
-        claim.evidence,
-        '0'
-      )
+      claimsManager.acceptSettlement(claim.policy.id, claim.beneficiary, claim.claimAmountInUsd, claim.evidence, '0')
     );
     if (tx) {
       setChainData('Save accept claim settlement transaction', {

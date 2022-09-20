@@ -15,9 +15,9 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@api3/claims-manager@api3dao/claims-manager.git#26d0f00a23cb7d23ecb19ad3438c1f6634e3d037":
+"@api3/claims-manager@api3dao/claims-manager.git#a56c09a8cc6292e408e5d77d70ecea10d7fbeb5a":
   version "0.0.1"
-  resolved "https://codeload.github.com/api3dao/claims-manager/tar.gz/26d0f00a23cb7d23ecb19ad3438c1f6634e3d037"
+  resolved "https://codeload.github.com/api3dao/claims-manager/tar.gz/a56c09a8cc6292e408e5d77d70ecea10d7fbeb5a"
   dependencies:
     "@openzeppelin/contracts" "4.4.2"
 
