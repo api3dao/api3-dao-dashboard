@@ -6,6 +6,10 @@ import classNames from 'classnames';
 import DashboardIcon from './dashboard-icon';
 import ProposalsIcon from './proposals-icon';
 import HistoryIcon from './history-icon';
+import PoliciesIcon from '../icons/policies-icon';
+import ClaimsIcon from '../icons/claims-icons';
+import TrackerIcon from '../icons/tracker-icon';
+import MarketIcon from '../icons/market-icon';
 import SignIn from '../sign-in/sign-in';
 import styles from './menu.module.scss';
 import globalStyles from '../../styles/global-styles.module.scss';
@@ -39,17 +43,39 @@ export const DesktopMenu = () => {
       <NavLink activeClassName={styles.menuActiveItem} to="/policies">
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
-          <DashboardIcon />
-          <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Policies</p>
+          <PoliciesIcon />
+          <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>My Policies</p>
         </div>
       </NavLink>
       <NavLink activeClassName={styles.menuActiveItem} to="/claims">
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
-          <DashboardIcon />
-          <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Claims</p>
+          <ClaimsIcon />
+          <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>My Claims</p>
         </div>
       </NavLink>
+
+      <section className={styles.externalLinks}>
+        <h6>External Links</h6>
+        <ul>
+          <li>
+            <a href="https://tracker.api3.org" target="_blank" rel="noopener noreferrer">
+              <div className={styles.menuItem}>
+                <TrackerIcon />
+                <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>API3 Tracker</p>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="https://market.api3.org" target="_blank" rel="noopener noreferrer">
+              <div className={styles.menuItem}>
+                <MarketIcon />
+                <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>API3 Market</p>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </section>
     </div>
   );
 };
@@ -93,14 +119,14 @@ export const MobileMenu = () => {
             </NavLink>
             <NavLink activeClassName={styles.menuActiveItem} to="/policies">
               <div className={styles.menuMobileItem}>
-                <DashboardIcon />
-                <p className={styles.menuMobileItemText}>Policies</p>
+                <PoliciesIcon />
+                <p className={styles.menuMobileItemText}>My Policies</p>
               </div>
             </NavLink>
             <NavLink activeClassName={styles.menuActiveItem} to="/claims">
               <div className={styles.menuMobileItem}>
-                <DashboardIcon />
-                <p className={styles.menuMobileItemText}>Claims</p>
+                <ClaimsIcon />
+                <p className={styles.menuMobileItemText}>My Claims</p>
               </div>
             </NavLink>
           </div>

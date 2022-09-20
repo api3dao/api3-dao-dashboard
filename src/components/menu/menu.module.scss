@@ -184,3 +184,25 @@
     margin-right: 0;
   }
 }
+
+.externalLinks {
+  h6 {
+    font-size: $text-small;
+    font-weight: 400;
+    color: $secondary-color;
+    margin-bottom: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 1rem;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
