@@ -124,7 +124,6 @@ interface Vesting {
 
 export interface Claim {
   claimId: string;
-  policyId: string;
   evidence: string;
   timestamp: Date;
   claimant: string;
@@ -143,6 +142,7 @@ export interface Claim {
     periodEndDate: null | Date; // The last period (execution) does not have an end date
     appealedBy: null | string;
   };
+  policy: { id: string; metadata: string };
 }
 
 export const ClaimStatuses = {

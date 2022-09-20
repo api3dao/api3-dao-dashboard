@@ -10,7 +10,7 @@ describe('<ClaimActions />', () => {
   beforeEach(() => {
     claim = {
       claimId: '42',
-      policyId: '101',
+      policy: { id: '101', metadata: 'ETH/BTC' },
       claimant: '0x153EF0B488148k0aB0FED112334',
       beneficiary: '0x153EF0B488148k0aB0FED112334',
       claimAmountInUsd: parseUsd('1000'),

@@ -55,14 +55,23 @@ async function deploy() {
     id: hre.ethers.utils.formatBytes32String('API3-USD-feed-01'),
     name: hre.ethers.utils.formatBytes32String('API3/USD'),
     value: hre.ethers.utils.parseEther('2'),
+    decimals: 18,
     timestamp: Math.round(new Date().getTime() / 1000),
   };
   await mockDapiServer.mockDataFeed(dataFeed.id, dataFeed.value, dataFeed.timestamp);
   await mockDapiServer.mockDapiName(dataFeed.name, dataFeed.id);
 
-  const api3ToUsdReaderFactory = await hre.ethers.getContractFactory('Api3ToUsdReader', roles.deployer);
-  const api3ToUsdReader = await api3ToUsdReaderFactory.deploy(mockDapiServer.address, claimsManager.address);
-  await claimsManager.connect(roles.manager).setApi3ToUsdReader(api3ToUsdReader.address);
+  const currencyConverterWithDapiFactory = await hre.ethers.getContractFactory(
+    'CurrencyConverterWithDapi',
+    roles.deployer
+  );
+  const currencyConverterWithDapi = await currencyConverterWithDapiFactory.deploy(
+    mockDapiServer.address,
+    claimsManager.address,
+    dataFeed.name,
+    dataFeed.decimals
+  );
+  await claimsManager.connect(roles.manager).setApi3UsdAmountConverter(currencyConverterWithDapi.address);
 
   console.info('DEPLOYED ADDRESSES:');
   console.info(

@@ -127,15 +127,25 @@ task('create-user-policy', 'Creates a policy for the given user')
     const claimsAllowedUntil = args.claimsAllowedUntil
       ? parseISO(args.claimsAllowedUntil)
       : addDays(claimsAllowedFrom, 30);
-    const tx = await claimsManager.createPolicy(
+    const ipfsHash = args.ipfsHash || 'Qm' + randomBytes(22).toString('hex');
+
+    // We use a multicall in order to create the policy and announce its metadata in the same transaction
+    const createCall = claimsManager.interface.encodeFunctionData('createPolicy', [
       userAddress,
       userAddress,
       parseUsd(args.coverageAmount),
       Math.round(claimsAllowedFrom.getTime() / 1000),
       Math.round(claimsAllowedUntil.getTime() / 1000),
-      args.ipfsHash || 'Qm' + randomBytes(22).toString('hex'),
-      args.metadata
-    );
+      ipfsHash,
+    ]);
+    const metadataCall = claimsManager.interface.encodeFunctionData('announcePolicyMetadata', [
+      userAddress,
+      userAddress,
+      Math.round(claimsAllowedFrom.getTime() / 1000),
+      ipfsHash,
+      args.metadata,
+    ]);
+    const tx = await claimsManager.multicall([createCall, metadataCall]);
 
     await tx.wait();
     const createdEvents = await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, userAddress));
@@ -172,8 +182,7 @@ task('upgrade-user-policy', 'Upgrades the policy with given params')
       parseUsd(args.coverageAmount),
       createdEvent.args.claimsAllowedFrom,
       Math.round(parseISO(args.claimsAllowedUntil).getTime() / 1000),
-      createdEvent.args.policy,
-      createdEvent.args.metadata
+      createdEvent.args.policy
     );
     console.info(`Upgraded Policy: ${args.policyId}`);
   });
@@ -204,10 +213,38 @@ task('downgrade-user-policy', 'Downgrades the policy with given params')
       parseUsd(args.coverageAmount),
       createdEvent.args.claimsAllowedFrom,
       Math.round(parseISO(args.claimsAllowedUntil).getTime() / 1000),
-      createdEvent.args.policy,
-      createdEvent.args.metadata
+      createdEvent.args.policy
     );
     console.info(`Downgraded Policy: ${args.policyId}`);
+  });
+
+task('update-policy-metadata', 'Updates the policy metadata')
+  .addParam('policyId', 'The policy ID')
+  .addParam('metadata', 'The policy metadata')
+  .setAction(async (args, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    // The index for the manager needs to be in sync with the deploy script
+    const manager = accounts[1];
+    const contracts = getContractAddresses(hre.network.name);
+    const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
+
+    const createdEvent = (
+      await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, null, args.policyId))
+    )[0];
+
+    if (!createdEvent) {
+      throw new Error('Policy does not exist');
+    }
+
+    await claimsManager.announcePolicyMetadata(
+      createdEvent.args.claimant,
+      createdEvent.args.beneficiary,
+      createdEvent.args.claimsAllowedFrom,
+      createdEvent.args.policy,
+      args.metadata
+    );
+    console.info(`Updated Policy: ${args.policyId} metadata to: ${args.metadata}`);
   });
 
 task('accept-claim', 'Accepts the given claim')

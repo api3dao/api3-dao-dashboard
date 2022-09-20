@@ -26,6 +26,7 @@ import {
 import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManager';
 import { CreatedDisputeEvent } from '../../contracts/tmp/arbitrators/KlerosLiquidProxy';
 import last from 'lodash/last';
+import uniq from 'lodash/uniq';
 
 export function useUserClaims() {
   const { userAccount, claims, setChainData } = useChainData();
@@ -129,8 +130,9 @@ async function loadClaims(
     return { ids: [], byId: {} };
   }
 
-  const [claims, disputes] = await Promise.all([
+  const [claims, policies, disputes] = await Promise.all([
     getClaimContractData(claimsManager, createdEvents),
+    getPolicyContractData(claimsManager, createdEvents),
     getDisputeContractData(arbitratorProxy, disputeEvents),
   ]);
 
@@ -141,10 +143,10 @@ async function loadClaims(
     const claimData = claims[index]!;
     const counterOfferEvent = counterOfferEvents.find((ev) => ev.args.claimHash === claimId);
     const dispute = disputes.find((dispute) => dispute.claimId === claimId);
+    const policy = policies.find((policy) => policy.id === eventArgs.policyHash)!;
 
     const claim: Claim = {
       claimId,
-      policyId: eventArgs.policyHash,
       evidence: eventArgs.evidence,
       timestamp: blockTimestampToDate(eventArgs.claimCreationTime),
       claimant: eventArgs.claimant,
@@ -156,6 +158,7 @@ async function loadClaims(
       deadline: null,
       transactionHash: event.transactionHash,
       dispute: dispute || null,
+      policy,
     };
 
     claim.deadline = calculateDeadline(claim);
@@ -281,9 +284,34 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
 async function getAppealEvents(contract: KlerosLiquidProxy, disputeEvents: CreatedDisputeEvent[]) {
   const disputeIds = disputeEvents.map((ev) => ev.args.disputeId);
   return await contract.queryFilter(
-    // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
-    contract.filters.AppealedKlerosArbitratorRuling(null, null, disputeIds)
+    contract.filters.AppealedKlerosArbitratorRuling(
+      null,
+      null,
+      // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
+      disputeIds
+    )
   );
+}
+
+async function getPolicyContractData(contract: ClaimsManager, claimEvents: CreatedClaimEvent[]) {
+  const policyIds = uniq(claimEvents.map((ev) => ev.args.policyHash));
+  const metadataEvents = await contract.queryFilter(
+    contract.filters.AnnouncedPolicyMetadata(
+      null,
+      null,
+      // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
+      policyIds
+    )
+  );
+
+  return policyIds.map((policyId) => {
+    // We only care about the last event
+    const metadataEvent = last(metadataEvents.filter((ev) => ev.args.policyHash === policyId));
+    return {
+      id: policyId,
+      metadata: metadataEvent ? metadataEvent.args.metadata : 'Unknown', // We should always have a metadata event
+    };
+  });
 }
 
 /**
