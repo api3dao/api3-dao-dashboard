@@ -31,7 +31,7 @@ export default function ClaimList(props: Props) {
                 ) : (
                   <span>{format(claim.timestamp, DATE_FORMAT)}</span>
                 )}
-                <Link to={`/policies/${claim.policyId}`}>Policy</Link>
+                <Link to={`/policies/${claim.policy.id}`}>Policy</Link>
               </div>
             </div>
 

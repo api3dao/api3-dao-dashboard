@@ -33,7 +33,7 @@ export default function ClaimActions(props: Props) {
     setStatus('submitting');
     const tx = await handleTransactionError(
       claimsManager.acceptSettlement(
-        claim.policyId,
+        claim.policy.id,
         claim.claimant,
         claim.beneficiary,
         claim.claimAmountInUsd,
@@ -55,7 +55,7 @@ export default function ClaimActions(props: Props) {
     setStatus('submitting');
     const tx = await handleTransactionError(
       arbitratorProxy.createDispute(
-        claim.policyId,
+        claim.policy.id,
         claim.claimant,
         claim.beneficiary,
         claim.claimAmountInUsd,
@@ -78,7 +78,7 @@ export default function ClaimActions(props: Props) {
     setStatus('submitting');
     const tx = await handleTransactionError(
       arbitratorProxy.appealKlerosArbitratorRuling(
-        claim.policyId,
+        claim.policy.id,
         claim.claimant,
         claim.beneficiary,
         claim.claimAmountInUsd,
