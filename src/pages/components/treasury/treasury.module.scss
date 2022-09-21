@@ -48,4 +48,9 @@
 
 .dropdownLink {
   display: flex; // to properly draw box shadow when the link is focused
+  svg {
+    width: 16px;
+    height: 16px;
+    color: $button-color;
+  }
 }

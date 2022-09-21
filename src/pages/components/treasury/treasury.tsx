@@ -8,6 +8,7 @@ import { getEtherscanAddressUrl, useApi3AgentAddresses } from '../../../contract
 import { TreasuryType, useChainData } from '../../../chain-data';
 import { Tooltip } from '../../../components/tooltip';
 import ExternalLink from '../../../components/external-link';
+import ExternalLinkIcon from '../../../components/icons/external-link-icon';
 
 interface TreasuryDropdownProps {
   data: FormattedTreasury[];
@@ -46,13 +47,13 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
           <span className={classNames(styles.copy, globalStyles.textSmall)}>
             <Tooltip overlay={etherscanExplainer}>
               <ExternalLink href={getEtherscanAddressUrl(chainId, agentAddress) ?? ''} className={styles.dropdownLink}>
-                <img
-                  src={images.externalLink}
-                  alt={etherscanExplainer}
+                <ExternalLinkIcon
+                  aria-hidden
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent the dropdown from expanding
                   }}
                 />
+                <span className="sr-only">{etherscanExplainer}</span>
               </ExternalLink>
             </Tooltip>
           </span>
