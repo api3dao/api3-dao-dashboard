@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
-import ArrowLeftIcon from '../icons/ArrowLeftIcon';
+import ArrowLeftIcon from '../icons/arrow-left-icon';
 import styles from './back-button.module.scss';
 
 interface Props {

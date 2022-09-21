@@ -20,8 +20,10 @@ describe('keyboard navigation and accessibility', () => {
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Staking').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Governance').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('History').filter(':visible').closest('a'));
-    pressTabAndAssertFocusOutline(() => cy.findAllByText('Policies').filter(':visible').closest('a'));
-    pressTabAndAssertFocusOutline(() => cy.findAllByText('Claims').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('My Policies').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('My Claims').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('API3 Tracker').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('API3 Market').filter(':visible').closest('a'));
 
     pressTabAndAssertFocusOutline(() => cy.findByText('About API3'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Docs'));

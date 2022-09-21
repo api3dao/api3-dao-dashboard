@@ -1,5 +1,7 @@
-const DashboardIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+import { ComponentProps } from 'react';
+
+const DashboardIcon = (props: ComponentProps<'svg'>) => (
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M3.04166 14.425V3.04169H14.425V14.425H3.04166Z"
       stroke="currentColor"
