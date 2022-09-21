@@ -17,7 +17,7 @@ import ProposalDetailsPage from './pages/components/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
 import Policies from './pages/my-policies';
-import Claims from './pages/claims';
+import Claims from './pages/my-claims';
 import ClaimDetails from './pages/claim-details';
 import PolicyDetails from './pages/policy-details';
 import PolicySelect from './pages/policy-select';

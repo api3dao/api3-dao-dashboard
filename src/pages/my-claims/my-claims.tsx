@@ -10,9 +10,9 @@ import { useHistory } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { isActive, useUserClaims } from '../../logic/claims';
 import { useUserPolicies, isActive as isPolicyActive } from '../../logic/policies';
-import styles from './claims.module.scss';
+import styles from './my-claims.module.scss';
 
-export default function Claims() {
+export default function MyClaims() {
   const { data: claims, status } = useUserClaims();
 
   const params = useQueryParams();
