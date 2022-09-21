@@ -1,5 +1,7 @@
-const ProposalsIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+import { ComponentProps } from 'react';
+
+const ProposalsIcon = (props: ComponentProps<'svg'>) => (
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <g clipPath="url(#clip0)">
       <path
         d="M28.7437 26.2949L24.979 20.4768H7.09668V3.02222H28.7437V26.2949Z"

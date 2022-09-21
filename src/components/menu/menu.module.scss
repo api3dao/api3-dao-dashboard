@@ -188,15 +188,20 @@
 
 .externalLinks {
   margin-top: $space-lg;
+  display: flex;
+  flex-direction: column;
+
+  & > * {
+    margin-bottom: $space-lg;
+  }
 
   h6 {
+    display: flex;
+    align-items: center;
     font-size: $text-small;
     font-weight: 400;
     color: $tertiary-color;
     margin-top: 0;
-    margin-bottom: $space-lg;
-    display: flex;
-    align-items: center;
 
     span {
       display: none;
@@ -211,15 +216,6 @@
       background: $black-line-color;
       flex: 1;
     }
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  li {
-    margin-bottom: $space-lg;
   }
 
   a {

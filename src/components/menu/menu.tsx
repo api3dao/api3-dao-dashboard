@@ -18,26 +18,26 @@ import globalStyles from '../../styles/global-styles.module.scss';
 export const DesktopMenu = () => {
   const { pathname } = useLocation();
   return (
-    <div className={styles.menu} data-cy="desktop-menu">
+    <nav className={styles.menu} data-cy="desktop-menu">
       {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
       <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
-          <DashboardIcon />
+          <DashboardIcon aria-hidden />
           <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Staking</p>
         </div>
       </NavLink>
       <NavLink activeClassName={styles.menuActiveItem} to="/governance">
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
-          <ProposalsIcon />
+          <ProposalsIcon aria-hidden />
           <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Governance</p>
         </div>
       </NavLink>
       <NavLink activeClassName={styles.menuActiveItem} to="/history">
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
-          <HistoryIcon />
+          <HistoryIcon aria-hidden />
           <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>History</p>
         </div>
       </NavLink>
@@ -60,32 +60,26 @@ export const DesktopMenu = () => {
         <h6>
           <span>External Links</span> <div>&nbsp;</div>
         </h6>
-        <ul>
-          <li>
-            <a href="https://tracker.api3.org" target="_blank" rel="noopener noreferrer">
-              <div className={styles.menuItem}>
-                <TrackerIcon aria-hidden />
-                <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>
-                  API3 Tracker
-                  <ExternalLinkIcon aria-hidden className={globalStyles.tertiaryColor} />
-                </p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="https://market.api3.org" target="_blank" rel="noopener noreferrer">
-              <div className={styles.menuItem}>
-                <MarketIcon aria-hidden />
-                <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>
-                  API3 Market
-                  <ExternalLinkIcon aria-hidden className={globalStyles.tertiaryColor} />
-                </p>
-              </div>
-            </a>
-          </li>
-        </ul>
+        <a href="https://tracker.api3.org" target="_blank" rel="noopener noreferrer">
+          <div className={styles.menuItem}>
+            <TrackerIcon aria-hidden />
+            <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>
+              API3 Tracker
+              <ExternalLinkIcon aria-hidden className={globalStyles.tertiaryColor} />
+            </p>
+          </div>
+        </a>
+        <a href="https://market.api3.org" target="_blank" rel="noopener noreferrer">
+          <div className={styles.menuItem}>
+            <MarketIcon aria-hidden />
+            <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>
+              API3 Market
+              <ExternalLinkIcon aria-hidden className={globalStyles.tertiaryColor} />
+            </p>
+          </div>
+        </a>
       </section>
-    </div>
+    </nav>
   );
 };
 
@@ -106,23 +100,23 @@ export const MobileMenu = () => {
           <img className={styles.menuIcon} onClick={() => setOpen(false)} src={images.menuClose} alt="close icon" />
         </div>
         <div className={styles.mobileMenuScrollWrap}>
-          <div className={styles.mobileMenuContent}>
+          <nav className={styles.mobileMenuContent}>
             {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
             <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
               <div className={styles.menuMobileItem}>
-                <DashboardIcon />
+                <DashboardIcon aria-hidden />
                 <p className={styles.menuMobileItemText}>Staking</p>
               </div>
             </NavLink>
             <NavLink activeClassName={styles.menuActiveItem} to="/governance">
               <div className={styles.menuMobileItem}>
-                <ProposalsIcon />
+                <ProposalsIcon aria-hidden />
                 <p className={styles.menuMobileItemText}>Governance</p>
               </div>
             </NavLink>
             <NavLink activeClassName={styles.menuActiveItem} to="/history">
               <div className={styles.menuMobileItem}>
-                <HistoryIcon />
+                <HistoryIcon aria-hidden />
                 <p className={styles.menuMobileItemText}>History</p>
               </div>
             </NavLink>
@@ -138,7 +132,7 @@ export const MobileMenu = () => {
                 <p className={styles.menuMobileItemText}>My Claims</p>
               </div>
             </NavLink>
-          </div>
+          </nav>
           <div className={classNames(styles.mobileMenuFooter, { [styles.borderTop]: provider })}>
             <SignIn position="mobileMenu" dark />
           </div>
