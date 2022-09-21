@@ -83,7 +83,7 @@
   padding-left: $space-xs;
 
   @media (max-width: $max-lg) {
-    display: none !important;
+    display: none;
     padding-left: unset;
   }
 }
