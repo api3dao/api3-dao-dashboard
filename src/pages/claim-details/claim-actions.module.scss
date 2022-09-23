@@ -32,6 +32,11 @@
   }
 }
 
+.payoutAmount {
+  font-weight: 400;
+  color: $tertiary-color;
+}
+
 .actionPanel {
   margin-bottom: $space-md;
   & > * {
@@ -46,5 +51,5 @@
 .actionMessage {
   color: $tertiary-color;
   font-weight: 400;
-  max-width: 50ch;
+  max-width: 52ch;
 }

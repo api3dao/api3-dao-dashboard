@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import ClaimActions from './claim-actions';
 import { Claim } from '../../chain-data';
 import { addDays, addMinutes } from 'date-fns';
-import { parseUsd } from '../../utils';
+import { parseApi3, parseUsd } from '../../utils';
 
 let claim: Claim;
 
@@ -29,7 +29,7 @@ describe('<ClaimActions />', () => {
     it('shows that the claim is in progress', () => {
       claim.status = 'ClaimCreated';
 
-      render(<ClaimActions claim={claim} />);
+      render(<ClaimActions claim={claim} payout={null} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
       expect(screen.getByText(/Processing/i)).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('<ClaimActions />', () => {
         claim.status = 'ClaimCreated';
         claim.deadline = addMinutes(new Date(), -1);
 
-        render(<ClaimActions claim={claim} />);
+        render(<ClaimActions claim={claim} payout={null} />);
 
         expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
         expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
@@ -52,7 +52,7 @@ describe('<ClaimActions />', () => {
         claim.status = 'ClaimCreated';
         claim.deadline = addDays(addMinutes(new Date(), -1), -3);
 
-        render(<ClaimActions claim={claim} />);
+        render(<ClaimActions claim={claim} payout={null} />);
 
         const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
         expect(appealButton).toBeDisabled();
@@ -66,7 +66,7 @@ describe('<ClaimActions />', () => {
       claim.counterOfferAmountInUsd = parseUsd('500');
       claim.deadline = addMinutes(new Date(), 1);
 
-      render(<ClaimActions claim={claim} />);
+      render(<ClaimActions claim={claim} payout={null} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
       expect(screen.getByText(/Countered with \$500.0/i)).toBeInTheDocument();
@@ -81,7 +81,7 @@ describe('<ClaimActions />', () => {
       claim.counterOfferAmountInUsd = parseUsd('500');
       claim.deadline = addMinutes(new Date(), -1);
 
-      render(<ClaimActions claim={claim} />);
+      render(<ClaimActions claim={claim} payout={null} />);
 
       const acceptButton = screen.getByRole('button', { name: /Accept Counter/i });
       const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
@@ -95,7 +95,7 @@ describe('<ClaimActions />', () => {
       claim.status = 'SettlementAccepted';
       claim.counterOfferAmountInUsd = parseUsd('500');
 
-      render(<ClaimActions claim={claim} />);
+      render(<ClaimActions claim={claim} payout={null} />);
 
       expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
       expect(screen.getByText(/Accepted counter of \$500.0/i)).toBeInTheDocument();
@@ -118,7 +118,7 @@ describe('<ClaimActions />', () => {
         appealedBy: null,
       };
 
-      render(<ClaimActions claim={claim} />);
+      render(<ClaimActions claim={claim} payout={null} />);
 
       expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
       expect(screen.getByText(/Escalated to Kleros/i)).toBeInTheDocument();
@@ -136,7 +136,7 @@ describe('<ClaimActions />', () => {
         appealedBy: null,
       };
 
-      render(<ClaimActions claim={claim} />);
+      render(<ClaimActions claim={claim} payout={null} />);
 
       expect(screen.getByText(/Escalated counter of \$500.0 to Kleros/i)).toBeInTheDocument();
     });
@@ -152,7 +152,7 @@ describe('<ClaimActions />', () => {
           appealedBy: null,
         };
 
-        render(<ClaimActions claim={claim} />);
+        render(<ClaimActions claim={claim} payout={null} />);
 
         expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
         expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved full amount/i);
@@ -176,7 +176,7 @@ describe('<ClaimActions />', () => {
       it('provides an Appeal action', () => {
         claim.deadline = addMinutes(new Date(), 1);
 
-        render(<ClaimActions claim={claim} />);
+        render(<ClaimActions claim={claim} payout={null} />);
 
         expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
         expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of \$500.0/i);
@@ -187,7 +187,7 @@ describe('<ClaimActions />', () => {
       it('disables the Appeal button when the deadline has passed', () => {
         claim.deadline = addMinutes(new Date(), -1);
 
-        render(<ClaimActions claim={claim} />);
+        render(<ClaimActions claim={claim} payout={null} />);
 
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).toBeDisabled();
@@ -209,7 +209,7 @@ describe('<ClaimActions />', () => {
       it('provides an Appeal action', () => {
         claim.deadline = addMinutes(new Date(), 1);
 
-        render(<ClaimActions claim={claim} />);
+        render(<ClaimActions claim={claim} payout={null} />);
 
         expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
         expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
@@ -220,7 +220,7 @@ describe('<ClaimActions />', () => {
       it('disables the Appeal button when the deadline has passed', () => {
         claim.deadline = addMinutes(new Date(), -1);
 
-        render(<ClaimActions claim={claim} />);
+        render(<ClaimActions claim={claim} payout={null} />);
 
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).toBeDisabled();
@@ -238,7 +238,7 @@ describe('<ClaimActions />', () => {
           appealedBy: '0x153EF0B488148k0aB0FED112334',
         };
 
-        render(<ClaimActions claim={claim} />);
+        render(<ClaimActions claim={claim} payout={null} />);
 
         expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
         expect(screen.getByText(/Appealed to Kleros/i)).toBeInTheDocument();
@@ -256,7 +256,7 @@ describe('<ClaimActions />', () => {
           appealedBy: '0xD6b040736e948621c5b6E0a4944',
         };
 
-        render(<ClaimActions claim={claim} />);
+        render(<ClaimActions claim={claim} payout={null} />);
 
         expect(screen.getByText('API3 Multi-sig')).toBeInTheDocument();
         expect(screen.getByText(/Appealed to Kleros/i)).toBeInTheDocument();
@@ -270,7 +270,7 @@ describe('<ClaimActions />', () => {
       claim.status = 'DisputeResolvedWithoutPayout';
       claim.deadline = addMinutes(new Date(), 1);
 
-      render(<ClaimActions claim={claim} />);
+      render(<ClaimActions claim={claim} payout={null} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
       expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
@@ -281,20 +281,31 @@ describe('<ClaimActions />', () => {
   describe('"ClaimAccepted" status', () => {
     it('shows the claim has been approved', () => {
       claim.status = 'ClaimAccepted';
+      const payout = {
+        amountInUsd: claim.claimAmountInUsd,
+        amountInApi3: parseApi3('500'),
+        transactionHash: '0xfc83f22fb8167f9cdfb982dd4aeccc84d70df1494bca8271b3428d74df73807a',
+      };
 
-      render(<ClaimActions claim={claim} />);
+      render(<ClaimActions claim={claim} payout={payout} />);
 
       expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
       expect(screen.getByText(/Approved/i)).toBeInTheDocument();
-      expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+      expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
+      expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
   });
 
   describe('"DisputeResolvedWithClaimPayout" status', () => {
     it('shows the claim has been approved', () => {
       claim.status = 'DisputeResolvedWithClaimPayout';
+      const payout = {
+        amountInUsd: claim.claimAmountInUsd,
+        amountInApi3: parseApi3('500'),
+        transactionHash: '0xfc83f22fb8167f9cdfb982dd4aeccc84d70df1494bca8271b3428d74df73807a',
+      };
 
-      render(<ClaimActions claim={claim} />);
+      render(<ClaimActions claim={claim} payout={payout} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
       expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved full amount/i);
@@ -307,8 +318,13 @@ describe('<ClaimActions />', () => {
       claim.status = 'DisputeResolvedWithSettlementPayout';
       claim.counterOfferAmountInUsd = parseUsd('500');
       claim.deadline = addMinutes(new Date(), 1);
+      const payout = {
+        amountInUsd: parseUsd('500'),
+        amountInApi3: parseApi3('250'),
+        transactionHash: '0xfc83f22fb8167f9cdfb982dd4aeccc84d70df1494bca8271b3428d74df73807a',
+      };
 
-      render(<ClaimActions claim={claim} />);
+      render(<ClaimActions claim={claim} payout={payout} />);
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
       expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of \$500.0/i);

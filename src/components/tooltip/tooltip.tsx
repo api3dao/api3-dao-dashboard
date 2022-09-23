@@ -6,11 +6,12 @@ import styles from './tooltip.module.scss';
 import 'rc-tooltip/assets/bootstrap_white.css';
 
 type Props = {
+  id?: string;
   children: ReactElement;
   overlay: ReactElement | string;
 };
 
-const Tooltip = ({ children, overlay }: Props) => {
+const Tooltip = ({ id, children, overlay }: Props) => {
   // NOTE: rc-tooltip requires us to override default styles directly using objects
   // https://github.com/react-component/tooltip#props
   const overlayInnerStyle = {
@@ -22,8 +23,10 @@ const Tooltip = ({ children, overlay }: Props) => {
   // NOTE: rc-tooltip can be debugged by setting a 'visible' (boolean) prop
   return (
     <RCTooltip
+      id={id}
       overlay={<div className={styles.overlayWrapper}>{overlay}</div>}
       placement="bottom"
+      trigger={['hover', 'focus']}
       overlayClassName={styles.tooltip}
       overlayInnerStyle={overlayInnerStyle}
       mouseEnterDelay={0.2}

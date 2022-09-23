@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
 import { go } from '@api3/promise-utils';
 import { addDays, isAfter, isBefore } from 'date-fns';
-import { blockTimestampToDate, messages } from '../../utils';
+import { blockTimestampToDate, messages, sortEvents } from '../../utils';
 import {
   Claim,
   ClaimStatuses,
   ClaimStatusCode,
+  ClaimPayout,
   DisputeStatus,
   ArbitratorRulings,
   ArbitratorRulingCode,
@@ -39,7 +40,7 @@ export function useUserClaims() {
     return claims.userClaimIds
       .map((claimId) => claims.byId![claimId]!)
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }, [claims]);
+  }, [claims.userClaimIds, claims.byId]);
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
   useChainUpdateEffect(() => {
@@ -74,12 +75,17 @@ export function useUserClaims() {
   };
 }
 
-export function useUserClaimById(claimId: string) {
+/**
+ * Loads both the claim and the payout data by its id. The claim will not be found if it is not linked
+ * to the user's account.
+ */
+export function useUserClaimDataById(claimId: string) {
   const { userAccount, claims, setChainData } = useChainData();
   const claimsManager = useClaimsManager();
   const arbitratorProxy = useArbitratorProxy();
 
-  const data = claims.byId?.[claimId] || null;
+  const claim = claims.byId?.[claimId] || null;
+  const payout = claims.payoutById?.[claimId] || null;
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
   useChainUpdateEffect(() => {
@@ -87,7 +93,12 @@ export function useUserClaimById(claimId: string) {
 
     const load = async () => {
       setStatus('loading');
-      const result = await go(() => loadClaims(claimsManager, arbitratorProxy, { userAccount, claimId }));
+      const result = await go(() =>
+        Promise.all([
+          loadClaims(claimsManager, arbitratorProxy, { userAccount, claimId }),
+          loadClaimPayoutData(claimsManager, { userAccount, claimIds: [claimId] }),
+        ])
+      );
 
       if (!result.success) {
         notifications.error({ message: messages.FAILED_TO_LOAD_CLAIMS, errorOrMessage: result.error });
@@ -98,7 +109,8 @@ export function useUserClaimById(claimId: string) {
       setChainData(
         'Loaded claim',
         updateImmutablyCurried((state) => {
-          state.claims.byId = { ...state.claims.byId, ...result.data.byId };
+          state.claims.byId = { ...state.claims.byId, ...result.data[0].byId };
+          state.claims.payoutById = { ...state.claims.payoutById, ...result.data[1].byId };
         })
       );
       setStatus('loaded');
@@ -107,8 +119,16 @@ export function useUserClaimById(claimId: string) {
     load();
   }, [claimsManager, arbitratorProxy, userAccount, claimId, setChainData]);
 
+  if (claim) {
+    // If payout has executed, and we are still awaiting the payout data to load, then don't return anything
+    if (hasPayoutExecuted(claim) && !payout) {
+      return { claim: null, payout: null, status };
+    }
+  }
+
   return {
-    data,
+    claim,
+    payout,
     status,
   };
 }
@@ -117,7 +137,7 @@ async function loadClaims(
   claimsManager: ClaimsManager,
   arbitratorProxy: KlerosLiquidProxy,
   params: { userAccount?: string; claimId?: string }
-): Promise<{ ids: string[]; byId: Record<string, Claim> }> {
+) {
   const { userAccount = null, claimId = null } = params;
   // Get all the static data via events
   const [createdEvents, counterOfferEvents, disputeEvents] = await Promise.all([
@@ -200,6 +220,18 @@ export function isActive(claim: Claim): boolean {
     case 'DisputeResolvedWithSettlementPayout':
     case 'DisputeResolvedWithoutPayout':
     case 'None':
+      return false;
+  }
+}
+
+function hasPayoutExecuted(claim: Claim): boolean {
+  switch (claim.status) {
+    case 'ClaimAccepted':
+    case 'SettlementAccepted':
+    case 'DisputeResolvedWithClaimPayout':
+    case 'DisputeResolvedWithSettlementPayout':
+      return true;
+    default:
       return false;
   }
 }
@@ -328,4 +360,65 @@ function getDisputeStatus(period: DisputePeriod): DisputeStatus {
     case 'Execution':
       return 'Solved';
   }
+}
+
+async function loadClaimPayoutData(contract: ClaimsManager, params: { userAccount?: string; claimIds?: string[] }) {
+  const { userAccount = null, claimIds = null } = params;
+  const [acceptedEvents, settlementEvents, resolvedClaimEvents, resolvedSettlementEvents] = await Promise.all([
+    contract.queryFilter(
+      contract.filters.AcceptedClaim(
+        // @ts-expect-error
+        claimIds,
+        userAccount
+      )
+    ),
+    contract.queryFilter(
+      contract.filters.AcceptedSettlement(
+        // @ts-expect-error
+        claimIds,
+        userAccount
+      )
+    ),
+    contract.queryFilter(
+      contract.filters.ResolvedDisputeByAcceptingClaim(
+        // @ts-expect-error
+        claimIds,
+        userAccount
+      )
+    ),
+    contract.queryFilter(
+      contract.filters.ResolvedDisputeByAcceptingSettlement(
+        // @ts-expect-error
+        claimIds,
+        userAccount
+      )
+    ),
+  ]);
+
+  const events = sortEvents([
+    ...acceptedEvents,
+    ...settlementEvents,
+    ...resolvedClaimEvents,
+    ...resolvedSettlementEvents,
+  ] as const);
+
+  const byId = events.reduce((acc, ev) => {
+    if ('clippedAmountInUsd' in ev.args) {
+      acc[ev.args.claimHash] = {
+        amountInUsd: ev.args.clippedAmountInUsd,
+        amountInApi3: ev.args.clippedAmountInApi3,
+        transactionHash: ev.transactionHash,
+      };
+    } else {
+      acc[ev.args.claimHash] = {
+        amountInUsd: ev.args.clippedPayoutAmountInUsd,
+        amountInApi3: ev.args.clippedPayoutAmountInApi3,
+        transactionHash: ev.transactionHash,
+      };
+    }
+
+    return acc;
+  }, {} as { [claimId: string]: ClaimPayout });
+
+  return { byId };
 }

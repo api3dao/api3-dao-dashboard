@@ -2,18 +2,20 @@ import { useState } from 'react';
 import { BigNumber } from 'ethers';
 import Button from '../../components/button';
 import { Modal } from '../../components/modal';
+import { Tooltip } from '../../components/tooltip';
 import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
 import { AppealConfirmation, EscalateConfirmation } from './confirmations';
-import { abbrStr, Claim, useChainData } from '../../chain-data';
-import { formatUsd, handleTransactionError } from '../../utils';
-import { isAfter } from 'date-fns';
+import { abbrStr, Claim, ClaimPayout, useChainData } from '../../chain-data';
+import { formatApi3, formatUsd, handleTransactionError, images } from '../../utils';
+import { format, isAfter } from 'date-fns';
 import { useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
 import styles from './claim-actions.module.scss';
 
 interface Props {
   claim: Claim;
+  payout: ClaimPayout | null;
 }
 
 export default function ClaimActions(props: Props) {
@@ -138,6 +140,24 @@ export default function ClaimActions(props: Props) {
       );
 
     case 'ClaimAccepted':
+      const payout = props.payout!;
+      const renderPayoutInfo = () => {
+        const formattedDate = format(claim.statusUpdatedAt, 'dd MMM yyyy hh:mm');
+
+        if (payout.amountInUsd.lt(claim.claimAmountInUsd)) {
+          return (
+            <p>
+              The API3 amount is equivalent to the service coverage that remained (
+              <b>${formatUsd(payout.amountInUsd)} USD</b>) at the time the claim was accepted ({formattedDate})
+            </p>
+          );
+        }
+
+        return (
+          <p>The API3 amount is equivalent to the USD amount at the time the claim was accepted ({formattedDate})</p>
+        );
+      };
+
       return (
         <div className={styles.actionSection}>
           <p>API3 Multi-sig</p>
@@ -146,7 +166,21 @@ export default function ClaimActions(props: Props) {
               <CheckIcon aria-hidden />
               Approved
             </span>
+            <div>${formatUsd(claim.claimAmountInUsd)} USD</div>
+            <div className={styles.payoutAmount}>
+              {formatApi3(payout.amountInApi3)} API3 tokens
+              <Tooltip id="payout-tooltip" overlay={renderPayoutInfo()}>
+                <button
+                  aria-describedby="payout-tooltip"
+                  style={{ background: 'transparent', border: 'none', display: 'inline-flex', alignItems: 'center' }}
+                >
+                  <img src={images.help} aria-hidden alt="" />
+                  <span className="sr-only">View payout info</span>
+                </button>
+              </Tooltip>
+            </div>
           </div>
+          <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
         </div>
       );
 
