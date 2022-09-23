@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { go } from '@api3/promise-utils';
 import { addDays, isAfter, isBefore } from 'date-fns';
-import { blockTimestampToDate, messages, sortEvents } from '../../utils';
+import { blockTimestampToDate, messages, sortEvents, useStableIds } from '../../utils';
 import {
   Claim,
   ClaimStatuses,
@@ -360,6 +360,34 @@ function getDisputeStatus(period: DisputePeriod): DisputeStatus {
     case 'Execution':
       return 'Solved';
   }
+}
+
+export function useClaimPayoutDataPreload(claims: Claim[]) {
+  const { claims: claimData, userAccount, setChainData } = useChainData();
+  const claimsManager = useClaimsManager();
+
+  const claimsToPreload = claims.filter((claim) => {
+    return hasPayoutExecuted(claim) && claimData.payoutById?.[claim.claimId] == null;
+  });
+  const claimIds = useStableIds(claimsToPreload, (claim) => claim.claimId);
+
+  useEffect(() => {
+    if (!claimsManager || !claimIds.length) return;
+
+    const load = async () => {
+      const result = await go(() => loadClaimPayoutData(claimsManager, { userAccount, claimIds }));
+      if (result.success) {
+        setChainData(
+          'Preloaded claim payout data',
+          updateImmutablyCurried((state) => {
+            state.claims.payoutById = { ...state.claims.payoutById, ...result.data.byId };
+          })
+        );
+      }
+    };
+
+    load();
+  }, [claimsManager, userAccount, claimIds, setChainData]);
 }
 
 async function loadClaimPayoutData(contract: ClaimsManager, params: { userAccount?: string; claimIds?: string[] }) {
