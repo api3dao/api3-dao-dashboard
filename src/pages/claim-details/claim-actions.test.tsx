@@ -94,12 +94,18 @@ describe('<ClaimActions />', () => {
     it('shows claimant has accepted the counter', () => {
       claim.status = 'SettlementAccepted';
       claim.counterOfferAmountInUsd = parseUsd('500');
+      const payout = {
+        amountInUsd: parseUsd('500'),
+        amountInApi3: parseApi3('250'),
+        transactionHash: '0xfc83f22fb8167f9cdfb982dd4aeccc84d70df1494bca8271b3428d74df73807a',
+      };
 
-      render(<ClaimActions claim={claim} payout={null} />);
+      render(<ClaimActions claim={claim} payout={payout} />);
 
       expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
       expect(screen.getByText(/Accepted counter of \$500.0/i)).toBeInTheDocument();
-      expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+      expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
+      expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
   });
 
@@ -309,7 +315,8 @@ describe('<ClaimActions />', () => {
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
       expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved full amount/i);
-      expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+      expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
+      expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
   });
 
@@ -328,7 +335,8 @@ describe('<ClaimActions />', () => {
 
       expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
       expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of \$500.0/i);
-      expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+      expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
+      expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
   });
 });

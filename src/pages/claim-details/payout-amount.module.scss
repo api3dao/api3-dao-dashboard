@@ -1,0 +1,16 @@
+@import '../../styles/variables.module.scss';
+
+.payoutAmount {
+  display: flex;
+  align-items: center;
+  color: $tertiary-color;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.helpButton {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+}
