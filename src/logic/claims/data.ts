@@ -376,14 +376,14 @@ export function useClaimPayoutDataPreload(claims: Claim[]) {
 
     const load = async () => {
       const result = await go(() => loadClaimPayoutData(claimsManager, { userAccount, claimIds }));
-      if (result.success) {
-        setChainData(
-          'Preloaded claim payout data',
-          updateImmutablyCurried((state) => {
-            state.claims.payoutById = { ...state.claims.payoutById, ...result.data.byId };
-          })
-        );
-      }
+      if (!result.success) return;
+
+      setChainData(
+        'Preloaded claim payout data',
+        updateImmutablyCurried((state) => {
+          state.claims.payoutById = { ...state.claims.payoutById, ...result.data.byId };
+        })
+      );
     };
 
     load();
@@ -423,14 +423,15 @@ async function loadClaimPayoutData(contract: ClaimsManager, params: { userAccoun
     ),
   ]);
 
-  const events = sortEvents([
+  // There shouldn't even be more than one event per claim, but we sort anyway for good measure.
+  const payoutEvents = sortEvents([
     ...acceptedEvents,
     ...settlementEvents,
     ...resolvedClaimEvents,
     ...resolvedSettlementEvents,
   ] as const);
 
-  const byId = events.reduce((acc, ev) => {
+  const byId = payoutEvents.reduce((acc, ev) => {
     if ('clippedAmountInUsd' in ev.args) {
       acc[ev.args.claimHash] = {
         amountInUsd: ev.args.clippedAmountInUsd,
