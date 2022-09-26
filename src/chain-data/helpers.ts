@@ -64,7 +64,7 @@ export const displayPendingTransaction = async (
   transaction: ethers.ContractTransaction,
   messages: PendingTransactionMessages
 ) => {
-  const url = getEtherscanTransactionUrl(transaction);
+  const url = getEtherscanTransactionUrl(transaction.chainId, transaction.hash);
 
   // It's common for transactions to take between 1-5 minutes to confirm. Keep the
   // initial "progress" toast open until then
@@ -92,7 +92,10 @@ export const displayPendingTransaction = async (
 
     // The user "sped up" their transaction by resending it with a higher gas price
     if (ethersError.replacement && ethersError.replacement.hash) {
-      const replacementTxUrl = getEtherscanTransactionUrl(ethersError.replacement);
+      const replacementTxUrl = getEtherscanTransactionUrl(
+        ethersError.replacement.chainId,
+        ethersError.replacement.hash
+      );
       return notifications.success({ url: replacementTxUrl, message: messages.success });
     }
 

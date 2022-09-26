@@ -9,7 +9,7 @@ import { AppealConfirmation, EscalateConfirmation } from './confirmations';
 import { abbrStr, Claim, ClaimPayout, useChainData } from '../../chain-data';
 import { formatApi3, formatUsd, handleTransactionError, images } from '../../utils';
 import { format, isAfter } from 'date-fns';
-import { useArbitratorProxy, useClaimsManager } from '../../contracts';
+import { getEtherscanTransactionUrl, useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
 import styles from './claim-actions.module.scss';
 
@@ -21,7 +21,7 @@ interface Props {
 export default function ClaimActions(props: Props) {
   const { claim } = props;
   const { dispute } = claim;
-  const { setChainData, transactions } = useChainData();
+  const { setChainData, transactions, chainId } = useChainData();
   const claimsManager = useClaimsManager()!;
   const arbitratorProxy = useArbitratorProxy()!;
 
@@ -180,7 +180,17 @@ export default function ClaimActions(props: Props) {
               </Tooltip>
             </div>
           </div>
-          <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
+          <p className={styles.actionMessage}>
+            All done! The claim payout has been accepted.{' '}
+            <a
+              href={getEtherscanTransactionUrl(chainId, payout.transactionHash)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-primary"
+            >
+              View the transaction here
+            </a>
+          </p>
         </div>
       );
 

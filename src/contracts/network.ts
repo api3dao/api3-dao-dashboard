@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import localhostDao from '../contract-deployments/localhost-dao.json';
 import rinkebyDao from '../contract-deployments/rinkeby-dao.json';
 import mainnetDao from '../contract-deployments/mainnet-dao.json';
@@ -37,12 +36,14 @@ export const ETHERSCAN_HOSTS: { [chainId: string]: string } = {
   42: 'https://kovan.etherscan.io',
 };
 
-export const getEtherscanTransactionUrl = (transaction: ethers.Transaction) => {
-  const host = ETHERSCAN_HOSTS[transaction.chainId.toString()];
+export const getEtherscanTransactionUrl = (chainId: number | undefined, transactionHash: string) => {
+  if (!chainId) return;
+
+  const host = ETHERSCAN_HOSTS[chainId];
   if (!host) return;
 
   // For example: https://ropsten.etherscan.io/tx/0xe4394ea70b32486f59f92c5194c9083bd36c99f2f0c32cfc9bacce3486055d24
-  return [host, 'tx', transaction.hash].join('/');
+  return [host, 'tx', transactionHash].join('/');
 };
 
 export const getEtherscanAddressUrl = (chainId: number | undefined, address: string) => {
