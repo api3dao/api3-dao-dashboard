@@ -423,7 +423,7 @@ async function loadClaimPayoutData(contract: ClaimsManager, params: { userAccoun
     ),
   ]);
 
-  // There shouldn't even be more than one event per claim, but we sort anyway for good measure.
+  // There shouldn't ever be more than one event per claim, but we sort anyway for good measure.
   const payoutEvents = sortEvents([
     ...acceptedEvents,
     ...settlementEvents,
