@@ -4,7 +4,7 @@ import Layout from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import RadioButton from '../../components/radio-button';
 import Policies, { Filter } from '../components/policies';
-import SearchForm from '../components/policies/search-form';
+import SearchForm from '../components/search-form';
 import { useQueryParams } from '../../utils';
 import styles from './my-policies.module.scss';
 

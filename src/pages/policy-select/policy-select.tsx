@@ -3,7 +3,7 @@ import { useHistory } from 'react-router';
 import { BaseLayout } from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import Policies from '../components/policies';
-import SearchForm from '../components/policies/search-form';
+import SearchForm from '../components/search-form';
 import { useQueryParams } from '../../utils';
 import styles from './policy-select.module.scss';
 
