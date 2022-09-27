@@ -1,9 +1,10 @@
-import { ReactNode, useMemo } from 'react';
+import { FormEventHandler, ReactNode, useMemo } from 'react';
 import { connectWallet } from '../../components/sign-in/sign-in';
 import Layout from '../../components/layout';
 import Button from '../../components/button';
 import RadioButton from '../../components/radio-button';
 import BorderedBox, { Header } from '../../components/bordered-box';
+import SearchForm from '../components/policies/search-form';
 import ClaimList from './claim-list';
 import { useQueryParams } from '../../utils';
 import { useHistory } from 'react-router';
@@ -16,20 +17,31 @@ export default function MyClaims() {
   const { data: claims, status } = useUserClaims();
 
   const params = useQueryParams();
+  const query = params.get('query') || '';
   const filter = params.get('filter');
+
   const filteredClaims = useMemo(() => {
-    if (!claims) return [];
+    if (!claims || filter === 'none') return [];
+
+    const lowerCasedQuery = query.toLowerCase();
+    const results = lowerCasedQuery
+      ? claims.filter((claim) => {
+          return (
+            claim.claimId.toLowerCase().includes(lowerCasedQuery) ||
+            claim.policy.metadata.toLowerCase().includes(lowerCasedQuery)
+          );
+        })
+      : claims;
+
     switch (filter) {
-      case 'none':
-        return [];
       case 'active':
-        return claims.filter((claim) => isActive(claim));
+        return results.filter((claim) => isActive(claim));
       case 'inactive':
-        return claims.filter((claim) => !isActive(claim));
+        return results.filter((claim) => !isActive(claim));
       default:
-        return claims;
+        return results;
     }
-  }, [claims, filter]);
+  }, [claims, query, filter]);
 
   const { provider, setChainData } = useChainData();
   if (!provider) {
@@ -75,24 +87,54 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
   const activePolicies = policies?.filter((policy) => isPolicyActive(policy));
 
   const history = useHistory();
+  const params = useQueryParams();
+  const query = params.get('query') || '';
+  const filter = params.get('filter');
+
   const handleFilterChange = (showActive: boolean, showInactive: boolean) => {
+    const newParams = new URLSearchParams(params);
+    // We only want to keep the "query" search param if present
+    newParams.delete('filter');
+    newParams.delete('page');
+
     if (showActive && !showInactive) {
-      history.replace(`/claims?filter=active`);
+      newParams.set('filter', 'active');
     } else if (!showActive && showInactive) {
-      history.replace(`/claims?filter=inactive`);
+      newParams.set('filter', 'inactive');
     } else if (!showActive && !showInactive) {
-      history.replace(`/claims?filter=none`);
-    } else {
-      history.replace(`/claims`);
+      newParams.set('filter', 'none');
     }
+
+    history.replace('/claims?' + newParams.toString());
   };
 
-  const params = useQueryParams();
-  const filter = params.get('filter');
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (ev) => {
+    ev.preventDefault();
+    const { value } = ev.currentTarget.query;
+    // We don't want to keep any search params
+    const newParams = new URLSearchParams();
+    newParams.set('query', value.trim());
+    history.replace('/claims?' + newParams.toString());
+  };
+
+  const handleClear = () => {
+    const newParams = new URLSearchParams(params);
+    // We only want to keep the "filter" search param if present
+    newParams.delete('query');
+    newParams.delete('page');
+    history.replace('/claims?' + newParams.toString());
+  };
+
   const activeChecked = !filter || filter === 'active';
   const inactiveChecked = !filter || filter === 'inactive';
   return (
     <Layout title="Claims">
+      <SearchForm
+        query={query}
+        placeholder="Search by claim ID or policy"
+        onSubmit={handleSubmit}
+        onClear={handleClear}
+      />
       <BorderedBox
         noMobileBorders
         header={

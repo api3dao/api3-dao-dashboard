@@ -6,6 +6,7 @@ import styles from './search-form.module.scss';
 
 interface Props {
   query: string;
+  placeholder: string;
   onSubmit: FormEventHandler<HTMLFormElement>;
   onClear: () => void;
 }
@@ -20,8 +21,8 @@ export default function SearchForm(props: Props) {
           key={query}
           name="query"
           defaultValue={query}
-          aria-label="Search for your policy"
-          placeholder="Search for your policy"
+          aria-label={props.placeholder}
+          placeholder={props.placeholder}
           underline={false}
           block
         />

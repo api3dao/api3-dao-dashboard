@@ -55,7 +55,7 @@ export default function MyPolicies() {
 
   return (
     <Layout title="Policies">
-      <SearchForm query={query} onSubmit={handleSubmit} onClear={handleClear} />
+      <SearchForm query={query} placeholder="Search for your policy" onSubmit={handleSubmit} onClear={handleClear} />
       <BorderedBox
         noMobileBorders
         header={

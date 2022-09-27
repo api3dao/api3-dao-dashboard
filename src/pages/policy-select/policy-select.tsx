@@ -29,7 +29,7 @@ export default function PolicySelect() {
   return (
     <BaseLayout subtitle="New Claim">
       <h4 className={styles.heading}>New Claim</h4>
-      <SearchForm query={query} onSubmit={handleSubmit} onClear={handleClear} />
+      <SearchForm query={query} placeholder="Search for your policy" onSubmit={handleSubmit} onClear={handleClear} />
       <BorderedBox
         noMobileBorders
         header={
