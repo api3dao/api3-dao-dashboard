@@ -1,4 +1,4 @@
-import { FormEventHandler, ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { connectWallet } from '../../components/sign-in/sign-in';
 import Layout from '../../components/layout';
 import Button from '../../components/button';
