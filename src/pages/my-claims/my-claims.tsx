@@ -14,12 +14,14 @@ import { isActive, useUserClaims } from '../../logic/claims';
 import { useUserPolicies, isActive as isPolicyActive } from '../../logic/policies';
 import styles from './my-claims.module.scss';
 
+type Filter = 'active' | 'inactive' | 'none' | null;
+
 export default function MyClaims() {
   const { data: claims, status } = useUserClaims();
 
   const params = useQueryParams();
   const query = params.get('query') || '';
-  const filter = params.get('filter');
+  const filter = params.get('filter') as Filter;
   const currentPage = parseInt(params.get('page') || '1');
 
   const filteredClaims = useMemo(() => {
@@ -52,8 +54,8 @@ export default function MyClaims() {
     return (
       <ClaimsLayout>
         <div className={styles.emptyState}>
-          <span>You need to be connected to view claims.</span>
-          <Button variant="link" onClick={connectWallet(setChainData)}>
+          <span>You need to be connected to view your claims.</span>
+          <Button variant="link" onClick={connectWallet(setChainData)} className={styles.connectButton}>
             Connect your wallet
           </Button>
         </div>
@@ -69,15 +71,46 @@ export default function MyClaims() {
     );
   }
 
+  if (!filteredClaims.length) {
+    let claimQualifier;
+    if (filter === 'active') {
+      claimQualifier = <span className={styles.highlight}>active </span>;
+    } else if (filter === 'inactive') {
+      claimQualifier = <span className={styles.highlight}>inactive </span>;
+    }
+
+    return (
+      <ClaimsLayout>
+        <p className={styles.emptyState}>
+          {claims.length === 0 ? (
+            <>
+              You don't have any claims associated with the connected address.
+              <br />
+              Connect an address associated with a policy to start a claim.
+            </>
+          ) : filter === 'none' ? (
+            <>Please select a filter.</>
+          ) : query ? (
+            <>
+              We couldn't find any {claimQualifier}claims with <span className={styles.highlight}>"{query}"</span>.
+              <br />
+              Please try a different search term.
+            </>
+          ) : (
+            <>
+              You don't have any {claimQualifier}claims associated with the connected address.
+              <br />
+              Connect an address associated with a policy to start a claim.
+            </>
+          )}
+        </p>
+      </ClaimsLayout>
+    );
+  }
+
   return (
     <ClaimsLayout>
-      {filteredClaims.length > 0 ? (
-        <ClaimList claims={pagedClaims} />
-      ) : claims.length === 0 ? (
-        <p className={styles.emptyState}>There are no claims linked to your account.</p>
-      ) : (
-        <p className={styles.emptyState}>There are no matching claims.</p>
-      )}
+      <ClaimList claims={pagedClaims} />
       <Pagination totalResults={filteredClaims.length} currentPage={currentPage} className={styles.pagination} />
     </ClaimsLayout>
   );
@@ -94,7 +127,7 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
   const history = useHistory();
   const params = useQueryParams();
   const query = params.get('query') || '';
-  const filter = params.get('filter');
+  const filter = params.get('filter') as Filter;
 
   const handleFilterChange = (showActive: boolean, showInactive: boolean) => {
     const newParams = new URLSearchParams(params);
