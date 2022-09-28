@@ -34,7 +34,7 @@ export default function Pagination(props: Props) {
   return (
     <nav className={classNames(styles.nav, props.className)} aria-label="Page navigation">
       {currentPage > 1 ? (
-        <Link to={getHref(currentPage - 1)} className={styles.previous}>
+        <Link replace to={getHref(currentPage - 1)} className={styles.previous}>
           <ArrowLeftIcon aria-hidden /> Previous
         </Link>
       ) : (
@@ -58,7 +58,7 @@ export default function Pagination(props: Props) {
         })}
       </ul>
       {currentPage < lastPage ? (
-        <Link to={getHref(currentPage + 1)} className={styles.next}>
+        <Link replace to={getHref(currentPage + 1)} className={styles.next}>
           Next <ArrowRightIcon aria-hidden />
         </Link>
       ) : (

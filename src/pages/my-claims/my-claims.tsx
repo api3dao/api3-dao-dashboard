@@ -4,6 +4,7 @@ import Layout from '../../components/layout';
 import Button from '../../components/button';
 import RadioButton from '../../components/radio-button';
 import BorderedBox, { Header } from '../../components/bordered-box';
+import Pagination, { usePagedData } from '../components/policies/pagination';
 import SearchForm from '../components/search-form';
 import ClaimList from './claim-list';
 import { useQueryParams } from '../../utils';
@@ -19,6 +20,7 @@ export default function MyClaims() {
   const params = useQueryParams();
   const query = params.get('query') || '';
   const filter = params.get('filter');
+  const currentPage = parseInt(params.get('page') || '1');
 
   const filteredClaims = useMemo(() => {
     if (!claims || filter === 'none') return [];
@@ -42,6 +44,8 @@ export default function MyClaims() {
         return results;
     }
   }, [claims, query, filter]);
+
+  const pagedClaims = usePagedData(filteredClaims, { currentPage });
 
   const { provider, setChainData } = useChainData();
   if (!provider) {
@@ -68,12 +72,13 @@ export default function MyClaims() {
   return (
     <ClaimsLayout>
       {filteredClaims.length > 0 ? (
-        <ClaimList claims={filteredClaims} />
+        <ClaimList claims={pagedClaims} />
       ) : claims.length === 0 ? (
         <p className={styles.emptyState}>There are no claims linked to your account.</p>
       ) : (
         <p className={styles.emptyState}>There are no matching claims.</p>
       )}
+      <Pagination totalResults={filteredClaims.length} currentPage={currentPage} className={styles.pagination} />
     </ClaimsLayout>
   );
 }
