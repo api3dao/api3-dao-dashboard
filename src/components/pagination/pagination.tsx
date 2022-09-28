@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import range from 'lodash/range';
 import classNames from 'classnames';
-import ArrowRightIcon from '../../../components/icons/arrow-right-icon';
-import ArrowLeftIcon from '../../../components/icons/arrow-left-icon';
-import { useQueryParams } from '../../../utils';
+import ArrowRightIcon from '../icons/arrow-right-icon';
+import ArrowLeftIcon from '../icons/arrow-left-icon';
+import { useQueryParams } from '../../utils';
 import { useLocation } from 'react-router';
 import styles from './pagination.module.scss';
 

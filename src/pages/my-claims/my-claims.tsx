@@ -4,7 +4,7 @@ import Layout from '../../components/layout';
 import Button from '../../components/button';
 import RadioButton from '../../components/radio-button';
 import BorderedBox, { Header } from '../../components/bordered-box';
-import Pagination, { usePagedData } from '../components/policies/pagination';
+import Pagination, { usePagedData } from '../../components/pagination';
 import SearchForm from '../components/search-form';
 import ClaimList from './claim-list';
 import { useQueryParams } from '../../utils';
