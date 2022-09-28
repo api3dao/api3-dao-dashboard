@@ -146,9 +146,7 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
     history.replace('/claims?' + newParams.toString());
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (ev) => {
-    ev.preventDefault();
-    const { value } = ev.currentTarget.query;
+  const handleSubmit = (value: string) => {
     // We don't want to keep any search params
     const newParams = new URLSearchParams();
     newParams.set('query', value.trim());

@@ -1,0 +1,12 @@
+@mixin input-autofill {
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    box-shadow: 0 0 0 30px #030303 inset !important;
+  }
+
+  &:-webkit-autofill {
+    -webkit-text-fill-color: #fff !important;
+  }
+}

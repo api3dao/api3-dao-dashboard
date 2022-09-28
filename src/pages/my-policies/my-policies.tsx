@@ -1,4 +1,3 @@
-import { FormEventHandler } from 'react';
 import { useHistory } from 'react-router';
 import Layout from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
@@ -33,9 +32,7 @@ export default function MyPolicies() {
     history.replace('/policies?' + newParams.toString());
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (ev) => {
-    ev.preventDefault();
-    const { value } = ev.currentTarget.query;
+  const handleSubmit = (value: string) => {
     // We don't want to keep any search params
     const newParams = new URLSearchParams();
     newParams.set('query', value.trim());

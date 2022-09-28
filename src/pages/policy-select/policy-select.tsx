@@ -1,4 +1,3 @@
-import { FormEventHandler } from 'react';
 import { useHistory } from 'react-router';
 import { BaseLayout } from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
@@ -14,9 +13,7 @@ export default function PolicySelect() {
   const query = params.get('query') || '';
   const currentPage = parseInt(params.get('page') || '1');
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (ev) => {
-    ev.preventDefault();
-    const { value } = ev.currentTarget.query;
+  const handleSubmit = (value: string) => {
     const newParams = new URLSearchParams();
     newParams.set('query', value.trim());
     history.replace('/claims/new?' + newParams.toString());
