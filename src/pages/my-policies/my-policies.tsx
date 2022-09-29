@@ -1,10 +1,9 @@
-import { FormEventHandler } from 'react';
 import { useHistory } from 'react-router';
 import Layout from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import RadioButton from '../../components/radio-button';
 import Policies, { Filter } from '../components/policies';
-import SearchForm from '../components/policies/search-form';
+import SearchForm from '../components/search-form';
 import { useQueryParams } from '../../utils';
 import styles from './my-policies.module.scss';
 
@@ -33,9 +32,7 @@ export default function MyPolicies() {
     history.replace('/policies?' + newParams.toString());
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (ev) => {
-    ev.preventDefault();
-    const { value } = ev.currentTarget.query;
+  const handleSubmit = (value: string) => {
     // We don't want to keep any search params
     const newParams = new URLSearchParams();
     newParams.set('query', value.trim());
@@ -55,7 +52,7 @@ export default function MyPolicies() {
 
   return (
     <Layout title="Policies">
-      <SearchForm query={query} onSubmit={handleSubmit} onClear={handleClear} />
+      <SearchForm query={query} placeholder="Search for your policy" onSubmit={handleSubmit} onClear={handleClear} />
       <BorderedBox
         noMobileBorders
         header={

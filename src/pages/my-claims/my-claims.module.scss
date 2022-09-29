@@ -1,19 +1,16 @@
 @import '../../styles/variables.module.scss';
 
 .emptyState {
-  color: $tertiary-color;
+  color: $secondary-color;
   text-align: center;
+  word-break: break-word;
   margin: 15vh $space-md;
   transform: translateY(-50%);
   font-size: $text-small;
+}
 
-  & > * {
-    margin-right: $space-xs;
-  }
-
-  & > *:last-child {
-    margin-right: 0;
-  }
+.connectButton {
+  padding-left: 1ch;
 }
 
 .filters {
@@ -41,4 +38,12 @@
   @media (min-width: $min-md) {
     display: inline-block;
   }
+}
+
+.highlight {
+  color: $primary-color;
+}
+
+.pagination {
+  margin-bottom: -28px;
 }

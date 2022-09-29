@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import range from 'lodash/range';
 import classNames from 'classnames';
-import ArrowRightIcon from '../../../components/icons/arrow-right-icon';
-import ArrowLeftIcon from '../../../components/icons/arrow-left-icon';
-import { useQueryParams } from '../../../utils';
+import ArrowRightIcon from '../icons/arrow-right-icon';
+import ArrowLeftIcon from '../icons/arrow-left-icon';
+import { useQueryParams } from '../../utils';
 import { useLocation } from 'react-router';
 import styles from './pagination.module.scss';
 
@@ -34,7 +34,7 @@ export default function Pagination(props: Props) {
   return (
     <nav className={classNames(styles.nav, props.className)} aria-label="Page navigation">
       {currentPage > 1 ? (
-        <Link to={getHref(currentPage - 1)} className={styles.previous}>
+        <Link replace to={getHref(currentPage - 1)} className={styles.previous}>
           <ArrowLeftIcon aria-hidden /> Previous
         </Link>
       ) : (
@@ -58,7 +58,7 @@ export default function Pagination(props: Props) {
         })}
       </ul>
       {currentPage < lastPage ? (
-        <Link to={getHref(currentPage + 1)} className={styles.next}>
+        <Link replace to={getHref(currentPage + 1)} className={styles.next}>
           Next <ArrowRightIcon aria-hidden />
         </Link>
       ) : (

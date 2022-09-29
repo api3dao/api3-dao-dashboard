@@ -4,6 +4,8 @@ import Layout from '../../components/layout';
 import Button from '../../components/button';
 import RadioButton from '../../components/radio-button';
 import BorderedBox, { Header } from '../../components/bordered-box';
+import Pagination, { usePagedData } from '../../components/pagination';
+import SearchForm from '../components/search-form';
 import ClaimList from './claim-list';
 import { useQueryParams } from '../../utils';
 import { useHistory } from 'react-router';
@@ -12,32 +14,48 @@ import { isActive, useUserClaims } from '../../logic/claims';
 import { useUserPolicies, isActive as isPolicyActive } from '../../logic/policies';
 import styles from './my-claims.module.scss';
 
+type Filter = 'active' | 'inactive' | 'none' | null;
+
 export default function MyClaims() {
   const { data: claims, status } = useUserClaims();
 
   const params = useQueryParams();
-  const filter = params.get('filter');
+  const query = params.get('query') || '';
+  const filter = params.get('filter') as Filter;
+  const currentPage = parseInt(params.get('page') || '1');
+
   const filteredClaims = useMemo(() => {
-    if (!claims) return [];
+    if (!claims || filter === 'none') return [];
+
+    const lowerCasedQuery = query.toLowerCase();
+    const results = lowerCasedQuery
+      ? claims.filter((claim) => {
+          return (
+            claim.claimId.toLowerCase().includes(lowerCasedQuery) ||
+            claim.policy.metadata.toLowerCase().includes(lowerCasedQuery)
+          );
+        })
+      : claims;
+
     switch (filter) {
-      case 'none':
-        return [];
       case 'active':
-        return claims.filter((claim) => isActive(claim));
+        return results.filter((claim) => isActive(claim));
       case 'inactive':
-        return claims.filter((claim) => !isActive(claim));
+        return results.filter((claim) => !isActive(claim));
       default:
-        return claims;
+        return results;
     }
-  }, [claims, filter]);
+  }, [claims, query, filter]);
+
+  const pagedClaims = usePagedData(filteredClaims, { currentPage });
 
   const { provider, setChainData } = useChainData();
   if (!provider) {
     return (
       <ClaimsLayout>
         <div className={styles.emptyState}>
-          <span>You need to be connected to view claims.</span>
-          <Button variant="link" onClick={connectWallet(setChainData)}>
+          <span>You need to be connected to view your claims.</span>
+          <Button variant="link" onClick={connectWallet(setChainData)} className={styles.connectButton}>
             Connect your wallet
           </Button>
         </div>
@@ -53,15 +71,47 @@ export default function MyClaims() {
     );
   }
 
+  if (!filteredClaims.length) {
+    let claimQualifier;
+    if (filter === 'active') {
+      claimQualifier = <span className={styles.highlight}>active </span>;
+    } else if (filter === 'inactive') {
+      claimQualifier = <span className={styles.highlight}>inactive </span>;
+    }
+
+    return (
+      <ClaimsLayout>
+        <p className={styles.emptyState}>
+          {claims.length === 0 ? (
+            <>
+              You don't have any claims associated with the connected address.
+              <br />
+              Connect an address associated with a policy to start a claim.
+            </>
+          ) : filter === 'none' ? (
+            <>Please select a filter.</>
+          ) : query ? (
+            <>
+              We couldn't find any {claimQualifier}claims with <span className={styles.highlight}>"{query}"</span>.
+              <br />
+              Please try a different search term.
+            </>
+          ) : (
+            <>
+              You don't have any {claimQualifier}claims associated with the connected address.
+              <br />
+              Connect an address associated with a policy to start a claim.
+            </>
+          )}
+        </p>
+      </ClaimsLayout>
+    );
+  }
+
   return (
     <ClaimsLayout>
-      {filteredClaims.length > 0 ? (
-        <ClaimList claims={filteredClaims} />
-      ) : claims.length === 0 ? (
-        <p className={styles.emptyState}>There are no claims linked to your account.</p>
-      ) : (
-        <p className={styles.emptyState}>There are no matching claims.</p>
-      )}
+      <ClaimList claims={pagedClaims} />
+      <Pagination totalResults={filteredClaims.length} currentPage={currentPage} className={styles.pagination} />
     </ClaimsLayout>
   );
 }
@@ -75,24 +125,52 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
   const activePolicies = policies?.filter((policy) => isPolicyActive(policy));
 
   const history = useHistory();
+  const params = useQueryParams();
+  const query = params.get('query') || '';
+  const filter = params.get('filter') as Filter;
+
   const handleFilterChange = (showActive: boolean, showInactive: boolean) => {
+    const newParams = new URLSearchParams(params);
+    // We only want to keep the "query" search param if present
+    newParams.delete('filter');
+    newParams.delete('page');
+
     if (showActive && !showInactive) {
-      history.replace(`/claims?filter=active`);
+      newParams.set('filter', 'active');
     } else if (!showActive && showInactive) {
-      history.replace(`/claims?filter=inactive`);
+      newParams.set('filter', 'inactive');
     } else if (!showActive && !showInactive) {
-      history.replace(`/claims?filter=none`);
-    } else {
-      history.replace(`/claims`);
+      newParams.set('filter', 'none');
     }
+
+    history.replace('/claims?' + newParams.toString());
   };
 
-  const params = useQueryParams();
-  const filter = params.get('filter');
+  const handleSubmit = (value: string) => {
+    // We don't want to keep any search params
+    const newParams = new URLSearchParams();
+    newParams.set('query', value.trim());
+    history.replace('/claims?' + newParams.toString());
+  };
+
+  const handleClear = () => {
+    const newParams = new URLSearchParams(params);
+    // We only want to keep the "filter" search param if present
+    newParams.delete('query');
+    newParams.delete('page');
+    history.replace('/claims?' + newParams.toString());
+  };
+
   const activeChecked = !filter || filter === 'active';
   const inactiveChecked = !filter || filter === 'inactive';
   return (
     <Layout title="Claims">
+      <SearchForm
+        query={query}
+        placeholder="Search by claim ID or policy"
+        onSubmit={handleSubmit}
+        onClear={handleClear}
+      />
       <BorderedBox
         noMobileBorders
         header={

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import Button from '../../../components/button';
 import PolicyList from './policy-list';
-import Pagination, { usePagedData } from './pagination';
+import Pagination, { usePagedData } from '../../../components/pagination';
 import { connectWallet } from '../../../components/sign-in/sign-in';
 import { useChainData } from '../../../chain-data';
 import { useUserPolicies, isActive } from '../../../logic/policies';
