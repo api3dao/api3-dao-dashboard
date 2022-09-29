@@ -37,9 +37,7 @@ export const ETHERSCAN_HOSTS: { [chainId: string]: string } = {
 };
 
 export const getEtherscanTransactionUrl = (chainId: number | undefined, transactionHash: string) => {
-  if (!chainId) return;
-
-  const host = ETHERSCAN_HOSTS[chainId];
+  const host = chainId ? ETHERSCAN_HOSTS[chainId] : null;
   if (!host) return;
 
   // For example: https://ropsten.etherscan.io/tx/0xe4394ea70b32486f59f92c5194c9083bd36c99f2f0c32cfc9bacce3486055d24
@@ -47,9 +45,7 @@ export const getEtherscanTransactionUrl = (chainId: number | undefined, transact
 };
 
 export const getEtherscanAddressUrl = (chainId: number | undefined, address: string) => {
-  if (!chainId) return;
-
-  const host = ETHERSCAN_HOSTS[chainId];
+  const host = chainId ? ETHERSCAN_HOSTS[chainId] : null;
   if (!host) return;
 
   // For example: https://etherscan.io/address/0xb0A20975f540656E331e2331C6caEc608Ff254fc
