@@ -40,6 +40,10 @@
   font-weight: 600;
   border-radius: 16px;
   text-decoration: none;
+
+  &:hover {
+    transform: scale(1.02);
+  }
 }
 
 .notificationUrl {

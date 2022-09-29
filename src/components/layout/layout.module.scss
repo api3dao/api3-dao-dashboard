@@ -74,6 +74,11 @@
     display: flex;
     flex: 1;
     justify-content: space-around;
+    font-size: $text-small;
+
+    a:hover {
+      transform: scale(1.02);
+    }
   }
 }
 
