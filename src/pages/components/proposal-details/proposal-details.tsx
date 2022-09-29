@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout';
@@ -10,6 +9,7 @@ import VoteSlider from '../vote-slider/vote-slider';
 import VoteStatus from '../vote-status';
 import Timer from '../../../components/timer';
 import Button from '../../../components/button';
+import BackButton from '../../../components/back-button';
 import Tag from '../../../components/tag';
 import { TooltipChecklist } from '../../../components/tooltip';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
@@ -111,10 +111,6 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const canVoteData = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
   const urlTargetAddress = getEtherscanAddressUrl(chainId, targetAddress);
-  const backButton = {
-    text: `Back to ${proposal.open ? 'Governance' : 'History'}`,
-    url: proposal.open ? '/governance' : '/history',
-  };
 
   const canVoteChecklist = [
     {
@@ -136,10 +132,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   return (
     <div>
       <div className={styles.proposalDetailsSubheader}>
-        <Link to={backButton.url} className={styles.backLink}>
-          <img src={images.arrowLeft} alt="back" />
-          {backButton.text}
-        </Link>
+        <BackButton fallback={{ href: proposal.open ? '/governance' : '/history' }}>Back</BackButton>
       </div>
 
       <div className={styles.proposalDetailsHeader}>

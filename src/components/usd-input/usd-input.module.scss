@@ -1,4 +1,5 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/mixins.scss';
 
 .container {
   padding-bottom: 5px;
@@ -6,6 +7,7 @@
 }
 
 .input {
+  @include input-autofill;
   display: inline-block;
   background-color: transparent;
   color: $secondary-color;
@@ -25,17 +27,5 @@
   &::placeholder {
     color: $tertiary-color;
     opacity: 1;
-  }
-
-  // removing input background color/text color for Chrome autocomplete
-  &:-webkit-autofill,
-  &:-webkit-autofill:hover,
-  &:-webkit-autofill:focus,
-  &:-webkit-autofill:active {
-    box-shadow: 0 0 0 30px #030303 inset !important;
-  }
-
-  &:-webkit-autofill {
-    -webkit-text-fill-color: #fff !important;
   }
 }

@@ -1,21 +1,42 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/mixins.scss';
 
 .searchForm {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   position: relative;
-  border: 1px solid $tertiary-color;
-  max-width: 25ch;
-  padding: 3px 40px 3px 8px;
+  border: 1px solid $black-line-color;
+  max-width: 28ch;
+  padding: 0 40px 0 14px;
   margin-bottom: 4rem;
   transition: all 0.3s;
 
   input {
-    transition: all 0.3s;
-    &::placeholder {
-      transition: all 0.3s;
+    @include input-autofill;
+    flex: 1;
+    background: transparent;
+    color: $secondary-color;
+    font-size: $text-normal;
+    font-weight: 400;
+    line-height: 50px;
+    height: 50px;
+    width: 100%;
+    border: none;
+    outline: none;
+    transition: color 0.3s;
+
+    &:focus {
+      color: $primary-color;
+      box-shadow: none;
     }
+
+    &::placeholder {
+      opacity: 1;
+      transition: color 0.3s;
+      color: $tertiary-color;
+    }
+
     &:focus::placeholder {
       color: $secondary-color;
     }
@@ -36,12 +57,7 @@
 
 .searchButton {
   color: $secondary-color;
-  margin-right: 3px;
-}
-
-.inputContainer {
-  flex: 1;
-  padding-top: 3px;
+  margin-right: 8px;
 }
 
 .clearButton {
