@@ -11,6 +11,7 @@ import ClaimsIcon from '../icons/claims-icons';
 import TrackerIcon from '../icons/tracker-icon';
 import MarketIcon from '../icons/market-icon';
 import ExternalLinkIcon from '../icons/external-link-icon';
+import ExternalLink from '../external-link';
 import SignIn from '../sign-in/sign-in';
 import styles from './menu.module.scss';
 import globalStyles from '../../styles/global-styles.module.scss';
@@ -60,7 +61,7 @@ export const DesktopMenu = () => {
         <h6>
           <span>External Links</span> <div>&nbsp;</div>
         </h6>
-        <a href="https://tracker.api3.org" target="_blank" rel="noopener noreferrer">
+        <ExternalLink href="https://tracker.api3.org">
           <div className={styles.menuItem}>
             <TrackerIcon aria-hidden />
             <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>
@@ -68,8 +69,8 @@ export const DesktopMenu = () => {
               <ExternalLinkIcon aria-hidden className={globalStyles.tertiaryColor} />
             </p>
           </div>
-        </a>
-        <a href="https://market.api3.org" target="_blank" rel="noopener noreferrer">
+        </ExternalLink>
+        <ExternalLink href="https://market.api3.org">
           <div className={styles.menuItem}>
             <MarketIcon aria-hidden />
             <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>
@@ -77,7 +78,7 @@ export const DesktopMenu = () => {
               <ExternalLinkIcon aria-hidden className={globalStyles.tertiaryColor} />
             </p>
           </div>
-        </a>
+        </ExternalLink>
       </section>
     </nav>
   );
