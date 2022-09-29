@@ -5,21 +5,23 @@ import { Modal } from '../../components/modal';
 import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
 import { AppealConfirmation, EscalateConfirmation } from './confirmations';
-import { abbrStr, Claim, useChainData } from '../../chain-data';
+import PayoutAmount from './payout-amount';
+import { abbrStr, Claim, ClaimPayout, useChainData } from '../../chain-data';
 import { formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
-import { useArbitratorProxy, useClaimsManager } from '../../contracts';
+import { getEtherscanTransactionUrl, useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
 import styles from './claim-actions.module.scss';
 
 interface Props {
   claim: Claim;
+  payout: ClaimPayout | null;
 }
 
 export default function ClaimActions(props: Props) {
   const { claim } = props;
   const { dispute } = claim;
-  const { setChainData, transactions } = useChainData();
+  const { setChainData, transactions, chainId } = useChainData();
   const claimsManager = useClaimsManager()!;
   const arbitratorProxy = useArbitratorProxy()!;
 
@@ -98,6 +100,7 @@ export default function ClaimActions(props: Props) {
         // The claim has been ignored (most likely judged to be spam), so we show that it has
         // been rejected, and the user has 3 days to create a dispute
         const isPastNewDeadline = isAfter(new Date(), getCurrentDeadline(claim)!);
+        const disableEscalate = isPastNewDeadline || status === 'submitting' || status === 'submitted';
         return (
           <div className={styles.actionSection}>
             <p>API3 Multi-sig</p>
@@ -108,16 +111,12 @@ export default function ClaimActions(props: Props) {
               </span>
             </div>
             <div className={styles.actionPanel}>
-              <Button
-                variant="secondary"
-                disabled={isPastNewDeadline || status === 'submitting' || status === 'submitted'}
-                onClick={() => setModalToShow('escalate')}
-              >
+              <Button variant="secondary" disabled={disableEscalate} onClick={() => setModalToShow('escalate')}>
                 Escalate to Kleros
               </Button>
               <Modal open={modalToShow === 'escalate'} onClose={handleModalClose}>
                 <EscalateConfirmation
-                  disableActions={disableActions}
+                  disableActions={disableEscalate}
                   onConfirm={handleEscalateToArbitrator}
                   onCancel={handleModalClose}
                 />
@@ -137,7 +136,8 @@ export default function ClaimActions(props: Props) {
         </div>
       );
 
-    case 'ClaimAccepted':
+    case 'ClaimAccepted': {
+      const payout = props.payout!;
       return (
         <div className={styles.actionSection}>
           <p>API3 Multi-sig</p>
@@ -146,9 +146,21 @@ export default function ClaimActions(props: Props) {
               <CheckIcon aria-hidden />
               Approved
             </span>
+            <div>${formatUsd(claim.claimAmountInUsd)} USD</div>
+            <PayoutAmount claim={claim} payout={payout} />
           </div>
+          <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
+          <a
+            href={getEtherscanTransactionUrl(chainId, payout.transactionHash)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link-primary"
+          >
+            View the transaction here
+          </a>
         </div>
       );
+    }
 
     case 'SettlementProposed':
       return (
@@ -178,16 +190,28 @@ export default function ClaimActions(props: Props) {
         </div>
       );
 
-    case 'SettlementAccepted':
+    case 'SettlementAccepted': {
+      const payout = props.payout!;
       return (
         <div className={styles.actionSection}>
           <p>{abbrStr(claim.claimant)}</p>
           <div className={styles.actionMainInfo}>
             Accepted <br />
             counter of <br />${formatUsd(claim.counterOfferAmountInUsd!)}
+            <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
+          <p className={styles.actionMessage}>All done! The settlement has been accepted.</p>
+          <a
+            href={getEtherscanTransactionUrl(chainId, payout.transactionHash)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link-primary"
+          >
+            View the transaction here
+          </a>
         </div>
       );
+    }
 
     case 'DisputeCreated':
       if (!dispute || dispute.status === 'Waiting') {
@@ -293,7 +317,8 @@ export default function ClaimActions(props: Props) {
           return null;
       }
 
-    case 'DisputeResolvedWithClaimPayout':
+    case 'DisputeResolvedWithClaimPayout': {
+      const payout = props.payout!;
       return (
         <div className={styles.actionSection}>
           <p>Kleros</p>
@@ -304,11 +329,23 @@ export default function ClaimActions(props: Props) {
             </span>
             <br />
             {' full amount'}
+            <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
+          <p className={styles.actionMessage}>All done! The claim has been paid out.</p>
+          <a
+            href={getEtherscanTransactionUrl(chainId, payout.transactionHash)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link-primary"
+          >
+            View the transaction here
+          </a>
         </div>
       );
+    }
 
-    case 'DisputeResolvedWithSettlementPayout':
+    case 'DisputeResolvedWithSettlementPayout': {
+      const payout = props.payout!;
       return (
         <div className={styles.actionSection}>
           <p>Kleros</p>
@@ -320,9 +357,20 @@ export default function ClaimActions(props: Props) {
             <br />
             {' counter of '}
             <br />${formatUsd(claim.counterOfferAmountInUsd!)}
+            <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
+          <p className={styles.actionMessage}>All done! The settlement has been paid out.</p>
+          <a
+            href={getEtherscanTransactionUrl(chainId, payout.transactionHash)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link-primary"
+          >
+            View the transaction here
+          </a>
         </div>
       );
+    }
 
     case 'DisputeResolvedWithoutPayout':
       return (

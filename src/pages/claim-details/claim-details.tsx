@@ -7,7 +7,7 @@ import Timer, { DATE_FORMAT } from '../../components/timer';
 import ClaimActions from './claim-actions';
 import { useParams } from 'react-router';
 import { abbrStr, useChainData } from '../../chain-data';
-import { useUserClaimById, getCurrentDeadline } from '../../logic/claims';
+import { useUserClaimDataById, getCurrentDeadline } from '../../logic/claims';
 import { format } from 'date-fns';
 import { formatUsd, getIpfsUrl, useForceUpdate, useScrollToTop } from '../../utils';
 import globalStyles from '../../styles/global-styles.module.scss';
@@ -20,7 +20,7 @@ interface Params {
 export default function ClaimDetails() {
   useScrollToTop();
   const { claimId } = useParams<Params>();
-  const { data: claim, status } = useUserClaimById(claimId);
+  const { claim, payout, status } = useUserClaimDataById(claimId);
 
   // We need to trigger a re-render the moment we go past the deadline
   const forceUpdate = useForceUpdate();
@@ -54,7 +54,7 @@ export default function ClaimDetails() {
         <h4>Claim {abbrStr(claimId)}</h4>
         {deadline && <Timer size="large" deadline={deadline} onDeadlineExceeded={forceUpdate} showDeadline />}
       </div>
-      <ClaimActions key={claim.status} claim={claim} />
+      <ClaimActions key={claim.status} claim={claim} payout={payout} />
       <BorderedBox
         noMobileBorders
         header={

@@ -3,7 +3,7 @@ import Timer, { DATE_FORMAT } from '../../components/timer';
 import { format, isAfter } from 'date-fns';
 import { images, useForceUpdate } from '../../utils';
 import { Claim } from '../../chain-data';
-import { getCurrentDeadline } from '../../logic/claims';
+import { getCurrentDeadline, useClaimPayoutDataPreload } from '../../logic/claims';
 import styles from './claim-list.module.scss';
 
 interface Props {
@@ -11,6 +11,8 @@ interface Props {
 }
 
 export default function ClaimList(props: Props) {
+  // We preload the payout data for the claim details pages
+  useClaimPayoutDataPreload(props.claims);
   // We need to trigger a re-render the moment we go past a deadline
   const forceUpdate = useForceUpdate();
 

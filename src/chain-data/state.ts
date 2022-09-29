@@ -185,6 +185,12 @@ export const DisputePeriods = {
 export type DisputePeriodCode = keyof typeof DisputePeriods;
 export type DisputePeriod = typeof DisputePeriods[DisputePeriodCode];
 
+export interface ClaimPayout {
+  amountInUsd: BigNumber;
+  amountInApi3: BigNumber;
+  transactionHash: string;
+}
+
 // Represents a policy that may or may not have its dynamic data loaded
 export interface BasePolicy {
   policyId: string;
@@ -223,6 +229,7 @@ export interface ChainData {
   claims: {
     userClaimIds: null | string[]; // All the claim ids that are linked to the user's account
     byId: null | { [claimId: string]: Claim };
+    payoutById: null | { [claimId: string]: ClaimPayout };
   };
   policies: {
     userPolicyIds: null | string[]; // All the policy ids that are linked to the user's account
@@ -257,6 +264,7 @@ export const initialChainData: ChainData = {
   claims: {
     userClaimIds: null,
     byId: null,
+    payoutById: null,
   },
   policies: {
     userPolicyIds: null,
