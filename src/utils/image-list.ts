@@ -5,7 +5,6 @@ export const images = {
   apiIcon: '/api-icon.svg',
   arrowDropdown: '/arrow-dropdown.svg',
   arrowDropdownDark: '/arrow-dropdown-dark.svg',
-  arrowLeft: '/arrow-left.svg',
   arrowRight: '/arrow-right.svg',
   checkboxEmpty: '/checkbox-empty.svg',
   checkboxFilled: '/checkbox-filled.svg',
