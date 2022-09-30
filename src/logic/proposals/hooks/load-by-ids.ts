@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { ProposalType, updateImmutablyCurried, useChainData, VoterState } from '../../../chain-data';
+import { ProposalType, produceState, useChainData, VoterState } from '../../../chain-data';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { getProposals } from './get-proposals';
 import { BigNumber } from 'ethers';
@@ -82,7 +82,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
 
     setChainData(
       'Load proposals by ids',
-      updateImmutablyCurried((state) => {
+      produceState((state) => {
         if (!state.proposals) {
           state.proposals = { primary: {}, secondary: {} };
         }
@@ -118,7 +118,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
 
     setChainData(
       'Update proposals by ids',
-      updateImmutablyCurried((state) => {
+      produceState((state) => {
         if (!state.proposals) return;
 
         const originalProposal = state.proposals[type][votingData.id.toString()];

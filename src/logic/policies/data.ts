@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers';
 import { isWithinInterval } from 'date-fns';
 import { go } from '@api3/promise-utils';
 import { blockTimestampToDate, messages, sortEvents } from '../../utils';
-import { BasePolicy, Policy, updateImmutablyCurried, useChainData } from '../../chain-data';
+import { BasePolicy, Policy, produceState, useChainData } from '../../chain-data';
 import { ClaimsManager, useClaimsManager, useChainUpdateEffect } from '../../contracts';
 import { notifications } from '../../components/notifications';
 
@@ -49,7 +49,7 @@ export function useUserPolicies() {
 
       setChainData(
         'Loaded policies',
-        updateImmutablyCurried((state) => {
+        produceState((state) => {
           state.policies.userPolicyIds = result.data.ids;
           state.policies.byId = { ...state.policies.byId, ...result.data.byId };
         })
@@ -105,7 +105,7 @@ export function useUserPolicyById(policyId: string) {
 
       setChainData(
         'Loaded policy',
-        updateImmutablyCurried((state) => {
+        produceState((state) => {
           state.policies.byId = { ...state.policies.byId, ...result.data[0].byId };
           state.policies.remainingCoverageById = { ...state.policies.remainingCoverageById, ...result.data[1].byId };
         })
@@ -189,7 +189,7 @@ export function useRemainingCoverageLoader(policyIds: string[]) {
 
       setChainData(
         'Loaded remaining policy coverage',
-        updateImmutablyCurried((state) => {
+        produceState((state) => {
           state.policies.remainingCoverageById = {
             ...state.policies.remainingCoverageById,
             ...result.data.byId,

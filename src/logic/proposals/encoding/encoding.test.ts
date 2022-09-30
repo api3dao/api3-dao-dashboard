@@ -1,7 +1,7 @@
 import { assertGoError, assertGoSuccess } from '@api3/promise-utils';
 import { constants, utils, providers, BigNumber } from 'ethers';
 import { EncodedEvmScriptError } from '.';
-import { updateImmutably } from '../../../chain-data';
+import { produceState } from '../../../chain-data';
 import {
   decodeEvmScript,
   goEncodeEvmScript,
@@ -44,7 +44,7 @@ test('correct encoding', async () => {
 
 describe('encoding incorrect params', () => {
   it('incorrect parameter values', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
+    const invalidData = produceState(newFormData, (data) => {
       data.parameters = JSON.stringify([123, 'arg1']); // they are in the wrong order
     });
 
@@ -57,7 +57,7 @@ describe('encoding incorrect params', () => {
   });
 
   it('wrong shape', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
+    const invalidData = produceState(newFormData, (data) => {
       data.parameters = JSON.stringify({ param: 'value' });
     });
 
@@ -68,7 +68,7 @@ describe('encoding incorrect params', () => {
   });
 
   it('empty parameters', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
+    const invalidData = produceState(newFormData, (data) => {
       data.parameters = '';
     });
 
@@ -79,7 +79,7 @@ describe('encoding incorrect params', () => {
   });
 
   it('wrong number of parameters', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
+    const invalidData = produceState(newFormData, (data) => {
       data.parameters = JSON.stringify(['arg1']);
     });
 
@@ -94,7 +94,7 @@ describe('encoding incorrect params', () => {
 
 describe('encoding invalid target signature', () => {
   it('detects parameter type typo', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
+    const invalidData = produceState(newFormData, (data) => {
       data.targetSignature = 'functionName(string,unit256)';
     });
 
@@ -107,7 +107,7 @@ describe('encoding invalid target signature', () => {
   });
 
   it('detects when the function is unnecessarily quoted', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
+    const invalidData = produceState(newFormData, (data) => {
       data.targetSignature = '"functionName(string,unit256)"';
     });
 
@@ -122,7 +122,7 @@ describe('encoding invalid target signature', () => {
 
 describe('address validation', () => {
   it('checks for valid account address', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
+    const invalidData = produceState(newFormData, (data) => {
       data.targetAddress = 'surely-not-an-address';
     });
 
@@ -133,7 +133,7 @@ describe('address validation', () => {
   });
 
   it('empty address', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
+    const invalidData = produceState(newFormData, (data) => {
       data.targetAddress = '';
     });
 
@@ -144,7 +144,7 @@ describe('address validation', () => {
   });
 
   it('zero address is fine', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
+    const invalidData = produceState(newFormData, (data) => {
       data.targetAddress = constants.AddressZero;
     });
 
@@ -155,7 +155,7 @@ describe('address validation', () => {
 });
 
 it('checks for positive ETH amount', async () => {
-  const invalidData = updateImmutably(newFormData, (data) => {
+  const invalidData = produceState(newFormData, (data) => {
     data.targetValue = '-0.12345';
   });
 
@@ -179,7 +179,7 @@ test('decoding', async () => {
 
 describe('ENS name support', () => {
   it('supports ENS name in target address', async () => {
-    const formDataWithAddress = updateImmutably(newFormData, (data) => {
+    const formDataWithAddress = produceState(newFormData, (data) => {
       data.targetAddress = MOCKED_ENS_ENTRY.ensName;
     });
 
@@ -195,7 +195,7 @@ describe('ENS name support', () => {
   });
 
   it('supports ENS names in parameters', async () => {
-    const formDataWithAddress = updateImmutably(newFormData, (data) => {
+    const formDataWithAddress = produceState(newFormData, (data) => {
       data.targetSignature = 'functionName(address)';
       data.parameters = JSON.stringify([MOCKED_ENS_ENTRY.ensName]);
     });
@@ -213,7 +213,7 @@ describe('ENS name support', () => {
 
   it('supports addresses in parameters', async () => {
     const address = '0x4017F39E438ADA9F860E15030E6A6e4b7b1af8Ba';
-    const formDataWithAddress = updateImmutably(newFormData, (data) => {
+    const formDataWithAddress = produceState(newFormData, (data) => {
       data.targetSignature = 'functionName(address)';
       data.parameters = JSON.stringify([address]);
     });
@@ -230,7 +230,7 @@ describe('ENS name support', () => {
   });
 
   it('encoding fails if non existent ENS name is passed in parameters', async () => {
-    const formDataWithAddress = updateImmutably(newFormData, (data) => {
+    const formDataWithAddress = produceState(newFormData, (data) => {
       data.targetSignature = 'functionName(address)';
       data.parameters = JSON.stringify(['non-existent.eth']);
     });

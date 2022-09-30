@@ -1,4 +1,4 @@
-import produce from 'immer';
+import immerProduce, { Draft } from 'immer';
 import { ethers, providers } from 'ethers';
 import { notifications } from '../components/notifications';
 import { getDaoAddresses, getEtherscanTransactionUrl, updateNetworkName } from '../contracts';
@@ -6,18 +6,23 @@ import { ChainData, initialChainData } from './state';
 import { convertToEnsName } from '../logic/proposals/encoding/ens-name';
 import { go } from '@api3/promise-utils';
 
-export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => void) => {
+type ProducerFn<T> = (state: Draft<T>) => void;
+
+export function produceState<T>(producerFn: ProducerFn<T>): (state: T) => T;
+export function produceState<T>(state: T, producerFn: ProducerFn<T>): T;
+export function produceState<T extends object>(stateOrProducerFn: T | ProducerFn<T>, producerFn?: ProducerFn<T>) {
+  return typeof stateOrProducerFn === 'function'
+    ? (state: T) => produce(state, stateOrProducerFn)
+    : produce(stateOrProducerFn, producerFn!);
+}
+
+function produce<T>(state: T, producerFn: ProducerFn<T>) {
   // NOTE: This needs to be written in a function like this, to make sure `produce` doesn't return anything.
   // See: https://immerjs.github.io/immer/return/
-  return produce(state, (draft) => {
-    updateCb(draft as T);
+  return immerProduce(state, (draft) => {
+    producerFn(draft);
   });
-};
-
-export const updateImmutablyCurried =
-  <T>(updateCb: (immutableState: T) => void) =>
-  (state: T) =>
-    updateImmutably(state, updateCb);
+}
 
 export const getNetworkData = async (provider: ethers.providers.Web3Provider | null) => {
   // If the user has disconnected
