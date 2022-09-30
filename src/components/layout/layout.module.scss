@@ -74,10 +74,14 @@
     display: flex;
     flex: 1;
     justify-content: space-around;
-    font-size: $text-small;
 
-    a:hover {
-      transform: scale(1.02);
+    a {
+      font-size: $text-small;
+      line-height: $lh-small;
+
+      &:hover {
+        transform: scale(1.02);
+      }
     }
   }
 }
