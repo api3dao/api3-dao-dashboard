@@ -1,6 +1,6 @@
 import { produceState, abbrStr } from './helpers';
 
-describe('produceState()', () => {
+describe('produceState', () => {
   it('creates a new state object from the mutated draft object', () => {
     const state = { a: 123, b: 'hi' };
     const newState = produceState(state, (draft) => {
