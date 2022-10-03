@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { updateImmutablyCurried, useChainData } from '../../../chain-data';
+import { produceState, useChainData } from '../../../chain-data';
 import { Api3Voting } from '../../../generated-contracts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { messages } from '../../../utils';
@@ -72,7 +72,7 @@ const useLoadHistoryProposals = () => {
 
     setChainData(
       'Load history proposals',
-      updateImmutablyCurried((state) => {
+      produceState((state) => {
         if (!state.proposals) {
           state.proposals = proposals;
           return;
@@ -117,7 +117,7 @@ const useReloadHistoryProposals = () => {
 
       setChainData(
         'Update history proposals',
-        updateImmutablyCurried((immutableState) => {
+        produceState((immutableState) => {
           const proposals = immutableState.proposals;
           // If proposals are not loaded yet, they are still being fetched at the moment
           if (!proposals) return immutableState;

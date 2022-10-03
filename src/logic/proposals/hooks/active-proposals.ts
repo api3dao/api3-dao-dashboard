@@ -1,12 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import {
-  Proposal,
-  ProposalType,
-  updateImmutably,
-  updateImmutablyCurried,
-  useChainData,
-  VoterState,
-} from '../../../chain-data';
+import { Proposal, ProposalType, produceState, useChainData, VoterState } from '../../../chain-data';
 import { Api3Voting } from '../../../generated-contracts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { messages } from '../../../utils';
@@ -82,7 +75,7 @@ const useLoadActiveProposals = () => {
 
     setChainData(
       'Load active proposals',
-      updateImmutablyCurried((state) => {
+      produceState((state) => {
         if (!state.proposals) {
           state.proposals = proposals;
           return;
@@ -113,7 +106,7 @@ const useReloadActiveProposals = () => {
 
       const updateState = (type: ProposalType, loadedChunk: Proposal[]) => {
         setChainData('Update active proposals after chunk loaded', (state) =>
-          updateImmutably(state, (immutableState) => {
+          produceState(state, (immutableState) => {
             const proposals = immutableState.proposals;
             // If proposals are not loaded yet, they are still being fetched at the moment
             if (!proposals) return immutableState;

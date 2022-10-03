@@ -13,7 +13,7 @@ import {
   DisputePeriods,
   DisputePeriodCode,
   DisputePeriod,
-  updateImmutablyCurried,
+  produceState,
   useChainData,
 } from '../../chain-data';
 import { notifications } from '../../components/notifications';
@@ -58,7 +58,7 @@ export function useUserClaims() {
 
       setChainData(
         'Loaded claims',
-        updateImmutablyCurried((state) => {
+        produceState((state) => {
           state.claims.userClaimIds = result.data.ids;
           state.claims.byId = { ...state.claims.byId, ...result.data.byId };
         })
@@ -108,7 +108,7 @@ export function useUserClaimDataById(claimId: string) {
 
       setChainData(
         'Loaded claim',
-        updateImmutablyCurried((state) => {
+        produceState((state) => {
           state.claims.byId = { ...state.claims.byId, ...result.data[0].byId };
           state.claims.payoutById = { ...state.claims.payoutById, ...result.data[1].byId };
         })
@@ -380,7 +380,7 @@ export function useClaimPayoutDataPreload(claims: Claim[]) {
 
       setChainData(
         'Preloaded claim payout data',
-        updateImmutablyCurried((state) => {
+        produceState((state) => {
           state.claims.payoutById = { ...state.claims.payoutById, ...result.data.byId };
         })
       );
