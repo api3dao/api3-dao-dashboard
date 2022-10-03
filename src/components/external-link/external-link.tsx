@@ -1,31 +1,23 @@
-import classNames from 'classnames';
-import { ReactNode, useEffect } from 'react';
-import styles from './external-link.module.scss';
+import { useEffect, ComponentProps } from 'react';
 
-interface Props {
-  className?: string;
-  href: string;
-  children: ReactNode;
-}
+const ExternalLink = (props: Omit<ComponentProps<'a'>, 'target' | 'rel'>) => {
+  const { href, children, ...rest } = props;
 
-const ExternalLink = (props: Props) => {
-  const { className, children } = props;
-
-  let href = props.href.trim();
+  let sanitizedHref = href?.trim();
   const urlRegex = /^https?:\/\//i; // Starts with https:// or http:// (case insensitive)
-  if (!urlRegex.test(href)) {
-    href = 'about:blank';
+  if (sanitizedHref && !urlRegex.test(sanitizedHref)) {
+    sanitizedHref = 'about:blank';
   }
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && href === 'about:blank') {
+    if (process.env.NODE_ENV === 'development' && sanitizedHref === 'about:blank') {
       // eslint-disable-next-line no-console
-      console.warn(`An invalid URL has been provided: "${props.href}". Only https:// or http:// URLs are allowed.`);
+      console.warn(`An invalid URL has been provided: "${href}". Only https:// or http:// URLs are allowed.`);
     }
-  }, [href, props.href]);
+  }, [sanitizedHref, href]);
 
   return (
-    <a href={href} className={classNames(className, styles.link)} target="_blank" rel="noopener noreferrer">
+    <a href={sanitizedHref} target="_blank" rel="noopener noreferrer" {...rest}>
       {children}
     </a>
   );

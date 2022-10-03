@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router';
 import { Link, Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
+import ExternalLink from '../../components/external-link';
 import ClaimEvidenceInstructions from './claim-evidence-instructions';
 import NewClaimForm, { FormState, FormStatus } from './new-claim-form';
 import Confirmation from './confirmation';
@@ -85,10 +86,8 @@ export default function NewClaim() {
           <p className={globalStyles.bold}>Your claim ID is: {newClaimId}</p>
           <p className={styles.processMessage}>
             Your claim is being processed and will be voted on within 72 hours. Please check back for any updates and{' '}
-            <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer">
-              read about the claim process here
-            </a>{' '}
-            to familiarize yourself with the next steps.
+            <ExternalLink href="https://docs.api3.org">read about the claim process here</ExternalLink> to familiarize
+            yourself with the next steps.
           </p>
           <Link to="/">Return Home</Link>
         </div>
