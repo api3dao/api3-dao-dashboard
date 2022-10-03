@@ -74,6 +74,15 @@
     display: flex;
     flex: 1;
     justify-content: space-around;
+
+    a {
+      font-size: $text-small;
+      line-height: $lh-small;
+
+      &:hover {
+        transform: scale(1.02);
+      }
+    }
   }
 }
 

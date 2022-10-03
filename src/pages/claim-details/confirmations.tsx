@@ -3,6 +3,7 @@ import { BigNumber } from 'ethers';
 import { go } from '@api3/promise-utils';
 import { ModalFooter, ModalHeader } from '../../components/modal';
 import Button from '../../components/button';
+import ExternalLink from '../../components/external-link';
 import Skeleton from '../../components/skeleton';
 import { notifications } from '../../components/notifications';
 import { formatEther, messages } from '../../utils';
@@ -53,14 +54,14 @@ export function EscalateConfirmation(props: EscalateConfirmationProps) {
           )}
         </div>
         <p className={styles.info}>
-          <a href="https://kleros.io" target="_blank" rel="noopener noreferrer" className="link-primary">
+          <ExternalLink href="https://kleros.io" className="link-primary">
             Kleros (link to home)
-          </a>{' '}
+          </ExternalLink>{' '}
           is used for arbitration.
         </p>
-        <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer" className="link-primary">
+        <ExternalLink href="https://docs.api3.org" className="link-primary">
           Read more to understand Kleros’s fees and the appeal process (link to docs).
-        </a>
+        </ExternalLink>
       </div>
       <ModalFooter>
         <div className={styles.buttonRow}>
@@ -126,14 +127,14 @@ export function AppealConfirmation(props: AppealConfirmationProps) {
           )}
         </div>
         <p className={styles.info}>
-          <a href="https://kleros.io" target="_blank" rel="noopener noreferrer" className="link-primary">
+          <ExternalLink href="https://kleros.io" className="link-primary">
             Kleros (link to home)
-          </a>{' '}
+          </ExternalLink>{' '}
           is used for arbitration. The cost of an appeal increases for every appeal.
         </p>
-        <a href="https://docs.api3.org" target="_blank" rel="noopener noreferrer" className="link-primary">
+        <ExternalLink href="https://docs.api3.org" className="link-primary">
           Read more to understand Kleros’s fees and the appeal process (link to docs).
-        </a>
+        </ExternalLink>
       </div>
       <ModalFooter>
         <div className={styles.buttonRow}>

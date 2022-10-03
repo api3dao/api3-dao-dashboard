@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BigNumber } from 'ethers';
 import Button from '../../components/button';
+import ExternalLink from '../../components/external-link';
 import { Modal } from '../../components/modal';
 import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
@@ -150,14 +151,9 @@ export default function ClaimActions(props: Props) {
             <PayoutAmount claim={claim} payout={payout} />
           </div>
           <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
-          <a
-            href={getEtherscanTransactionUrl(chainId, payout.transactionHash)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link-primary"
-          >
+          <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
             View the transaction here
-          </a>
+          </ExternalLink>
         </div>
       );
     }
@@ -201,14 +197,9 @@ export default function ClaimActions(props: Props) {
             <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
           <p className={styles.actionMessage}>All done! The settlement has been accepted.</p>
-          <a
-            href={getEtherscanTransactionUrl(chainId, payout.transactionHash)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link-primary"
-          >
+          <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
             View the transaction here
-          </a>
+          </ExternalLink>
         </div>
       );
     }
@@ -332,14 +323,9 @@ export default function ClaimActions(props: Props) {
             <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
           <p className={styles.actionMessage}>All done! The claim has been paid out.</p>
-          <a
-            href={getEtherscanTransactionUrl(chainId, payout.transactionHash)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link-primary"
-          >
+          <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
             View the transaction here
-          </a>
+          </ExternalLink>
         </div>
       );
     }
@@ -360,14 +346,9 @@ export default function ClaimActions(props: Props) {
             <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
           <p className={styles.actionMessage}>All done! The settlement has been paid out.</p>
-          <a
-            href={getEtherscanTransactionUrl(chainId, payout.transactionHash)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link-primary"
-          >
+          <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
             View the transaction here
-          </a>
+          </ExternalLink>
         </div>
       );
     }
