@@ -3,13 +3,17 @@ import { BaseLayout } from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import ExternalLink from '../../components/external-link';
 import BackButton from '../../components/back-button';
-import Timer, { DATE_FORMAT } from '../../components/timer';
+import Timer from '../../components/timer';
+import Skeleton from '../../components/skeleton';
+import { Tooltip } from '../../components/tooltip';
 import ClaimActions from './claim-actions';
 import { useParams } from 'react-router';
-import { abbrStr, useChainData } from '../../chain-data';
+import { abbrStr, useChainData, Claim } from '../../chain-data';
 import { useUserClaimDataById, getCurrentDeadline } from '../../logic/claims';
+import { useUserPolicyById } from '../../logic/policies';
 import { format } from 'date-fns';
-import { formatUsd, getIpfsUrl, useForceUpdate, useScrollToTop } from '../../utils';
+import { formatUsd, getIpfsUrl, images, useForceUpdate, useScrollToTop } from '../../utils';
+import { getEtherscanAddressUrl } from '../../contracts';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-details.module.scss';
 
@@ -46,7 +50,6 @@ export default function ClaimDetails() {
     );
   }
 
-  const evidenceHref = getIpfsUrl(claim.evidence);
   const deadline = getCurrentDeadline(claim);
   return (
     <ClaimDetailsLayout claimId={claimId}>
@@ -60,34 +63,14 @@ export default function ClaimDetails() {
         header={
           <Header>
             <h5>Summary</h5>
+            {claim.dispute && (
+              <ExternalLink href={`https://resolve.kleros.io/cases/${claim.dispute.id}`} className={styles.disputeLink}>
+                View Dispute Resolver
+              </ExternalLink>
+            )}
           </Header>
         }
-        content={
-          <div className={styles.detailsSection}>
-            <div className={styles.detailsItem}>
-              <p className={globalStyles.bold}>Created</p>
-              <p className={globalStyles.secondaryColor}>{format(claim.timestamp, DATE_FORMAT)}</p>
-            </div>
-            <div className={styles.detailsItem}>
-              <p className={globalStyles.bold}>Evidence</p>
-              <ExternalLink href={evidenceHref} className={globalStyles.secondaryColor}>
-                {evidenceHref}
-              </ExternalLink>
-            </div>
-            <div className={styles.detailsItem}>
-              <p className={globalStyles.bold}>Claim Amount</p>
-              <p className={globalStyles.secondaryColor}>${formatUsd(claim.claimAmountInUsd)}</p>
-            </div>
-            <div className={styles.detailsItem}>
-              <p className={globalStyles.bold}>Claimant</p>
-              <p className={globalStyles.secondaryColor}>{claim.claimant}</p>
-            </div>
-            <div className={styles.detailsItem}>
-              <p className={globalStyles.bold}>Payout Address</p>
-              <p className={globalStyles.secondaryColor}>{claim.beneficiary}</p>
-            </div>
-          </div>
-        }
+        content={<ClaimSummary claim={claim} />}
       />
     </ClaimDetailsLayout>
   );
@@ -106,5 +89,70 @@ function ClaimDetailsLayout(props: ClaimDetailsLayoutProps) {
       </div>
       {props.children}
     </BaseLayout>
+  );
+}
+
+interface ClaimSummaryProps {
+  claim: Claim;
+}
+
+function ClaimSummary(props: ClaimSummaryProps) {
+  const { claim } = props;
+  const { chainId } = useChainData();
+  const { data: policy, status: policyStatus } = useUserPolicyById(claim.policy.id);
+
+  const evidenceHref = getIpfsUrl(claim.evidence);
+
+  return (
+    <div className={styles.detailsSection}>
+      <div className={styles.detailsItem}>
+        <ExternalLink href={evidenceHref} className={globalStyles.secondaryColor}>
+          {evidenceHref}
+        </ExternalLink>
+      </div>
+      <div className={styles.detailsItem}>
+        <p className={globalStyles.bold}>Claim Amount</p>
+        <p className={globalStyles.secondaryColor}>${formatUsd(claim.claimAmountInUsd)}</p>
+      </div>
+      {claim.counterOfferAmountInUsd && (
+        <div className={styles.detailsItem}>
+          <p className={`${globalStyles.bold} ${styles.labelWithTooltip}`}>
+            Proposed Settlement Amount
+            <Tooltip
+              id="settlement-tooltip"
+              overlay="The API3 Mediators proposed this settlement when they initially evaluated this claim"
+            >
+              <button aria-describedby="settlement-tooltip">
+                <img src={images.help} aria-hidden alt="" />
+                <span className="sr-only">View settlement info</span>
+              </button>
+            </Tooltip>
+          </p>
+          <p className={globalStyles.secondaryColor}>${formatUsd(claim.counterOfferAmountInUsd)}</p>
+        </div>
+      )}
+      <div className={styles.detailsItem}>
+        <p className={globalStyles.bold}>Remaining Service Coverage Amount</p>
+        <p className={globalStyles.secondaryColor}>
+          {policy ? (
+            <>${formatUsd(policy.remainingCoverageInUsd)}</>
+          ) : policyStatus === 'failed' ? (
+            '-'
+          ) : (
+            <Skeleton width="8ch" />
+          )}
+        </p>
+      </div>
+      <div className={styles.detailsItem}>
+        <p className={globalStyles.bold}>Beneficiary</p>
+        <p className={globalStyles.secondaryColor}>
+          <ExternalLink href={getEtherscanAddressUrl(chainId, claim.beneficiary)}>{claim.beneficiary}</ExternalLink>
+        </p>
+      </div>
+      <div className={styles.detailsItem}>
+        <p className={globalStyles.bold}>Claim Created</p>
+        <p className={globalStyles.secondaryColor}>{format(claim.timestamp, 'do MMMM yyyy hh:mm')}</p>
+      </div>
+    </div>
   );
 }
