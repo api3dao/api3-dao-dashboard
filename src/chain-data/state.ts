@@ -129,7 +129,7 @@ export interface Claim {
   claimant: string;
   beneficiary: string;
   claimAmountInUsd: BigNumber;
-  counterOfferAmountInUsd: null | BigNumber;
+  settlementAmountInUsd: null | BigNumber;
   status: ClaimStatus;
   statusUpdatedAt: Date;
   deadline: null | Date;

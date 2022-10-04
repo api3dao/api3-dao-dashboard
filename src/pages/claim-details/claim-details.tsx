@@ -115,7 +115,7 @@ function ClaimSummary(props: ClaimSummaryProps) {
         <p className={globalStyles.bold}>Claim Amount</p>
         <p className={globalStyles.secondaryColor}>${formatUsd(claim.claimAmountInUsd)}</p>
       </div>
-      {claim.counterOfferAmountInUsd && (
+      {claim.settlementAmountInUsd && (
         <div className={styles.detailsItem}>
           <p className={`${globalStyles.bold} ${styles.labelWithTooltip}`}>
             Proposed Settlement Amount
@@ -129,7 +129,7 @@ function ClaimSummary(props: ClaimSummaryProps) {
               </button>
             </Tooltip>
           </p>
-          <p className={globalStyles.secondaryColor}>${formatUsd(claim.counterOfferAmountInUsd)}</p>
+          <p className={globalStyles.secondaryColor}>${formatUsd(claim.settlementAmountInUsd)}</p>
         </div>
       )}
       <div className={styles.detailsItem}>

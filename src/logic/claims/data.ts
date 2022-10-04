@@ -172,7 +172,7 @@ async function loadClaims(
       claimant: eventArgs.claimant,
       beneficiary: eventArgs.beneficiary,
       claimAmountInUsd: eventArgs.claimAmountInUsd,
-      counterOfferAmountInUsd: counterOfferEvent?.args.settlementAmountInUsd ?? null,
+      settlementAmountInUsd: counterOfferEvent?.args.settlementAmountInUsd ?? null,
       status: ClaimStatuses[claimData.status as ClaimStatusCode],
       statusUpdatedAt: blockTimestampToDate(claimData.updateTime),
       deadline: null,
