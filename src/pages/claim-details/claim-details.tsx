@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import ExternalLink from '../../components/external-link';
@@ -141,6 +142,12 @@ function ClaimSummary(props: ClaimSummaryProps) {
           ) : (
             <Skeleton width="8ch" />
           )}
+        </p>
+      </div>
+      <div className={styles.detailsItem}>
+        <p className={globalStyles.bold}>Service Coverage Policy</p>
+        <p className={globalStyles.secondaryColor}>
+          <Link to={`/policies/${claim.policy.id}`}>{claim.policy.metadata}</Link>
         </p>
       </div>
       <div className={styles.detailsItem}>
