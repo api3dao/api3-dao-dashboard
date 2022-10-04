@@ -16,7 +16,7 @@ export default function PayoutAmount(props: Props) {
     switch (claim.status) {
       case 'SettlementAccepted':
       case 'DisputeResolvedWithSettlementPayout':
-        return claim.counterOfferAmountInUsd!;
+        return claim.settlementAmountInUsd!;
       default:
         return claim.claimAmountInUsd;
     }

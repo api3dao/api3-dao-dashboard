@@ -14,7 +14,7 @@ describe('<ClaimActions />', () => {
       claimant: '0x153EF0B488148k0aB0FED112334',
       beneficiary: '0x153EF0B488148k0aB0FED112334',
       claimAmountInUsd: parseUsd('1000'),
-      counterOfferAmountInUsd: null,
+      settlementAmountInUsd: null,
       timestamp: addDays(new Date(), -2),
       status: 'ClaimCreated',
       statusUpdatedAt: addDays(new Date(), -1),
@@ -63,7 +63,7 @@ describe('<ClaimActions />', () => {
   describe('"SettlementProposed" status', () => {
     it('enables Accept and Escalate actions', () => {
       claim.status = 'SettlementProposed';
-      claim.counterOfferAmountInUsd = parseUsd('500');
+      claim.settlementAmountInUsd = parseUsd('500');
       claim.deadline = addMinutes(new Date(), 1);
 
       render(<ClaimActions claim={claim} payout={null} />);
@@ -78,7 +78,7 @@ describe('<ClaimActions />', () => {
 
     it('disables the buttons when the deadline has passed', () => {
       claim.status = 'SettlementProposed';
-      claim.counterOfferAmountInUsd = parseUsd('500');
+      claim.settlementAmountInUsd = parseUsd('500');
       claim.deadline = addMinutes(new Date(), -1);
 
       render(<ClaimActions claim={claim} payout={null} />);
@@ -93,7 +93,7 @@ describe('<ClaimActions />', () => {
   describe('"SettlementAccepted" status', () => {
     it('shows claimant has accepted the counter', () => {
       claim.status = 'SettlementAccepted';
-      claim.counterOfferAmountInUsd = parseUsd('500');
+      claim.settlementAmountInUsd = parseUsd('500');
       const payout = {
         amountInUsd: parseUsd('500'),
         amountInApi3: parseApi3('250'),
@@ -132,7 +132,7 @@ describe('<ClaimActions />', () => {
     });
 
     it('shows counter offer amount when present', () => {
-      claim.counterOfferAmountInUsd = parseUsd('500');
+      claim.settlementAmountInUsd = parseUsd('500');
       claim.dispute = {
         id: '1',
         status: 'Waiting',
@@ -168,7 +168,7 @@ describe('<ClaimActions />', () => {
 
     describe('with "PaySettlement" arbitrator ruling', () => {
       beforeEach(() => {
-        claim.counterOfferAmountInUsd = parseUsd('500');
+        claim.settlementAmountInUsd = parseUsd('500');
         claim.dispute = {
           id: '1',
           status: 'Appealable',
@@ -323,7 +323,7 @@ describe('<ClaimActions />', () => {
   describe('"DisputeResolvedWithSettlementPayout" status', () => {
     it('shows the claim counter offer has been approved', () => {
       claim.status = 'DisputeResolvedWithSettlementPayout';
-      claim.counterOfferAmountInUsd = parseUsd('500');
+      claim.settlementAmountInUsd = parseUsd('500');
       claim.deadline = addMinutes(new Date(), 1);
       const payout = {
         amountInUsd: parseUsd('500'),

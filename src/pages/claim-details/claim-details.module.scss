@@ -27,3 +27,22 @@
     margin-bottom: 0;
   }
 }
+
+.labelWithTooltip {
+  display: flex;
+  align-items: center;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    margin-left: 0.5ch;
+  }
+}
+
+.disputeLink {
+  color: $primary-color;
+  font-size: $text-small;
+  font-weight: 500;
+}

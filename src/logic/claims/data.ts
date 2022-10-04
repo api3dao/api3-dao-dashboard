@@ -140,7 +140,7 @@ async function loadClaims(
 ) {
   const { userAccount = null, claimId = null } = params;
   // Get all the static data via events
-  const [createdEvents, counterOfferEvents, disputeEvents] = await Promise.all([
+  const [createdEvents, settlementEvents, disputeEvents] = await Promise.all([
     claimsManager.queryFilter(claimsManager.filters.CreatedClaim(claimId, userAccount)),
     claimsManager.queryFilter(claimsManager.filters.ProposedSettlement(claimId, userAccount)),
     arbitratorProxy.queryFilter(arbitratorProxy.filters.CreatedDispute(claimId, userAccount)),
@@ -161,7 +161,7 @@ async function loadClaims(
     const eventArgs = event.args;
     const claimId = eventArgs.claimHash;
     const claimData = claims[index]!;
-    const counterOfferEvent = counterOfferEvents.find((ev) => ev.args.claimHash === claimId);
+    const settlementEvent = settlementEvents.find((ev) => ev.args.claimHash === claimId);
     const dispute = disputes.find((dispute) => dispute.claimId === claimId);
     const policy = policies.find((policy) => policy.id === eventArgs.policyHash)!;
 
@@ -172,7 +172,7 @@ async function loadClaims(
       claimant: eventArgs.claimant,
       beneficiary: eventArgs.beneficiary,
       claimAmountInUsd: eventArgs.claimAmountInUsd,
-      counterOfferAmountInUsd: counterOfferEvent?.args.settlementAmountInUsd ?? null,
+      settlementAmountInUsd: settlementEvent?.args.settlementAmountInUsd ?? null,
       status: ClaimStatuses[claimData.status as ClaimStatusCode],
       statusUpdatedAt: blockTimestampToDate(claimData.updateTime),
       deadline: null,

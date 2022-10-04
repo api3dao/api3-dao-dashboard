@@ -163,7 +163,7 @@ export default function ClaimActions(props: Props) {
         <div className={styles.actionSection}>
           <p>API3 Multi-sig</p>
           <div className={styles.actionMainInfo}>
-            Countered with <br />${formatUsd(claim.counterOfferAmountInUsd!)}
+            Countered with <br />${formatUsd(claim.settlementAmountInUsd!)}
           </div>
           <div className={styles.actionPanel}>
             <Button variant="primary" disabled={disableActions} onClick={handleAcceptCounter}>
@@ -193,7 +193,7 @@ export default function ClaimActions(props: Props) {
           <p>{abbrStr(claim.claimant)}</p>
           <div className={styles.actionMainInfo}>
             Accepted <br />
-            counter of <br />${formatUsd(claim.counterOfferAmountInUsd!)}
+            counter of <br />${formatUsd(claim.settlementAmountInUsd!)}
             <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
           <p className={styles.actionMessage}>All done! The settlement has been accepted.</p>
@@ -219,9 +219,9 @@ export default function ClaimActions(props: Props) {
         return (
           <div className={styles.actionSection}>
             <p>{abbrStr(claim.claimant)}</p>
-            {claim.counterOfferAmountInUsd?.gt(0) ? (
+            {claim.settlementAmountInUsd?.gt(0) ? (
               <div className={styles.actionMainInfo}>
-                Escalated counter of <br />${formatUsd(claim.counterOfferAmountInUsd!)} <br />
+                Escalated counter of <br />${formatUsd(claim.settlementAmountInUsd!)} <br />
                 to Kleros
               </div>
             ) : (
@@ -259,7 +259,7 @@ export default function ClaimActions(props: Props) {
                 </span>
                 <br />
                 {' counter of '}
-                <br />${formatUsd(claim.counterOfferAmountInUsd!)}
+                <br />${formatUsd(claim.settlementAmountInUsd!)}
               </div>
               <div className={styles.actionPanel}>
                 <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
@@ -342,7 +342,7 @@ export default function ClaimActions(props: Props) {
             </span>
             <br />
             {' counter of '}
-            <br />${formatUsd(claim.counterOfferAmountInUsd!)}
+            <br />${formatUsd(claim.settlementAmountInUsd!)}
             <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
           <p className={styles.actionMessage}>All done! The settlement has been paid out.</p>
