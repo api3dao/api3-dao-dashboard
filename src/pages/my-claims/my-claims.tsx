@@ -6,6 +6,7 @@ import RadioButton from '../../components/radio-button';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import Pagination, { usePagedData } from '../../components/pagination';
 import SearchForm from '../components/search-form';
+import Roles from './roles';
 import ClaimList from './claim-list';
 import { useQueryParams } from '../../utils';
 import { useHistory } from 'react-router';
@@ -165,12 +166,15 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
   const inactiveChecked = !filter || filter === 'inactive';
   return (
     <Layout title="Claims">
-      <SearchForm
-        query={query}
-        placeholder="Search by claim ID or policy"
-        onSubmit={handleSubmit}
-        onClear={handleClear}
-      />
+      <div className={styles.container}>
+        <SearchForm
+          query={query}
+          placeholder="Search by claim ID or policy"
+          onSubmit={handleSubmit}
+          onClear={handleClear}
+        />
+        <Roles />
+      </div>
       <BorderedBox
         noMobileBorders
         header={

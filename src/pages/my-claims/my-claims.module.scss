@@ -1,5 +1,22 @@
 @import '../../styles/variables.module.scss';
 
+.container {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2rem;
+  margin-bottom: 80px;
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    form {
+      max-width: 28ch;
+    }
+  }
+}
+
 .emptyState {
   color: $secondary-color;
   text-align: center;

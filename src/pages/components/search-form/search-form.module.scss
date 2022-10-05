@@ -2,14 +2,13 @@
 @import '../../../styles/mixins.scss';
 
 .searchForm {
+  flex: 1;
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   position: relative;
   border: 1px solid $black-line-color;
-  max-width: 28ch;
   padding: 0 40px 0 14px;
-  margin-bottom: 4rem;
   transition: all 0.3s;
 
   input {

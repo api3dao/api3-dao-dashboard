@@ -1,0 +1,65 @@
+@import '../../styles/variables.module.scss';
+
+.rolesSection {
+  align-self: flex-end;
+  max-width: 250px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: $secondary-color;
+  font-size: $text-small;
+
+  & > * {
+    padding: 5px 0;
+    border-bottom: 1px solid $black-line-color;
+  }
+
+  h6 {
+    font-size: $text-small;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    text-transform: uppercase;
+    margin: 0;
+    padding-top: 0;
+
+    button {
+      background: transparent;
+      border: none;
+    }
+  }
+}
+
+.tooltip {
+  max-width: 35ch;
+  p:first-child {
+    margin-bottom: 1rem;
+  }
+}
+
+.externalLinkIcon {
+  margin-left: 0.5ch;
+  color: $tertiary-color;
+  width: 16px;
+  height: 16px;
+}
+
+.roleItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+
+    svg:first-child {
+      margin-right: 0.5ch;
+    }
+  }
+}
