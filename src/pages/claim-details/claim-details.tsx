@@ -134,7 +134,7 @@ function ClaimSummary(props: ClaimSummaryProps) {
       )}
       <div className={styles.detailsItem}>
         <p className={globalStyles.bold}>Remaining Service Coverage Amount</p>
-        <p className={globalStyles.secondaryColor}>
+        <div className={globalStyles.secondaryColor}>
           {policy ? (
             <>${formatUsd(policy.remainingCoverageInUsd)}</>
           ) : policyStatus === 'failed' ? (
@@ -142,7 +142,7 @@ function ClaimSummary(props: ClaimSummaryProps) {
           ) : (
             <Skeleton width="8ch" />
           )}
-        </p>
+        </div>
       </div>
       <div className={styles.detailsItem}>
         <p className={globalStyles.bold}>Service Coverage Policy</p>

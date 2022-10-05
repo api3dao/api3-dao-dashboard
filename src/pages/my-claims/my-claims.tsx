@@ -196,8 +196,9 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
                 color="white"
               />
               <Button
+                variant="primary"
+                size="large"
                 className={styles.newClaimButton}
-                variant="secondary"
                 onClick={() => {
                   if (activePolicies?.length === 1) {
                     history.push(`/policies/${activePolicies[0]!.policyId}`);
@@ -206,7 +207,7 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
                   }
                 }}
               >
-                New Claim
+                + New Claim
               </Button>
             </div>
           </Header>

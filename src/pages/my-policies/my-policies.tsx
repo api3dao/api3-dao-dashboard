@@ -52,7 +52,9 @@ export default function MyPolicies() {
 
   return (
     <Layout title="Policies">
-      <SearchForm query={query} placeholder="Search for your policy" onSubmit={handleSubmit} onClear={handleClear} />
+      <div className={styles.formContainer}>
+        <SearchForm query={query} placeholder="Search for your policy" onSubmit={handleSubmit} onClear={handleClear} />
+      </div>
       <BorderedBox
         noMobileBorders
         header={
