@@ -34,7 +34,7 @@ export default function PayoutAmount(props: Props) {
   };
 
   const renderTooltip = () => {
-    const formattedDate = format(claim.statusUpdatedAt, 'dd MMM yyyy hh:mm');
+    const formattedDate = format(claim.statusUpdatedAt, 'dd MMM yyyy HH:mm');
 
     return payout.amountInUsd.lt(getAmountToPayInUsd()) ? (
       <p>

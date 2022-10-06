@@ -146,4 +146,9 @@ export const transactionMessages: { [key in TransactionType]: PendingTransaction
     success: 'Success! Claim decision has been appealed.',
     error: 'Failed to appeal decision. Please try again.',
   },
+  'execute-claim-payout': {
+    start: 'Executing payout...',
+    success: 'Success! Claim has been paid out.',
+    error: 'Failed to execute payout. Please try again.',
+  },
 };
