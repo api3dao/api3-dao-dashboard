@@ -336,6 +336,22 @@ task('resolve-dispute', 'Resolves the dispute for the claim')
     console.info(`Resolved dispute: ${args.disputeId}`);
   });
 
+task(
+  'pass-dispute-period',
+  'Progresses the dispute into its next period (given that the current period end date has passed)'
+)
+  .addParam('disputeId', 'The arbitrator dispute ID')
+  .setAction(async (args, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    // The index for the deployer needs to be in sync with the deploy script
+    const deployer = accounts[0];
+    const contracts = getContractAddresses(hre.network.name);
+    const arbitrator = MockKlerosArbitratorFactory.connect(contracts.arbitrator, deployer);
+    await arbitrator.passPeriod(args.disputeId);
+    console.info(`Dispute: ${args.disputeId} has passed into its next period`);
+  });
+
 // See https://hardhat.org/config/
 const config: HardhatUserConfig = {
   // https://hardhat.org/hardhat-network/#connecting-to-hardhat-network-from-wallets-and-other-software
