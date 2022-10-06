@@ -19,7 +19,7 @@ import globalStyles from '../../styles/global-styles.module.scss';
 export const DesktopMenu = () => {
   const { pathname } = useLocation();
   return (
-    <nav className={styles.menu} data-cy="desktop-menu">
+    <nav className={styles.desktopMenu} data-cy="desktop-menu">
       {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
       <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
         <div className={styles.menuItem}>

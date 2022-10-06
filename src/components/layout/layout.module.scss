@@ -15,7 +15,7 @@
 }
 
 .main {
-  max-width: min(calc(100vw - 170px), 1024px);
+  max-width: min(calc(100vw - #{$desktop-menu-width} - #{$desktop-menu-margin-left} - 10px), 1024px);
   min-height: calc(100vh - #{$navigation-height} - #{$footer-height});
   margin: 0 auto;
   padding: 0 $space-xxl;
