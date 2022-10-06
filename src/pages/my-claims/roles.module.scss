@@ -1,13 +1,16 @@
 @import '../../styles/variables.module.scss';
 
 .rolesSection {
-  align-self: flex-end;
-  max-width: 250px;
   width: 100%;
+  align-self: flex-end;
   display: flex;
   flex-direction: column;
   color: $secondary-color;
   font-size: $text-small;
+
+  @media (min-width: $min-sm) {
+    max-width: 250px;
+  }
 
   & > * {
     padding: 5px 0;

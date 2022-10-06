@@ -20,7 +20,7 @@ export default function Roles() {
                 paying out successful claims.
               </p>
               <p>
-                The <b>arbitrator, Kleros,</b> is an independent _ appointed to settle a dispute.
+                The <b>arbitrator, Kleros,</b> is an independent decentralized court appointed to settle a dispute.
               </p>
             </div>
           }

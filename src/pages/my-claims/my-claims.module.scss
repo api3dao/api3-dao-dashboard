@@ -6,6 +6,10 @@
   gap: 2rem;
   margin-bottom: 80px;
 
+  @media (min-width: $min-md) {
+    margin-top: -58px;
+  }
+
   @media (min-width: 900px) {
     flex-direction: row;
     align-items: flex-end;
