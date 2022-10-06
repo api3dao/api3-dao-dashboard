@@ -179,36 +179,36 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
         noMobileBorders
         header={
           <Header>
-            <h5>My Claims</h5>
-            <div className={styles.filters}>
-              <RadioButton
-                type="checkbox"
-                label="Active"
-                checked={activeChecked}
-                onChange={() => handleFilterChange(!activeChecked, inactiveChecked)}
-                color="white"
-              />
-              <RadioButton
-                type="checkbox"
-                label="Inactive"
-                checked={inactiveChecked}
-                onChange={() => handleFilterChange(activeChecked, !inactiveChecked)}
-                color="white"
-              />
-              <Button
-                variant="primary"
-                size="large"
-                className={styles.newClaimButton}
-                onClick={() => {
-                  if (activePolicies?.length === 1) {
-                    history.push(`/policies/${activePolicies[0]!.policyId}`);
-                  } else {
-                    history.push('/claims/new');
-                  }
-                }}
-              >
-                + New Claim
-              </Button>
+            <div className={styles.myClaimsHeader}>
+              <h5>My Claims</h5>
+              <div className={styles.filters}>
+                <RadioButton
+                  type="checkbox"
+                  label="Active"
+                  checked={activeChecked}
+                  onChange={() => handleFilterChange(!activeChecked, inactiveChecked)}
+                  color="white"
+                />
+                <RadioButton
+                  type="checkbox"
+                  label="Inactive"
+                  checked={inactiveChecked}
+                  onChange={() => handleFilterChange(activeChecked, !inactiveChecked)}
+                  color="white"
+                />
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    if (activePolicies?.length === 1) {
+                      history.push(`/policies/${activePolicies[0]!.policyId}`);
+                    } else {
+                      history.push('/claims/new');
+                    }
+                  }}
+                >
+                  + New Claim
+                </Button>
+              </div>
             </div>
           </Header>
         }
