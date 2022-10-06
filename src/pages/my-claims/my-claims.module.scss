@@ -35,7 +35,9 @@
   display: flex;
   flex-direction: column;
 
-  transform: translateY(5%);
+  @media (min-width: $min-sm) {
+    transform: translateY(5%);
+  }
 
   @media (min-width: $min-md) {
     transform: translateY(0%);
@@ -51,28 +53,22 @@
 
   button {
     font-weight: 500;
-    margin-left: $space-lg;
+    margin-left: auto;
+    margin-bottom: 0;
+  }
+
+  @media (min-width: $min-sm) {
+    button {
+      transform: translateY(-42%);
+    }
   }
 
   @media (min-width: $min-md) {
     justify-content: flex-end;
-  }
 
-  @media (max-width: $max-md) {
     button {
-      margin-left: auto;
-      transform: translateY(-40%);
-    }
-  }
-
-  @media (max-width: $max-sm) {
-    button {
-      flex: 1;
-      padding: 16px;
-      max-width: 140px;
       transform: translateY(0%);
-      margin-top: 0;
-      margin-bottom: 0;
+      margin-left: $space-lg;
     }
   }
 
