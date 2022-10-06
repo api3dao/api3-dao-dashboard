@@ -181,7 +181,7 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
           <Header>
             <div className={styles.myClaimsHeader}>
               <h5>My Claims</h5>
-              <div className={styles.filters}>
+              <div className={styles.actions}>
                 <RadioButton
                   type="checkbox"
                   label="Active"

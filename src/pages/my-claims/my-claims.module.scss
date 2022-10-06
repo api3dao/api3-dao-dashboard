@@ -12,6 +12,7 @@
     justify-content: space-between;
 
     form {
+      flex: 1;
       max-width: 28ch;
     }
   }
@@ -40,14 +41,14 @@
   }
 
   @media (min-width: $min-md) {
-    transform: translateY(0%);
+    transform: none;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
   }
 }
 
-.filters {
+.actions {
   display: flex;
   align-items: center;
 
@@ -67,7 +68,7 @@
     justify-content: flex-end;
 
     button {
-      transform: translateY(0%);
+      transform: none;
       margin-left: $space-lg;
     }
   }
