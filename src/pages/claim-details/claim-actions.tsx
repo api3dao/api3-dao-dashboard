@@ -101,7 +101,6 @@ export default function ClaimActions(props: Props) {
         transactions: [...transactions, { type: 'execute-claim-payout', tx }],
       });
       setStatus('submitted');
-      setModalToShow(null);
     } else {
       setStatus('failed');
     }
