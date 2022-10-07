@@ -149,7 +149,7 @@ describe('<ClaimActions />', () => {
 
     describe('with "PayClaim" arbitrator ruling', () => {
       it('shows the claim has been approved', () => {
-        claim.deadline = addMinutes(new Date(), 2);
+        claim.deadline = addDays(new Date(), 2);
         claim.dispute = {
           id: '1',
           status: 'Appealable',
@@ -196,7 +196,7 @@ describe('<ClaimActions />', () => {
           status: 'Appealable',
           ruling: 'PaySettlement',
           period: 'Appeal',
-          periodEndDate: addDays(new Date(), 1),
+          periodEndDate: addMinutes(new Date(), 1),
           appealedBy: null,
         };
 
@@ -216,7 +216,7 @@ describe('<ClaimActions />', () => {
           status: 'Appealable',
           ruling: 'PaySettlement',
           period: 'Appeal',
-          periodEndDate: addDays(new Date(), -1),
+          periodEndDate: addMinutes(new Date(), -1),
           appealedBy: null,
         };
 
@@ -252,7 +252,7 @@ describe('<ClaimActions />', () => {
           status: 'Appealable',
           ruling: 'DoNotPay',
           period: 'Appeal',
-          periodEndDate: addDays(new Date(), 1),
+          periodEndDate: addMinutes(new Date(), 1),
           appealedBy: null,
         };
 
@@ -272,7 +272,7 @@ describe('<ClaimActions />', () => {
           status: 'Appealable',
           ruling: 'DoNotPay',
           period: 'Appeal',
-          periodEndDate: addDays(new Date(), -1),
+          periodEndDate: addMinutes(new Date(), -1),
           appealedBy: null,
         };
 
