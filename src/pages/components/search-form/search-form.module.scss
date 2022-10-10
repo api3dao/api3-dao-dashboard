@@ -7,9 +7,7 @@
   align-items: center;
   position: relative;
   border: 1px solid $black-line-color;
-  max-width: 28ch;
   padding: 0 40px 0 14px;
-  margin-bottom: 4rem;
   transition: all 0.3s;
 
   input {
@@ -20,6 +18,7 @@
     font-size: $text-normal;
     font-weight: 400;
     line-height: 50px;
+    text-overflow: ellipsis;
     height: 50px;
     width: 100%;
     border: none;

@@ -1,5 +1,27 @@
 @import '../../styles/variables.module.scss';
 
+.container {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2rem;
+  margin-bottom: 80px;
+
+  @media (min-width: $min-md) {
+    margin-top: -58px;
+  }
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    form {
+      flex: 1;
+      max-width: 28ch;
+    }
+  }
+}
+
 .emptyState {
   color: $secondary-color;
   text-align: center;
@@ -13,12 +35,47 @@
   padding-left: 1ch;
 }
 
-.filters {
+.myClaimsHeader {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: $min-sm) {
+    transform: translateY(5%);
+  }
+
+  @media (min-width: $min-md) {
+    transform: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  margin-left: $space-md;
+
+  button {
+    font-weight: 500;
+    margin-left: auto;
+    margin-bottom: 0;
+  }
+
+  @media (min-width: $min-sm) {
+    button {
+      transform: translateY(-42%);
+    }
+  }
+
+  @media (min-width: $min-md) {
+    justify-content: flex-end;
+
+    button {
+      transform: none;
+      margin-left: $space-lg;
+    }
+  }
 
   & > * {
     margin-right: $space-lg;
@@ -30,13 +87,6 @@
 
   & > *:last-child {
     margin-right: 0;
-  }
-}
-
-.newClaimButton {
-  display: none;
-  @media (min-width: $min-md) {
-    display: inline-block;
   }
 }
 

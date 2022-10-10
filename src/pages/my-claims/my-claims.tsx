@@ -6,6 +6,7 @@ import RadioButton from '../../components/radio-button';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import Pagination, { usePagedData } from '../../components/pagination';
 import SearchForm from '../components/search-form';
+import Roles from './roles';
 import ClaimList from './claim-list';
 import { useQueryParams } from '../../utils';
 import { useHistory } from 'react-router';
@@ -165,45 +166,49 @@ function ClaimsLayout(props: ClaimsLayoutProps) {
   const inactiveChecked = !filter || filter === 'inactive';
   return (
     <Layout title="Claims">
-      <SearchForm
-        query={query}
-        placeholder="Search by claim ID or policy"
-        onSubmit={handleSubmit}
-        onClear={handleClear}
-      />
+      <div className={styles.container}>
+        <SearchForm
+          query={query}
+          placeholder="Search by claim ID or policy"
+          onSubmit={handleSubmit}
+          onClear={handleClear}
+        />
+        <Roles />
+      </div>
       <BorderedBox
         noMobileBorders
         header={
           <Header>
-            <h5>My Claims</h5>
-            <div className={styles.filters}>
-              <RadioButton
-                type="checkbox"
-                label="Active"
-                checked={activeChecked}
-                onChange={() => handleFilterChange(!activeChecked, inactiveChecked)}
-                color="white"
-              />
-              <RadioButton
-                type="checkbox"
-                label="Inactive"
-                checked={inactiveChecked}
-                onChange={() => handleFilterChange(activeChecked, !inactiveChecked)}
-                color="white"
-              />
-              <Button
-                className={styles.newClaimButton}
-                variant="secondary"
-                onClick={() => {
-                  if (activePolicies?.length === 1) {
-                    history.push(`/policies/${activePolicies[0]!.policyId}`);
-                  } else {
-                    history.push('/claims/new');
-                  }
-                }}
-              >
-                New Claim
-              </Button>
+            <div className={styles.myClaimsHeader}>
+              <h5>My Claims</h5>
+              <div className={styles.actions}>
+                <RadioButton
+                  type="checkbox"
+                  label="Active"
+                  checked={activeChecked}
+                  onChange={() => handleFilterChange(!activeChecked, inactiveChecked)}
+                  color="white"
+                />
+                <RadioButton
+                  type="checkbox"
+                  label="Inactive"
+                  checked={inactiveChecked}
+                  onChange={() => handleFilterChange(activeChecked, !inactiveChecked)}
+                  color="white"
+                />
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    if (activePolicies?.length === 1) {
+                      history.push(`/policies/${activePolicies[0]!.policyId}`);
+                    } else {
+                      history.push('/claims/new');
+                    }
+                  }}
+                >
+                  + New Claim
+                </Button>
+              </div>
             </div>
           </Header>
         }

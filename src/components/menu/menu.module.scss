@@ -1,12 +1,16 @@
 @import '../../styles/variables.module.scss';
 
-.menu {
-  display: flex;
-  flex-direction: column;
-  margin-left: $space-xxl;
+.desktopMenu {
+  display: none;
+  margin-left: $desktop-menu-margin-left;
 
-  @media (max-width: $max-sm) {
-    display: none;
+  @media (min-width: $min-sm) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: $min-lg) {
+    width: $desktop-menu-width;
   }
 
   & > * {
@@ -27,8 +31,6 @@
 }
 
 .menuActiveItem {
-  cursor: default;
-
   .menuItem,
   .menuItemText,
   .menuMobileItemText,
@@ -226,6 +228,5 @@
     flex: 1;
     align-items: center;
     justify-content: space-between;
-    min-width: 16ch;
   }
 }
