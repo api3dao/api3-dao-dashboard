@@ -16,11 +16,11 @@ export default function Roles() {
           overlay={
             <div className={styles.tooltip}>
               <p>
-                The <b>mediator, API3 Mediators,</b> is responsible for deciding the initial outcome of claims and
+                The <b>mediator (API3 Mediators)</b> is responsible for deciding the initial outcome of claims and
                 paying out successful claims.
               </p>
               <p>
-                The <b>arbitrator, Kleros,</b> is an independent decentralized court appointed to settle a dispute.
+                The <b>arbitrator (Kleros)</b> is an independent decentralized court appointed to settle a dispute.
               </p>
             </div>
           }
