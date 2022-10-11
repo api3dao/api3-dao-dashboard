@@ -1,5 +1,24 @@
 @import '../../styles/variables.module.scss';
 
+.backButtonRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: $text-small;
+  color: $secondary-color;
+  margin-bottom: 10px;
+
+  & > * {
+    padding: 0 6px;
+  }
+
+  span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
 .heading {
   margin-bottom: 100px;
   word-break: break-word;

@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { BaseLayout } from '../../components/layout';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import Button from '../../components/button';
@@ -33,20 +34,16 @@ export default function PolicyDetails() {
 
   if (!policy) {
     return (
-      <BaseLayout subtitle={`Policy ${policyId}`}>
-        <h4 className={styles.heading}>Policy</h4>
+      <PolicyDetailsLayout policyId={policyId}>
         {status === 'loading' && <p className={globalStyles.secondaryColor}>Loading...</p>}
         {status === 'loaded' && <p>Unable to find your policy with given id.</p>}
-      </BaseLayout>
+      </PolicyDetailsLayout>
     );
   }
 
   const policyIpfsHref = getIpfsUrl(policy.ipfsHash);
   return (
-    <BaseLayout subtitle={`Policy ${policyId}`}>
-      <div>
-        <BackButton fallback={{ href: '/policies' }}>Back</BackButton>
-      </div>
+    <PolicyDetailsLayout policyId={policyId}>
       <h4 className={styles.heading}>{policy.metadata}</h4>
       <BorderedBox
         noMobileBorders
@@ -107,6 +104,24 @@ export default function PolicyDetails() {
           </div>
         }
       />
+    </PolicyDetailsLayout>
+  );
+}
+
+interface PolicyDetailsLayoutProps {
+  policyId: string;
+  children: ReactNode;
+}
+
+function PolicyDetailsLayout(props: PolicyDetailsLayoutProps) {
+  return (
+    <BaseLayout subtitle={`Policy ${props.policyId}`}>
+      <div className={styles.backButtonRow}>
+        <BackButton fallback={{ href: '/policies' }}>Back</BackButton>
+        {' | '}
+        <span>Policy ID: {props.policyId}</span>
+      </div>
+      {props.children}
     </BaseLayout>
   );
 }

@@ -12,6 +12,7 @@
 .proposalDetailsSubheader {
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
   & > * {
     margin-right: $space-md;
   }
