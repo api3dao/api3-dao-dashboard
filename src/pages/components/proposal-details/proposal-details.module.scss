@@ -1,24 +1,7 @@
 @import '../../../styles/variables.module.scss';
 
-.backLink {
-  display: inline-flex;
-  align-items: center;
-  color: $secondary-color;
-  text-decoration: none;
-  font-size: $text-small;
-  line-height: $lh-small;
-}
-
-.proposalDetailsSubheader {
-  display: flex;
-  align-items: center;
+.backButtonRow {
   margin-bottom: 10px;
-  & > * {
-    margin-right: $space-md;
-  }
-  & > *:last-child {
-    margin-right: 0;
-  }
 }
 
 .scrollX {
