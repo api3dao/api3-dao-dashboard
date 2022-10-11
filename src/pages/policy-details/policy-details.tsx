@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import { formatUsd, getIpfsUrl, useScrollToTop } from '../../utils';
 import { useHistory, useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
-import { canCreateClaim, useUserPolicyById } from '../../logic/policies';
+import { canCreateClaim, isActive, useUserPolicyById } from '../../logic/policies';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './policy-details.module.scss';
 
@@ -44,7 +44,22 @@ export default function PolicyDetails() {
   const policyIpfsHref = getIpfsUrl(policy.ipfsHash);
   return (
     <PolicyDetailsLayout policyId={policyId}>
-      <h4 className={styles.heading}>{policy.metadata}</h4>
+      <header className={styles.header}>
+        <h4 className={styles.heading}>{policy.metadata}</h4>
+        <div className={styles.extraInfo}>
+          {isActive(policy) ? (
+            <span className={styles.active}>Active</span>
+          ) : (
+            <span className={styles.inactive}>Inactive</span>
+          )}
+          <span className={styles.divider}>{' | '}</span>
+          <span className={styles.allowedUntil}>
+            Claims Allowed Until:{' '}
+            <span className={globalStyles.primaryColor}>{format(policy.claimsAllowedUntil, 'do MMMM yyyy')} </span>
+            {format(policy.claimsAllowedUntil, 'HH:mm')}
+          </span>
+        </div>
+      </header>
       <BorderedBox
         noMobileBorders
         header={
@@ -80,20 +95,16 @@ export default function PolicyDetails() {
               <p className={globalStyles.secondaryColor}>{policy.beneficiary}</p>
             </div>
             <div className={styles.detailsItem}>
-              <p className={globalStyles.bold}>Service Coverage Amount</p>
+              <p className={globalStyles.bold}>Remaining Service Coverage Amount</p>
               <p className={globalStyles.secondaryColor}>${formatUsd(policy.remainingCoverageInUsd)}</p>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claims Allowed From</p>
               <p className={globalStyles.secondaryColor}>{format(policy.claimsAllowedFrom, 'do MMMM yyyy HH:mm')}</p>
             </div>
-            <div className={styles.detailsItem}>
+            <div className={`${styles.detailsItem} ${styles.allowedUntil}`}>
               <p className={globalStyles.bold}>Claims Allowed Until</p>
               <p className={globalStyles.secondaryColor}>{format(policy.claimsAllowedUntil, 'do MMMM yyyy HH:mm')}</p>
-            </div>
-            <div className={styles.detailsItem}>
-              <p className={globalStyles.bold}>Policy Hash</p>
-              <p className={globalStyles.secondaryColor}>{policy.policyId}</p>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Service Coverage Terms and Conditions</p>

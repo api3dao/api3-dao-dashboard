@@ -5,8 +5,8 @@
   align-items: center;
   gap: 10px;
   font-size: $text-small;
-  color: $secondary-color;
-  margin-bottom: 10px;
+  font-weight: 400;
+  color: $tertiary-color;
 
   & > * {
     padding: 0 6px;
@@ -19,9 +19,39 @@
   }
 }
 
-.heading {
+.header {
   margin-bottom: 100px;
+}
+
+.heading {
   word-break: break-word;
+  margin: 10px 0;
+}
+
+.extraInfo {
+  display: flex;
+  gap: 16px;
+  color: $tertiary-color;
+  font-size: $text-small;
+  font-weight: 400;
+
+  .divider,
+  .allowedUntil {
+    display: none;
+    @media (min-width: $min-sm) {
+      display: inline;
+    }
+  }
+}
+
+.active {
+  color: $green-color;
+  font-weight: 600;
+}
+
+.inactive {
+  color: $pink-color;
+  font-weight: 600;
 }
 
 .detailsSection {
@@ -31,6 +61,13 @@
     font-size: $text-small;
     line-height: $lh-small;
     margin: 0 0 $space-xxl;
+  }
+
+  .allowedUntil {
+    display: block;
+    @media (min-width: $min-sm) {
+      display: none;
+    }
   }
 }
 
