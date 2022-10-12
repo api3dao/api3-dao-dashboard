@@ -131,7 +131,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
 
   return (
     <div>
-      <div className={styles.proposalDetailsSubheader}>
+      <div className={styles.backButtonRow}>
         <BackButton fallback={{ href: proposal.open ? '/governance' : '/history' }}>Back</BackButton>
       </div>
 

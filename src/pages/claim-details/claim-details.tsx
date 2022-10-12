@@ -9,7 +9,7 @@ import Skeleton from '../../components/skeleton';
 import { Tooltip } from '../../components/tooltip';
 import ClaimActions from './claim-actions';
 import { useParams } from 'react-router';
-import { abbrStr, useChainData, Claim } from '../../chain-data';
+import { useChainData, Claim } from '../../chain-data';
 import { useUserClaimDataById, getCurrentDeadline } from '../../logic/claims';
 import { useUserPolicyById } from '../../logic/policies';
 import { format } from 'date-fns';
@@ -42,9 +42,6 @@ export default function ClaimDetails() {
   if (!claim) {
     return (
       <ClaimDetailsLayout claimId={claimId}>
-        <div className={styles.detailsHeader}>
-          <h4>Claim {abbrStr(claimId)}</h4>
-        </div>
         {status === 'loading' && <p className={globalStyles.secondaryColor}>Loading...</p>}
         {status === 'loaded' && <p>Unable to find your claim with given id.</p>}
       </ClaimDetailsLayout>
@@ -55,7 +52,7 @@ export default function ClaimDetails() {
   return (
     <ClaimDetailsLayout claimId={claimId}>
       <div className={styles.detailsHeader}>
-        <h4>Claim {abbrStr(claimId)}</h4>
+        <h4>{claim.policy.metadata}</h4>
         {deadline && <Timer size="large" deadline={deadline} onDeadlineExceeded={forceUpdate} showDeadline />}
       </div>
       <ClaimActions key={claim.status} claim={claim} payout={payout} />
@@ -85,8 +82,10 @@ interface ClaimDetailsLayoutProps {
 function ClaimDetailsLayout(props: ClaimDetailsLayoutProps) {
   return (
     <BaseLayout subtitle={`Claim ${props.claimId}`}>
-      <div>
+      <div className={styles.backButtonRow}>
         <BackButton fallback={{ href: '/claims' }}>Back</BackButton>
+        {' | '}
+        <span>Claim ID: {props.claimId}</span>
       </div>
       {props.children}
     </BaseLayout>
