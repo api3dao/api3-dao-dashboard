@@ -69,16 +69,7 @@
     max-width: 80ch;
   }
 
-  & > *:nth-child(1) {
-    @media (min-width: $min-sm) {
-      width: 8ch;
-    }
-
-    @media (min-width: $min-lg) {
-      width: 10ch;
-    }
-  }
-
+  // Claims allowed until
   & > *:nth-child(2) {
     @media (min-width: $min-sm) {
       width: 20ch;
@@ -89,9 +80,43 @@
     }
   }
 
+  // Remaining coverage
   & > *:nth-child(3) {
     flex: 1;
   }
+}
+
+.mobileActiveStatus {
+  font-size: $text-xsmall;
+  line-height: $lh-small;
+  margin-bottom: 6px;
+
+  @media (min-width: $min-sm) {
+    display: none;
+  }
+}
+
+.desktopActiveStatus {
+  display: none;
+
+  @media (min-width: $min-sm) {
+    display: inline;
+    width: 8ch;
+  }
+
+  @media (min-width: $min-lg) {
+    width: 10ch;
+  }
+}
+
+.active {
+  color: $green-color;
+  font-weight: 600;
+}
+
+.inactive {
+  color: $pink-color;
+  font-weight: 600;
 }
 
 .infoEntry {
@@ -125,32 +150,4 @@
 
 .tooltip {
   max-width: 40ch;
-}
-
-.mobileActiveStatus {
-  font-size: $text-xsmall;
-  line-height: $lh-small;
-  margin-bottom: 6px;
-
-  @media (min-width: $min-sm) {
-    display: none;
-  }
-}
-
-.desktopActiveStatus {
-  display: none;
-
-  @media (min-width: $min-sm) {
-    display: inline;
-  }
-}
-
-.active {
-  color: $green-color;
-  font-weight: 600;
-}
-
-.inactive {
-  color: $pink-color;
-  font-weight: 600;
 }
