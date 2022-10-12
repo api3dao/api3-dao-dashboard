@@ -1,5 +1,25 @@
 @import '../../styles/variables.module.scss';
 
+.backButtonRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: $text-small;
+  color: $tertiary-color;
+  font-weight: 400;
+  margin-bottom: 10px;
+
+  & > * {
+    padding: 0 6px;
+  }
+
+  span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
 .detailsHeader {
   @media (min-width: $min-md) {
     display: flex;
