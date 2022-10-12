@@ -15,7 +15,7 @@
     flex: 1;
     background: transparent;
     color: $secondary-color;
-    font-size: $text-normal;
+    font-size: 16px;
     font-weight: 400;
     line-height: 50px;
     text-overflow: ellipsis;
@@ -24,6 +24,10 @@
     border: none;
     outline: none;
     transition: color 0.3s;
+
+    @media (min-width: $min-sm) {
+      font-size: $text-normal;
+    }
 
     &:focus {
       color: $primary-color;
