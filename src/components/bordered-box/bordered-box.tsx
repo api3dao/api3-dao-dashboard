@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import styles from './bordered-box.module.scss';
 
 type Props = {
-  header: ReactNode;
+  header?: ReactNode;
   content: ReactNode | ReactNode[];
   footer?: ReactNode;
   borderColor?: 'green' | 'grey';
