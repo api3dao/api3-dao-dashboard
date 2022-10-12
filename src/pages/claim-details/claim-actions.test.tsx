@@ -149,6 +149,24 @@ describe('<ClaimActions />', () => {
 
     describe('with "PayClaim" arbitrator ruling', () => {
       it('shows the claim has been approved', () => {
+        claim.deadline = addDays(new Date(), 2);
+        claim.dispute = {
+          id: '1',
+          status: 'Appealable',
+          ruling: 'PayClaim',
+          period: 'Appeal',
+          periodEndDate: addDays(new Date(), 2),
+          appealedBy: null,
+        };
+
+        render(<ClaimActions claim={claim} payout={null} />);
+
+        expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
+        expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved full amount/i);
+        expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+      });
+
+      it('provides an Execute Payout action when in the "Execution" period', () => {
         claim.dispute = {
           id: '1',
           status: 'Solved',
@@ -160,27 +178,27 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-        expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved full amount/i);
-        expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
+        const payoutButton = screen.getByRole('button', { name: /Execute Payout/i });
+        expect(payoutButton).not.toBeDisabled();
+        expect(screen.queryAllByRole('button')).toHaveLength(1); // There should only be the one action
       });
     });
 
     describe('with "PaySettlement" arbitrator ruling', () => {
       beforeEach(() => {
         claim.settlementAmountInUsd = parseUsd('500');
+      });
+
+      it('provides an Appeal action when in the "Appeal" period', () => {
+        claim.deadline = addMinutes(new Date(), 1);
         claim.dispute = {
           id: '1',
           status: 'Appealable',
           ruling: 'PaySettlement',
           period: 'Appeal',
-          periodEndDate: addDays(new Date(), 2),
+          periodEndDate: addMinutes(new Date(), 1),
           appealedBy: null,
         };
-      });
-
-      it('provides an Appeal action', () => {
-        claim.deadline = addMinutes(new Date(), 1);
 
         render(<ClaimActions claim={claim} payout={null} />);
 
@@ -188,32 +206,55 @@ describe('<ClaimActions />', () => {
         expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of \$500.0/i);
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).not.toBeDisabled();
+        expect(screen.queryAllByRole('button')).toHaveLength(1); // There should only be the one action
       });
 
       it('disables the Appeal button when the deadline has passed', () => {
         claim.deadline = addMinutes(new Date(), -1);
+        claim.dispute = {
+          id: '1',
+          status: 'Appealable',
+          ruling: 'PaySettlement',
+          period: 'Appeal',
+          periodEndDate: addMinutes(new Date(), -1),
+          appealedBy: null,
+        };
 
         render(<ClaimActions claim={claim} payout={null} />);
 
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).toBeDisabled();
       });
+
+      it('provides an Execute Payout action when in the "Execution" period', () => {
+        claim.dispute = {
+          id: '1',
+          status: 'Solved',
+          ruling: 'PaySettlement',
+          period: 'Execution',
+          periodEndDate: null,
+          appealedBy: null,
+        };
+
+        render(<ClaimActions claim={claim} payout={null} />);
+
+        const payoutButton = screen.getByRole('button', { name: /Execute Payout/i });
+        expect(payoutButton).not.toBeDisabled();
+        expect(screen.queryAllByRole('button')).toHaveLength(1); // There should only be the one action
+      });
     });
 
     describe('with "DoNotPay" arbitrator ruling', () => {
-      beforeEach(() => {
+      it('provides an Appeal action when in the "Appeal" period', () => {
+        claim.deadline = addMinutes(new Date(), 1);
         claim.dispute = {
           id: '1',
           status: 'Appealable',
           ruling: 'DoNotPay',
           period: 'Appeal',
-          periodEndDate: addDays(new Date(), 2),
+          periodEndDate: addMinutes(new Date(), 1),
           appealedBy: null,
         };
-      });
-
-      it('provides an Appeal action', () => {
-        claim.deadline = addMinutes(new Date(), 1);
 
         render(<ClaimActions claim={claim} payout={null} />);
 
@@ -221,15 +262,39 @@ describe('<ClaimActions />', () => {
         expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).not.toBeDisabled();
+        expect(screen.queryAllByRole('button')).toHaveLength(1); // There should only be the one action
       });
 
       it('disables the Appeal button when the deadline has passed', () => {
         claim.deadline = addMinutes(new Date(), -1);
+        claim.dispute = {
+          id: '1',
+          status: 'Appealable',
+          ruling: 'DoNotPay',
+          period: 'Appeal',
+          periodEndDate: addMinutes(new Date(), -1),
+          appealedBy: null,
+        };
 
         render(<ClaimActions claim={claim} payout={null} />);
 
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).toBeDisabled();
+      });
+
+      it('provides no action when in the "Execution" period', () => {
+        claim.dispute = {
+          id: '1',
+          status: 'Solved',
+          ruling: 'DoNotPay',
+          period: 'Execution',
+          periodEndDate: null,
+          appealedBy: null,
+        };
+
+        render(<ClaimActions claim={claim} payout={null} />);
+
+        expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
     });
 

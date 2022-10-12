@@ -33,6 +33,7 @@
     "claims:arbitrator-decide-to-pay": "cd hardhat && npx hardhat give-dispute-ruling --ruling 1",
     "claims:arbitrator-decide-to-pay-settlement": "cd hardhat && npx hardhat give-dispute-ruling --ruling 2",
     "claims:resolve-dispute": "cd hardhat && npx hardhat resolve-dispute",
+    "claims:pass-dispute-period": "cd hardhat && npx hardhat pass-dispute-period",
     "start": "BROWSER=none react-scripts start",
     "test:watch": "react-scripts test",
     "test": "react-scripts test --watchAll=false",

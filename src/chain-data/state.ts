@@ -115,7 +115,8 @@ export type TransactionType =
   | 'create-claim'
   | 'accept-claim-settlement'
   | 'escalate-claim-to-arbitrator'
-  | 'appeal-claim-decision';
+  | 'appeal-claim-decision'
+  | 'execute-claim-payout';
 
 interface Vesting {
   amountVested: BigNumber;

@@ -93,6 +93,19 @@ export default function ClaimActions(props: Props) {
     }
   };
 
+  const handleExecutePayout = async () => {
+    setStatus('submitting');
+    const tx = await handleTransactionError(arbitratorProxy.executeRuling(claim.dispute!.id));
+    if (tx) {
+      setChainData('Execute claim payout transaction', {
+        transactions: [...transactions, { type: 'execute-claim-payout', tx }],
+      });
+      setStatus('submitted');
+    } else {
+      setStatus('failed');
+    }
+  };
+
   const handleModalClose = () => setModalToShow(null);
 
   switch (claim.status) {
@@ -245,6 +258,13 @@ export default function ClaimActions(props: Props) {
                 <br />
                 {' full amount'}
               </div>
+              {dispute.period === 'Execution' && (
+                <div className={styles.actionPanel}>
+                  <Button variant="secondary" disabled={disableActions} onClick={handleExecutePayout}>
+                    Execute Payout
+                  </Button>
+                </div>
+              )}
             </div>
           );
 
@@ -261,22 +281,33 @@ export default function ClaimActions(props: Props) {
                 {' counter of '}
                 <br />${formatUsd(claim.settlementAmountInUsd!)}
               </div>
-              <div className={styles.actionPanel}>
-                <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
-                  Appeal
-                </Button>
-                <Modal open={modalToShow === 'appeal'} onClose={handleModalClose}>
-                  <AppealConfirmation
-                    disputeId={claim.dispute!.id}
-                    disableActions={disableActions}
-                    onConfirm={handleAppeal}
-                    onCancel={handleModalClose}
-                  />
-                </Modal>
-              </div>
-              <p className={styles.actionMessage}>
-                You can appeal within the given time frame or the counter offer will be automatically accepted.
-              </p>
+              {dispute.period === 'Appeal' && (
+                <>
+                  <div className={styles.actionPanel}>
+                    <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
+                      Appeal
+                    </Button>
+                    <Modal open={modalToShow === 'appeal'} onClose={handleModalClose}>
+                      <AppealConfirmation
+                        disputeId={claim.dispute!.id}
+                        disableActions={disableActions}
+                        onConfirm={handleAppeal}
+                        onCancel={handleModalClose}
+                      />
+                    </Modal>
+                  </div>
+                  <p className={styles.actionMessage}>
+                    You can appeal within the given time frame or the counter offer will be automatically accepted.
+                  </p>
+                </>
+              )}
+              {dispute.period === 'Execution' && (
+                <div className={styles.actionPanel}>
+                  <Button variant="secondary" disabled={disableActions} onClick={handleExecutePayout}>
+                    Execute Payout
+                  </Button>
+                </div>
+              )}
             </div>
           );
 
@@ -285,22 +316,26 @@ export default function ClaimActions(props: Props) {
             <div className={styles.actionSection}>
               <p>Kleros</p>
               <div className={styles.actionMainInfo}>Rejected</div>
-              <div className={styles.actionPanel}>
-                <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
-                  Appeal
-                </Button>
-                <Modal open={modalToShow === 'appeal'} onClose={handleModalClose}>
-                  <AppealConfirmation
-                    disputeId={claim.dispute!.id}
-                    disableActions={disableActions}
-                    onConfirm={handleAppeal}
-                    onCancel={handleModalClose}
-                  />
-                </Modal>
-              </div>
-              <p className={styles.actionMessage}>
-                You can appeal within the given time frame or the rejection will be automatically accepted.
-              </p>
+              {dispute.period === 'Appeal' && (
+                <>
+                  <div className={styles.actionPanel}>
+                    <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('appeal')}>
+                      Appeal
+                    </Button>
+                    <Modal open={modalToShow === 'appeal'} onClose={handleModalClose}>
+                      <AppealConfirmation
+                        disputeId={claim.dispute!.id}
+                        disableActions={disableActions}
+                        onConfirm={handleAppeal}
+                        onCancel={handleModalClose}
+                      />
+                    </Modal>
+                  </div>
+                  <p className={styles.actionMessage}>
+                    You can appeal within the given time frame or the rejection will be automatically accepted.
+                  </p>
+                </>
+              )}
             </div>
           );
 
