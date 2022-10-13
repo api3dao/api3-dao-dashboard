@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { Tooltip } from '../../components/tooltip';
-import { formatApi3, formatUsd, images } from '../../utils';
+import { formatApi3, images } from '../../utils';
 import { Claim, ClaimPayout } from '../../chain-data';
 import styles from './payout-amount.module.scss';
 
@@ -11,16 +11,6 @@ interface Props {
 
 export default function PayoutAmount(props: Props) {
   const { claim, payout } = props;
-
-  const getAmountToPayInUsd = () => {
-    switch (claim.status) {
-      case 'SettlementAccepted':
-      case 'DisputeResolvedWithSettlementPayout':
-        return claim.settlementAmountInUsd!;
-      default:
-        return claim.claimAmountInUsd;
-    }
-  };
 
   const getActionDescription = () => {
     switch (claim.status) {
@@ -35,13 +25,7 @@ export default function PayoutAmount(props: Props) {
 
   const renderTooltip = () => {
     const formattedDate = format(claim.statusUpdatedAt, 'dd MMM yyyy HH:mm');
-
-    return payout.amountInUsd.lt(getAmountToPayInUsd()) ? (
-      <p>
-        The API3 amount is equivalent to the service coverage that remained (<b>${formatUsd(payout.amountInUsd)} USD</b>
-        ) at the time {getActionDescription()} ({formattedDate})
-      </p>
-    ) : (
+    return (
       <p>
         The API3 amount is equivalent to the USD amount at the time {getActionDescription()} ({formattedDate})
       </p>

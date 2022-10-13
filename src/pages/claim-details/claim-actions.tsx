@@ -5,14 +5,17 @@ import ExternalLink from '../../components/external-link';
 import { Modal } from '../../components/modal';
 import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
+import Api3Icon from '../../components/icons/api3-icon';
+import WarningIcon from '../../components/icons/warning-icon';
 import { AppealConfirmation, EscalateConfirmation } from './confirmations';
 import PayoutAmount from './payout-amount';
-import { abbrStr, Claim, ClaimPayout, useChainData } from '../../chain-data';
+import { Claim, ClaimPayout, useChainData } from '../../chain-data';
 import { formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
 import { getEtherscanTransactionUrl, useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
 import styles from './claim-actions.module.scss';
+import KlerosIcon from '../../components/icons/kleros-icon';
 
 interface Props {
   claim: Claim;
@@ -117,7 +120,9 @@ export default function ClaimActions(props: Props) {
         const disableEscalate = isPastNewDeadline || status === 'submitting' || status === 'submitted';
         return (
           <div className={styles.actionSection}>
-            <p>API3 Multi-sig</p>
+            <p className={styles.mediator}>
+              <Api3Icon aria-hidden /> API3 Mediators
+            </p>
             <div className={styles.actionMainInfo}>
               <span className={styles.rejected}>
                 <CloseIcon aria-hidden />
@@ -137,7 +142,7 @@ export default function ClaimActions(props: Props) {
               </Modal>
             </div>
             <p className={styles.actionMessage}>
-              You can escalate within the given time frame or the rejection will be automatically accepted.
+              If you don’t escalate to Kleros within the remaining time, the rejection will be accepted
             </p>
           </div>
         );
@@ -145,28 +150,42 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p>API3 Multi-sig</p>
-          <div className={styles.actionMainInfo}>Processing</div>
+          <p className={styles.mediator}>
+            <Api3Icon aria-hidden /> API3 Mediators
+          </p>
+          <div className={styles.actionMainInfo}>Evaluating</div>
+          <p className={styles.actionMessage}>API3 Mediators are currently evaluating your claim</p>
         </div>
       );
 
     case 'ClaimAccepted': {
       const payout = props.payout!;
+      const amountToPayInUsd = getAmountToPayInUsd(claim);
+
       return (
         <div className={styles.actionSection}>
-          <p>API3 Multi-sig</p>
+          <p className={styles.mediator}>
+            <Api3Icon aria-hidden /> API3 Mediators
+          </p>
           <div className={styles.actionMainInfo}>
             <span className={styles.approved}>
               <CheckIcon aria-hidden />
-              Approved
+              Accepted
             </span>
-            <div>${formatUsd(claim.claimAmountInUsd)} USD</div>
+            <div>{formatUsd(payout.amountInUsd)} USD</div>
             <PayoutAmount claim={claim} payout={payout} />
           </div>
           <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
           <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
             View the transaction here
           </ExternalLink>
+          {payout.amountInUsd.lt(amountToPayInUsd) && (
+            <p className={styles.coverageMessage}>
+              <WarningIcon aria-hidden className={styles.warningIcon} />
+              The full payout ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
+              coverage was paid out
+            </p>
+          )}
         </div>
       );
     }
@@ -174,16 +193,19 @@ export default function ClaimActions(props: Props) {
     case 'SettlementProposed':
       return (
         <div className={styles.actionSection}>
-          <p>API3 Multi-sig</p>
+          <p className={styles.mediator}>
+            <Api3Icon aria-hidden /> API3 Mediators
+          </p>
           <div className={styles.actionMainInfo}>
-            Countered with <br />${formatUsd(claim.settlementAmountInUsd!)}
+            Offered Settlement <br />
+            {formatUsd(claim.settlementAmountInUsd!)} USD
           </div>
           <div className={styles.actionPanel}>
-            <Button variant="primary" disabled={disableActions} onClick={handleAcceptCounter}>
-              Accept Counter
-            </Button>
             <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('escalate')}>
               Escalate to Kleros
+            </Button>
+            <Button variant="secondary" disabled={disableActions} onClick={handleAcceptCounter}>
+              Accept Settlement
             </Button>
             <Modal open={modalToShow === 'escalate'} onClose={handleModalClose}>
               <EscalateConfirmation
@@ -194,25 +216,38 @@ export default function ClaimActions(props: Props) {
             </Modal>
           </div>
           <p className={styles.actionMessage}>
-            You can take action within the given time frame or the counter offer will be automatically accepted.
+            <WarningIcon aria-hidden className={styles.warningIcon} />A selection must be made within the remaining time
+            or the claim will time out and no payout will be received. Escalating to Kleros may result in the entire
+            claim being rejected.
           </p>
         </div>
       );
 
     case 'SettlementAccepted': {
       const payout = props.payout!;
+      const amountToPayInUsd = getAmountToPayInUsd(claim);
+
       return (
         <div className={styles.actionSection}>
-          <p>{abbrStr(claim.claimant)}</p>
+          <p className={styles.mediator}>
+            <Api3Icon aria-hidden /> API3 Mediators
+          </p>
           <div className={styles.actionMainInfo}>
-            Accepted <br />
-            counter of <br />${formatUsd(claim.settlementAmountInUsd!)}
-            <PayoutAmount claim={claim} payout={props.payout!} />
+            Settled <br />
+            {formatUsd(payout.amountInUsd)} USD
+            <PayoutAmount claim={claim} payout={payout} />
           </div>
-          <p className={styles.actionMessage}>All done! The settlement has been accepted.</p>
+          <p className={styles.actionMessage}>All done! The settlement was accepted and paid out.</p>
           <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
             View the transaction here
           </ExternalLink>
+          {payout.amountInUsd.lt(amountToPayInUsd) && (
+            <p className={styles.coverageMessage}>
+              <WarningIcon aria-hidden className={styles.warningIcon} />
+              The full settlement ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
+              coverage was paid out
+            </p>
+          )}
         </div>
       );
     }
@@ -222,25 +257,34 @@ export default function ClaimActions(props: Props) {
         if (dispute?.appealedBy) {
           return (
             <div className={styles.actionSection}>
-              <p>{dispute.appealedBy === claim.claimant ? abbrStr(claim.claimant) : 'API3 Multi-sig'}</p>
-              <div className={styles.actionMainInfo}>Appealed to Kleros</div>
-              <p className={styles.actionMessage}>Kleros will decide the outcome of your claim again.</p>
+              <p className={styles.arbitrator}>
+                <KlerosIcon aria-hidden />
+                Kleros
+              </p>
+              <div className={styles.actionMainInfo}>Evaluating</div>
+              {dispute.appealedBy === claim.claimant ? (
+                <p className={styles.actionMessage}>
+                  You appealed Kleros’s ruling. Kleros jurors are currently evaluating your claim
+                </p>
+              ) : (
+                <p className={styles.actionMessage}>
+                  The API3 Mediators appealed Kleros’s ruling. Kleros jurors are currently evaluating your claim
+                </p>
+              )}
             </div>
           );
         }
 
         return (
           <div className={styles.actionSection}>
-            <p>{abbrStr(claim.claimant)}</p>
-            {claim.settlementAmountInUsd?.gt(0) ? (
-              <div className={styles.actionMainInfo}>
-                Escalated counter of <br />${formatUsd(claim.settlementAmountInUsd!)} <br />
-                to Kleros
-              </div>
-            ) : (
-              <div className={styles.actionMainInfo}>Escalated to Kleros</div>
-            )}
-            <p className={styles.actionMessage}>Kleros will decide the outcome of your claim.</p>
+            <p className={styles.arbitrator}>
+              <KlerosIcon aria-hidden />
+              Kleros
+            </p>
+            <div className={styles.actionMainInfo}>Evaluating</div>
+            <p className={styles.actionMessage}>
+              The claim was escalated to Kleros. Kleros jurors are currently evaluating your claim
+            </p>
           </div>
         );
       }
@@ -249,15 +293,24 @@ export default function ClaimActions(props: Props) {
         case 'PayClaim':
           return (
             <div className={styles.actionSection}>
-              <p>Kleros</p>
+              {dispute.period === 'Appeal' && <h5 style={{ marginBottom: 40 }}>Appeal Period</h5>}
+              <p className={styles.arbitrator}>
+                <KlerosIcon aria-hidden />
+                Kleros
+              </p>
               <div className={styles.actionMainInfo} data-testid="status-message">
                 <span className={styles.approved}>
                   <CheckIcon aria-hidden />
-                  Approved
+                  Accepted
                 </span>
                 <br />
-                {' full amount'}
+                {formatUsd(claim.claimAmountInUsd)} USD
               </div>
+              {dispute.period === 'Appeal' && (
+                <p className={styles.actionMessage}>
+                  During this appeal period the API3 Mediators have the opportunity to appeal Kleros’s ruling
+                </p>
+              )}
               {dispute.period === 'Execution' && (
                 <div className={styles.actionPanel}>
                   <Button variant="secondary" disabled={disableActions} onClick={handleExecutePayout}>
@@ -271,15 +324,15 @@ export default function ClaimActions(props: Props) {
         case 'PaySettlement':
           return (
             <div className={styles.actionSection}>
-              <p>Kleros</p>
+              {dispute.period === 'Appeal' && <h5 style={{ marginBottom: 40 }}>Appeal Period</h5>}
+              <p className={styles.arbitrator}>
+                <KlerosIcon aria-hidden />
+                Kleros
+              </p>
               <div className={styles.actionMainInfo} data-testid="status-message">
-                <span className={styles.approved}>
-                  <CheckIcon aria-hidden />
-                  Approved
-                </span>
+                Accepted Settlement
                 <br />
-                {' counter of '}
-                <br />${formatUsd(claim.settlementAmountInUsd!)}
+                <span>{formatUsd(claim.settlementAmountInUsd!)} USD</span>
               </div>
               {dispute.period === 'Appeal' && (
                 <>
@@ -297,7 +350,7 @@ export default function ClaimActions(props: Props) {
                     </Modal>
                   </div>
                   <p className={styles.actionMessage}>
-                    You can appeal within the given time frame or the counter offer will be automatically accepted.
+                    During this appeal period you have the opportunity to appeal Kleros’s ruling
                   </p>
                 </>
               )}
@@ -314,8 +367,17 @@ export default function ClaimActions(props: Props) {
         case 'DoNotPay':
           return (
             <div className={styles.actionSection}>
-              <p>Kleros</p>
-              <div className={styles.actionMainInfo}>Rejected</div>
+              {dispute.period === 'Appeal' && <h5 style={{ marginBottom: 40 }}>Appeal Period</h5>}
+              <p className={styles.arbitrator}>
+                <KlerosIcon aria-hidden />
+                Kleros
+              </p>
+              <div className={styles.actionMainInfo}>
+                <span className={styles.rejected}>
+                  <CloseIcon aria-hidden />
+                  Rejected
+                </span>
+              </div>
               {dispute.period === 'Appeal' && (
                 <>
                   <div className={styles.actionPanel}>
@@ -332,7 +394,7 @@ export default function ClaimActions(props: Props) {
                     </Modal>
                   </div>
                   <p className={styles.actionMessage}>
-                    You can appeal within the given time frame or the rejection will be automatically accepted.
+                    During this appeal period you have the opportunity to appeal Kleros’s ruling
                   </p>
                 </>
               )}
@@ -345,45 +407,68 @@ export default function ClaimActions(props: Props) {
 
     case 'DisputeResolvedWithClaimPayout': {
       const payout = props.payout!;
+      const amountToPayInUsd = getAmountToPayInUsd(claim);
+
       return (
         <div className={styles.actionSection}>
-          <p>Kleros</p>
+          <p className={styles.arbitrator}>
+            <KlerosIcon aria-hidden />
+            Kleros
+          </p>
           <div className={styles.actionMainInfo} data-testid="status-message">
             <span className={styles.approved}>
               <CheckIcon aria-hidden />
-              Approved
+              Accepted
             </span>
             <br />
-            {' full amount'}
-            <PayoutAmount claim={claim} payout={props.payout!} />
+            {formatUsd(payout.amountInUsd)} USD
+            <PayoutAmount claim={claim} payout={payout} />
           </div>
-          <p className={styles.actionMessage}>All done! The claim has been paid out.</p>
+          <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
           <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
             View the transaction here
           </ExternalLink>
+          {payout.amountInUsd.lt(amountToPayInUsd) && (
+            <p className={styles.coverageMessage}>
+              <WarningIcon aria-hidden className={styles.warningIcon} />
+              The full payout ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
+              coverage was paid out
+            </p>
+          )}
         </div>
       );
     }
 
     case 'DisputeResolvedWithSettlementPayout': {
       const payout = props.payout!;
+      const amountToPayInUsd = getAmountToPayInUsd(claim);
+
       return (
         <div className={styles.actionSection}>
-          <p>Kleros</p>
+          <p className={styles.arbitrator}>
+            <KlerosIcon aria-hidden />
+            Kleros
+          </p>
           <div className={styles.actionMainInfo} data-testid="status-message">
             <span className={styles.approved}>
               <CheckIcon aria-hidden />
-              Approved
+              Settled
             </span>
             <br />
-            {' counter of '}
-            <br />${formatUsd(claim.settlementAmountInUsd!)}
+            {formatUsd(payout.amountInUsd)} USD
             <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
-          <p className={styles.actionMessage}>All done! The settlement has been paid out.</p>
+          <p className={styles.actionMessage}>All done! The settlement was accepted and paid out.</p>
           <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
             View the transaction here
           </ExternalLink>
+          {payout.amountInUsd.lt(amountToPayInUsd) && (
+            <p className={styles.coverageMessage}>
+              <WarningIcon aria-hidden className={styles.warningIcon} />
+              The full settlement ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
+              coverage was paid out
+            </p>
+          )}
         </div>
       );
     }
@@ -391,12 +476,30 @@ export default function ClaimActions(props: Props) {
     case 'DisputeResolvedWithoutPayout':
       return (
         <div className={styles.actionSection}>
-          <p>Kleros</p>
-          <div className={styles.actionMainInfo}>Rejected</div>
+          <p className={styles.arbitrator}>
+            <KlerosIcon aria-hidden />
+            Kleros
+          </p>
+          <div className={styles.actionMainInfo}>
+            <span className={styles.rejected}>
+              <CloseIcon aria-hidden />
+              Rejected
+            </span>
+          </div>
         </div>
       );
 
     case 'None':
       return null;
+  }
+}
+
+function getAmountToPayInUsd(claim: Claim) {
+  switch (claim.status) {
+    case 'SettlementAccepted':
+    case 'DisputeResolvedWithSettlementPayout':
+      return claim.settlementAmountInUsd!;
+    default:
+      return claim.claimAmountInUsd;
   }
 }

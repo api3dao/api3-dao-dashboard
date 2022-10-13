@@ -14,8 +14,8 @@
 .actionMainInfo {
   font-size: $heading-5;
   line-height: $lh-heading-5;
-  font-weight: bold;
-  margin-bottom: 4rem;
+  font-weight: 600;
+  margin-bottom: 40px;
 }
 
 .approved {
@@ -44,7 +44,33 @@
 }
 
 .actionMessage {
-  color: $tertiary-color;
-  font-weight: 400;
   max-width: 52ch;
+}
+
+.coverageMessage {
+  margin-top: 40px;
+  max-width: 52ch;
+}
+
+.mediator {
+  display: flex;
+  align-items: center;
+  svg {
+    height: 18px;
+  }
+}
+
+.arbitrator {
+  display: flex;
+  align-items: center;
+  svg {
+    height: 18px;
+  }
+}
+
+.warningIcon {
+  color: $pink-color;
+  transform: translateY(5px);
+  width: 24px;
+  margin-right: 1ch;
 }
