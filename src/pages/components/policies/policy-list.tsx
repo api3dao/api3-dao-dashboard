@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import Skeleton from '../../../components/skeleton';
 import { BasePolicy } from '../../../chain-data';
 import { isActive, useRemainingCoverageLoader } from '../../../logic/policies';
 import { useStableIds, formatUsd, images } from '../../../utils';
@@ -16,36 +17,51 @@ export default function PolicyList(props: Props) {
 
   return (
     <ul className={styles.policyList}>
-      {props.policies.map((policy) => (
-        <li key={policy.policyId} className={styles.policyItem}>
-          <div className={styles.policyItemMain}>
-            <Link className={styles.policyItemTitle} to={`/policies/${policy.policyId}`}>
-              {policy.metadata}
-            </Link>
+      {props.policies.map((policy) => {
+        const activeStatus = isActive(policy) ? (
+          <span className={styles.active}>Active</span>
+        ) : (
+          <span className={styles.inactive}>Inactive</span>
+        );
 
-            <div className={styles.policyItemInfo}>
-              {isActive(policy) ? <span>Active</span> : <span className={globalStyles.tertiaryColor}>Inactive</span>}
-              <div className={styles.infoEntry}>
-                <span className={globalStyles.tertiaryColor}>Claims Allowed Until: </span>
-                <span>
-                  {format(policy.claimsAllowedUntil, 'dd MMM yyyy')}
-                  <span className={globalStyles.tertiaryColor}> {format(policy.claimsAllowedUntil, 'HH:mm')}</span>
-                </span>
-              </div>
-              <div className={styles.infoEntry}>
-                <span className={globalStyles.tertiaryColor}>Coverage: </span>
-                {policy.remainingCoverageInUsd && <span>${formatUsd(policy.remainingCoverageInUsd)}</span>}
+        return (
+          <li key={policy.policyId} className={styles.policyItem}>
+            <div className={styles.policyItemMain}>
+              <div className={styles.mobileActiveStatus}>{activeStatus}</div>
+              <Link className={styles.policyItemTitle} to={`/policies/${policy.policyId}`}>
+                {policy.metadata}
+              </Link>
+
+              <div className={styles.policyItemInfo}>
+                <span className={styles.desktopActiveStatus}>{activeStatus}</span>
+                <div className={styles.infoEntry}>
+                  <span className={globalStyles.tertiaryColor}>Claims Allowed Until: </span>
+                  <span>
+                    {format(policy.claimsAllowedUntil, 'dd MMM yyyy')}
+                    <span className={globalStyles.tertiaryColor}> {format(policy.claimsAllowedUntil, 'HH:mm')}</span>
+                  </span>
+                </div>
+                <div className={styles.infoEntry}>
+                  {policy.remainingCoverageInUsd ? (
+                    <span>
+                      ${formatUsd(policy.remainingCoverageInUsd)}{' '}
+                      <span className={globalStyles.tertiaryColor}>remaining</span>
+                    </span>
+                  ) : (
+                    <Skeleton width="12ch" />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className={styles.policyItemAction}>
-            <Link tabIndex={-1} to={`/policies/${policy.policyId}`}>
-              <img src={images.arrowRight} alt="right arrow" />
-            </Link>
-          </div>
-        </li>
-      ))}
+            <div className={styles.policyItemAction}>
+              <Link tabIndex={-1} to={`/policies/${policy.policyId}`}>
+                <img src={images.arrowRight} alt="right arrow" />
+              </Link>
+            </div>
+          </li>
+        );
+      })}
     </ul>
   );
 }

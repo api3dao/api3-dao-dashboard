@@ -1,6 +1,6 @@
 import { useHistory } from 'react-router';
 import { BaseLayout } from '../../components/layout';
-import BorderedBox, { Header } from '../../components/bordered-box';
+import BorderedBox from '../../components/bordered-box';
 import Policies from '../components/policies';
 import SearchForm from '../components/search-form';
 import { useQueryParams } from '../../utils';
@@ -26,18 +26,11 @@ export default function PolicySelect() {
   return (
     <BaseLayout subtitle="New Claim">
       <h4 className={styles.heading}>New Claim</h4>
+      <h5 className={styles.subHeading}>Select a Policy to use in your Claim</h5>
       <div className={styles.formContainer}>
         <SearchForm query={query} placeholder="Search for your policy" onSubmit={handleSubmit} onClear={handleClear} />
       </div>
-      <BorderedBox
-        noMobileBorders
-        header={
-          <Header>
-            <h5>Select a Policy to use in your Claim</h5>
-          </Header>
-        }
-        content={<Policies query={query} filter="active" currentPage={currentPage} />}
-      />
+      <BorderedBox noMobileBorders content={<Policies query={query} filter="active" currentPage={currentPage} />} />
     </BaseLayout>
   );
 }

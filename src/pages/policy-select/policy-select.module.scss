@@ -1,8 +1,34 @@
+@import '../../styles/variables.module.scss';
+
 .heading {
-  margin-bottom: 70px;
+  font-size: $heading-5;
+  line-height: $lh-heading-5;
+  margin-bottom: $space-xl;
+
+  @media (min-width: $min-sm) {
+    font-size: $heading-4;
+    line-height: $lh-heading-4;
+    margin-bottom: 70px;
+  }
+}
+
+.subHeading {
+  font-size: 20px;
+  line-height: 32px;
+  margin-bottom: $space-lg;
+
+  @media (min-width: $min-sm) {
+    font-size: $heading-5;
+    line-height: $lh-heading-5;
+    margin-bottom: $space-xl;
+  }
 }
 
 .formContainer {
   max-width: 380px;
-  margin-bottom: 80px;
+  margin-bottom: 64px;
+
+  @media (min-width: $min-sm) {
+    margin-bottom: 80px;
+  }
 }
