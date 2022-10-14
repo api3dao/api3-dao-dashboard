@@ -31,8 +31,8 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={null} />);
 
-      expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
-      expect(screen.getByText(/Processing/i)).toBeInTheDocument();
+      expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+      expect(screen.getByTestId('status')).toHaveTextContent('Evaluating');
     });
 
     describe('when the claim has been ignored by API3', () => {
@@ -42,20 +42,21 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
-        expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
+        expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+        expect(screen.getByTestId('status')).toHaveTextContent('Rejected');
         const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
         expect(appealButton).not.toBeDisabled();
       });
 
-      it('disables the Escalate button when the new deadline has passed', () => {
+      it('removes the Escalate button when the new deadline has passed', () => {
         claim.status = 'ClaimCreated';
         claim.deadline = addDays(addMinutes(new Date(), -1), -3);
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
-        expect(appealButton).toBeDisabled();
+        expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+        expect(screen.getByTestId('status')).toHaveTextContent('Rejected');
+        expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
     });
   });
@@ -68,25 +69,23 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={null} />);
 
-      expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
-      expect(screen.getByText(/Countered with \$500.0/i)).toBeInTheDocument();
-      const acceptButton = screen.getByRole('button', { name: /Accept Counter/i });
+      expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+      expect(screen.getByTestId('status')).toHaveTextContent('Offered Settlement');
+      const acceptButton = screen.getByRole('button', { name: /Accept Settlement/i });
       const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
       expect(acceptButton).not.toBeDisabled();
       expect(appealButton).not.toBeDisabled();
     });
 
-    it('disables the buttons when the deadline has passed', () => {
+    it('shows that proposed settlement has timed out', () => {
       claim.status = 'SettlementProposed';
       claim.settlementAmountInUsd = parseUsd('500');
       claim.deadline = addMinutes(new Date(), -1);
 
       render(<ClaimActions claim={claim} payout={null} />);
 
-      const acceptButton = screen.getByRole('button', { name: /Accept Counter/i });
-      const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
-      expect(acceptButton).toBeDisabled();
-      expect(appealButton).toBeDisabled();
+      expect(screen.getByTestId('status')).toHaveTextContent('Timed Out');
+      expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
   });
 
@@ -102,8 +101,8 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={payout} />);
 
-      expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
-      expect(screen.getByText(/Accepted counter of \$500.0/i)).toBeInTheDocument();
+      expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+      expect(screen.getByTestId('status')).toHaveTextContent('Settled');
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
@@ -126,25 +125,9 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={null} />);
 
-      expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
-      expect(screen.getByText(/Escalated to Kleros/i)).toBeInTheDocument();
+      expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+      expect(screen.getByTestId('status')).toHaveTextContent('Evaluating');
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
-    });
-
-    it('shows counter offer amount when present', () => {
-      claim.settlementAmountInUsd = parseUsd('500');
-      claim.dispute = {
-        id: '1',
-        status: 'Waiting',
-        ruling: 'DoNotPay',
-        period: 'Evidence',
-        periodEndDate: addDays(new Date(), 2),
-        appealedBy: null,
-      };
-
-      render(<ClaimActions claim={claim} payout={null} />);
-
-      expect(screen.getByText(/Escalated counter of \$500.0 to Kleros/i)).toBeInTheDocument();
     });
 
     describe('with "PayClaim" arbitrator ruling', () => {
@@ -161,8 +144,8 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-        expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved full amount/i);
+        expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+        expect(screen.getByTestId('status')).toHaveTextContent(/Accepted$/);
         expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
 
@@ -202,8 +185,8 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-        expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of \$500.0/i);
+        expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+        expect(screen.getByTestId('status')).toHaveTextContent('Accepted Settlement');
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).not.toBeDisabled();
         expect(screen.queryAllByRole('button')).toHaveLength(1); // There should only be the one action
@@ -258,8 +241,8 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-        expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
+        expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+        expect(screen.getByTestId('status')).toHaveTextContent('Rejected');
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).not.toBeDisabled();
         expect(screen.queryAllByRole('button')).toHaveLength(1); // There should only be the one action
@@ -311,9 +294,9 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByText('0x153EF0B...2334')).toBeInTheDocument();
-        expect(screen.getByText(/Appealed to Kleros/i)).toBeInTheDocument();
-        expect(screen.queryByText('API3 Multi-sig')).not.toBeInTheDocument();
+        expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+        expect(screen.getByTestId('status')).toHaveTextContent('Evaluating');
+        expect(screen.getByText(/You appealed Kleros’s ruling/i)).toBeInTheDocument();
         expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
 
@@ -329,8 +312,9 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByText('API3 Multi-sig')).toBeInTheDocument();
-        expect(screen.getByText(/Appealed to Kleros/i)).toBeInTheDocument();
+        expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+        expect(screen.getByTestId('status')).toHaveTextContent('Evaluating');
+        expect(screen.getByText(/The API3 Mediators appealed Kleros’s ruling/i)).toBeInTheDocument();
         expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
     });
@@ -343,8 +327,8 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={null} />);
 
-      expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-      expect(screen.getByText(/Rejected/i)).toBeInTheDocument();
+      expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+      expect(screen.getByTestId('status')).toHaveTextContent('Rejected');
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
   });
@@ -360,8 +344,8 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={payout} />);
 
-      expect(screen.getByText(/API3 Multi-sig/i)).toBeInTheDocument();
-      expect(screen.getByText(/Approved/i)).toBeInTheDocument();
+      expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+      expect(screen.getByTestId('status')).toHaveTextContent(/Accepted$/);
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
@@ -378,8 +362,8 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={payout} />);
 
-      expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-      expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved full amount/i);
+      expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+      expect(screen.getByTestId('status')).toHaveTextContent(/Accepted$/);
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
@@ -398,8 +382,8 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={payout} />);
 
-      expect(screen.getByText(/Kleros/i)).toBeInTheDocument();
-      expect(screen.getByTestId('status-message')).toHaveTextContent(/Approved counter of \$500.0/i);
+      expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+      expect(screen.getByTestId('status')).toHaveTextContent('Settled');
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });

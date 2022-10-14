@@ -122,11 +122,11 @@ export default function ClaimActions(props: Props) {
         if (isPastNewDeadline) {
           return (
             <div className={styles.actionSection}>
-              <p className={styles.mediator}>
+              <p className={styles.mediator} data-testid="actor">
                 <Api3Icon aria-hidden /> API3 Mediators
               </p>
               <div className={styles.actionMainInfo}>
-                <span className={styles.rejected}>
+                <span className={styles.rejected} data-testid="status">
                   <CloseIcon aria-hidden />
                   Rejected
                 </span>
@@ -142,11 +142,13 @@ export default function ClaimActions(props: Props) {
         const disableEscalate = status === 'submitting' || status === 'submitted';
         return (
           <div className={styles.actionSection}>
-            <p className={styles.mediator}>
+            <p className={styles.mediator} data-testid="actor">
               <Api3Icon aria-hidden /> API3 Mediators
             </p>
             <div className={styles.actionMainInfo}>
-              <span className={globalStyles.primaryColor}>Rejected</span>
+              <span className={globalStyles.primaryColor} data-testid="status">
+                Rejected
+              </span>
             </div>
             <div className={styles.actionPanel}>
               <Button variant="secondary" disabled={disableEscalate} onClick={() => setModalToShow('escalate')}>
@@ -169,10 +171,12 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.mediator}>
+          <p className={styles.mediator} data-testid="actor">
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
-          <div className={styles.actionMainInfo}>Evaluating</div>
+          <div className={styles.actionMainInfo} data-testid="status">
+            Evaluating
+          </div>
           <p className={styles.actionMessage}>API3 Mediators are currently evaluating your claim</p>
         </div>
       );
@@ -183,11 +187,11 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.mediator}>
+          <p className={styles.mediator} data-testid="actor">
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
-            <span className={styles.approved}>
+            <span className={styles.approved} data-testid="status">
               <CheckIcon aria-hidden />
               Accepted
             </span>
@@ -214,7 +218,9 @@ export default function ClaimActions(props: Props) {
         return (
           <div className={styles.actionSection}>
             <div className={styles.actionMainInfo}>
-              <span className={globalStyles.primaryColor}>Timed Out</span>
+              <span className={globalStyles.primaryColor} data-testid="status">
+                Timed Out
+              </span>
             </div>
             <p className={styles.actionMessage}>
               A settlement was offered by the API3 Mediators and wasn’t accepted within the required time period
@@ -225,11 +231,13 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.mediator}>
+          <p className={styles.mediator} data-testid="actor">
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
-            <div className={globalStyles.primaryColor}>Offered Settlement</div>
+            <div className={globalStyles.primaryColor} data-testid="status">
+              Offered Settlement
+            </div>
             {formatUsd(claim.settlementAmountInUsd!)} USD
           </div>
           <div className={styles.actionPanel}>
@@ -261,11 +269,11 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.mediator}>
+          <p className={styles.mediator} data-testid="actor">
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
-            <div className={styles.approved}>
+            <div className={styles.approved} data-testid="status">
               <CheckIcon aria-hidden />
               Settled
             </div>
@@ -292,11 +300,13 @@ export default function ClaimActions(props: Props) {
         if (dispute?.appealedBy) {
           return (
             <div className={styles.actionSection}>
-              <p className={styles.arbitrator}>
+              <p className={styles.arbitrator} data-testid="actor">
                 <KlerosIcon aria-hidden />
                 Kleros
               </p>
-              <div className={styles.actionMainInfo}>Evaluating</div>
+              <div className={styles.actionMainInfo} data-testid="status">
+                Evaluating
+              </div>
               {dispute.appealedBy === claim.claimant ? (
                 <p className={styles.actionMessage}>
                   You appealed Kleros’s ruling. Kleros jurors are currently evaluating your claim
@@ -312,11 +322,13 @@ export default function ClaimActions(props: Props) {
 
         return (
           <div className={styles.actionSection}>
-            <p className={styles.arbitrator}>
+            <p className={styles.arbitrator} data-testid="actor">
               <KlerosIcon aria-hidden />
               Kleros
             </p>
-            <div className={styles.actionMainInfo}>Evaluating</div>
+            <div className={styles.actionMainInfo} data-testid="status">
+              Evaluating
+            </div>
             <p className={styles.actionMessage}>
               The claim was escalated to Kleros. Kleros jurors are currently evaluating your claim
             </p>
@@ -329,12 +341,14 @@ export default function ClaimActions(props: Props) {
           return (
             <div className={styles.actionSection}>
               {dispute.period === 'Appeal' && <h5 style={{ marginBottom: 40 }}>Appeal Period</h5>}
-              <p className={styles.arbitrator}>
+              <p className={styles.arbitrator} data-testid="actor">
                 <KlerosIcon aria-hidden />
                 Kleros
               </p>
-              <div className={styles.actionMainInfo} data-testid="status-message">
-                <div className={globalStyles.primaryColor}>Accepted</div>
+              <div className={styles.actionMainInfo}>
+                <div className={globalStyles.primaryColor} data-testid="status">
+                  Accepted
+                </div>
                 {formatUsd(claim.claimAmountInUsd)} USD
               </div>
               {dispute.period === 'Appeal' && (
@@ -356,12 +370,14 @@ export default function ClaimActions(props: Props) {
           return (
             <div className={styles.actionSection}>
               {dispute.period === 'Appeal' && <h5 style={{ marginBottom: 40 }}>Appeal Period</h5>}
-              <p className={styles.arbitrator}>
+              <p className={styles.arbitrator} data-testid="actor">
                 <KlerosIcon aria-hidden />
                 Kleros
               </p>
-              <div className={styles.actionMainInfo} data-testid="status-message">
-                <div className={globalStyles.primaryColor}>Accepted Settlement</div>
+              <div className={styles.actionMainInfo}>
+                <div className={globalStyles.primaryColor} data-testid="status">
+                  Accepted Settlement
+                </div>
                 {formatUsd(claim.settlementAmountInUsd!)} USD
               </div>
               {dispute.period === 'Appeal' && (
@@ -398,12 +414,14 @@ export default function ClaimActions(props: Props) {
           return (
             <div className={styles.actionSection}>
               {dispute.period === 'Appeal' && <h5 style={{ marginBottom: 40 }}>Appeal Period</h5>}
-              <p className={styles.arbitrator}>
+              <p className={styles.arbitrator} data-testid="actor">
                 <KlerosIcon aria-hidden />
                 Kleros
               </p>
               <div className={styles.actionMainInfo}>
-                <span className={globalStyles.primaryColor}>Rejected</span>
+                <span className={globalStyles.primaryColor} data-testid="status">
+                  Rejected
+                </span>
               </div>
               {dispute.period === 'Appeal' && (
                 <>
@@ -421,7 +439,7 @@ export default function ClaimActions(props: Props) {
                     </Modal>
                   </div>
                   <p className={styles.actionMessage}>
-                    During this appeal period you have the opportunity to appeal Kleros’s ruling
+                    During this appeal period you and the API3 Mediators have the opportunity to appeal Kleros’s ruling
                   </p>
                 </>
               )}
@@ -438,12 +456,12 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.arbitrator}>
+          <p className={styles.arbitrator} data-testid="actor">
             <KlerosIcon aria-hidden />
             Kleros
           </p>
-          <div className={styles.actionMainInfo} data-testid="status-message">
-            <div className={styles.approved}>
+          <div className={styles.actionMainInfo}>
+            <div className={styles.approved} data-testid="status">
               <CheckIcon aria-hidden />
               Accepted
             </div>
@@ -471,12 +489,12 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.arbitrator}>
+          <p className={styles.arbitrator} data-testid="actor">
             <KlerosIcon aria-hidden />
             Kleros
           </p>
-          <div className={styles.actionMainInfo} data-testid="status-message">
-            <div className={styles.approved}>
+          <div className={styles.actionMainInfo}>
+            <div className={styles.approved} data-testid="status">
               <CheckIcon aria-hidden />
               Settled
             </div>
@@ -501,12 +519,12 @@ export default function ClaimActions(props: Props) {
     case 'DisputeResolvedWithoutPayout':
       return (
         <div className={styles.actionSection}>
-          <p className={styles.arbitrator}>
+          <p className={styles.arbitrator} data-testid="actor">
             <KlerosIcon aria-hidden />
             Kleros
           </p>
           <div className={styles.actionMainInfo}>
-            <span className={styles.rejected}>
+            <span className={styles.rejected} data-testid="status">
               <CloseIcon aria-hidden />
               Rejected
             </span>
