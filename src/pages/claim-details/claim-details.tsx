@@ -55,7 +55,7 @@ export default function ClaimDetails() {
         <h4>{claim.policy.metadata}</h4>
         {deadline && <Timer size="large" deadline={deadline} onDeadlineExceeded={forceUpdate} showDeadline />}
       </div>
-      <ClaimActions key={claim.status} claim={claim} payout={payout} />
+      <ClaimActions key={`${claim.status}-${claim.dispute?.status}`} claim={claim} payout={payout} />
       <BorderedBox
         noMobileBorders
         header={

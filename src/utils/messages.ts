@@ -132,9 +132,9 @@ export const transactionMessages: { [key in TransactionType]: PendingTransaction
     error: 'Failed to submit new claim. Please try again.',
   },
   'accept-claim-settlement': {
-    start: 'Accepting counter offer...',
-    success: 'Success! Counter offer has been accepted.',
-    error: 'Failed to accept counter. Please try again.',
+    start: 'Accepting settlement...',
+    success: 'Success! Claim has been settled.',
+    error: 'Failed to accept settlement. Please try again.',
   },
   'escalate-claim-to-arbitrator': {
     start: 'Escalating to Kleros...',

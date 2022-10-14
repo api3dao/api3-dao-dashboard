@@ -6,6 +6,7 @@ import { Modal } from '../../components/modal';
 import CheckIcon from '../../components/icons/check-icon';
 import CloseIcon from '../../components/icons/close-icon';
 import Api3Icon from '../../components/icons/api3-icon';
+import KlerosIcon from '../../components/icons/kleros-icon';
 import WarningIcon from '../../components/icons/warning-icon';
 import { AppealConfirmation, EscalateConfirmation } from './confirmations';
 import PayoutAmount from './payout-amount';
@@ -14,8 +15,8 @@ import { formatUsd, handleTransactionError } from '../../utils';
 import { isAfter } from 'date-fns';
 import { getEtherscanTransactionUrl, useArbitratorProxy, useClaimsManager } from '../../contracts';
 import { getCurrentDeadline } from '../../logic/claims';
+import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-actions.module.scss';
-import KlerosIcon from '../../components/icons/kleros-icon';
 
 interface Props {
   claim: Claim;
@@ -35,7 +36,7 @@ export default function ClaimActions(props: Props) {
   const isPastDeadline = claim.deadline ? isAfter(new Date(), claim.deadline) : false;
   const disableActions = isPastDeadline || status === 'submitting' || status === 'submitted';
 
-  const handleAcceptCounter = async () => {
+  const handleAcceptSettlement = async () => {
     setStatus('submitting');
     const tx = await handleTransactionError(
       claimsManager.acceptSettlement(claim.policy.id, claim.beneficiary, claim.claimAmountInUsd, claim.evidence, '0')
@@ -117,17 +118,35 @@ export default function ClaimActions(props: Props) {
         // The claim has been ignored (most likely judged to be spam), so we show that it has
         // been rejected, and the user has 3 days to create a dispute
         const isPastNewDeadline = isAfter(new Date(), getCurrentDeadline(claim)!);
-        const disableEscalate = isPastNewDeadline || status === 'submitting' || status === 'submitted';
+
+        if (isPastNewDeadline) {
+          return (
+            <div className={styles.actionSection}>
+              <p className={styles.mediator}>
+                <Api3Icon aria-hidden /> API3 Mediators
+              </p>
+              <div className={styles.actionMainInfo}>
+                <span className={styles.rejected}>
+                  <CloseIcon aria-hidden />
+                  Rejected
+                </span>
+              </div>
+              <p className={styles.actionMessage}>
+                The claim was rejected by the API3 Mediators and wasn’t escalated to Kleros within the required time
+                period
+              </p>
+            </div>
+          );
+        }
+
+        const disableEscalate = status === 'submitting' || status === 'submitted';
         return (
           <div className={styles.actionSection}>
             <p className={styles.mediator}>
               <Api3Icon aria-hidden /> API3 Mediators
             </p>
             <div className={styles.actionMainInfo}>
-              <span className={styles.rejected}>
-                <CloseIcon aria-hidden />
-                Rejected
-              </span>
+              <span className={globalStyles.primaryColor}>Rejected</span>
             </div>
             <div className={styles.actionPanel}>
               <Button variant="secondary" disabled={disableEscalate} onClick={() => setModalToShow('escalate')}>
@@ -160,7 +179,7 @@ export default function ClaimActions(props: Props) {
 
     case 'ClaimAccepted': {
       const payout = props.payout!;
-      const amountToPayInUsd = getAmountToPayInUsd(claim);
+      const amountToPayInUsd = claim.claimAmountInUsd;
 
       return (
         <div className={styles.actionSection}>
@@ -191,20 +210,33 @@ export default function ClaimActions(props: Props) {
     }
 
     case 'SettlementProposed':
+      if (isPastDeadline) {
+        return (
+          <div className={styles.actionSection}>
+            <div className={styles.actionMainInfo}>
+              <span className={globalStyles.primaryColor}>Timed Out</span>
+            </div>
+            <p className={styles.actionMessage}>
+              A settlement was offered by the API3 Mediators and wasn’t accepted within the required time period
+            </p>
+          </div>
+        );
+      }
+
       return (
         <div className={styles.actionSection}>
           <p className={styles.mediator}>
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
-            Offered Settlement <br />
+            <div className={globalStyles.primaryColor}>Offered Settlement</div>
             {formatUsd(claim.settlementAmountInUsd!)} USD
           </div>
           <div className={styles.actionPanel}>
             <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('escalate')}>
               Escalate to Kleros
             </Button>
-            <Button variant="secondary" disabled={disableActions} onClick={handleAcceptCounter}>
+            <Button variant="secondary" disabled={disableActions} onClick={handleAcceptSettlement}>
               Accept Settlement
             </Button>
             <Modal open={modalToShow === 'escalate'} onClose={handleModalClose}>
@@ -225,7 +257,7 @@ export default function ClaimActions(props: Props) {
 
     case 'SettlementAccepted': {
       const payout = props.payout!;
-      const amountToPayInUsd = getAmountToPayInUsd(claim);
+      const amountToPayInUsd = claim.settlementAmountInUsd!;
 
       return (
         <div className={styles.actionSection}>
@@ -233,7 +265,10 @@ export default function ClaimActions(props: Props) {
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
-            Settled <br />
+            <div className={styles.approved}>
+              <CheckIcon aria-hidden />
+              Settled
+            </div>
             {formatUsd(payout.amountInUsd)} USD
             <PayoutAmount claim={claim} payout={payout} />
           </div>
@@ -299,11 +334,7 @@ export default function ClaimActions(props: Props) {
                 Kleros
               </p>
               <div className={styles.actionMainInfo} data-testid="status-message">
-                <span className={styles.approved}>
-                  <CheckIcon aria-hidden />
-                  Accepted
-                </span>
-                <br />
+                <div className={globalStyles.primaryColor}>Accepted</div>
                 {formatUsd(claim.claimAmountInUsd)} USD
               </div>
               {dispute.period === 'Appeal' && (
@@ -330,9 +361,8 @@ export default function ClaimActions(props: Props) {
                 Kleros
               </p>
               <div className={styles.actionMainInfo} data-testid="status-message">
-                Accepted Settlement
-                <br />
-                <span>{formatUsd(claim.settlementAmountInUsd!)} USD</span>
+                <div className={globalStyles.primaryColor}>Accepted Settlement</div>
+                {formatUsd(claim.settlementAmountInUsd!)} USD
               </div>
               {dispute.period === 'Appeal' && (
                 <>
@@ -373,10 +403,7 @@ export default function ClaimActions(props: Props) {
                 Kleros
               </p>
               <div className={styles.actionMainInfo}>
-                <span className={styles.rejected}>
-                  <CloseIcon aria-hidden />
-                  Rejected
-                </span>
+                <span className={globalStyles.primaryColor}>Rejected</span>
               </div>
               {dispute.period === 'Appeal' && (
                 <>
@@ -407,7 +434,7 @@ export default function ClaimActions(props: Props) {
 
     case 'DisputeResolvedWithClaimPayout': {
       const payout = props.payout!;
-      const amountToPayInUsd = getAmountToPayInUsd(claim);
+      const amountToPayInUsd = claim.claimAmountInUsd;
 
       return (
         <div className={styles.actionSection}>
@@ -416,11 +443,10 @@ export default function ClaimActions(props: Props) {
             Kleros
           </p>
           <div className={styles.actionMainInfo} data-testid="status-message">
-            <span className={styles.approved}>
+            <div className={styles.approved}>
               <CheckIcon aria-hidden />
               Accepted
-            </span>
-            <br />
+            </div>
             {formatUsd(payout.amountInUsd)} USD
             <PayoutAmount claim={claim} payout={payout} />
           </div>
@@ -441,7 +467,7 @@ export default function ClaimActions(props: Props) {
 
     case 'DisputeResolvedWithSettlementPayout': {
       const payout = props.payout!;
-      const amountToPayInUsd = getAmountToPayInUsd(claim);
+      const amountToPayInUsd = claim.settlementAmountInUsd!;
 
       return (
         <div className={styles.actionSection}>
@@ -450,11 +476,10 @@ export default function ClaimActions(props: Props) {
             Kleros
           </p>
           <div className={styles.actionMainInfo} data-testid="status-message">
-            <span className={styles.approved}>
+            <div className={styles.approved}>
               <CheckIcon aria-hidden />
               Settled
-            </span>
-            <br />
+            </div>
             {formatUsd(payout.amountInUsd)} USD
             <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
@@ -486,20 +511,11 @@ export default function ClaimActions(props: Props) {
               Rejected
             </span>
           </div>
+          <p className={styles.actionMessage}>The ruling wasn’t appealed to Kleros within the required time period</p>
         </div>
       );
 
     case 'None':
       return null;
-  }
-}
-
-function getAmountToPayInUsd(claim: Claim) {
-  switch (claim.status) {
-    case 'SettlementAccepted':
-    case 'DisputeResolvedWithSettlementPayout':
-      return claim.settlementAmountInUsd!;
-    default:
-      return claim.claimAmountInUsd;
   }
 }
