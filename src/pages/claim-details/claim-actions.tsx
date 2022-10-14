@@ -191,11 +191,11 @@ export default function ClaimActions(props: Props) {
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
-            <span className={styles.approved} data-testid="status">
+            <div className={styles.approved} data-testid="status">
               <CheckIcon aria-hidden />
               Accepted
-            </span>
-            <div>{formatUsd(payout.amountInUsd)} USD</div>
+            </div>
+            <div data-testid="usd-amount">{formatUsd(payout.amountInUsd)} USD</div>
             <PayoutAmount claim={claim} payout={payout} />
           </div>
           <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
@@ -238,7 +238,7 @@ export default function ClaimActions(props: Props) {
             <div className={globalStyles.primaryColor} data-testid="status">
               Offered Settlement
             </div>
-            {formatUsd(claim.settlementAmountInUsd!)} USD
+            <div data-testid="usd-amount">{formatUsd(claim.settlementAmountInUsd!)} USD</div>
           </div>
           <div className={styles.actionPanel}>
             <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('escalate')}>
@@ -277,7 +277,7 @@ export default function ClaimActions(props: Props) {
               <CheckIcon aria-hidden />
               Settled
             </div>
-            {formatUsd(payout.amountInUsd)} USD
+            <div data-testid="usd-amount">{formatUsd(payout.amountInUsd)} USD</div>
             <PayoutAmount claim={claim} payout={payout} />
           </div>
           <p className={styles.actionMessage}>All done! The settlement was accepted and paid out.</p>
@@ -340,7 +340,7 @@ export default function ClaimActions(props: Props) {
         case 'PayClaim':
           return (
             <div className={styles.actionSection}>
-              {dispute.period === 'Appeal' && <h5 style={{ marginBottom: 40 }}>Appeal Period</h5>}
+              {dispute.period === 'Appeal' && <h5 className={styles.heading}>Appeal Period</h5>}
               <p className={styles.arbitrator} data-testid="actor">
                 <KlerosIcon aria-hidden />
                 Kleros
@@ -349,7 +349,7 @@ export default function ClaimActions(props: Props) {
                 <div className={globalStyles.primaryColor} data-testid="status">
                   Accepted
                 </div>
-                {formatUsd(claim.claimAmountInUsd)} USD
+                <div data-testid="usd-amount">{formatUsd(claim.claimAmountInUsd)} USD</div>
               </div>
               {dispute.period === 'Appeal' && (
                 <p className={styles.actionMessage}>
@@ -369,7 +369,7 @@ export default function ClaimActions(props: Props) {
         case 'PaySettlement':
           return (
             <div className={styles.actionSection}>
-              {dispute.period === 'Appeal' && <h5 style={{ marginBottom: 40 }}>Appeal Period</h5>}
+              {dispute.period === 'Appeal' && <h5 className={styles.heading}>Appeal Period</h5>}
               <p className={styles.arbitrator} data-testid="actor">
                 <KlerosIcon aria-hidden />
                 Kleros
@@ -378,7 +378,7 @@ export default function ClaimActions(props: Props) {
                 <div className={globalStyles.primaryColor} data-testid="status">
                   Accepted Settlement
                 </div>
-                {formatUsd(claim.settlementAmountInUsd!)} USD
+                <div data-testid="usd-amount">{formatUsd(claim.settlementAmountInUsd!)} USD</div>
               </div>
               {dispute.period === 'Appeal' && (
                 <>
@@ -413,7 +413,7 @@ export default function ClaimActions(props: Props) {
         case 'DoNotPay':
           return (
             <div className={styles.actionSection}>
-              {dispute.period === 'Appeal' && <h5 style={{ marginBottom: 40 }}>Appeal Period</h5>}
+              {dispute.period === 'Appeal' && <h5 className={styles.heading}>Appeal Period</h5>}
               <p className={styles.arbitrator} data-testid="actor">
                 <KlerosIcon aria-hidden />
                 Kleros
@@ -465,7 +465,7 @@ export default function ClaimActions(props: Props) {
               <CheckIcon aria-hidden />
               Accepted
             </div>
-            {formatUsd(payout.amountInUsd)} USD
+            <div data-testid="usd-amount">{formatUsd(payout.amountInUsd)} USD</div>
             <PayoutAmount claim={claim} payout={payout} />
           </div>
           <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
@@ -498,7 +498,7 @@ export default function ClaimActions(props: Props) {
               <CheckIcon aria-hidden />
               Settled
             </div>
-            {formatUsd(payout.amountInUsd)} USD
+            <div data-testid="usd-amount">{formatUsd(payout.amountInUsd)} USD</div>
             <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
           <p className={styles.actionMessage}>All done! The settlement was accepted and paid out.</p>

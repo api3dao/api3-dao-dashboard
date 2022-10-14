@@ -71,6 +71,7 @@ describe('<ClaimActions />', () => {
 
       expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
       expect(screen.getByTestId('status')).toHaveTextContent('Offered Settlement');
+      expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^500.0 USD/);
       const acceptButton = screen.getByRole('button', { name: /Accept Settlement/i });
       const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
       expect(acceptButton).not.toBeDisabled();
@@ -103,6 +104,7 @@ describe('<ClaimActions />', () => {
 
       expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
       expect(screen.getByTestId('status')).toHaveTextContent('Settled');
+      expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^500.0 USD/);
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
@@ -187,6 +189,7 @@ describe('<ClaimActions />', () => {
 
         expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
         expect(screen.getByTestId('status')).toHaveTextContent('Accepted Settlement');
+        expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^500.0 USD/);
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).not.toBeDisabled();
         expect(screen.queryAllByRole('button')).toHaveLength(1); // There should only be the one action
@@ -346,6 +349,7 @@ describe('<ClaimActions />', () => {
 
       expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
       expect(screen.getByTestId('status')).toHaveTextContent(/Accepted$/);
+      expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^1,000.0 USD/);
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
@@ -364,6 +368,7 @@ describe('<ClaimActions />', () => {
 
       expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
       expect(screen.getByTestId('status')).toHaveTextContent(/Accepted$/);
+      expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^1,000.0 USD/);
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
@@ -384,6 +389,7 @@ describe('<ClaimActions />', () => {
 
       expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
       expect(screen.getByTestId('status')).toHaveTextContent('Settled');
+      expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^500.0 USD/);
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
     });
