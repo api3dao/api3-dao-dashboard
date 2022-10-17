@@ -122,7 +122,7 @@ export default function ClaimActions(props: Props) {
         if (isPastNewDeadline) {
           return (
             <div className={styles.actionSection}>
-              <p className={styles.mediator} data-testid="actor">
+              <p className={styles.mediator} data-testid="status-prefix">
                 <Api3Icon aria-hidden /> API3 Mediators
               </p>
               <div className={styles.actionMainInfo}>
@@ -142,7 +142,7 @@ export default function ClaimActions(props: Props) {
         const disableEscalate = status === 'submitting' || status === 'submitted';
         return (
           <div className={styles.actionSection}>
-            <p className={styles.mediator} data-testid="actor">
+            <p className={styles.mediator} data-testid="status-prefix">
               <Api3Icon aria-hidden /> API3 Mediators
             </p>
             <div className={styles.actionMainInfo}>
@@ -171,7 +171,7 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.mediator} data-testid="actor">
+          <p className={styles.mediator} data-testid="status-prefix">
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
@@ -189,7 +189,7 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.mediator} data-testid="actor">
+          <p className={styles.mediator} data-testid="status-prefix">
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
@@ -202,17 +202,19 @@ export default function ClaimActions(props: Props) {
             </div>
             <PayoutAmount claim={claim} payout={payout} />
           </div>
-          <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
-          <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
-            View the transaction here
-          </ExternalLink>
-          {payout.amountInUsd.lt(amountToPayInUsd) && (
-            <p className={styles.coverageMessage}>
-              <WarningIcon aria-hidden className={styles.warningIcon} />
-              The full payout ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
-              coverage was paid out
-            </p>
-          )}
+          <div data-testid="notifications">
+            <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
+            <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
+              View the transaction here
+            </ExternalLink>
+            {payout.amountInUsd.lt(amountToPayInUsd) && (
+              <p className={styles.coverageMessage}>
+                <WarningIcon aria-hidden className={styles.warningIcon} />
+                The full payout ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
+                coverage was paid out
+              </p>
+            )}
+          </div>
         </div>
       );
     }
@@ -235,7 +237,7 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.mediator} data-testid="actor">
+          <p className={styles.mediator} data-testid="status-prefix">
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
@@ -275,7 +277,7 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.mediator} data-testid="actor">
+          <p className={styles.mediator} data-testid="status-prefix">
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
@@ -288,17 +290,19 @@ export default function ClaimActions(props: Props) {
             </div>
             <PayoutAmount claim={claim} payout={payout} />
           </div>
-          <p className={styles.actionMessage}>All done! The settlement was accepted and paid out.</p>
-          <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
-            View the transaction here
-          </ExternalLink>
-          {payout.amountInUsd.lt(amountToPayInUsd) && (
-            <p className={styles.coverageMessage}>
-              <WarningIcon aria-hidden className={styles.warningIcon} />
-              The full settlement ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
-              coverage was paid out
-            </p>
-          )}
+          <div data-testid="notifications">
+            <p className={styles.actionMessage}>All done! The settlement was accepted and paid out.</p>
+            <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
+              View the transaction here
+            </ExternalLink>
+            {payout.amountInUsd.lt(amountToPayInUsd) && (
+              <p className={styles.coverageMessage}>
+                <WarningIcon aria-hidden className={styles.warningIcon} />
+                The full settlement ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
+                coverage was paid out
+              </p>
+            )}
+          </div>
         </div>
       );
     }
@@ -308,7 +312,7 @@ export default function ClaimActions(props: Props) {
         if (dispute?.appealedBy) {
           return (
             <div className={styles.actionSection}>
-              <p className={styles.arbitrator} data-testid="actor">
+              <p className={styles.arbitrator} data-testid="status-prefix">
                 <KlerosIcon aria-hidden />
                 Kleros
               </p>
@@ -317,22 +321,24 @@ export default function ClaimActions(props: Props) {
                   Evaluating
                 </span>
               </div>
-              {dispute.appealedBy === claim.claimant ? (
-                <p className={styles.actionMessage}>
-                  You appealed Kleros’s ruling. Kleros jurors are currently evaluating your claim
-                </p>
-              ) : (
-                <p className={styles.actionMessage}>
-                  The API3 Mediators appealed Kleros’s ruling. Kleros jurors are currently evaluating your claim
-                </p>
-              )}
+              <div data-testid="notifications">
+                {dispute.appealedBy === claim.claimant ? (
+                  <p className={styles.actionMessage}>
+                    You appealed Kleros’s ruling. Kleros jurors are currently evaluating your claim
+                  </p>
+                ) : (
+                  <p className={styles.actionMessage}>
+                    The API3 Mediators appealed Kleros’s ruling. Kleros jurors are currently evaluating your claim
+                  </p>
+                )}
+              </div>
             </div>
           );
         }
 
         return (
           <div className={styles.actionSection}>
-            <p className={styles.arbitrator} data-testid="actor">
+            <p className={styles.arbitrator} data-testid="status-prefix">
               <KlerosIcon aria-hidden />
               Kleros
             </p>
@@ -353,7 +359,7 @@ export default function ClaimActions(props: Props) {
           return (
             <div className={styles.actionSection}>
               {dispute.period === 'Appeal' && <h5 className={styles.heading}>Appeal Period</h5>}
-              <p className={styles.arbitrator} data-testid="actor">
+              <p className={styles.arbitrator} data-testid="status-prefix">
                 <KlerosIcon aria-hidden />
                 Kleros
               </p>
@@ -384,7 +390,7 @@ export default function ClaimActions(props: Props) {
           return (
             <div className={styles.actionSection}>
               {dispute.period === 'Appeal' && <h5 className={styles.heading}>Appeal Period</h5>}
-              <p className={styles.arbitrator} data-testid="actor">
+              <p className={styles.arbitrator} data-testid="status-prefix">
                 <KlerosIcon aria-hidden />
                 Kleros
               </p>
@@ -430,7 +436,7 @@ export default function ClaimActions(props: Props) {
           return (
             <div className={styles.actionSection}>
               {dispute.period === 'Appeal' && <h5 className={styles.heading}>Appeal Period</h5>}
-              <p className={styles.arbitrator} data-testid="actor">
+              <p className={styles.arbitrator} data-testid="status-prefix">
                 <KlerosIcon aria-hidden />
                 Kleros
               </p>
@@ -472,7 +478,7 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.arbitrator} data-testid="actor">
+          <p className={styles.arbitrator} data-testid="status-prefix">
             <KlerosIcon aria-hidden />
             Kleros
           </p>
@@ -486,17 +492,19 @@ export default function ClaimActions(props: Props) {
             </div>
             <PayoutAmount claim={claim} payout={payout} />
           </div>
-          <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
-          <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
-            View the transaction here
-          </ExternalLink>
-          {payout.amountInUsd.lt(amountToPayInUsd) && (
-            <p className={styles.coverageMessage}>
-              <WarningIcon aria-hidden className={styles.warningIcon} />
-              The full payout ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
-              coverage was paid out
-            </p>
-          )}
+          <div data-testid="notifications">
+            <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
+            <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
+              View the transaction here
+            </ExternalLink>
+            {payout.amountInUsd.lt(amountToPayInUsd) && (
+              <p className={styles.coverageMessage}>
+                <WarningIcon aria-hidden className={styles.warningIcon} />
+                The full payout ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
+                coverage was paid out
+              </p>
+            )}
+          </div>
         </div>
       );
     }
@@ -507,7 +515,7 @@ export default function ClaimActions(props: Props) {
 
       return (
         <div className={styles.actionSection}>
-          <p className={styles.arbitrator} data-testid="actor">
+          <p className={styles.arbitrator} data-testid="status-prefix">
             <KlerosIcon aria-hidden />
             Kleros
           </p>
@@ -521,17 +529,19 @@ export default function ClaimActions(props: Props) {
             </div>
             <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
-          <p className={styles.actionMessage}>All done! The settlement was accepted and paid out.</p>
-          <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
-            View the transaction here
-          </ExternalLink>
-          {payout.amountInUsd.lt(amountToPayInUsd) && (
-            <p className={styles.coverageMessage}>
-              <WarningIcon aria-hidden className={styles.warningIcon} />
-              The full settlement ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
-              coverage was paid out
-            </p>
-          )}
+          <div data-testid="notifications">
+            <p className={styles.actionMessage}>All done! The settlement was accepted and paid out.</p>
+            <ExternalLink href={getEtherscanTransactionUrl(chainId, payout.transactionHash)} className="link-primary">
+              View the transaction here
+            </ExternalLink>
+            {payout.amountInUsd.lt(amountToPayInUsd) && (
+              <p className={styles.coverageMessage}>
+                <WarningIcon aria-hidden className={styles.warningIcon} />
+                The full settlement ({formatUsd(amountToPayInUsd)} USD) exceeded the remaining coverage. The remaining
+                coverage was paid out
+              </p>
+            )}
+          </div>
         </div>
       );
     }
@@ -539,7 +549,7 @@ export default function ClaimActions(props: Props) {
     case 'DisputeResolvedWithoutPayout':
       return (
         <div className={styles.actionSection}>
-          <p className={styles.arbitrator} data-testid="actor">
+          <p className={styles.arbitrator} data-testid="status-prefix">
             <KlerosIcon aria-hidden />
             Kleros
           </p>

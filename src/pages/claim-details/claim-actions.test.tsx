@@ -31,7 +31,7 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={null} />);
 
-      expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+      expect(screen.getByTestId('status-prefix')).toHaveTextContent('API3 Mediators');
       expect(screen.getByTestId('status')).toHaveTextContent('Evaluating');
     });
 
@@ -42,7 +42,7 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+        expect(screen.getByTestId('status-prefix')).toHaveTextContent('API3 Mediators');
         expect(screen.getByTestId('status')).toHaveTextContent('Rejected');
         const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
         expect(appealButton).not.toBeDisabled();
@@ -54,7 +54,7 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+        expect(screen.getByTestId('status-prefix')).toHaveTextContent('API3 Mediators');
         expect(screen.getByTestId('status')).toHaveTextContent('Rejected');
         expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
@@ -69,7 +69,7 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={null} />);
 
-      expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+      expect(screen.getByTestId('status-prefix')).toHaveTextContent('API3 Mediators');
       expect(screen.getByTestId('status')).toHaveTextContent('Offered Settlement');
       expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^500.0 USD/);
       const acceptButton = screen.getByRole('button', { name: /Accept Settlement/i });
@@ -102,11 +102,28 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={payout} />);
 
-      expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
+      expect(screen.getByTestId('status-prefix')).toHaveTextContent('API3 Mediators');
       expect(screen.getByTestId('status')).toHaveTextContent('Settled');
       expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^500.0 USD/);
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
+    });
+
+    it('informs the user when the payout amount has been clipped', () => {
+      claim.status = 'SettlementAccepted';
+      claim.settlementAmountInUsd = parseUsd('500');
+      const payout = {
+        amountInUsd: parseUsd('400'),
+        amountInApi3: parseApi3('200'),
+        transactionHash: '0xfc83f22fb8167f9cdfb982dd4aeccc84d70df1494bca8271b3428d74df73807a',
+      };
+
+      render(<ClaimActions claim={claim} payout={payout} />);
+
+      expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^400.0 USD/);
+      expect(screen.getByTestId('notifications')).toHaveTextContent(
+        'The full settlement (500.0 USD) exceeded the remaining coverage'
+      );
     });
   });
 
@@ -127,7 +144,7 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={null} />);
 
-      expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+      expect(screen.getByTestId('status-prefix')).toHaveTextContent('Kleros');
       expect(screen.getByTestId('status')).toHaveTextContent('Evaluating');
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
@@ -146,8 +163,8 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
-        expect(screen.getByTestId('status')).toHaveTextContent(/Accepted$/);
+        expect(screen.getByTestId('status-prefix')).toHaveTextContent('Kleros');
+        expect(screen.getByTestId('status')).toHaveTextContent(/^Accepted$/);
         expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
 
@@ -187,7 +204,7 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+        expect(screen.getByTestId('status-prefix')).toHaveTextContent('Kleros');
         expect(screen.getByTestId('status')).toHaveTextContent('Accepted Settlement');
         expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^500.0 USD/);
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
@@ -244,7 +261,7 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+        expect(screen.getByTestId('status-prefix')).toHaveTextContent('Kleros');
         expect(screen.getByTestId('status')).toHaveTextContent('Rejected');
         const appealButton = screen.getByRole('button', { name: /Appeal/i });
         expect(appealButton).not.toBeDisabled();
@@ -297,9 +314,9 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+        expect(screen.getByTestId('status-prefix')).toHaveTextContent('Kleros');
         expect(screen.getByTestId('status')).toHaveTextContent('Evaluating');
-        expect(screen.getByText(/You appealed Kleros’s ruling/i)).toBeInTheDocument();
+        expect(screen.getByTestId('notifications')).toHaveTextContent('You appealed Kleros’s ruling');
         expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
 
@@ -315,9 +332,9 @@ describe('<ClaimActions />', () => {
 
         render(<ClaimActions claim={claim} payout={null} />);
 
-        expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+        expect(screen.getByTestId('status-prefix')).toHaveTextContent('Kleros');
         expect(screen.getByTestId('status')).toHaveTextContent('Evaluating');
-        expect(screen.getByText(/The API3 Mediators appealed Kleros’s ruling/i)).toBeInTheDocument();
+        expect(screen.getByTestId('notifications')).toHaveTextContent('The API3 Mediators appealed Kleros’s ruling');
         expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
     });
@@ -330,7 +347,7 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={null} />);
 
-      expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+      expect(screen.getByTestId('status-prefix')).toHaveTextContent('Kleros');
       expect(screen.getByTestId('status')).toHaveTextContent('Rejected');
       expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
@@ -347,11 +364,27 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={payout} />);
 
-      expect(screen.getByTestId('actor')).toHaveTextContent('API3 Mediators');
-      expect(screen.getByTestId('status')).toHaveTextContent(/Accepted$/);
+      expect(screen.getByTestId('status-prefix')).toHaveTextContent('API3 Mediators');
+      expect(screen.getByTestId('status')).toHaveTextContent(/^Accepted$/);
       expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^1,000.0 USD/);
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
+    });
+
+    it('informs the user when the payout amount has been clipped', () => {
+      claim.status = 'ClaimAccepted';
+      const payout = {
+        amountInUsd: parseUsd('800'),
+        amountInApi3: parseApi3('400'),
+        transactionHash: '0xfc83f22fb8167f9cdfb982dd4aeccc84d70df1494bca8271b3428d74df73807a',
+      };
+
+      render(<ClaimActions claim={claim} payout={payout} />);
+
+      expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^800.0 USD/);
+      expect(screen.getByTestId('notifications')).toHaveTextContent(
+        'The full payout (1,000.0 USD) exceeded the remaining coverage'
+      );
     });
   });
 
@@ -366,11 +399,27 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={payout} />);
 
-      expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
-      expect(screen.getByTestId('status')).toHaveTextContent(/Accepted$/);
+      expect(screen.getByTestId('status-prefix')).toHaveTextContent('Kleros');
+      expect(screen.getByTestId('status')).toHaveTextContent(/^Accepted$/);
       expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^1,000.0 USD/);
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
+    });
+
+    it('informs the user when the payout amount has been clipped', () => {
+      claim.status = 'DisputeResolvedWithClaimPayout';
+      const payout = {
+        amountInUsd: parseUsd('800'),
+        amountInApi3: parseApi3('400'),
+        transactionHash: '0xfc83f22fb8167f9cdfb982dd4aeccc84d70df1494bca8271b3428d74df73807a',
+      };
+
+      render(<ClaimActions claim={claim} payout={payout} />);
+
+      expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^800.0 USD/);
+      expect(screen.getByTestId('notifications')).toHaveTextContent(
+        'The full payout (1,000.0 USD) exceeded the remaining coverage'
+      );
     });
   });
 
@@ -378,7 +427,6 @@ describe('<ClaimActions />', () => {
     it('shows the claim counter offer has been approved', () => {
       claim.status = 'DisputeResolvedWithSettlementPayout';
       claim.settlementAmountInUsd = parseUsd('500');
-      claim.deadline = addMinutes(new Date(), 1);
       const payout = {
         amountInUsd: parseUsd('500'),
         amountInApi3: parseApi3('250'),
@@ -387,11 +435,28 @@ describe('<ClaimActions />', () => {
 
       render(<ClaimActions claim={claim} payout={payout} />);
 
-      expect(screen.getByTestId('actor')).toHaveTextContent('Kleros');
+      expect(screen.getByTestId('status-prefix')).toHaveTextContent('Kleros');
       expect(screen.getByTestId('status')).toHaveTextContent('Settled');
       expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^500.0 USD/);
       expect(screen.getByRole('button', { name: /View payout info/i })).toBeInTheDocument();
       expect(screen.queryAllByRole('button')).toHaveLength(1); // There should be no other actions available
+    });
+
+    it('informs the user when the payout amount has been clipped', () => {
+      claim.status = 'DisputeResolvedWithSettlementPayout';
+      claim.settlementAmountInUsd = parseUsd('500');
+      const payout = {
+        amountInUsd: parseUsd('400'),
+        amountInApi3: parseApi3('200'),
+        transactionHash: '0xfc83f22fb8167f9cdfb982dd4aeccc84d70df1494bca8271b3428d74df73807a',
+      };
+
+      render(<ClaimActions claim={claim} payout={payout} />);
+
+      expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^400.0 USD/);
+      expect(screen.getByTestId('notifications')).toHaveTextContent(
+        'The full settlement (500.0 USD) exceeded the remaining coverage'
+      );
     });
   });
 });
