@@ -44,8 +44,8 @@ describe('<ClaimActions />', () => {
 
         expect(screen.getByTestId('status-prefix')).toHaveTextContent('API3 Mediators');
         expect(screen.getByTestId('status')).toHaveTextContent('Rejected');
-        const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
-        expect(appealButton).not.toBeDisabled();
+        const escalateButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
+        expect(escalateButton).not.toBeDisabled();
       });
 
       it('removes the Escalate button when the new deadline has passed', () => {
@@ -73,9 +73,9 @@ describe('<ClaimActions />', () => {
       expect(screen.getByTestId('status')).toHaveTextContent('Offered Settlement');
       expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^500.0 USD/);
       const acceptButton = screen.getByRole('button', { name: /Accept Settlement/i });
-      const appealButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
+      const escalateButton = screen.getByRole('button', { name: /Escalate to Kleros/i });
       expect(acceptButton).not.toBeDisabled();
-      expect(appealButton).not.toBeDisabled();
+      expect(escalateButton).not.toBeDisabled();
     });
 
     it('shows that proposed settlement has timed out', () => {
@@ -165,6 +165,7 @@ describe('<ClaimActions />', () => {
 
         expect(screen.getByTestId('status-prefix')).toHaveTextContent('Kleros');
         expect(screen.getByTestId('status')).toHaveTextContent(/^Accepted$/);
+        expect(screen.getByTestId('usd-amount')).toHaveTextContent(/^1,000.0 USD/);
         expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
       });
 
