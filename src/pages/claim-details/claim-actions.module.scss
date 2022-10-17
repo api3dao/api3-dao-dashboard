@@ -6,9 +6,16 @@
   align-items: center;
   color: $secondary-color;
   text-align: center;
-  margin-top: 4rem;
-  margin-bottom: 4rem;
   word-break: break-word;
+  margin-top: $space-xxl;
+  margin-bottom: 4rem;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid $black-line-color;
+
+  @media (min-width: $min-sm) {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
 }
 
 .heading {
@@ -22,6 +29,22 @@
   margin-bottom: 40px;
 }
 
+.mediator {
+  display: flex;
+  align-items: center;
+  svg {
+    height: 18px;
+  }
+}
+
+.arbitrator {
+  display: flex;
+  align-items: center;
+  svg {
+    height: 18px;
+  }
+}
+
 .approved {
   color: $green-color;
   svg {
@@ -33,6 +56,13 @@
   color: $pink-color;
   svg {
     margin-right: 0.75ch;
+  }
+}
+
+.usdAmount {
+  @media (min-width: $min-sm) {
+    font-size: $text-xlarge;
+    line-height: $lh-heading-3;
   }
 }
 
@@ -54,22 +84,6 @@
 .coverageMessage {
   margin-top: 40px;
   max-width: 52ch;
-}
-
-.mediator {
-  display: flex;
-  align-items: center;
-  svg {
-    height: 18px;
-  }
-}
-
-.arbitrator {
-  display: flex;
-  align-items: center;
-  svg {
-    height: 18px;
-  }
 }
 
 .warningIcon {

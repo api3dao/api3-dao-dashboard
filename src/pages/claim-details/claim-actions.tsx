@@ -174,8 +174,10 @@ export default function ClaimActions(props: Props) {
           <p className={styles.mediator} data-testid="actor">
             <Api3Icon aria-hidden /> API3 Mediators
           </p>
-          <div className={styles.actionMainInfo} data-testid="status">
-            Evaluating
+          <div className={styles.actionMainInfo}>
+            <span className={globalStyles.primaryColor} data-testid="status">
+              Evaluating
+            </span>
           </div>
           <p className={styles.actionMessage}>API3 Mediators are currently evaluating your claim</p>
         </div>
@@ -195,7 +197,9 @@ export default function ClaimActions(props: Props) {
               <CheckIcon aria-hidden />
               Accepted
             </div>
-            <div data-testid="usd-amount">{formatUsd(payout.amountInUsd)} USD</div>
+            <div className={styles.usdAmount} data-testid="usd-amount">
+              {formatUsd(payout.amountInUsd)} USD
+            </div>
             <PayoutAmount claim={claim} payout={payout} />
           </div>
           <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
@@ -238,7 +242,9 @@ export default function ClaimActions(props: Props) {
             <div className={globalStyles.primaryColor} data-testid="status">
               Offered Settlement
             </div>
-            <div data-testid="usd-amount">{formatUsd(claim.settlementAmountInUsd!)} USD</div>
+            <div className={styles.usdAmount} data-testid="usd-amount">
+              {formatUsd(claim.settlementAmountInUsd!)} USD
+            </div>
           </div>
           <div className={styles.actionPanel}>
             <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('escalate')}>
@@ -277,7 +283,9 @@ export default function ClaimActions(props: Props) {
               <CheckIcon aria-hidden />
               Settled
             </div>
-            <div data-testid="usd-amount">{formatUsd(payout.amountInUsd)} USD</div>
+            <div className={styles.usdAmount} data-testid="usd-amount">
+              {formatUsd(payout.amountInUsd)} USD
+            </div>
             <PayoutAmount claim={claim} payout={payout} />
           </div>
           <p className={styles.actionMessage}>All done! The settlement was accepted and paid out.</p>
@@ -304,8 +312,10 @@ export default function ClaimActions(props: Props) {
                 <KlerosIcon aria-hidden />
                 Kleros
               </p>
-              <div className={styles.actionMainInfo} data-testid="status">
-                Evaluating
+              <div className={styles.actionMainInfo}>
+                <span className={globalStyles.primaryColor} data-testid="status">
+                  Evaluating
+                </span>
               </div>
               {dispute.appealedBy === claim.claimant ? (
                 <p className={styles.actionMessage}>
@@ -326,8 +336,10 @@ export default function ClaimActions(props: Props) {
               <KlerosIcon aria-hidden />
               Kleros
             </p>
-            <div className={styles.actionMainInfo} data-testid="status">
-              Evaluating
+            <div className={styles.actionMainInfo}>
+              <span className={globalStyles.primaryColor} data-testid="status">
+                Evaluating
+              </span>
             </div>
             <p className={styles.actionMessage}>
               The claim was escalated to Kleros. Kleros jurors are currently evaluating your claim
@@ -349,7 +361,9 @@ export default function ClaimActions(props: Props) {
                 <div className={globalStyles.primaryColor} data-testid="status">
                   Accepted
                 </div>
-                <div data-testid="usd-amount">{formatUsd(claim.claimAmountInUsd)} USD</div>
+                <div className={styles.usdAmount} data-testid="usd-amount">
+                  {formatUsd(claim.claimAmountInUsd)} USD
+                </div>
               </div>
               {dispute.period === 'Appeal' && (
                 <p className={styles.actionMessage}>
@@ -378,7 +392,9 @@ export default function ClaimActions(props: Props) {
                 <div className={globalStyles.primaryColor} data-testid="status">
                   Accepted Settlement
                 </div>
-                <div data-testid="usd-amount">{formatUsd(claim.settlementAmountInUsd!)} USD</div>
+                <div className={styles.usdAmount} data-testid="usd-amount">
+                  {formatUsd(claim.settlementAmountInUsd!)} USD
+                </div>
               </div>
               {dispute.period === 'Appeal' && (
                 <>
@@ -465,7 +481,9 @@ export default function ClaimActions(props: Props) {
               <CheckIcon aria-hidden />
               Accepted
             </div>
-            <div data-testid="usd-amount">{formatUsd(payout.amountInUsd)} USD</div>
+            <div className={styles.usdAmount} data-testid="usd-amount">
+              {formatUsd(payout.amountInUsd)} USD
+            </div>
             <PayoutAmount claim={claim} payout={payout} />
           </div>
           <p className={styles.actionMessage}>All done! The claim payout has been accepted.</p>
@@ -498,7 +516,9 @@ export default function ClaimActions(props: Props) {
               <CheckIcon aria-hidden />
               Settled
             </div>
-            <div data-testid="usd-amount">{formatUsd(payout.amountInUsd)} USD</div>
+            <div className={styles.usdAmount} data-testid="usd-amount">
+              {formatUsd(payout.amountInUsd)} USD
+            </div>
             <PayoutAmount claim={claim} payout={props.payout!} />
           </div>
           <p className={styles.actionMessage}>All done! The settlement was accepted and paid out.</p>

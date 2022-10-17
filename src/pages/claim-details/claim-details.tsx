@@ -52,7 +52,7 @@ export default function ClaimDetails() {
   return (
     <ClaimDetailsLayout claimId={claimId}>
       <div className={styles.detailsHeader}>
-        <h4>{claim.policy.metadata}</h4>
+        <h4 className={styles.heading}>{claim.policy.metadata}</h4>
         {deadline && <Timer size="large" deadline={deadline} onDeadlineExceeded={forceUpdate} showDeadline />}
       </div>
       <ClaimActions key={`${claim.status}-${claim.dispute?.status}`} claim={claim} payout={payout} />
