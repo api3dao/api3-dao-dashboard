@@ -27,6 +27,16 @@
   }
 }
 
+.heading {
+  font-size: $heading-5;
+  line-height: $lh-heading-5;
+
+  @media (min-width: $min-sm) {
+    font-size: $heading-4;
+    line-height: $lh-heading-4;
+  }
+}
+
 .detailsSection {
   margin: 0 2 * $space-xl 2 * $space-xl;
 

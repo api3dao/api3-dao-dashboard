@@ -6,16 +6,43 @@
   align-items: center;
   color: $secondary-color;
   text-align: center;
-  margin-top: 4rem;
-  margin-bottom: 4rem;
   word-break: break-word;
+  margin-top: $space-xxl;
+  margin-bottom: 4rem;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid $black-line-color;
+
+  @media (min-width: $min-sm) {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.heading {
+  margin-bottom: 40px;
 }
 
 .actionMainInfo {
   font-size: $heading-5;
   line-height: $lh-heading-5;
-  font-weight: bold;
-  margin-bottom: 4rem;
+  font-weight: 600;
+  margin-bottom: 40px;
+}
+
+.mediator {
+  display: flex;
+  align-items: center;
+  svg {
+    height: 18px;
+  }
+}
+
+.arbitrator {
+  display: flex;
+  align-items: center;
+  svg {
+    height: 18px;
+  }
 }
 
 .approved {
@@ -32,6 +59,13 @@
   }
 }
 
+.usdAmount {
+  @media (min-width: $min-sm) {
+    font-size: $text-xlarge;
+    line-height: $lh-heading-3;
+  }
+}
+
 .actionPanel {
   margin-bottom: $space-md;
   & > * {
@@ -44,7 +78,17 @@
 }
 
 .actionMessage {
-  color: $tertiary-color;
-  font-weight: 400;
   max-width: 52ch;
+}
+
+.coverageMessage {
+  margin-top: 40px;
+  max-width: 52ch;
+}
+
+.warningIcon {
+  color: $pink-color;
+  transform: translateY(5px);
+  width: 24px;
+  margin-right: 1ch;
 }
