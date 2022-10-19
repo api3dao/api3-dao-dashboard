@@ -67,13 +67,14 @@
 }
 
 .actionPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   margin-bottom: $space-md;
-  & > * {
-    margin-right: $space-xl;
-  }
 
-  & > *:last-child {
-    margin-right: 0;
+  @media (min-width: $min-sm) {
+    flex-direction: row;
+    gap: $space-xl;
   }
 }
 

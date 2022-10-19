@@ -165,11 +165,11 @@ interface SettlementConfirmationProps {
 export function SettlementConfirmation(props: SettlementConfirmationProps) {
   return (
     <>
-      <ModalHeader>API3 Conversion</ModalHeader>
+      <ModalHeader>You will be paid in API3 tokens</ModalHeader>
       <div className={styles.body}>
         <p className={styles.info}>
-          The USD amount will be converted into API3 tokens and transferred from the API3 token staking pool to the
-          claimant’s address when you accept the settlement.{' '}
+          The USD amount will be converted into API3 tokens and transferred from the API3 staking pool to the claimant’s
+          address when you accept the settlement.{' '}
           <span className={globalStyles.primaryColor}>The process is permissionless and automatic.</span>
         </p>
       </div>
@@ -196,11 +196,11 @@ interface PayoutConfirmationProps {
 export function PayoutConfirmation(props: PayoutConfirmationProps) {
   return (
     <>
-      <ModalHeader>API3 Conversion</ModalHeader>
+      <ModalHeader>You will be paid in API3 tokens</ModalHeader>
       <div className={styles.body}>
         <p className={styles.info}>
-          The USD amount will be converted into API3 tokens and transferred from the API3 token staking pool to the
-          claimant’s address when you execute the payout.{' '}
+          The USD amount will be converted into API3 tokens and transferred from the API3 staking pool to the claimant’s
+          address when you execute the payout.{' '}
           <span className={globalStyles.primaryColor}>The process is permissionless and automatic.</span>
         </p>
       </div>
