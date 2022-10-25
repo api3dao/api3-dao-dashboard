@@ -8,7 +8,7 @@ import CloseIcon from '../../components/icons/close-icon';
 import Api3Icon from '../../components/icons/api3-icon';
 import KlerosIcon from '../../components/icons/kleros-icon';
 import WarningIcon from '../../components/icons/warning-icon';
-import { AppealConfirmation, EscalateConfirmation } from './confirmations';
+import { EscalateConfirmation, SettlementConfirmation, AppealConfirmation, PayoutConfirmation } from './confirmations';
 import PayoutAmount from './payout-amount';
 import { Claim, ClaimPayout, useChainData } from '../../chain-data';
 import { formatUsd, handleTransactionError } from '../../utils';
@@ -30,7 +30,7 @@ export default function ClaimActions(props: Props) {
   const claimsManager = useClaimsManager()!;
   const arbitratorProxy = useArbitratorProxy()!;
 
-  const [modalToShow, setModalToShow] = useState<'escalate' | 'appeal' | null>(null);
+  const [modalToShow, setModalToShow] = useState<'escalate' | 'settlement' | 'appeal' | 'payout' | null>(null);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'failed'>('idle');
 
   const isPastDeadline = claim.deadline ? isAfter(new Date(), claim.deadline) : false;
@@ -46,6 +46,7 @@ export default function ClaimActions(props: Props) {
         transactions: [...transactions, { type: 'accept-claim-settlement', tx }],
       });
       setStatus('submitted');
+      setModalToShow(null);
     } else {
       setStatus('failed');
     }
@@ -105,6 +106,7 @@ export default function ClaimActions(props: Props) {
         transactions: [...transactions, { type: 'execute-claim-payout', tx }],
       });
       setStatus('submitted');
+      setModalToShow(null);
     } else {
       setStatus('failed');
     }
@@ -156,7 +158,7 @@ export default function ClaimActions(props: Props) {
               </Button>
               <Modal open={modalToShow === 'escalate'} onClose={handleModalClose}>
                 <EscalateConfirmation
-                  disableActions={disableEscalate}
+                  disableAction={disableEscalate}
                   onConfirm={handleEscalateToArbitrator}
                   onCancel={handleModalClose}
                 />
@@ -252,13 +254,20 @@ export default function ClaimActions(props: Props) {
             <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('escalate')}>
               Escalate to Kleros
             </Button>
-            <Button variant="secondary" disabled={disableActions} onClick={handleAcceptSettlement}>
+            <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('settlement')}>
               Accept Settlement
             </Button>
             <Modal open={modalToShow === 'escalate'} onClose={handleModalClose}>
               <EscalateConfirmation
-                disableActions={disableActions}
+                disableAction={disableActions}
                 onConfirm={handleEscalateToArbitrator}
+                onCancel={handleModalClose}
+              />
+            </Modal>
+            <Modal open={modalToShow === 'settlement'} onClose={handleModalClose}>
+              <SettlementConfirmation
+                disableAction={disableActions}
+                onConfirm={handleAcceptSettlement}
                 onCancel={handleModalClose}
               />
             </Modal>
@@ -378,9 +387,16 @@ export default function ClaimActions(props: Props) {
               )}
               {dispute.period === 'Execution' && (
                 <div className={styles.actionPanel}>
-                  <Button variant="secondary" disabled={disableActions} onClick={handleExecutePayout}>
+                  <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('payout')}>
                     Execute Payout
                   </Button>
+                  <Modal open={modalToShow === 'payout'} onClose={handleModalClose}>
+                    <PayoutConfirmation
+                      disableAction={disableActions}
+                      onConfirm={handleExecutePayout}
+                      onCancel={handleModalClose}
+                    />
+                  </Modal>
                 </div>
               )}
             </div>
@@ -411,7 +427,7 @@ export default function ClaimActions(props: Props) {
                     <Modal open={modalToShow === 'appeal'} onClose={handleModalClose}>
                       <AppealConfirmation
                         disputeId={claim.dispute!.id}
-                        disableActions={disableActions}
+                        disableAction={disableActions}
                         onConfirm={handleAppeal}
                         onCancel={handleModalClose}
                       />
@@ -424,9 +440,16 @@ export default function ClaimActions(props: Props) {
               )}
               {dispute.period === 'Execution' && (
                 <div className={styles.actionPanel}>
-                  <Button variant="secondary" disabled={disableActions} onClick={handleExecutePayout}>
+                  <Button variant="secondary" disabled={disableActions} onClick={() => setModalToShow('payout')}>
                     Execute Payout
                   </Button>
+                  <Modal open={modalToShow === 'payout'} onClose={handleModalClose}>
+                    <PayoutConfirmation
+                      disableAction={disableActions}
+                      onConfirm={handleExecutePayout}
+                      onCancel={handleModalClose}
+                    />
+                  </Modal>
                 </div>
               )}
             </div>
@@ -454,7 +477,7 @@ export default function ClaimActions(props: Props) {
                     <Modal open={modalToShow === 'appeal'} onClose={handleModalClose}>
                       <AppealConfirmation
                         disputeId={claim.dispute!.id}
-                        disableActions={disableActions}
+                        disableAction={disableActions}
                         onConfirm={handleAppeal}
                         onCancel={handleModalClose}
                       />

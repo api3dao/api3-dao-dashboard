@@ -8,10 +8,11 @@ import Skeleton from '../../components/skeleton';
 import { notifications } from '../../components/notifications';
 import { formatEther, messages } from '../../utils';
 import { useArbitratorProxy } from '../../contracts';
+import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './confirmations.module.scss';
 
 interface EscalateConfirmationProps {
-  disableActions: boolean;
+  disableAction: boolean;
   onConfirm: (cost: BigNumber) => void;
   onCancel: () => void;
 }
@@ -71,7 +72,7 @@ export function EscalateConfirmation(props: EscalateConfirmationProps) {
           <Button
             variant="primary"
             size="large"
-            disabled={!cost || props.disableActions}
+            disabled={!cost || props.disableAction}
             onClick={() => props.onConfirm(cost!)}
           >
             Escalate
@@ -84,7 +85,7 @@ export function EscalateConfirmation(props: EscalateConfirmationProps) {
 
 interface AppealConfirmationProps {
   disputeId: string;
-  disableActions: boolean;
+  disableAction: boolean;
   onConfirm: (cost: BigNumber) => void;
   onCancel: () => void;
 }
@@ -144,10 +145,72 @@ export function AppealConfirmation(props: AppealConfirmationProps) {
           <Button
             variant="primary"
             size="large"
-            disabled={!cost || props.disableActions}
+            disabled={!cost || props.disableAction}
             onClick={() => props.onConfirm(cost!)}
           >
             Appeal
+          </Button>
+        </div>
+      </ModalFooter>
+    </>
+  );
+}
+
+interface SettlementConfirmationProps {
+  disableAction: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+export function SettlementConfirmation(props: SettlementConfirmationProps) {
+  return (
+    <>
+      <ModalHeader>You will be paid in API3 tokens</ModalHeader>
+      <div className={styles.body}>
+        <p className={styles.info}>
+          The USD amount will be converted into API3 tokens and transferred from the API3 staking pool to the claimant’s
+          address when you accept the settlement.{' '}
+          <span className={globalStyles.primaryColor}>The process is permissionless and automatic.</span>
+        </p>
+      </div>
+      <ModalFooter>
+        <div className={styles.buttonRow}>
+          <Button variant="text" onClick={props.onCancel}>
+            Cancel
+          </Button>
+          <Button variant="primary" size="large" disabled={props.disableAction} onClick={props.onConfirm}>
+            Accept Settlement
+          </Button>
+        </div>
+      </ModalFooter>
+    </>
+  );
+}
+
+interface PayoutConfirmationProps {
+  disableAction: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+export function PayoutConfirmation(props: PayoutConfirmationProps) {
+  return (
+    <>
+      <ModalHeader>You will be paid in API3 tokens</ModalHeader>
+      <div className={styles.body}>
+        <p className={styles.info}>
+          The USD amount will be converted into API3 tokens and transferred from the API3 staking pool to the claimant’s
+          address when you execute the payout.{' '}
+          <span className={globalStyles.primaryColor}>The process is permissionless and automatic.</span>
+        </p>
+      </div>
+      <ModalFooter>
+        <div className={styles.buttonRow}>
+          <Button variant="text" onClick={props.onCancel}>
+            Cancel
+          </Button>
+          <Button variant="primary" size="large" disabled={props.disableAction} onClick={props.onConfirm}>
+            Execute Payout
           </Button>
         </div>
       </ModalFooter>
