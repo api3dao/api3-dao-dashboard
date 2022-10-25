@@ -3,34 +3,40 @@
 .claimList {
   padding: 0;
   list-style: none;
+
+  li {
+    border-top: 1px solid $black-line-color;
+    padding-top: $space-xxl;
+    padding-bottom: $space-xxl;
+
+    @media (min-width: $min-sm) {
+      padding-top: $space-lg;
+      padding-bottom: $space-lg;
+    }
+  }
 }
 
 .claimItem {
-  border-top: 1px solid $black-line-color;
-  padding-top: $space-md;
-  padding-bottom: $space-lg;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 
-  @media (min-width: $min-md) {
-    display: flex;
+  @media (min-width: $min-lg) {
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
   }
 }
 
 .claimItemMain {
-  max-width: calc(100% - 330px);
+  flex: 1;
   font-weight: 500;
-  padding-right: $space-xxxl;
   box-sizing: border-box;
+  padding-right: 0;
 
-  @media (max-width: $max-xl) {
-    max-width: calc(100% - 280px);
-    padding-right: $space-xl;
-  }
-
-  @media (max-width: $max-md) {
-    max-width: none;
-    padding-right: 0;
+  @media (min-width: $min-lg) {
+    max-width: calc(100% - 270px);
+    padding-right: 1rem;
   }
 }
 
@@ -42,34 +48,133 @@
   white-space: nowrap;
   color: $primary-color;
   text-decoration: none;
+
+  @media (min-width: $min-lg) {
+    margin-bottom: $space-xxs;
+  }
 }
 
 .claimItemInfo {
-  display: flex;
-  align-items: center;
+  display: inline-flex;
   font-size: $text-xsmall;
   line-height: $lh-xsmall;
+  gap: 2ch;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
 
-  & > * {
-    margin-right: $space-xxl;
+.createdAt {
+  display: inline;
+
+  @media (min-width: $min-lg) {
+    display: none;
   }
 
-  & > *:last-child {
-    margin-right: 0;
+  @media (min-width: $min-xl) {
+    display: inline;
   }
 }
 
-.claimItemStatus {
+.desktopInline {
+  display: none;
+
+  @media (min-width: $min-lg) {
+    display: inline;
+  }
+}
+
+.status {
+  font-weight: 600;
+  color: $secondary-color;
+  svg {
+    height: 12px;
+    width: 18px;
+  }
+}
+
+.actionInfo {
   display: flex;
   align-items: center;
   font-weight: 500;
+  gap: 1rem;
+  line-height: 18px;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-end;
+  }
+
+  .pillContainer {
+    display: none;
+    @media (min-width: $min-lg) {
+      display: flex;
+    }
+  }
 
   a {
     display: none;
-    @media (min-width: $min-md) {
+    @media (min-width: $min-lg) {
       display: flex;
       align-items: center;
-      margin-left: $space-md;
     }
+  }
+}
+
+.pillContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1ch;
+}
+
+.pill,
+.pillPrimary,
+.pillExtra {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  border: 1px solid #4f9182;
+  padding: 4px 10px;
+  line-height: 14px;
+  border-radius: 10px;
+  color: $secondary-color;
+  white-space: nowrap;
+}
+
+.pillPrimary {
+  background: #325b51;
+  border-color: #95e8d5;
+  color: $primary-color;
+}
+
+.pillExtra {
+  display: none;
+
+  @media (min-width: 660px) {
+    display: inline-flex;
+  }
+}
+
+.mobileStatusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  margin-bottom: $space-xs;
+
+  .status {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-right: 1ch;
+  }
+
+  @media (min-width: $min-lg) {
+    display: none;
   }
 }
