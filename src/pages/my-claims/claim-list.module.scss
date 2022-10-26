@@ -4,6 +4,21 @@
   padding: 0;
   list-style: none;
 
+  // Width of the right-hand side of the list item
+  --width-rhs: 25px;
+
+  [data-active='true'] {
+    --width-rhs: 260px;
+
+    &[data-status='SettlementProposed'] {
+      --width-rhs: 280px;
+    }
+
+    &[data-dispute-status='Solved'] {
+      --width-rhs: 165px;
+    }
+  }
+
   li {
     border-top: 1px solid $black-line-color;
     padding-top: $space-xxl;
@@ -19,12 +34,10 @@
 .claimItem {
   display: flex;
   flex-direction: column;
-  gap: 6px;
 
   @media (min-width: $min-lg) {
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
   }
 }
 
@@ -35,19 +48,25 @@
   padding-right: 0;
 
   @media (min-width: $min-lg) {
-    max-width: calc(100% - 270px);
-    padding-right: 1rem;
+    max-width: calc(100% - var(--width-rhs));
   }
 }
 
 .claimItemTitle {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.5ch;
   margin-bottom: $space-md;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
   color: $primary-color;
   text-decoration: none;
+
+  svg {
+    color: $pink-color;
+    height: 20px;
+  }
 
   @media (min-width: $min-lg) {
     margin-bottom: $space-xxs;
@@ -59,53 +78,70 @@
   font-size: $text-xsmall;
   line-height: $lh-xsmall;
   gap: 2ch;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
   width: 100%;
+
+  @media (min-width: $min-lg) {
+    white-space: nowrap;
+  }
+}
+
+[data-show-deadline='true'] {
+  @media (min-width: $min-lg) and (max-width: 1144px) {
+    .claimId {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .createdAt {
+      display: none;
+    }
+  }
 }
 
 .createdAt {
-  display: inline;
-
   @media (min-width: $min-lg) {
-    display: none;
-  }
-
-  @media (min-width: $min-xl) {
-    display: inline;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 
-.desktopInline {
+.status,
+.desktopStatus {
+  font-weight: 600;
+  color: $secondary-color;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+
+  svg {
+    height: 14px;
+    width: 18px;
+    min-width: 18px;
+  }
+}
+
+.desktopStatus {
   display: none;
 
   @media (min-width: $min-lg) {
-    display: inline;
-  }
-}
-
-.status {
-  font-weight: 600;
-  color: $secondary-color;
-  svg {
-    height: 12px;
-    width: 18px;
+    display: inline-flex;
   }
 }
 
 .actionInfo {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 7px;
   font-weight: 500;
-  gap: 1rem;
-  line-height: 18px;
+  line-height: 28px;
 
-  > div {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  @media (min-width: $min-lg) {
     align-items: flex-end;
+    margin-left: auto;
+    margin-right: 1rem;
+    line-height: 18px;
   }
 
   .pillContainer {
@@ -114,13 +150,15 @@
       display: flex;
     }
   }
+}
 
-  a {
-    display: none;
-    @media (min-width: $min-lg) {
-      display: flex;
-      align-items: center;
-    }
+.arrowIconLink {
+  display: none;
+  width: 25px;
+
+  @media (min-width: $min-lg) {
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -132,7 +170,8 @@
 
 .pill,
 .pillPrimary,
-.pillExtra {
+.pillExtra,
+.pillDisabled {
   display: inline-flex;
   align-items: center;
   font-size: 10px;
@@ -158,6 +197,11 @@
   }
 }
 
+.pillDisabled {
+  color: $tertiary-color;
+  border: 1px solid #325b51;
+}
+
 .mobileStatusRow {
   display: flex;
   align-items: center;
@@ -168,9 +212,6 @@
   margin-bottom: $space-xs;
 
   .status {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
     margin-right: 1ch;
   }
 

@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom';
 import Timer from '../../components/timer';
 import Api3Icon from '../../components/icons/api3-icon';
 import KlerosIcon from '../../components/icons/kleros-icon';
+import WarningIcon from '../../components/icons/warning-icon';
 import { format, isAfter } from 'date-fns';
 import { images, useForceUpdate } from '../../utils';
 import { Claim } from '../../chain-data';
-import { getCurrentDeadline, useClaimPayoutDataPreload } from '../../logic/claims';
+import { getCurrentDeadline, isActive, useClaimPayoutDataPreload } from '../../logic/claims';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-list.module.scss';
 
@@ -22,46 +23,58 @@ export default function ClaimList(props: Props) {
   return (
     <ul className={styles.claimList}>
       {props.claims.map((claim) => {
-        const deadline = getCurrentDeadline(claim);
-        const claimStatus = getClaimStatus(claim);
-        const claimActions = getClaimActions(claim);
+        const active = isActive(claim);
+        const isPastDeadline = claim.deadline ? isAfter(new Date(), claim.deadline) : false;
+        const claimStatus = getClaimStatus(claim, isPastDeadline);
+        const pills = active
+          ? getClaimActions(claim, isPastDeadline) || <div className={styles.pillDisabled}>No Action Available</div>
+          : null;
+
+        const currentDeadline = getCurrentDeadline(claim);
+        const showDeadline = active && !!currentDeadline;
 
         return (
-          <li key={claim.claimId}>
+          <li
+            key={claim.claimId}
+            data-active={active}
+            data-status={claim.status}
+            data-dispute-status={claim.dispute?.status}
+            data-show-deadline={showDeadline}
+          >
             <div className={styles.mobileStatusRow}>
               <span className={styles.status}>{claimStatus}</span>
-              {claimActions && <div className={styles.pillContainer}>{claimActions}</div>}
+              {pills && <div className={styles.pillContainer}>{pills}</div>}
             </div>
             <div className={styles.claimItem}>
               <div className={styles.claimItemMain}>
                 <Link className={styles.claimItemTitle} to={`/claims/${claim.claimId}`}>
+                  {claim.status === 'SettlementProposed' && !isPastDeadline && <WarningIcon aria-hidden />}
                   {claim.policy.metadata}
                 </Link>
 
                 <div className={styles.claimItemInfo}>
-                  <span className={`${styles.status} ${styles.desktopInline}`}>{claimStatus}</span>
+                  <span className={styles.desktopStatus}>{claimStatus}</span>
+
+                  <span className={styles.claimId}>
+                    <span className={globalStyles.tertiaryColor}>Claim ID: </span>
+                    {abbrStr(claim.claimId)}
+                  </span>
+
                   <span className={styles.createdAt}>
                     <span className={globalStyles.tertiaryColor}>Created: </span>
                     {format(claim.timestamp, 'dd MMM yyyy')}
                     <span className={globalStyles.tertiaryColor}> {format(claim.timestamp, 'HH:mm')}</span>
                   </span>
-
-                  <span>
-                    <span className={globalStyles.tertiaryColor}>Claim ID: </span>
-                    {abbrStr(claim.claimId)}
-                  </span>
                 </div>
               </div>
 
               <div className={styles.actionInfo}>
-                <div>
-                  {claimActions && <div className={styles.pillContainer}>{claimActions}</div>}
-                  {deadline && <Timer deadline={deadline} onDeadlineExceeded={forceUpdate} />}
-                </div>
-                <Link tabIndex={-1} to={`/claims/${claim.claimId}`}>
-                  <img src={images.arrowRight} alt="right arrow" />
-                </Link>
+                {pills && <div className={styles.pillContainer}>{pills}</div>}
+                {showDeadline && <Timer deadline={currentDeadline} onDeadlineExceeded={forceUpdate} />}
               </div>
+              <Link className={styles.arrowIconLink} tabIndex={-1} to={`/claims/${claim.claimId}`}>
+                <img src={images.arrowRight} alt="right arrow" />
+              </Link>
             </div>
           </li>
         );
@@ -70,12 +83,12 @@ export default function ClaimList(props: Props) {
   );
 }
 
-function getClaimStatus(claim: Claim) {
+function getClaimStatus(claim: Claim, isPastDeadline: boolean) {
   const { dispute } = claim;
 
   switch (claim.status) {
     case 'ClaimCreated':
-      if (isAfter(new Date(), claim.deadline!)) {
+      if (isPastDeadline) {
         return (
           <>
             <Api3Icon aria-hidden /> API3 Mediators (rejected)
@@ -90,7 +103,7 @@ function getClaimStatus(claim: Claim) {
       );
 
     case 'SettlementProposed':
-      if (isAfter(new Date(), claim.deadline!)) {
+      if (isPastDeadline) {
         return <span className={globalStyles.tertiaryColor}>Timed Out</span>;
       }
 
@@ -197,16 +210,13 @@ function getClaimStatus(claim: Claim) {
   }
 }
 
-function getClaimActions(claim: Claim) {
+function getClaimActions(claim: Claim, isPastDeadline: boolean) {
   const { dispute } = claim;
-
-  const now = new Date();
-  const isPastDeadline = claim.deadline ? isAfter(now, claim.deadline) : false;
 
   switch (claim.status) {
     case 'ClaimCreated': {
       if (isPastDeadline) {
-        const isPastNewDeadline = isAfter(now, getCurrentDeadline(claim)!);
+        const isPastNewDeadline = isAfter(new Date(), getCurrentDeadline(claim)!);
         if (!isPastNewDeadline) {
           return <div className={styles.pill}>Escalate to Kleros</div>;
         }
