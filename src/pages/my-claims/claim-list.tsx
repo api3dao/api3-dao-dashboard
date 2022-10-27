@@ -5,7 +5,7 @@ import KlerosIcon from '../../components/icons/kleros-icon';
 import WarningIcon from '../../components/icons/warning-icon';
 import { format, isAfter } from 'date-fns';
 import { images, useForceUpdate } from '../../utils';
-import { Claim } from '../../chain-data';
+import { abbrStr, Claim } from '../../chain-data';
 import { getCurrentDeadline, isActive, useClaimPayoutDataPreload } from '../../logic/claims';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-list.module.scss';
@@ -59,7 +59,7 @@ export default function ClaimList(props: Props) {
 
                   <span className={styles.claimId}>
                     <span className={globalStyles.tertiaryColor}>Claim ID: </span>
-                    {abbrStr(claim.claimId)}
+                    {abbrStr(claim.claimId, { startLength: 5 })}
                   </span>
 
                   <span className={styles.createdAt}>
@@ -284,5 +284,3 @@ function getClaimActions(claim: Claim, isPastDeadline: boolean) {
       return null;
   }
 }
-
-const abbrStr = (str: string) => str.substr(0, 5) + '...' + str.substr(str.length - 4, str.length);
