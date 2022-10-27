@@ -4,7 +4,12 @@ $min-desktop-width: 900px;
 
 .claimList {
   padding: 0;
+  margin-top: 0;
   list-style: none;
+
+  @media (min-width: $min-md) {
+    margin-top: 1rem;
+  }
 
   li {
     border-top: 1px solid $black-line-color;
