@@ -53,7 +53,9 @@ export default function ClaimList(props: Props) {
                 </Link>
 
                 <div className={styles.claimItemInfo}>
-                  <span className={styles.desktopStatus}>{claimStatus}</span>
+                  <span data-testid="claim-status" className={styles.desktopStatus}>
+                    {claimStatus}
+                  </span>
 
                   <span className={styles.claimId}>
                     <span className={globalStyles.tertiaryColor}>Claim ID: </span>
@@ -68,7 +70,7 @@ export default function ClaimList(props: Props) {
                 </div>
               </div>
 
-              <div className={styles.actionInfo}>
+              <div className={styles.actionInfo} data-testid="claim-action-info">
                 {pills && <div className={styles.pillContainer}>{pills}</div>}
                 {showDeadline && <Timer deadline={currentDeadline} onDeadlineExceeded={forceUpdate} />}
               </div>
@@ -233,7 +235,11 @@ function getClaimActions(claim: Claim, isPastDeadline: boolean) {
       if (isPastDeadline) {
         const isPastNewDeadline = isAfter(new Date(), getCurrentDeadline(claim)!);
         if (!isPastNewDeadline) {
-          return <div className={styles.pill}>Escalate to Kleros</div>;
+          return (
+            <div className={styles.pill} data-testid="action">
+              Escalate to Kleros
+            </div>
+          );
         }
       }
 
@@ -244,19 +250,31 @@ function getClaimActions(claim: Claim, isPastDeadline: boolean) {
       if (isPastDeadline) return null;
       return (
         <>
-          <div className={styles.pillExtra}>Escalate to Kleros</div>
-          <div className={styles.pillPrimary}>Accept Settlement</div>
+          <div className={styles.pillExtra} data-testid="action">
+            Escalate to Kleros
+          </div>
+          <div className={styles.pillPrimary} data-testid="action">
+            Accept Settlement
+          </div>
         </>
       );
 
     case 'DisputeCreated':
       if (dispute) {
         if (dispute.ruling !== 'PayClaim' && dispute.period === 'Appeal') {
-          return <div className={styles.pill}>Appeal</div>;
+          return (
+            <div className={styles.pill} data-testid="action">
+              Appeal
+            </div>
+          );
         }
 
         if (dispute.ruling !== 'DoNotPay' && dispute.period === 'Execution') {
-          return <div className={styles.pillPrimary}>Execute Payout</div>;
+          return (
+            <div className={styles.pillPrimary} data-testid="action">
+              Execute Payout
+            </div>
+          );
         }
       }
 
