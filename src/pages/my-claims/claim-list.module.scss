@@ -64,18 +64,17 @@ $min-desktop-width: 900px;
   align-items: center;
   gap: 0.5ch;
   margin-bottom: $space-md;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
   color: $primary-color;
   text-decoration: none;
 
   svg {
     color: $pink-color;
-    height: 20px;
+    width: 20px;
+    min-width: 20px;
   }
 
   @media (min-width: $min-desktop-width) {
+    margin-right: 1ch;
     margin-bottom: $space-xxs;
   }
 }
@@ -227,4 +226,10 @@ $min-desktop-width: 900px;
   @media (min-width: $min-desktop-width) {
     display: none;
   }
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

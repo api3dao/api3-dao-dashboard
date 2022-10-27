@@ -50,7 +50,7 @@ export default function ClaimList(props: Props) {
               <div className={styles.claimItemMain}>
                 <Link className={styles.claimItemTitle} to={`/claims/${claim.claimId}`}>
                   {claim.status === 'SettlementProposed' && !isPastDeadline && <WarningIcon aria-hidden />}
-                  {claim.policy.metadata}
+                  <span className={styles.ellipsis}>{claim.policy.metadata}</span>
                 </Link>
 
                 <div className={styles.claimItemInfo}>
