@@ -91,14 +91,16 @@ function getClaimStatus(claim: Claim, isPastDeadline: boolean) {
       if (isPastDeadline) {
         return (
           <>
-            <Api3Icon aria-hidden /> API3 Mediators (rejected)
+            <Api3Icon aria-hidden />
+            API3 Mediators (rejected)
           </>
         );
       }
 
       return (
         <>
-          <Api3Icon aria-hidden /> API3 Mediators (evaluating)
+          <Api3Icon aria-hidden />
+          API3 Mediators (evaluating)
         </>
       );
 
@@ -109,21 +111,24 @@ function getClaimStatus(claim: Claim, isPastDeadline: boolean) {
 
       return (
         <>
-          <Api3Icon aria-hidden /> API3 Mediators (settlement)
+          <Api3Icon aria-hidden />
+          API3 Mediators (settlement)
         </>
       );
 
     case 'ClaimAccepted':
       return (
         <>
-          <Api3Icon aria-hidden /> API3 Mediators (accepted)
+          <Api3Icon aria-hidden />
+          API3 Mediators (accepted)
         </>
       );
 
     case 'DisputeResolvedWithClaimPayout':
       return (
         <>
-          <KlerosIcon aria-hidden /> Kleros (accepted)
+          <KlerosIcon aria-hidden />
+          Kleros (accepted)
         </>
       );
 
@@ -133,21 +138,24 @@ function getClaimStatus(claim: Claim, isPastDeadline: boolean) {
           case 'PayClaim':
             return (
               <>
-                <KlerosIcon aria-hidden /> Kleros (accepted - appeal period)
+                <KlerosIcon aria-hidden />
+                Kleros (accepted - appeal period)
               </>
             );
 
           case 'PaySettlement':
             return (
               <>
-                <KlerosIcon aria-hidden /> Kleros (settlement - appeal period)
+                <KlerosIcon aria-hidden />
+                Kleros (settlement - appeal period)
               </>
             );
 
           case 'DoNotPay':
             return (
               <>
-                <KlerosIcon aria-hidden /> Kleros (rejected - appeal period)
+                <KlerosIcon aria-hidden />
+                Kleros (rejected - appeal period)
               </>
             );
         }
@@ -158,21 +166,24 @@ function getClaimStatus(claim: Claim, isPastDeadline: boolean) {
           case 'PayClaim':
             return (
               <>
-                <KlerosIcon aria-hidden /> Kleros (accepted)
+                <KlerosIcon aria-hidden />
+                Kleros (accepted)
               </>
             );
 
           case 'PaySettlement':
             return (
               <>
-                <KlerosIcon aria-hidden /> Kleros (settlement)
+                <KlerosIcon aria-hidden />
+                Kleros (settlement)
               </>
             );
 
           case 'DoNotPay':
             return (
               <>
-                <KlerosIcon aria-hidden /> Kleros (rejected)
+                <KlerosIcon aria-hidden />
+                Kleros (rejected)
               </>
             );
         }
@@ -180,28 +191,32 @@ function getClaimStatus(claim: Claim, isPastDeadline: boolean) {
 
       return (
         <>
-          <KlerosIcon aria-hidden /> Kleros (evaluating)
+          <KlerosIcon aria-hidden />
+          Kleros (evaluating)
         </>
       );
 
     case 'SettlementAccepted':
       return (
         <>
-          <Api3Icon aria-hidden /> API3 Mediators (settled)
+          <Api3Icon aria-hidden />
+          API3 Mediators (settled)
         </>
       );
 
     case 'DisputeResolvedWithSettlementPayout':
       return (
         <>
-          <KlerosIcon aria-hidden /> Kleros (settled)
+          <KlerosIcon aria-hidden />
+          Kleros (settled)
         </>
       );
 
     case 'DisputeResolvedWithoutPayout':
       return (
         <>
-          <KlerosIcon aria-hidden /> Kleros (rejected)
+          <KlerosIcon aria-hidden />
+          Kleros (rejected)
         </>
       );
 
