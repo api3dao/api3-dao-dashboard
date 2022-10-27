@@ -45,7 +45,8 @@ export default function ClaimList(props: Props) {
               <span className={styles.status}>{claimStatus}</span>
               {pills && <div className={styles.pillContainer}>{pills}</div>}
             </div>
-            <div className={styles.claimItem}>
+
+            <div className={styles.claimItemContainer}>
               <div className={styles.claimItemMain}>
                 <Link className={styles.claimItemTitle} to={`/claims/${claim.claimId}`}>
                   {claim.status === 'SettlementProposed' && !isPastDeadline && <WarningIcon aria-hidden />}
@@ -70,7 +71,7 @@ export default function ClaimList(props: Props) {
                 </div>
               </div>
 
-              <div className={styles.actionInfo} data-testid="claim-action-info">
+              <div className={styles.claimActionInfo} data-testid="claim-action-info">
                 {pills && <div className={styles.pillContainer}>{pills}</div>}
                 {showDeadline && <Timer deadline={currentDeadline} onDeadlineExceeded={forceUpdate} />}
               </div>

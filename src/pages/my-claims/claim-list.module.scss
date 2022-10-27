@@ -20,7 +20,7 @@ $min-desktop-width: 900px;
   // Width of the right-hand side of the list item (desktop layout)
   --width-rhs: 25px;
 
-  [data-active='true'] {
+  li[data-active='true'] {
     --width-rhs: 260px;
 
     &[data-status='SettlementProposed'] {
@@ -33,7 +33,7 @@ $min-desktop-width: 900px;
   }
 }
 
-.claimItem {
+.claimItemContainer {
   display: flex;
   flex-direction: column;
 
@@ -87,6 +87,29 @@ $min-desktop-width: 900px;
   }
 }
 
+.status,
+.desktopStatus {
+  font-weight: 600;
+  color: $secondary-color;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+
+  svg {
+    height: 14px;
+    width: 18px;
+    min-width: 18px;
+  }
+}
+
+.desktopStatus {
+  display: none;
+
+  @media (min-width: $min-desktop-width) {
+    display: inline-flex;
+  }
+}
+
 [data-show-deadline='true'] {
   @media (min-width: $min-desktop-width) and (max-width: 1144px) {
     .claimId {
@@ -111,41 +134,18 @@ $min-desktop-width: 900px;
   }
 }
 
-.status,
-.desktopStatus {
-  font-weight: 600;
-  color: $secondary-color;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5ch;
-
-  svg {
-    height: 14px;
-    width: 18px;
-    min-width: 18px;
-  }
-}
-
-.desktopStatus {
-  display: none;
-
-  @media (min-width: $min-desktop-width) {
-    display: inline-flex;
-  }
-}
-
-.actionInfo {
+.claimActionInfo {
   display: flex;
   flex-direction: column;
   gap: 7px;
   font-weight: 500;
-  line-height: 28px;
+  line-height: $lh-normal;
 
   @media (min-width: $min-desktop-width) {
     align-items: flex-end;
     margin-left: auto;
     margin-right: 1rem;
-    line-height: 18px;
+    line-height: $lh-xsmall;
   }
 
   .pillContainer {
@@ -210,8 +210,8 @@ $min-desktop-width: 900px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
-  line-height: 18px;
+  font-size: $text-xsmall;
+  line-height: $lh-xsmall;
   font-weight: 400;
   margin-bottom: $space-xs;
 
