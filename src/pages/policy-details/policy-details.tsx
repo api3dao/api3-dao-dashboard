@@ -7,6 +7,7 @@ import ExternalLink from '../../components/external-link';
 import BackButton from '../../components/back-button';
 import { format } from 'date-fns';
 import { formatUsd, getIpfsUrl, useScrollToTop } from '../../utils';
+import { getEtherscanAddressUrl } from '../../contracts';
 import { useHistory, useParams } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { canCreateClaim, isActive, useUserPolicyById } from '../../logic/policies';
@@ -20,7 +21,7 @@ interface Params {
 export default function PolicyDetails() {
   useScrollToTop();
   const { policyId } = useParams<Params>();
-  const { provider } = useChainData();
+  const { provider, chainId } = useChainData();
   const history = useHistory();
   const { data: policy, status } = useUserPolicyById(policyId);
 
@@ -88,7 +89,9 @@ export default function PolicyDetails() {
           <div className={styles.detailsSection}>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claimant Address</p>
-              <p className={globalStyles.secondaryColor}>{policy.claimant}</p>
+              <p className={globalStyles.secondaryColor}>
+                <ExternalLink href={getEtherscanAddressUrl(chainId, policy.claimant)}>{policy.claimant}</ExternalLink>
+              </p>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Remaining Service Coverage Amount</p>
