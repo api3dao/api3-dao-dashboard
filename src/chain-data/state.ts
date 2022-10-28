@@ -128,7 +128,6 @@ export interface Claim {
   evidence: string;
   timestamp: Date;
   claimant: string;
-  beneficiary: string;
   claimAmountInUsd: BigNumber;
   settlementAmountInUsd: null | BigNumber;
   status: ClaimStatus;
@@ -196,7 +195,6 @@ export interface ClaimPayout {
 export interface BasePolicy {
   policyId: string;
   claimant: string;
-  beneficiary: string;
   claimsAllowedFrom: Date;
   claimsAllowedUntil: Date;
   ipfsHash: string;

@@ -57,7 +57,6 @@ export default function NewClaim() {
     setStatus('submitting');
     const tx = await handleTransactionError(
       claimsManager.createClaim(
-        policy.beneficiary,
         Math.round(policy.claimsAllowedFrom.getTime() / 1000),
         policy.ipfsHash,
         parseUsd(form.amount),

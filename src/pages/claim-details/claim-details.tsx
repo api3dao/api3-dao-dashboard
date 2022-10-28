@@ -14,7 +14,6 @@ import { useUserClaimDataById, getCurrentDeadline } from '../../logic/claims';
 import { useUserPolicyById } from '../../logic/policies';
 import { format } from 'date-fns';
 import { formatUsd, getIpfsUrl, images, useForceUpdate, useScrollToTop } from '../../utils';
-import { getEtherscanAddressUrl } from '../../contracts';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './claim-details.module.scss';
 
@@ -98,7 +97,6 @@ interface ClaimSummaryProps {
 
 function ClaimSummary(props: ClaimSummaryProps) {
   const { claim } = props;
-  const { chainId } = useChainData();
   const { data: policy, status: policyStatus } = useUserPolicyById(claim.policy.id);
 
   const evidenceHref = getIpfsUrl(claim.evidence);
@@ -147,12 +145,6 @@ function ClaimSummary(props: ClaimSummaryProps) {
         <p className={globalStyles.bold}>Service Coverage Policy</p>
         <p className={globalStyles.secondaryColor}>
           <Link to={`/policies/${claim.policy.id}`}>{claim.policy.metadata}</Link>
-        </p>
-      </div>
-      <div className={styles.detailsItem}>
-        <p className={globalStyles.bold}>Beneficiary</p>
-        <p className={globalStyles.secondaryColor}>
-          <ExternalLink href={getEtherscanAddressUrl(chainId, claim.beneficiary)}>{claim.beneficiary}</ExternalLink>
         </p>
       </div>
       <div className={styles.detailsItem}>

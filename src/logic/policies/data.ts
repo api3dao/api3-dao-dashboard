@@ -125,10 +125,10 @@ export function useUserPolicyById(policyId: string) {
 async function loadPolicies(contract: ClaimsManager, params: { userAccount?: string; policyId?: string }) {
   const { userAccount = null, policyId = null } = params;
   const [createdEvents, upgradedEvents, downgradedEvents, metadataEvents] = await Promise.all([
-    contract.queryFilter(contract.filters.CreatedPolicy(null, userAccount, policyId)),
-    contract.queryFilter(contract.filters.UpgradedPolicy(null, userAccount, policyId)),
-    contract.queryFilter(contract.filters.DowngradedPolicy(null, userAccount, policyId)),
-    contract.queryFilter(contract.filters.AnnouncedPolicyMetadata(null, userAccount, policyId)),
+    contract.queryFilter(contract.filters.CreatedPolicy(userAccount, policyId)),
+    contract.queryFilter(contract.filters.UpgradedPolicy(userAccount, policyId)),
+    contract.queryFilter(contract.filters.DowngradedPolicy(userAccount, policyId)),
+    contract.queryFilter(contract.filters.AnnouncedPolicyMetadata(userAccount, policyId)),
   ]);
 
   if (!createdEvents.length) {
@@ -147,7 +147,6 @@ async function loadPolicies(contract: ClaimsManager, params: { userAccount?: str
     const policy = {
       policyId: eventArgs.policyHash,
       claimant: eventArgs.claimant,
-      beneficiary: eventArgs.beneficiary,
       claimsAllowedFrom: blockTimestampToDate(eventArgs.claimsAllowedFrom),
       claimsAllowedUntil: blockTimestampToDate(
         stateChangedEvent ? stateChangedEvent.args.claimsAllowedUntil : eventArgs.claimsAllowedUntil
