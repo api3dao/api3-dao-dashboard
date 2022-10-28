@@ -89,9 +89,12 @@ export default function PolicyDetails() {
           <div className={styles.detailsSection}>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claimant Address</p>
-              <p className={globalStyles.secondaryColor}>
-                <ExternalLink href={getEtherscanAddressUrl(chainId, policy.claimant)}>{policy.claimant}</ExternalLink>
-              </p>
+              <ExternalLink
+                href={getEtherscanAddressUrl(chainId, policy.claimant)}
+                className={globalStyles.secondaryColor}
+              >
+                {policy.claimant}
+              </ExternalLink>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Remaining Service Coverage Amount</p>
