@@ -83,13 +83,23 @@ export default function NewClaim() {
       <BaseLayout subtitle="New Claim">
         <div className={styles.successContainer}>
           <h5 className={styles.subHeading}>Thank you for submitting your claim</h5>
-          <p className={globalStyles.bold}>Your claim ID is: {newClaimId}</p>
-          <p className={styles.processMessage}>
-            Your claim is being processed and will be voted on within 72 hours. Please check back for any updates and{' '}
-            <ExternalLink href="https://docs.api3.org">read about the claim process here</ExternalLink> to familiarize
-            yourself with the next steps.
+          <p>
+            <span className={globalStyles.bold}>Your claim ID is: </span>
+            <br />
+            {newClaimId}
           </p>
-          <Link to="/">Return Home</Link>
+          <p className={globalStyles.bold}>There will be an update in 72 hours. Please check back daily.</p>
+          <p className={styles.processMessage}>
+            When there is an update, you will have 72 hours to respond.
+            <br />
+            <ExternalLink href="https://docs.api3.org" className="link-primary">
+              Read about the claim process here
+            </ExternalLink>{' '}
+            to familiarize yourself with the next steps.
+          </p>
+          <Link to="/" className={styles.homeLink}>
+            Return Home
+          </Link>
         </div>
       </BaseLayout>
     );
