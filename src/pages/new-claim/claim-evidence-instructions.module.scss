@@ -1,17 +1,32 @@
 @import '../../styles/variables.module.scss';
 
 .container {
+  max-width: 60ch;
+  color: $secondary-color;
+  font-size: $text-small;
+  line-height: 24px;
+
+  @media (min-width: $min-sm) {
+    font-size: $text-normal;
+    line-height: $lh-normal;
+  }
+
   a {
-    color: inherit;
+    font-weight: 500;
   }
 }
 
+.termsIntro {
+  font-weight: 600;
+  margin-bottom: $space-sm;
+}
+
 .terms {
-  margin-top: 0;
+  margin: 0;
   padding: 0;
   list-style: none;
   li {
-    margin-bottom: $space-lg;
+    margin-bottom: $space-sm;
   }
 }
 
@@ -23,19 +38,26 @@
   padding: 0;
   margin-top: $space-xxl;
   margin-bottom: $space-xxl;
+  color: $primary-color;
 
   li {
-    margin-bottom: $space-lg;
+    margin-bottom: $space-xxl;
     &::marker {
-      font-weight: 500;
+      font-weight: 600;
     }
   }
+}
 
-  li > p:first-child {
-    font-weight: 500;
-  }
+.buttonRow {
+  display: flex;
+  justify-content: flex-end;
+}
 
-  li > p:not(:first-child) {
-    color: $secondary-color;
+.button {
+  font-weight: 500;
+  width: 100%;
+
+  @media (min-width: $min-sm) {
+    width: 18ch;
   }
 }
