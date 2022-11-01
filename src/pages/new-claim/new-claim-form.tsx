@@ -6,7 +6,6 @@ import UsdInput from '../../components/usd-input';
 import Button from '../../components/button';
 import { Policy } from '../../chain-data';
 import { formatUsd, parseUsd } from '../../utils';
-import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './new-claim-form.module.scss';
 
 export interface FormState {
@@ -66,19 +65,20 @@ export default function NewClaimForm(props: Props) {
       <ol className={styles.fieldList}>
         <li>
           <label htmlFor="evidence">Enter the IPFS hash to your Claim Evidence form</label>
-          <p className={globalStyles.secondaryColor}>You created this hash in the previous step</p>
+          <p className={styles.description}>You created this hash in the previous step</p>
           <Input
             id="evidence"
             value={form.evidence}
             onChange={(ev) => onChange({ ...form, evidence: ev.target.value })}
+            placeholder="e.g. QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB"
             block
           />
           {showMessages && messages.evidence && <p className={styles.validation}>{messages.evidence}</p>}
         </li>
         <li>
           <label htmlFor="amount">Requested payout amount, in USD</label>
-          <p className={globalStyles.secondaryColor}>
-            If your claim is approved, you will be paid the equivalent value in API3 tokens
+          <p className={styles.description}>
+            If your claim is accepted, you will be paid the equivalent value in API3 tokens
           </p>
           <div className={styles.usdInput}>
             <UsdInput id="amount" value={form.amount} onValueChange={(amount) => onChange({ ...form, amount })} />
@@ -89,7 +89,9 @@ export default function NewClaimForm(props: Props) {
       </ol>
       <Acknowledgement />
       <div className={styles.buttonRow}>
-        <Button variant="secondary">Next</Button>
+        <Button variant="primary" className={styles.nextButton}>
+          Next
+        </Button>
       </div>
     </form>
   );
@@ -97,7 +99,7 @@ export default function NewClaimForm(props: Props) {
 
 export function Acknowledgement() {
   return (
-    <p className={globalStyles.textSmall}>
+    <p className={styles.acknowledgement}>
       Claimant represents that the requested relief amount is commensurate with direct quantifiable permanent damages
       (objectively calculated “make-whole” amounts) at the time of the claimed event to the Claimant from, or direct
       contractual privity with, the affected protocol, application, smart contract, or entity directly affected by the

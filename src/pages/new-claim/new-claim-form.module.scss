@@ -7,17 +7,37 @@
 
 .fieldList {
   padding: 0;
+  margin-top: 0;
+  margin-bottom: $space-xxl;
+  font-size: 16px;
+  line-height: 24px;
+
+  @media (min-width: $min-sm) {
+    font-size: $text-normal;
+    line-height: $lh-normal;
+  }
 
   li {
-    margin-top: $space-xxxl;
+    margin-top: $space-xxl;
     &::marker {
-      font-weight: 500;
+      font-weight: 600;
     }
   }
 
   label,
   p:first-child {
-    font-weight: 500;
+    font-weight: 600;
+  }
+}
+
+.description {
+  margin-top: 6px;
+  margin-bottom: $space-md;
+  color: $secondary-color;
+  font-size: $text-small;
+
+  @media (min-width: $min-sm) {
+    font-size: 16px;
   }
 }
 
@@ -31,6 +51,7 @@
 .validation {
   color: $error-color;
   font-size: $text-small;
+  font-weight: 400;
 }
 
 .helpText {
@@ -42,9 +63,25 @@
   margin-top: 10px;
 }
 
+.acknowledgement {
+  color: $secondary-color;
+  font-size: $text-small;
+  line-height: 24px;
+}
+
 .buttonRow {
   margin-top: $space-xxxl;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 2rem;
+}
+
+.nextButton {
+  font-weight: 500;
+  width: 100%;
+
+  @media (min-width: $min-sm) {
+    width: 18ch;
+  }
 }
