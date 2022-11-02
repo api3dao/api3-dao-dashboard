@@ -6,7 +6,6 @@ import styles from './confirmation.module.scss';
 interface Props {
   form: FormState;
   onSubmit: () => void;
-  onCancel: () => void;
 }
 
 export default function Confirmation(props: Props) {
@@ -22,7 +21,7 @@ export default function Confirmation(props: Props) {
         <li>
           <p>Requested payout amount, in USD</p>
           <p className={styles.description}>
-            If your claim is approved, you will be paid the equivalent value in API3 tokens
+            If your claim is accepted, you will be paid the equivalent value in API3 tokens
           </p>
           <p className={styles.usdConfirmValue}>${utils.commify(form.amount)}</p>
         </li>

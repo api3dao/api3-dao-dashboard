@@ -1,12 +1,24 @@
 @import '../../styles/variables.module.scss';
 
 .heading {
-  margin-bottom: $space-xxxl;
   word-break: break-word;
+  margin-bottom: $space-xxxl;
+  font-size: $heading-5;
+  line-height: $lh-heading-5;
+
+  @media (min-width: $min-sm) {
+    font-size: $heading-4;
+    line-height: $lh-heading-4;
+  }
 }
 
 .subHeading {
   margin-bottom: $space-xl;
+}
+
+.backButtonRow {
+  font-weight: 400;
+  margin-bottom: 10px;
 }
 
 .successContainer {

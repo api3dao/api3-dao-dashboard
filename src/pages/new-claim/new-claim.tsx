@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { ComponentProps, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link, Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
 import ExternalLink from '../../components/external-link';
+import BackButton from '../../components/back-button';
+import backButtonStyles from '../../components/back-button/back-button.module.scss';
+import ArrowLeftIcon from '../../components/icons/arrow-left-icon';
 import ClaimEvidenceInstructions from './claim-evidence-instructions';
 import NewClaimForm, { FormState, FormStatus } from './new-claim-form';
 import Confirmation from './confirmation';
@@ -109,6 +112,9 @@ export default function NewClaim() {
     case 'instructions':
       return (
         <BaseLayout subtitle="New Claim">
+          <div className={styles.backButtonRow}>
+            <BackButton>Back</BackButton>
+          </div>
           <h4 className={styles.heading}>New Claim</h4>
           <h5 className={styles.subHeading}>Creating Evidence</h5>
           <ClaimEvidenceInstructions onNext={() => setStep('capture')} />
@@ -118,6 +124,9 @@ export default function NewClaim() {
     case 'capture':
       return (
         <BaseLayout subtitle="New Claim">
+          <div className={styles.backButtonRow}>
+            <StepBackButton onClick={() => setStep('instructions')} />
+          </div>
           <h4 className={styles.heading}>New Claim</h4>
           <h5 className={styles.subHeading}>Enter Claim Details</h5>
           <NewClaimForm
@@ -134,10 +143,22 @@ export default function NewClaim() {
     case 'confirmation':
       return (
         <BaseLayout subtitle="New Claim">
+          <div className={styles.backButtonRow}>
+            <StepBackButton onClick={() => setStep('capture')} />
+          </div>
           <h4 className={styles.heading}>New Claim</h4>
           <h5 className={styles.subHeading}>Review Your Claim</h5>
-          <Confirmation form={form} onSubmit={handleSubmit} onCancel={() => setStep('capture')} />
+          <Confirmation form={form} onSubmit={handleSubmit} />
         </BaseLayout>
       );
   }
+}
+
+function StepBackButton(props: ComponentProps<'button'>) {
+  return (
+    <button className={backButtonStyles.backButton} {...props}>
+      <ArrowLeftIcon />
+      Back
+    </button>
+  );
 }
