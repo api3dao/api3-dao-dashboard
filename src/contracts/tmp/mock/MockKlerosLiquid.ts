@@ -22,7 +22,7 @@ export interface MockKlerosLiquidInterface extends utils.Interface {
   functions: {
     'MIN_JURORS()': FunctionFragment;
     'NON_PAYABLE_AMOUNT()': FunctionFragment;
-    '__setCurrentRuling(uint256,uint256)': FunctionFragment;
+    '__setCurrentRulingAndPassPeriodFromVoteToAppeal(uint256,uint256)': FunctionFragment;
     '__setSubcourtTimesPerPeriod(uint96,uint256[4])': FunctionFragment;
     'appeal(uint256,bytes)': FunctionFragment;
     'appealCost(uint256,bytes)': FunctionFragment;
@@ -34,6 +34,7 @@ export interface MockKlerosLiquidInterface extends utils.Interface {
     'disputeStatus(uint256)': FunctionFragment;
     'disputes(uint256)': FunctionFragment;
     'executeRuling(uint256)': FunctionFragment;
+    'extraDataToSubcourtIDAndMinJurors(bytes)': FunctionFragment;
     'getSubcourt(uint96)': FunctionFragment;
     'passPeriod(uint256)': FunctionFragment;
   };
@@ -42,7 +43,7 @@ export interface MockKlerosLiquidInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | 'MIN_JURORS'
       | 'NON_PAYABLE_AMOUNT'
-      | '__setCurrentRuling'
+      | '__setCurrentRulingAndPassPeriodFromVoteToAppeal'
       | '__setSubcourtTimesPerPeriod'
       | 'appeal'
       | 'appealCost'
@@ -54,6 +55,7 @@ export interface MockKlerosLiquidInterface extends utils.Interface {
       | 'disputeStatus'
       | 'disputes'
       | 'executeRuling'
+      | 'extraDataToSubcourtIDAndMinJurors'
       | 'getSubcourt'
       | 'passPeriod'
   ): FunctionFragment;
@@ -61,7 +63,7 @@ export interface MockKlerosLiquidInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'MIN_JURORS', values?: undefined): string;
   encodeFunctionData(functionFragment: 'NON_PAYABLE_AMOUNT', values?: undefined): string;
   encodeFunctionData(
-    functionFragment: '__setCurrentRuling',
+    functionFragment: '__setCurrentRulingAndPassPeriodFromVoteToAppeal',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -95,12 +97,16 @@ export interface MockKlerosLiquidInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'disputeStatus', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(functionFragment: 'disputes', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(functionFragment: 'executeRuling', values: [PromiseOrValue<BigNumberish>]): string;
+  encodeFunctionData(
+    functionFragment: 'extraDataToSubcourtIDAndMinJurors',
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
   encodeFunctionData(functionFragment: 'getSubcourt', values: [PromiseOrValue<BigNumberish>]): string;
   encodeFunctionData(functionFragment: 'passPeriod', values: [PromiseOrValue<BigNumberish>]): string;
 
   decodeFunctionResult(functionFragment: 'MIN_JURORS', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'NON_PAYABLE_AMOUNT', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: '__setCurrentRuling', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: '__setCurrentRulingAndPassPeriodFromVoteToAppeal', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: '__setSubcourtTimesPerPeriod', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'appeal', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'appealCost', data: BytesLike): Result;
@@ -112,6 +118,7 @@ export interface MockKlerosLiquidInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'disputeStatus', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'disputes', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'executeRuling', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'extraDataToSubcourtIDAndMinJurors', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'getSubcourt', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'passPeriod', data: BytesLike): Result;
 
@@ -145,7 +152,7 @@ export interface MockKlerosLiquid extends BaseContract {
 
     NON_PAYABLE_AMOUNT(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    __setCurrentRuling(
+    __setCurrentRulingAndPassPeriodFromVoteToAppeal(
       disputeId: PromiseOrValue<BigNumberish>,
       ruling: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -232,6 +239,11 @@ export interface MockKlerosLiquid extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    extraDataToSubcourtIDAndMinJurors(
+      _extraData: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber] & { subcourtID: BigNumber; minJurors: BigNumber }>;
+
     getSubcourt(
       _subcourtID: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -252,7 +264,7 @@ export interface MockKlerosLiquid extends BaseContract {
 
   NON_PAYABLE_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
-  __setCurrentRuling(
+  __setCurrentRulingAndPassPeriodFromVoteToAppeal(
     disputeId: PromiseOrValue<BigNumberish>,
     ruling: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -333,6 +345,11 @@ export interface MockKlerosLiquid extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  extraDataToSubcourtIDAndMinJurors(
+    _extraData: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber] & { subcourtID: BigNumber; minJurors: BigNumber }>;
+
   getSubcourt(
     _subcourtID: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -353,7 +370,7 @@ export interface MockKlerosLiquid extends BaseContract {
 
     NON_PAYABLE_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
-    __setCurrentRuling(
+    __setCurrentRulingAndPassPeriodFromVoteToAppeal(
       disputeId: PromiseOrValue<BigNumberish>,
       ruling: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -431,6 +448,11 @@ export interface MockKlerosLiquid extends BaseContract {
 
     executeRuling(_disputeID: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
 
+    extraDataToSubcourtIDAndMinJurors(
+      _extraData: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber] & { subcourtID: BigNumber; minJurors: BigNumber }>;
+
     getSubcourt(
       _subcourtID: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -451,7 +473,7 @@ export interface MockKlerosLiquid extends BaseContract {
 
     NON_PAYABLE_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
 
-    __setCurrentRuling(
+    __setCurrentRulingAndPassPeriodFromVoteToAppeal(
       disputeId: PromiseOrValue<BigNumberish>,
       ruling: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -503,6 +525,11 @@ export interface MockKlerosLiquid extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    extraDataToSubcourtIDAndMinJurors(
+      _extraData: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getSubcourt(_subcourtID: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<BigNumber>;
 
     passPeriod(
@@ -516,7 +543,7 @@ export interface MockKlerosLiquid extends BaseContract {
 
     NON_PAYABLE_AMOUNT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    __setCurrentRuling(
+    __setCurrentRulingAndPassPeriodFromVoteToAppeal(
       disputeId: PromiseOrValue<BigNumberish>,
       ruling: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -566,6 +593,11 @@ export interface MockKlerosLiquid extends BaseContract {
     executeRuling(
       _disputeID: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    extraDataToSubcourtIDAndMinJurors(
+      _extraData: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getSubcourt(_subcourtID: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<PopulatedTransaction>;

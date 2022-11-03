@@ -12,7 +12,6 @@ describe('<ClaimActions />', () => {
       claimId: '42',
       policy: { id: '101', metadata: 'ETH/BTC' },
       claimant: '0x153EF0B488148k0aB0FED112334',
-      beneficiary: '0x153EF0B488148k0aB0FED112334',
       claimAmountInUsd: parseUsd('1000'),
       settlementAmountInUsd: null,
       timestamp: addDays(new Date(), -2),
