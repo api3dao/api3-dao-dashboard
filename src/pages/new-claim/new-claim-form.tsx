@@ -1,5 +1,6 @@
 import { FormEventHandler } from 'react';
 import { goSync } from '@api3/promise-utils';
+import { CID } from 'multiformats/cid';
 import isEmpty from 'lodash/isEmpty';
 import Input from '../../components/input';
 import UsdInput from '../../components/usd-input';
@@ -19,15 +20,16 @@ export type FormStatus = 'idle' | 'validation_failed' | 'submitting' | 'submitte
 function getValidationMessages(form: FormState, policy: Policy) {
   const messages: ValidationMessages<FormState> = {};
 
-  if (form.evidence.trim().length === 0) {
-    messages.evidence = 'Please fill in this field';
+  const evidenceResult = goSync(() => CID.parse(form.evidence.trim()));
+  if (!evidenceResult.success) {
+    messages.evidence = 'Please enter a valid hash';
   }
 
-  const result = goSync(() => parseUsd(form.amount));
-  if (!result.success) {
+  const usdResult = goSync(() => parseUsd(form.amount));
+  if (!usdResult.success) {
     messages.amount = 'Please enter a valid number';
   } else {
-    const parsed = result.data;
+    const parsed = usdResult.data;
     if (parsed.lte(0)) {
       messages.amount = 'Amount must be greater than zero';
     } else if (parsed.gt(policy.remainingCoverageInUsd)) {
