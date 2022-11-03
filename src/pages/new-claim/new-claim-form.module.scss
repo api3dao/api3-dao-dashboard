@@ -26,6 +26,10 @@
   label {
     font-weight: 600;
   }
+
+  input {
+    text-overflow: ellipsis;
+  }
 }
 
 .description {
@@ -64,7 +68,7 @@
 }
 
 .buttonRow {
-  margin-top: $space-xxxl;
+  margin-top: 60px;
   display: flex;
   justify-content: flex-end;
 }

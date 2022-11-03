@@ -36,12 +36,11 @@
 
 .instructions {
   padding: 0;
-  margin-top: $space-xxl;
-  margin-bottom: $space-xxl;
+  margin: 0;
   color: $primary-color;
 
   li {
-    margin-bottom: $space-xxl;
+    margin-top: $space-xxl;
     &::marker {
       font-weight: 600;
     }
@@ -51,6 +50,7 @@
 .buttonRow {
   display: flex;
   justify-content: flex-end;
+  margin-top: 60px;
 }
 
 .button {

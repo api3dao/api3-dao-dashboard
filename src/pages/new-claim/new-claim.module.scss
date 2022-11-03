@@ -1,8 +1,12 @@
 @import '../../styles/variables.module.scss';
 
+.backButtonRow {
+  font-weight: 400;
+}
+
 .heading {
   word-break: break-word;
-  margin-bottom: $space-xxxl;
+  margin: 10px 0;
   font-size: $heading-5;
   line-height: $lh-heading-5;
 
@@ -12,13 +16,25 @@
   }
 }
 
-.subHeading {
-  margin-bottom: $space-xl;
+.policy {
+  color: $secondary-color;
+  font-size: $text-small;
+  font-weight: 400;
 }
 
-.backButtonRow {
-  font-weight: 400;
-  margin-bottom: 10px;
+.subHeading {
+  color: $secondary-color;
+  font-size: 20px;
+  line-height: 32px;
+  margin-top: 60px;
+  margin-bottom: $space-lg;
+
+  @media (min-width: $min-sm) {
+    font-size: $heading-5;
+    line-height: $lh-heading-5;
+    margin-top: 80px;
+    margin-bottom: $space-xl;
+  }
 }
 
 .successContainer {
@@ -33,11 +49,6 @@
     text-align: center;
     font-size: $text-normal;
     line-height: $lh-normal;
-  }
-
-  .subHeading {
-    color: $secondary-color;
-    margin-top: $space-xxxl;
   }
 
   p {

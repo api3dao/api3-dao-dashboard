@@ -115,6 +115,7 @@ export default function NewClaim() {
             <BackButton>Back</BackButton>
           </div>
           <h4 className={styles.heading}>New Claim</h4>
+          <p className={styles.policy}>{policy.metadata}</p>
           <h5 className={styles.subHeading}>Creating Evidence</h5>
           <ClaimEvidenceInstructions onNext={() => setStep('capture')} />
         </BaseLayout>
@@ -127,6 +128,7 @@ export default function NewClaim() {
             <StepBackButton onClick={() => setStep('instructions')} />
           </div>
           <h4 className={styles.heading}>New Claim</h4>
+          <p className={styles.policy}>{policy.metadata}</p>
           <h5 className={styles.subHeading}>Enter Claim Details</h5>
           <NewClaimForm
             form={form}
@@ -146,6 +148,7 @@ export default function NewClaim() {
             <StepBackButton onClick={() => setStep('capture')} />
           </div>
           <h4 className={styles.heading}>New Claim</h4>
+          <p className={styles.policy}>{policy.metadata}</p>
           <h5 className={styles.subHeading}>Review Your Claim</h5>
           <Confirmation form={form} onSubmit={handleSubmit} />
         </BaseLayout>
