@@ -1,75 +1,235 @@
 @import '../../styles/variables.module.scss';
 
+$min-desktop-width: 900px;
+
 .claimList {
   padding: 0;
+  margin-top: 0;
   list-style: none;
-}
-
-.claimItem {
-  border-top: 1px solid $black-line-color;
-  padding-top: $space-md;
-  padding-bottom: $space-lg;
 
   @media (min-width: $min-md) {
-    display: flex;
+    margin-top: 1rem;
+  }
+
+  li {
+    border-top: 1px solid $black-line-color;
+    padding-top: $space-xxl;
+    padding-bottom: $space-xxl;
+
+    @media (min-width: $min-desktop-width) {
+      padding-top: $space-lg;
+      padding-bottom: $space-lg;
+    }
+  }
+
+  // Width of the right-hand side of the list item (desktop layout)
+  --width-rhs: 25px;
+
+  li[data-active='true'] {
+    --width-rhs: 260px;
+
+    &[data-status='SettlementProposed'] {
+      --width-rhs: 280px;
+    }
+
+    &[data-dispute-status='Solved'] {
+      --width-rhs: 165px;
+    }
+  }
+}
+
+.claimItemContainer {
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: $min-desktop-width) {
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between;
   }
 }
 
 .claimItemMain {
-  max-width: calc(100% - 330px);
+  flex: 1;
   font-weight: 500;
-  padding-right: $space-xxxl;
   box-sizing: border-box;
+  padding-right: 0;
 
-  @media (max-width: $max-xl) {
-    max-width: calc(100% - 280px);
-    padding-right: $space-xl;
-  }
-
-  @media (max-width: $max-md) {
-    max-width: none;
-    padding-right: 0;
+  @media (min-width: $min-desktop-width) {
+    max-width: calc(100% - var(--width-rhs));
   }
 }
 
 .claimItemTitle {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.5ch;
   margin-bottom: $space-md;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
   color: $primary-color;
   text-decoration: none;
+
+  svg {
+    color: $pink-color;
+    width: 20px;
+    min-width: 20px;
+  }
+
+  @media (min-width: $min-desktop-width) {
+    margin-right: 1ch;
+    margin-bottom: $space-xxs;
+  }
 }
 
 .claimItemInfo {
-  display: flex;
-  align-items: center;
+  display: inline-flex;
   font-size: $text-xsmall;
   line-height: $lh-xsmall;
+  gap: 2ch;
+  width: 100%;
 
-  & > * {
-    margin-right: $space-xxl;
-  }
-
-  & > *:last-child {
-    margin-right: 0;
+  @media (min-width: $min-desktop-width) {
+    white-space: nowrap;
   }
 }
 
-.claimItemStatus {
-  display: flex;
+.status,
+.desktopStatus {
+  font-weight: 600;
+  color: $secondary-color;
+  display: inline-flex;
   align-items: center;
-  font-weight: 500;
+  gap: 0.5ch;
 
-  a {
-    display: none;
-    @media (min-width: $min-md) {
-      display: flex;
-      align-items: center;
-      margin-left: $space-md;
+  svg {
+    height: 14px;
+    width: 18px;
+    min-width: 18px;
+  }
+}
+
+.desktopStatus {
+  display: none;
+
+  @media (min-width: $min-desktop-width) {
+    display: inline-flex;
+  }
+}
+
+[data-show-deadline='true'] {
+  @media (min-width: $min-desktop-width) and (max-width: 1144px) {
+    .claimId {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .createdAt {
+      display: none;
     }
   }
+}
+
+.createdAt {
+  display: inline;
+
+  @media (min-width: $min-desktop-width) {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.claimActionInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-weight: 500;
+  line-height: $lh-normal;
+
+  @media (min-width: $min-desktop-width) {
+    align-items: flex-end;
+    margin-left: auto;
+    margin-right: 1rem;
+    line-height: $lh-xsmall;
+  }
+
+  .pillContainer {
+    display: none;
+    @media (min-width: $min-desktop-width) {
+      display: flex;
+    }
+  }
+}
+
+.arrowIconLink {
+  display: none;
+  width: 25px;
+
+  @media (min-width: $min-desktop-width) {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.pillContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1ch;
+}
+
+.pill,
+.pillPrimary,
+.pillExtra,
+.pillDisabled {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  border: 1px solid #4f9182;
+  padding: 4px 10px;
+  line-height: 14px;
+  border-radius: 10px;
+  color: $secondary-color;
+  white-space: nowrap;
+}
+
+.pillPrimary {
+  background: #325b51;
+  border-color: #95e8d5;
+  color: $primary-color;
+}
+
+.pillExtra {
+  display: none;
+
+  @media (min-width: 660px) {
+    display: inline-flex;
+  }
+}
+
+.pillDisabled {
+  color: $tertiary-color;
+  border: 1px solid #325b51;
+}
+
+.mobileStatusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: $text-xsmall;
+  line-height: $lh-xsmall;
+  font-weight: 400;
+  margin-bottom: $space-xs;
+
+  .status {
+    margin-right: 1ch;
+  }
+
+  @media (min-width: $min-desktop-width) {
+    display: none;
+  }
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

@@ -132,14 +132,12 @@ task('create-user-policy', 'Creates a policy for the given user')
     // We use a multicall in order to create the policy and announce its metadata in the same transaction
     const createCall = claimsManager.interface.encodeFunctionData('createPolicy', [
       userAddress,
-      userAddress,
       parseUsd(args.coverageAmount),
       Math.round(claimsAllowedFrom.getTime() / 1000),
       Math.round(claimsAllowedUntil.getTime() / 1000),
       ipfsHash,
     ]);
     const metadataCall = claimsManager.interface.encodeFunctionData('announcePolicyMetadata', [
-      userAddress,
       userAddress,
       Math.round(claimsAllowedFrom.getTime() / 1000),
       ipfsHash,
@@ -148,7 +146,7 @@ task('create-user-policy', 'Creates a policy for the given user')
     const tx = await claimsManager.multicall([createCall, metadataCall]);
 
     await tx.wait();
-    const createdEvents = await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, userAddress));
+    const createdEvents = await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(userAddress));
 
     console.info(`User policies (${createdEvents.length}):`);
     createdEvents.forEach((event) => {
@@ -168,9 +166,7 @@ task('upgrade-user-policy', 'Upgrades the policy with given params')
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
 
-    const createdEvent = (
-      await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, null, args.policyId))
-    )[0];
+    const createdEvent = (await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, args.policyId)))[0];
 
     if (!createdEvent) {
       throw new Error('Policy does not exist');
@@ -178,7 +174,6 @@ task('upgrade-user-policy', 'Upgrades the policy with given params')
 
     await claimsManager.upgradePolicy(
       createdEvent.args.claimant,
-      createdEvent.args.beneficiary,
       parseUsd(args.coverageAmount),
       createdEvent.args.claimsAllowedFrom,
       Math.round(parseISO(args.claimsAllowedUntil).getTime() / 1000),
@@ -199,9 +194,7 @@ task('downgrade-user-policy', 'Downgrades the policy with given params')
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
 
-    const createdEvent = (
-      await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, null, args.policyId))
-    )[0];
+    const createdEvent = (await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, args.policyId)))[0];
 
     if (!createdEvent) {
       throw new Error('Policy does not exist');
@@ -209,7 +202,6 @@ task('downgrade-user-policy', 'Downgrades the policy with given params')
 
     await claimsManager.downgradePolicy(
       createdEvent.args.claimant,
-      createdEvent.args.beneficiary,
       parseUsd(args.coverageAmount),
       createdEvent.args.claimsAllowedFrom,
       Math.round(parseISO(args.claimsAllowedUntil).getTime() / 1000),
@@ -229,9 +221,7 @@ task('update-policy-metadata', 'Updates the policy metadata')
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
 
-    const createdEvent = (
-      await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, null, args.policyId))
-    )[0];
+    const createdEvent = (await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, args.policyId)))[0];
 
     if (!createdEvent) {
       throw new Error('Policy does not exist');
@@ -239,7 +229,6 @@ task('update-policy-metadata', 'Updates the policy metadata')
 
     await claimsManager.announcePolicyMetadata(
       createdEvent.args.claimant,
-      createdEvent.args.beneficiary,
       createdEvent.args.claimsAllowedFrom,
       createdEvent.args.policy,
       args.metadata
@@ -257,7 +246,9 @@ task('accept-claim', 'Accepts the given claim')
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
 
-    const createdEvent = (await claimsManager.queryFilter(claimsManager.filters.CreatedClaim(args.claimId)))[0];
+    const createdEvent = (
+      await claimsManager.queryFilter(claimsManager.filters.CreatedClaim(null, null, args.claimId))
+    )[0];
     if (!createdEvent) {
       throw new Error('Claim does not exist');
     }
@@ -265,7 +256,6 @@ task('accept-claim', 'Accepts the given claim')
     await claimsManager.acceptClaim(
       createdEvent.args.policyHash,
       createdEvent.args.claimant,
-      createdEvent.args.beneficiary,
       createdEvent.args.claimAmountInUsd,
       createdEvent.args.evidence
     );
@@ -283,7 +273,9 @@ task('propose-settlement', 'Proposes a settlement amount for the claim')
     const contracts = getContractAddresses(hre.network.name);
     const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, manager);
 
-    const createdEvent = (await claimsManager.queryFilter(claimsManager.filters.CreatedClaim(args.claimId)))[0];
+    const createdEvent = (
+      await claimsManager.queryFilter(claimsManager.filters.CreatedClaim(null, null, args.claimId))
+    )[0];
     if (!createdEvent) {
       throw new Error('Claim does not exist');
     }
@@ -291,7 +283,6 @@ task('propose-settlement', 'Proposes a settlement amount for the claim')
     await claimsManager.proposeSettlement(
       createdEvent.args.policyHash,
       createdEvent.args.claimant,
-      createdEvent.args.beneficiary,
       createdEvent.args.claimAmountInUsd,
       createdEvent.args.evidence,
       parseUsd(args.amount)
@@ -313,10 +304,9 @@ task('give-dispute-ruling', 'Gives a ruling for the dispute')
 
     // Set all the period times to zero before the appeal period
     await arbitrator.__setSubcourtTimesPerPeriod(1, [0, 0, 0, args.appealPeriodLength ?? 300]);
-    await arbitrator.__setCurrentRuling(args.disputeId, args.ruling);
-    // Pass the periods so that we land in the appeal period
+    // Pass the period so that we land in the vote period
     await arbitrator.passPeriod(args.disputeId);
-    await arbitrator.passPeriod(args.disputeId);
+    await arbitrator.__setCurrentRulingAndPassPeriodFromVoteToAppeal(args.disputeId, args.ruling);
     console.info(`Dispute: ${args.disputeId} has been given a ruling: ${args.ruling}`);
   });
 
