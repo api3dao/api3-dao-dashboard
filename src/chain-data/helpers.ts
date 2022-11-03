@@ -55,8 +55,10 @@ export const getNetworkData = async (provider: ethers.providers.Web3Provider | n
   return networkData;
 };
 
-export const abbrStr = (str: string) => {
-  return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
+export const abbrStr = (str: string, options?: { startLength?: number; endLength?: number }) => {
+  const startLength = options?.startLength ?? 9;
+  const endLength = options?.endLength ?? 4;
+  return str.substring(0, startLength) + '...' + str.substring(str.length - endLength, str.length);
 };
 
 export interface PendingTransactionMessages {

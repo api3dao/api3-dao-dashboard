@@ -28,11 +28,13 @@ describe('<ClaimActions />', () => {
   describe('"ClaimCreated" status', () => {
     it('shows that the claim is in progress', () => {
       claim.status = 'ClaimCreated';
+      claim.deadline = addMinutes(new Date(), 1);
 
       render(<ClaimActions claim={claim} payout={null} />);
 
       expect(screen.getByTestId('status-prefix')).toHaveTextContent('API3 Mediators');
       expect(screen.getByTestId('status')).toHaveTextContent('Evaluating');
+      expect(screen.queryAllByRole('button')).toHaveLength(0); // There should be no actions available
     });
 
     describe('when the claim has been ignored by API3', () => {
@@ -91,7 +93,7 @@ describe('<ClaimActions />', () => {
   });
 
   describe('"SettlementAccepted" status', () => {
-    it('shows claimant has accepted the counter', () => {
+    it('shows the claim has been settled', () => {
       claim.status = 'SettlementAccepted';
       claim.settlementAmountInUsd = parseUsd('500');
       const payout = {
@@ -150,7 +152,7 @@ describe('<ClaimActions />', () => {
     });
 
     describe('with "PayClaim" arbitrator ruling', () => {
-      it('shows the claim has been approved', () => {
+      it('shows the claim has been accepted', () => {
         claim.deadline = addDays(new Date(), 2);
         claim.dispute = {
           id: '1',
@@ -355,7 +357,7 @@ describe('<ClaimActions />', () => {
   });
 
   describe('"ClaimAccepted" status', () => {
-    it('shows the claim has been approved', () => {
+    it('shows the claim has been accepted', () => {
       claim.status = 'ClaimAccepted';
       const payout = {
         amountInUsd: claim.claimAmountInUsd,
@@ -390,7 +392,7 @@ describe('<ClaimActions />', () => {
   });
 
   describe('"DisputeResolvedWithClaimPayout" status', () => {
-    it('shows the claim has been approved', () => {
+    it('shows the claim has been accepted', () => {
       claim.status = 'DisputeResolvedWithClaimPayout';
       const payout = {
         amountInUsd: claim.claimAmountInUsd,
@@ -425,7 +427,7 @@ describe('<ClaimActions />', () => {
   });
 
   describe('"DisputeResolvedWithSettlementPayout" status', () => {
-    it('shows the claim counter offer has been approved', () => {
+    it('shows the claim has been settled', () => {
       claim.status = 'DisputeResolvedWithSettlementPayout';
       claim.settlementAmountInUsd = parseUsd('500');
       const payout = {

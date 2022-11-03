@@ -29,8 +29,18 @@ describe('produceState', () => {
   });
 });
 
-test('abbrStr', () => {
-  const string = 'dffd4543xggdfgdter5452442zsdfs31214';
+describe('abbrStr', () => {
+  it('abbreviates the string with default start and end lengths', () => {
+    const string = '0xfc83f22fb8167f9cdfb982dd4aeccc84d70df1494bca8271b3428d74df73807a';
 
-  expect(abbrStr(string)).toBe('dffd4543x...1214');
+    expect(abbrStr(string)).toBe('0xfc83f22...807a');
+  });
+
+  it('handles custom start and end lengths', () => {
+    const string = '0xfc83f22fb8167f9cdfb982dd4aeccc84d70df1494bca8271b3428d74df73807a';
+
+    expect(abbrStr(string, { startLength: 5 })).toBe('0xfc8...807a');
+    expect(abbrStr(string, { endLength: 7 })).toBe('0xfc83f22...f73807a');
+    expect(abbrStr(string, { startLength: 7, endLength: 7 })).toBe('0xfc83f...f73807a');
+  });
 });

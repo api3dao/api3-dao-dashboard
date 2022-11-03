@@ -37,9 +37,22 @@ interface ToastPropsWithType extends ToastProps {
 }
 
 const CustomToast = ({ message, type, url }: ToastPropsWithType) => {
+  const getIcon = () => {
+    switch (type) {
+      case 'error':
+        return images.error;
+      case 'info':
+        return images.info;
+      case 'success':
+        return images.success;
+      case 'warning':
+        return images.warning;
+    }
+  };
+
   return (
     <div className={classNames(styles.notificationBody, { [styles.url]: url })}>
-      <img src={`/${type}.svg`} alt={`${type} icon`} />
+      <img src={getIcon()} alt={`${type} icon`} />
       <div className={styles.notificationContent}>
         <p>{message}</p>
         {url && (
