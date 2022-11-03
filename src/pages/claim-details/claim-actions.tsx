@@ -39,7 +39,7 @@ export default function ClaimActions(props: Props) {
   const handleAcceptSettlement = async () => {
     setStatus('submitting');
     const tx = await handleTransactionError(
-      claimsManager.acceptSettlement(claim.policy.id, claim.beneficiary, claim.claimAmountInUsd, claim.evidence, '0')
+      claimsManager.acceptSettlement(claim.policy.id, claim.claimAmountInUsd, claim.evidence, '0')
     );
     if (tx) {
       setChainData('Save accept claim settlement transaction', {
@@ -55,14 +55,9 @@ export default function ClaimActions(props: Props) {
   const handleEscalateToArbitrator = async (arbitrationCost: BigNumber) => {
     setStatus('submitting');
     const tx = await handleTransactionError(
-      arbitratorProxy.createDispute(
-        claim.policy.id,
-        claim.claimant,
-        claim.beneficiary,
-        claim.claimAmountInUsd,
-        claim.evidence,
-        { value: arbitrationCost }
-      )
+      arbitratorProxy.createDispute(claim.policy.id, claim.claimant, claim.claimAmountInUsd, claim.evidence, {
+        value: arbitrationCost,
+      })
     );
     if (tx) {
       setChainData('Save escalate claim transaction', {
@@ -81,7 +76,6 @@ export default function ClaimActions(props: Props) {
       arbitratorProxy.appealKlerosArbitratorRuling(
         claim.policy.id,
         claim.claimant,
-        claim.beneficiary,
         claim.claimAmountInUsd,
         claim.evidence,
         { value: appealCost }

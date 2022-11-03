@@ -141,9 +141,9 @@ async function loadClaims(
   const { userAccount = null, claimId = null } = params;
   // Get all the static data via events
   const [createdEvents, settlementEvents, disputeEvents] = await Promise.all([
-    claimsManager.queryFilter(claimsManager.filters.CreatedClaim(claimId, userAccount)),
-    claimsManager.queryFilter(claimsManager.filters.ProposedSettlement(claimId, userAccount)),
-    arbitratorProxy.queryFilter(arbitratorProxy.filters.CreatedDispute(claimId, userAccount)),
+    claimsManager.queryFilter(claimsManager.filters.CreatedClaim(userAccount, null, claimId)),
+    claimsManager.queryFilter(claimsManager.filters.ProposedSettlement(userAccount, null, claimId)),
+    arbitratorProxy.queryFilter(arbitratorProxy.filters.CreatedDispute(userAccount, null, claimId)),
   ]);
 
   if (!createdEvents.length) {
@@ -170,7 +170,6 @@ async function loadClaims(
       evidence: eventArgs.evidence,
       timestamp: blockTimestampToDate(eventArgs.claimCreationTime),
       claimant: eventArgs.claimant,
-      beneficiary: eventArgs.beneficiary,
       claimAmountInUsd: eventArgs.claimAmountInUsd,
       settlementAmountInUsd: settlementEvent?.args.settlementAmountInUsd ?? null,
       status: ClaimStatuses[claimData.status as ClaimStatusCode],
@@ -318,7 +317,6 @@ async function getAppealEvents(contract: KlerosLiquidProxy, disputeEvents: Creat
   return await contract.queryFilter(
     contract.filters.AppealedKlerosArbitratorRuling(
       null,
-      null,
       // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
       disputeIds
     )
@@ -329,7 +327,6 @@ async function getPolicyContractData(contract: ClaimsManager, claimEvents: Creat
   const policyIds = uniq(claimEvents.map((ev) => ev.args.policyHash));
   const metadataEvents = await contract.queryFilter(
     contract.filters.AnnouncedPolicyMetadata(
-      null,
       null,
       // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
       policyIds
@@ -395,30 +392,34 @@ async function loadClaimPayoutData(contract: ClaimsManager, params: { userAccoun
   const [acceptedEvents, settlementEvents, resolvedClaimEvents, resolvedSettlementEvents] = await Promise.all([
     contract.queryFilter(
       contract.filters.AcceptedClaim(
+        userAccount,
+        null,
         // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
-        claimIds,
-        userAccount
+        claimIds
       )
     ),
     contract.queryFilter(
       contract.filters.AcceptedSettlement(
+        userAccount,
+        null,
         // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
-        claimIds,
-        userAccount
+        claimIds
       )
     ),
     contract.queryFilter(
       contract.filters.ResolvedDisputeByAcceptingClaim(
+        userAccount,
+        null,
         // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
-        claimIds,
-        userAccount
+        claimIds
       )
     ),
     contract.queryFilter(
       contract.filters.ResolvedDisputeByAcceptingSettlement(
+        userAccount,
+        null,
         // @ts-expect-error Typechain doesn't recognise that you can provide an array for any filter topic
-        claimIds,
-        userAccount
+        claimIds
       )
     ),
   ]);
