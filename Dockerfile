@@ -1,6 +1,6 @@
 # This Dockerfile builds a mainnet version for API3 DAO dashboard
 
-FROM node:lts-alpine as builder
+FROM node:16-alpine as builder
 RUN apk add --no-cache git
 WORKDIR /usr/src/app
 ADD . .
