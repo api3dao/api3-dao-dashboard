@@ -1,13 +1,11 @@
 import { utils } from 'ethers';
 import Button from '../../components/button';
 import { Acknowledgement, FormState } from './new-claim-form';
-import globalStyles from '../../styles/global-styles.module.scss';
-import styles from './new-claim-form.module.scss';
+import styles from './confirmation.module.scss';
 
 interface Props {
   form: FormState;
   onSubmit: () => void;
-  onCancel: () => void;
 }
 
 export default function Confirmation(props: Props) {
@@ -15,25 +13,23 @@ export default function Confirmation(props: Props) {
 
   return (
     <div className={styles.container}>
-      <ol className={styles.fieldList}>
+      <ul className={styles.list}>
         <li>
-          <p>Enter the IPFS hash to your Claim Evidence form</p>
-          <p className={globalStyles.secondaryColor}>You created this hash in the previous step</p>
+          <p>IPFS hash to your Claim Evidence form</p>
           <p className={styles.confirmValue}>{form.evidence}</p>
         </li>
         <li>
           <p>Requested payout amount, in USD</p>
-          <p className={globalStyles.secondaryColor}>
-            If your claim is approved, you will be paid the equivalent value in API3 tokens
+          <p className={styles.description}>
+            If your claim is accepted, you will be paid the equivalent value in API3 tokens
           </p>
-          <p className={styles.confirmValue}>${utils.commify(form.amount)}</p>
+          <p className={styles.usdConfirmValue}>${utils.commify(form.amount)}</p>
         </li>
-      </ol>
+      </ul>
       <Acknowledgement />
       <div className={styles.buttonRow}>
-        <Button onClick={props.onSubmit}>Submit Claim</Button>
-        <Button variant="text" onClick={props.onCancel}>
-          Go Back
+        <Button onClick={props.onSubmit} className={styles.submitButton}>
+          Submit Claim
         </Button>
       </div>
     </div>

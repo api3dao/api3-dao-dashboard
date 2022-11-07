@@ -1,21 +1,79 @@
 @import '../../styles/variables.module.scss';
 
+.backButtonRow {
+  font-weight: 400;
+}
+
 .heading {
-  margin-bottom: $space-xxxl;
   word-break: break-word;
+  margin: 10px 0;
+  font-size: $heading-5;
+  line-height: $lh-heading-5;
+
+  @media (min-width: $min-sm) {
+    font-size: $heading-4;
+    line-height: $lh-heading-4;
+  }
+}
+
+.policy {
+  color: $secondary-color;
+  font-size: $text-small;
+  font-weight: 400;
 }
 
 .subHeading {
-  margin-bottom: $space-xxxl;
+  color: $secondary-color;
+  font-size: 20px;
+  line-height: 32px;
+  margin-top: 60px;
+  margin-bottom: $space-lg;
+
+  @media (min-width: $min-sm) {
+    font-size: $heading-5;
+    line-height: $lh-heading-5;
+    margin-top: 80px;
+    margin-bottom: $space-xl;
+  }
 }
 
 .successContainer {
   margin: 0 auto;
-  text-align: center;
   max-width: 70ch;
+  word-break: break-word;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+
+  @media (min-width: $min-sm) {
+    text-align: center;
+    font-size: $text-normal;
+    line-height: $lh-normal;
+  }
+
+  p {
+    margin-bottom: $space-md;
+  }
 }
 
 .processMessage {
+  font-size: $text-small;
   color: $secondary-color;
-  margin-bottom: $space-xxxl;
+  margin: 0 auto;
+
+  @media (min-width: $min-sm) {
+    text-align: center;
+    font-size: 16px;
+    line-height: $lh-normal;
+  }
+
+  a {
+    font-weight: 500;
+  }
+}
+
+.homeLink {
+  display: inline-flex;
+  margin-top: 44px;
+  font-weight: 500;
 }

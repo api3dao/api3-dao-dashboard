@@ -2,12 +2,13 @@
 
 .container {
   max-width: 60ch;
-  padding-left: 1.5ch;
 }
 
-.fieldList {
+.list {
+  list-style: none;
   padding: 0;
   margin: 0;
+  color: $tertiary-color;
   font-size: 16px;
   line-height: 24px;
 
@@ -18,23 +19,15 @@
 
   li {
     margin-bottom: $space-xxl;
-    &::marker {
-      font-weight: 600;
-    }
   }
 
-  label {
+  p:first-child {
     font-weight: 600;
-  }
-
-  input {
-    text-overflow: ellipsis;
   }
 }
 
 .description {
   margin-top: 6px;
-  margin-bottom: $space-md;
   color: $secondary-color;
   font-size: $text-small;
 
@@ -43,28 +36,17 @@
   }
 }
 
-.usdInput {
-  padding-top: 5px;
-  @media (min-width: $min-md) {
-    max-width: 50%;
-  }
-}
-
-.validation {
-  color: $error-color;
-  font-size: $text-small;
+.confirmValue,
+.usdConfirmValue {
+  color: $primary-color;
   font-weight: 400;
+  margin-top: 20px;
+  word-break: break-word;
 }
 
-.helpText {
-  color: $secondary-color;
-  font-size: $text-small;
-}
-
-.acknowledgement {
-  color: $secondary-color;
-  font-size: $text-small;
-  line-height: 24px;
+.usdConfirmValue {
+  font-size: $text-large;
+  line-height: $lh-large;
 }
 
 .buttonRow {
@@ -73,11 +55,11 @@
   justify-content: flex-end;
 }
 
-.nextButton {
+.submitButton {
   font-weight: 500;
   width: 100%;
 
   @media (min-width: $min-sm) {
-    width: 18ch;
+    width: 20ch;
   }
 }
