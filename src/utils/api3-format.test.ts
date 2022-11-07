@@ -45,7 +45,7 @@ test('formatApi3', () => {
 });
 
 test('formatUsd', () => {
-  expect(formatUsd).toBe(formatEther);
+  expect(formatUsd).toBe(formatAndRoundApi3);
 });
 
 test('round', () => {

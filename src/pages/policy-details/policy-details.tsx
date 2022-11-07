@@ -98,7 +98,7 @@ export default function PolicyDetails() {
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Remaining Service Coverage Amount</p>
-              <p className={globalStyles.secondaryColor}>${formatUsd(policy.remainingCoverageInUsd)}</p>
+              <p className={globalStyles.secondaryColor}>{formatUsd(policy.remainingCoverageInUsd)} USD</p>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claims Allowed From</p>

@@ -10,15 +10,15 @@ export const formatEther = (value: BigNumberish, commify = true) => {
 // API3 Token has the same denomination as ETH.
 export const formatApi3 = formatEther;
 
-// We store the USD amounts in the same denomination as ETH.
-export const formatUsd = formatEther;
-
 export const formatAndRoundApi3 = (tokens: BigNumberish, decimals = DEFAULT_DECIMALS) => {
   const formatted = utils.formatEther(tokens);
   // NOTE: The number of tokens is formatted by ethers first so it will fit into JS number
   // Also, ethers.commify will strip unnecessary zero decimals from end. For example, 12.00 becomes 12.0
   return utils.commify(Number.parseFloat(formatted).toFixed(decimals));
 };
+
+// We store the USD amounts in the same denomination as API3 and ETH.
+export const formatUsd = formatAndRoundApi3;
 
 export const parseEther = utils.parseEther;
 
