@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import DashboardIcon from '../icons/dashboard-icon';
 import ProposalsIcon from '../icons/proposals-icon';
 import HistoryIcon from '../icons/history-icon';
-import PoliciesIcon from '../icons/policies-icon';
 import ClaimsIcon from '../icons/claims-icons';
 import TrackerIcon from '../icons/tracker-icon';
 import MarketIcon from '../icons/market-icon';
@@ -42,14 +41,11 @@ export const DesktopMenu = () => {
           <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>History</p>
         </div>
       </NavLink>
-      <NavLink activeClassName={styles.menuActiveItem} to="/policies">
-        <div className={styles.menuItem}>
-          <div className={styles.menuActiveLine} />
-          <PoliciesIcon aria-hidden />
-          <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>My Policies</p>
-        </div>
-      </NavLink>
-      <NavLink activeClassName={styles.menuActiveItem} to="/claims">
+      <NavLink
+        activeClassName={styles.menuActiveItem}
+        to="/claims"
+        isActive={() => pathname.startsWith('/claims') || pathname.startsWith('/policies')}
+      >
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
           <ClaimsIcon aria-hidden />
@@ -119,12 +115,6 @@ export const MobileMenu = () => {
               <div className={styles.menuMobileItem}>
                 <HistoryIcon aria-hidden />
                 <p className={styles.menuMobileItemText}>History</p>
-              </div>
-            </NavLink>
-            <NavLink activeClassName={styles.menuActiveItem} to="/policies">
-              <div className={styles.menuMobileItem}>
-                <PoliciesIcon aria-hidden />
-                <p className={styles.menuMobileItemText}>My Policies</p>
               </div>
             </NavLink>
             <NavLink activeClassName={styles.menuActiveItem} to="/claims">

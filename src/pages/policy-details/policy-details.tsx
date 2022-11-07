@@ -130,7 +130,7 @@ function PolicyDetailsLayout(props: PolicyDetailsLayoutProps) {
   return (
     <BaseLayout subtitle={`Policy ${props.policyId}`}>
       <div className={styles.backButtonRow}>
-        <BackButton fallback={{ href: '/policies' }}>Back</BackButton>
+        <BackButton fallback={{ href: '/claims' }}>Back</BackButton>
         {' | '}
         <span>Policy ID: {props.policyId}</span>
       </div>

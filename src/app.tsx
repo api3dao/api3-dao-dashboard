@@ -16,8 +16,7 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/components/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
-import Policies from './pages/my-policies';
-import Claims from './pages/my-claims';
+import MyClaims from './pages/my-claims';
 import ClaimDetails from './pages/claim-details';
 import PolicyDetails from './pages/policy-details';
 import PolicySelect from './pages/policy-select';
@@ -67,9 +66,6 @@ const AppContent = () => {
           <Route path="/vesting" exact>
             <Vesting />
           </Route>
-          <Route path="/policies" exact>
-            <Policies />
-          </Route>
           <Route path="/claims/new" exact>
             <PolicySelect />
           </Route>
@@ -77,7 +73,7 @@ const AppContent = () => {
             <ClaimDetails />
           </Route>
           <Route path="/claims" exact>
-            <Claims />
+            <MyClaims />
           </Route>
           <Route path="/policies/:policyId/claims/new" exact>
             <NewClaim />
