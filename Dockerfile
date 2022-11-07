@@ -1,7 +1,7 @@
 # This Dockerfile builds a mainnet version for API3 DAO dashboard
 
 FROM node:16-alpine as builder
-RUN apk add --no-cache git
+RUN apk add --update --no-cache git $([ $(arch) == "aarch64" ] && echo "python3 make g++")
 WORKDIR /usr/src/app
 ADD . .
 RUN yarn 
