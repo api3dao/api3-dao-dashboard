@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { ComponentProps, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link, Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
 import ExternalLink from '../../components/external-link';
+import BackButton from '../../components/back-button';
+import backButtonStyles from '../../components/back-button/back-button.module.scss';
+import ArrowLeftIcon from '../../components/icons/arrow-left-icon';
 import ClaimEvidenceInstructions from './claim-evidence-instructions';
 import NewClaimForm, { FormState, FormStatus } from './new-claim-form';
 import Confirmation from './confirmation';
@@ -82,13 +85,23 @@ export default function NewClaim() {
       <BaseLayout subtitle="New Claim">
         <div className={styles.successContainer}>
           <h5 className={styles.subHeading}>Thank you for submitting your claim</h5>
-          <p className={globalStyles.bold}>Your claim ID is: {newClaimId}</p>
-          <p className={styles.processMessage}>
-            Your claim is being processed and will be voted on within 72 hours. Please check back for any updates and{' '}
-            <ExternalLink href="https://docs.api3.org">read about the claim process here</ExternalLink> to familiarize
-            yourself with the next steps.
+          <p>
+            <span className={globalStyles.bold}>Your claim ID is: </span>
+            <br />
+            {newClaimId}
           </p>
-          <Link to="/">Return Home</Link>
+          <p className={globalStyles.bold}>There will be an update in 72 hours. Please check back daily.</p>
+          <p className={styles.processMessage}>
+            When there is an update, you will have 72 hours to respond.
+            <br />
+            <ExternalLink href="https://docs.api3.org" className="link-primary">
+              Read about the claim process here
+            </ExternalLink>{' '}
+            to familiarize yourself with the next steps.
+          </p>
+          <Link to="/" className={styles.homeLink}>
+            Return Home
+          </Link>
         </div>
       </BaseLayout>
     );
@@ -98,7 +111,11 @@ export default function NewClaim() {
     case 'instructions':
       return (
         <BaseLayout subtitle="New Claim">
+          <div className={styles.backButtonRow}>
+            <BackButton>Back</BackButton>
+          </div>
           <h4 className={styles.heading}>New Claim</h4>
+          <p className={styles.policy}>{policy.metadata}</p>
           <h5 className={styles.subHeading}>Creating Evidence</h5>
           <ClaimEvidenceInstructions onNext={() => setStep('capture')} />
         </BaseLayout>
@@ -107,7 +124,11 @@ export default function NewClaim() {
     case 'capture':
       return (
         <BaseLayout subtitle="New Claim">
+          <div className={styles.backButtonRow}>
+            <StepBackButton onClick={() => setStep('instructions')} />
+          </div>
           <h4 className={styles.heading}>New Claim</h4>
+          <p className={styles.policy}>{policy.metadata}</p>
           <h5 className={styles.subHeading}>Enter Claim Details</h5>
           <NewClaimForm
             form={form}
@@ -123,10 +144,23 @@ export default function NewClaim() {
     case 'confirmation':
       return (
         <BaseLayout subtitle="New Claim">
+          <div className={styles.backButtonRow}>
+            <StepBackButton onClick={() => setStep('capture')} />
+          </div>
           <h4 className={styles.heading}>New Claim</h4>
+          <p className={styles.policy}>{policy.metadata}</p>
           <h5 className={styles.subHeading}>Review Your Claim</h5>
-          <Confirmation form={form} onSubmit={handleSubmit} onCancel={() => setStep('capture')} />
+          <Confirmation form={form} onSubmit={handleSubmit} />
         </BaseLayout>
       );
   }
+}
+
+function StepBackButton(props: ComponentProps<'button'>) {
+  return (
+    <button className={backButtonStyles.backButton} {...props}>
+      <ArrowLeftIcon />
+      Back
+    </button>
+  );
 }
