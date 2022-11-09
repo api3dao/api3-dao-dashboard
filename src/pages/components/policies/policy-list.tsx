@@ -44,7 +44,7 @@ export default function PolicyList(props: Props) {
                 <div className={styles.infoEntry}>
                   {policy.remainingCoverageInUsd ? (
                     <span>
-                      ${formatUsd(policy.remainingCoverageInUsd)}{' '}
+                      {formatUsd(policy.remainingCoverageInUsd)} USD{' '}
                       <span className={globalStyles.tertiaryColor}>remaining</span>
                     </span>
                   ) : (

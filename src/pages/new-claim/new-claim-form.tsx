@@ -86,7 +86,7 @@ export default function NewClaimForm(props: Props) {
             <UsdInput id="amount" value={form.amount} onValueChange={(amount) => onChange({ ...form, amount })} />
           </div>
           {showMessages && messages.amount && <p className={styles.validation}>{messages.amount}</p>}
-          <p className={styles.helpText}>You can claim up to ${formatUsd(policy.remainingCoverageInUsd)}</p>
+          <p className={styles.helpText}>You can claim up to {formatUsd(policy.remainingCoverageInUsd)} USD</p>
         </li>
       </ol>
       <Acknowledgement />

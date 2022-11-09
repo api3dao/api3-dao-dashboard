@@ -16,8 +16,8 @@ export default function UsdInput(props: Props) {
         allowNegative={false}
         decimalScale={2}
         fixedDecimalScale
-        placeholder="$0.00"
-        prefix="$"
+        placeholder="0 USD"
+        suffix=" USD"
         {...props}
         onValueChange={(update) => props.onValueChange?.(update.value)}
       />
