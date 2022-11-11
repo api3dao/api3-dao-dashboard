@@ -7,22 +7,21 @@ The implementation of the DAO dashboard.
 ## Running dashboard on Mainnet in docker container
 
 The decentralized approach of being a DAO member is to run API3 dashboard on your local machine. For that you will just
-need `git` and `docker`:
+need `git` and `docker`. Note, that the production source code is on this `production` branch.
 
 ```
-git clone --depth=1 git@github.com:api3dao/api3-dao-dashboard.git
+git clone --depth=1 --branch production https://github.com/api3dao/api3-dao-dashboard.git
 cd api3-dao-dashboard
-docker build -t api3-dao-dashboard .
-docker run -d -p7770:80 --name api3-dao-dashboard api3-dao-dashboard
+docker build --tag api3-dao-dashboard .
+docker run --rm --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
 ```
 
-This will create a API3 dashboard running on port 7770 of your localhost where it is safe to connect your wallet.
-
-Once you are finished interacting with the dashboard, the container can be stopped using
-`docker stop api3-dao-dashboard` and then removed using `docker rm api3-dao-dashboard`. To avoid having to execute the
-latter command to remove the container, add the `--rm` flag to the above `docker run` command.
+This will create a API3 dashboard running on port 7770 of your localhost where it is safe to connect your wallet. Once
+you are finished interacting with the dashboard, the container can be stopped using `docker stop api3-dao-dashboard`.
 
 ## Development instructions
+
+Currently, it's only possible to build the Docker image on a UNIX-like OS. If you use Windows, you can use WSL2.
 
 ### Running on mainnet or testnets
 
@@ -35,8 +34,8 @@ latter command to remove the container, add the `--rm` flag to the above `docker
 2. `yarn eth:node` - to start hardhat network
 3. `yarn eth:prepare-dao-contracts-for-hardhat` - to download the DAO contract sources locally. You need to run this
    only when running for the first time.
-4. (Optional) Modify the pool contract `EPOCH_LENGTH` variable from `1 weeks` to `1 minute` to speed up testing. You can
-   find this constant inside `dao-contracts/packages/pool/contracts/StateUtils.sol`
+4. (Optional) Modify the pool contract `EPOCH_LENGTH` variable from `1 weeks` to `1 minutes` to speed up testing. You
+   can find this constant inside `dao-contracts/packages/pool/contracts/StateUtils.sol`
 5. `yarn eth:deploy-dao-contracts-on-hardhat` - to deploy the contracts locally
 6. Copy the `.env.example` to `.env`. Make sure that `REACT_APP_NODE_ENV` is set to `development`
 7. `yarn start` - to start the application on localhost on port 3000
