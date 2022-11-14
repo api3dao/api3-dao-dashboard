@@ -110,7 +110,9 @@ function ClaimSummary(props: ClaimSummaryProps) {
       </div>
       <div className={styles.detailsItem}>
         <p className={globalStyles.bold}>Claim Amount</p>
-        <p className={globalStyles.secondaryColor}>{formatUsd(claim.claimAmountInUsd)} USD</p>
+        <p className={globalStyles.secondaryColor} data-testid="claim-amount">
+          {formatUsd(claim.claimAmountInUsd)} USD
+        </p>
       </div>
       {claim.settlementAmountInUsd && (
         <div className={styles.detailsItem}>
@@ -126,12 +128,14 @@ function ClaimSummary(props: ClaimSummaryProps) {
               </button>
             </Tooltip>
           </p>
-          <p className={globalStyles.secondaryColor}>{formatUsd(claim.settlementAmountInUsd)} USD</p>
+          <p className={globalStyles.secondaryColor} data-testid="settlement-amount">
+            {formatUsd(claim.settlementAmountInUsd)} USD
+          </p>
         </div>
       )}
       <div className={styles.detailsItem}>
         <p className={globalStyles.bold}>Remaining Service Coverage Amount</p>
-        <div className={globalStyles.secondaryColor}>
+        <div className={globalStyles.secondaryColor} data-testid="remaining-coverage">
           {policy ? (
             <>{formatUsd(policy.remainingCoverageInUsd)} USD</>
           ) : policyStatus === 'failed' ? (

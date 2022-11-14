@@ -40,6 +40,7 @@ export default function ClaimList(props: Props) {
             data-status={claim.status}
             data-dispute-status={claim.dispute?.status}
             data-show-deadline={showDeadline}
+            data-testid="claim-list-item"
           >
             <div className={styles.mobileStatusRow}>
               <span className={styles.status}>{claimStatus}</span>
