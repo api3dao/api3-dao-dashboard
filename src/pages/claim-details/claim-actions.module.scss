@@ -7,7 +7,7 @@
   color: $secondary-color;
   text-align: center;
   word-break: break-word;
-  margin-top: $space-xxl;
+  margin-top: 52px;
   margin-bottom: 4rem;
   padding-bottom: 4rem;
   border-bottom: 1px solid $black-line-color;
@@ -15,6 +15,10 @@
   @media (min-width: $min-sm) {
     border-bottom: none;
     padding-bottom: 0;
+  }
+
+  @media (min-width: $min-md) {
+    margin-top: $space-xxl;
   }
 }
 

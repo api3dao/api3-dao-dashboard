@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
 import { useLocation } from 'react-router';
 import isEqual from 'lodash/isEqual';
 
@@ -42,7 +42,7 @@ export const useQueryParams = () => {
 
 export const useScrollToTop = () => {
   const { pathname } = useLocation();
-  useEffect(() => {
+  useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 };
