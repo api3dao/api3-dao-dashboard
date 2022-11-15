@@ -119,7 +119,8 @@ export default function ClaimActions(props: Props) {
           return (
             <div className={styles.actionSection}>
               <p className={styles.mediator} data-testid="status-prefix">
-                <Api3Icon aria-hidden /> API3 Mediators
+                <Api3Icon aria-hidden />
+                API3 Mediators
               </p>
               <div className={styles.actionMainInfo}>
                 <span className={styles.rejected} data-testid="status">
@@ -139,7 +140,8 @@ export default function ClaimActions(props: Props) {
         return (
           <div className={styles.actionSection}>
             <p className={styles.mediator} data-testid="status-prefix">
-              <Api3Icon aria-hidden /> API3 Mediators
+              <Api3Icon aria-hidden />
+              API3 Mediators
             </p>
             <div className={styles.actionMainInfo}>
               <span className={globalStyles.primaryColor} data-testid="status">
@@ -236,7 +238,8 @@ export default function ClaimActions(props: Props) {
       return (
         <div className={styles.actionSection}>
           <p className={styles.mediator} data-testid="status-prefix">
-            <Api3Icon aria-hidden /> API3 Mediators
+            <Api3Icon aria-hidden />
+            API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
             <div className={globalStyles.primaryColor} data-testid="status">
@@ -283,7 +286,8 @@ export default function ClaimActions(props: Props) {
       return (
         <div className={styles.actionSection}>
           <p className={styles.mediator} data-testid="status-prefix">
-            <Api3Icon aria-hidden /> API3 Mediators
+            <Api3Icon aria-hidden />
+            API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
             <div className={styles.approved} data-testid="status">
