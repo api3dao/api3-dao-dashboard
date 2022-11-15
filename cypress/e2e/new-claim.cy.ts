@@ -1,18 +1,26 @@
 import { ACCOUNTS } from '../support/common';
+import { addSeconds, formatISO } from 'date-fns';
 
 describe('Claim creation', () => {
-  before(() => {
-    cy.login();
+  beforeEach(() => {
+    cy.resetBlockchain().login();
   });
 
   it('goes through the New Claim steps', () => {
-    cy.exec(`yarn create-user-policy --address ${ACCOUNTS[0]} --coverage-amount 45000 --metadata 'BTC/USD'`);
+    cy.exec(
+      'yarn concurrently ' +
+        `"yarn create-user-policy --address ${ACCOUNTS[0]} --coverage-amount 45000 --metadata BTC/USD" ` + // Active policy
+        `"yarn create-user-policy --address ${ACCOUNTS[0]} --claims-allowed-until '${formatISO(
+          addSeconds(new Date(), -1)
+        )}' --coverage-amount 27000 --metadata EUR/USD"` // Inactive policy
+    );
 
     cy.findByRole('link', { name: 'My Claims' }).filter(':visible').click();
     cy.findByRole('heading', { name: /My Claims/i }).should('exist');
     cy.findByText(/You don't have any claims associated with the connected address./i).should('exist');
     cy.findByRole('button', { name: '+ New Claim' }).click();
 
+    // Policy Details page
     cy.findByRole('heading', { name: 'BTC/USD' }).should('exist');
     cy.findByTestId('remaining-coverage').should('have.text', '45,000.0 USD');
     cy.findByRole('button', { name: '+ New Claim' }).click();
@@ -71,6 +79,47 @@ describe('Claim creation', () => {
     cy.findByTestId('claim-amount').should('have.text', '15,000.0 USD');
     cy.findByTestId('remaining-coverage').should('have.text', '45,000.0 USD');
     cy.findByTestId('settlement-amount').should('not.exist');
+  });
+
+  context('when the user has multiple active policies', () => {
+    it('provides a Policy Select page', () => {
+      cy.exec(
+        'yarn concurrently ' +
+          `"yarn create-user-policy --address ${ACCOUNTS[0]} --coverage-amount 45000 --metadata BTC/USD" ` + // Active policy
+          `"yarn create-user-policy --address ${ACCOUNTS[0]} --coverage-amount 36000 --metadata ETH/USD" ` + // Active policy
+          `"yarn create-user-policy --address ${ACCOUNTS[0]} --claims-allowed-until '${formatISO(
+            addSeconds(new Date(), -1)
+          )}' --coverage-amount 27000 --metadata EUR/USD" ` + // Inactive policy
+          `"yarn create-user-policy --address ${ACCOUNTS[1]} --coverage-amount 18000 --metadata API3/USD"` // Active policy (different user)
+      );
+
+      cy.findByRole('link', { name: 'My Claims' }).filter(':visible').click();
+      cy.findByRole('button', { name: '+ New Claim' }).click();
+
+      // Policy Select page
+      cy.findByRole('heading', { name: /Select a policy to use in your claim/i }).should('exist');
+      cy.findAllByTestId('policy-list-item').should('have.length', 2); // Should only show active policies that belongs to the user
+      cy.findByRole('link', { name: 'BTC/USD' }).should('exist');
+      cy.findByRole('link', { name: 'ETH/USD' }).should('exist');
+
+      // Searches by policy metadata
+      cy.findByLabelText('Search for your policy').type(' eth {enter}');
+      cy.findAllByTestId('policy-list-item').should('have.length', 1);
+      cy.findByRole('link', { name: 'ETH/USD' }).click();
+
+      // Policy Details page
+      cy.findByRole('heading', { name: 'ETH/USD' }).should('exist');
+      cy.findByTestId('remaining-coverage').should('have.text', '36,000.0 USD');
+
+      // Navigates back to the Policy Select page (with previous search intact)
+      cy.findByRole('button', { name: 'Back' }).click();
+      cy.findByRole('heading', { name: /Select a policy to use in your claim/i }).should('exist');
+      cy.findByLabelText('Search for your policy').should('have.value', 'eth');
+      cy.findAllByTestId('policy-list-item').should('have.length', 1);
+
+      cy.findByLabelText('Search for your policy').clear().type('{enter}');
+      cy.findAllByTestId('policy-list-item').should('have.length', 2);
+    });
   });
 });
 
