@@ -1,4 +1,4 @@
-import { closeErrorReportingNotice, ethersProvider, HOME_PAGE } from './common';
+import { closeErrorReportingNotice, ethersProvider } from './common';
 
 // -- This is a parent command -- Cypress.Commands.add('login', (email, password) => { ... })
 //
@@ -50,7 +50,7 @@ Cypress.Commands.add('login', () => {
     // Simulate injected metamask metamask provider
     (win as any).ethereum = ethersProvider;
   });
-  cy.visit(HOME_PAGE); // This is noop ife we are already on this page
+  cy.visit('/'); // This is noop ife we are already on this page
 
   // If we are already connected (dangling state from previous test), let's disconnect
   //
