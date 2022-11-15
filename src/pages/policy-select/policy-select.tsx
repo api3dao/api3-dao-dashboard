@@ -3,10 +3,11 @@ import { BaseLayout } from '../../components/layout';
 import BorderedBox from '../../components/bordered-box';
 import Policies from '../components/policies';
 import SearchForm from '../components/search-form';
-import { useQueryParams } from '../../utils';
+import { useQueryParams, useScrollToTop } from '../../utils';
 import styles from './policy-select.module.scss';
 
 export default function PolicySelect() {
+  useScrollToTop();
   const history = useHistory();
   const params = useQueryParams();
 

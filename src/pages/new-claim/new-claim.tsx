@@ -1,4 +1,4 @@
-import { ComponentProps, useState } from 'react';
+import { ComponentProps, useState, useLayoutEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link, Redirect } from 'react-router-dom';
 import { BaseLayout } from '../../components/layout';
@@ -25,6 +25,10 @@ interface Params {
 export default function NewClaim() {
   const { policyId } = useParams<Params>();
   const [step, setStep] = useState<'instructions' | 'capture' | 'confirmation'>('instructions');
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
 
   const { setChainData, transactions } = useChainData();
   const claimsManager = useClaimsManager();
