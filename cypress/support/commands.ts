@@ -50,7 +50,7 @@ Cypress.Commands.add('login', () => {
     // Simulate injected metamask metamask provider
     (win as any).ethereum = ethersProvider;
   });
-  cy.visit('/'); // This is noop ife we are already on this page
+  cy.visit('/'); // This is noop if we are already on this page
 
   // If we are already connected (dangling state from previous test), let's disconnect
   //
