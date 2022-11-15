@@ -81,7 +81,7 @@ export default function NewClaimForm(props: Props) {
             </p>
           )}
         </li>
-        <li data-testid="usd-amount">
+        <li data-testid="usd-amount-field">
           <label htmlFor="amount">Requested payout amount, in USD</label>
           <p className={styles.description}>
             If your claim is accepted, you will be paid the equivalent value in API3 tokens

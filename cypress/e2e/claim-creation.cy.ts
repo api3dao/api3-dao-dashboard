@@ -1,5 +1,5 @@
-import { ACCOUNTS } from '../support/common';
 import { addSeconds, formatISO } from 'date-fns';
+import { ACCOUNTS } from '../support/common';
 
 describe('Claim creation', () => {
   beforeEach(() => {
@@ -22,6 +22,8 @@ describe('Claim creation', () => {
 
     // Policy Details page
     cy.findByRole('heading', { name: 'BTC/USD' }).should('exist');
+    cy.findByTestId('status').should('have.text', 'Active');
+    cy.findByRole('button', { name: '+ New Claim' }).should('not.be.disabled');
     cy.findByTestId('remaining-coverage').should('have.text', '45,000.0 USD');
     cy.findByRole('button', { name: '+ New Claim' }).click();
 
@@ -31,7 +33,7 @@ describe('Claim creation', () => {
 
     // Capture step
     cy.findByRole('heading', { name: /Enter Claim Details/i }).should('exist');
-    cy.findByTestId('usd-amount').should('contain.text', 'You can claim up to 45,000.0 USD');
+    cy.findByTestId('usd-amount-field').should('contain.text', 'You can claim up to 45,000.0 USD');
 
     cy.findByRole('button', { name: 'Next' }).click(); // Trigger the display of the error messages
     cy.findByTestId('evidence-error').should('have.text', 'Please enter a valid hash');
@@ -68,6 +70,7 @@ describe('Claim creation', () => {
     cy.findAllByTestId('claim-list-item').should('have.length', 1);
     cy.findByRole('link', { name: 'BTC/USD' }).click();
 
+    // Claim Details page
     cy.findByRole('heading', { name: 'BTC/USD' }).should('exist');
     cy.findByTestId('status-prefix').should('have.text', 'API3 Mediators');
     cy.findByTestId('status').should('have.text', 'Evaluating');
@@ -109,6 +112,8 @@ describe('Claim creation', () => {
 
       // Policy Details page
       cy.findByRole('heading', { name: 'ETH/USD' }).should('exist');
+      cy.findByTestId('status').should('have.text', 'Active');
+      cy.findByRole('button', { name: '+ New Claim' }).should('not.be.disabled');
       cy.findByTestId('remaining-coverage').should('have.text', '36,000.0 USD');
 
       // Navigates back to the Policy Select page (with previous search intact)
@@ -119,6 +124,27 @@ describe('Claim creation', () => {
 
       cy.findByLabelText('Search for your policy').clear().type('{enter}');
       cy.findAllByTestId('policy-list-item').should('have.length', 2);
+    });
+  });
+
+  it('disallows claim creation when the policy is inactive', () => {
+    cy.exec(
+      `yarn create-user-policy --address ${ACCOUNTS[0]} --claims-allowed-until '${formatISO(
+        addSeconds(new Date(), -1)
+      )}' --coverage-amount 27000 --metadata EUR/USD` // Inactive policy
+    ).then((exec) => {
+      const policyId = JSON.parse(exec.stdout.split('User policies (1):')[1].trim())[0];
+      cy.visit(`/policies/${policyId}`);
+
+      // Policy Details page
+      cy.findByRole('heading', { name: 'EUR/USD' }).should('exist');
+      cy.findByTestId('status').should('have.text', 'Inactive');
+      cy.findByRole('button', { name: '+ New Claim' }).should('be.disabled');
+
+      // Redirects to Policy Details page
+      cy.visit(`/policies/${policyId}/claims/new`);
+      cy.findByRole('heading', { name: /Creating Evidence/i }).should('not.exist');
+      cy.url().should('eq', Cypress.config('baseUrl') + `/policies/${policyId}`);
     });
   });
 });

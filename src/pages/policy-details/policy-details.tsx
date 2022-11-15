@@ -36,7 +36,7 @@ export default function PolicyDetails() {
   if (!policy) {
     return (
       <PolicyDetailsLayout policyId={policyId}>
-        {status === 'loading' && <p className={globalStyles.secondaryColor}>Loading...</p>}
+        {status === 'loading' && <p className={styles.loading}>Loading...</p>}
         {status === 'loaded' && <p>Unable to find your policy with given id.</p>}
       </PolicyDetailsLayout>
     );
@@ -49,9 +49,13 @@ export default function PolicyDetails() {
         <h4 className={styles.heading}>{policy.metadata}</h4>
         <div className={styles.extraInfo}>
           {isActive(policy) ? (
-            <span className={styles.active}>Active</span>
+            <span className={styles.active} data-testid="status">
+              Active
+            </span>
           ) : (
-            <span className={styles.inactive}>Inactive</span>
+            <span className={styles.inactive} data-testid="status">
+              Inactive
+            </span>
           )}
           <span className={styles.divider}>{' | '}</span>
           <span className={styles.allowedUntil}>
