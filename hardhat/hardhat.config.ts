@@ -149,9 +149,13 @@ task('create-user-policy', 'Creates a policy for the given user')
     const createdEvents = await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(userAddress));
 
     console.info(`User policies (${createdEvents.length}):`);
-    createdEvents.forEach((event) => {
-      console.info(event.args.policyHash);
-    });
+    console.info(
+      JSON.stringify(
+        createdEvents.map((event) => event.args.policyHash),
+        null,
+        2
+      )
+    );
   });
 
 task('upgrade-user-policy', 'Upgrades the policy with given params')

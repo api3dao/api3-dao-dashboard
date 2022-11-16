@@ -25,7 +25,7 @@ export default function PolicyList(props: Props) {
         );
 
         return (
-          <li key={policy.policyId} className={styles.policyItem}>
+          <li key={policy.policyId} className={styles.policyItem} data-testid="policy-list-item">
             <div className={styles.policyItemMain}>
               <div className={styles.mobileActiveStatus}>{activeStatus}</div>
               <Link className={styles.policyItemTitle} to={`/policies/${policy.policyId}`}>

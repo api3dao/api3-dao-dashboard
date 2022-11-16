@@ -1,6 +1,6 @@
-import { utils } from 'ethers';
 import Button from '../../components/button';
 import { Acknowledgement, FormState } from './new-claim-form';
+import { formatUsd, parseUsd } from '../../utils';
 import styles from './confirmation.module.scss';
 
 interface Props {
@@ -23,7 +23,7 @@ export default function Confirmation(props: Props) {
           <p className={styles.description}>
             If your claim is accepted, you will be paid the equivalent value in API3 tokens
           </p>
-          <p className={styles.usdConfirmValue}>${utils.commify(form.amount)}</p>
+          <p className={styles.usdConfirmValue}>{formatUsd(parseUsd(form.amount))} USD</p>
         </li>
       </ul>
       <Acknowledgement />

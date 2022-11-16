@@ -75,9 +75,13 @@ export default function NewClaimForm(props: Props) {
             placeholder="e.g. QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB"
             block
           />
-          {showMessages && messages.evidence && <p className={styles.validation}>{messages.evidence}</p>}
+          {showMessages && messages.evidence && (
+            <p data-testid="evidence-error" className={styles.validation}>
+              {messages.evidence}
+            </p>
+          )}
         </li>
-        <li>
+        <li data-testid="usd-amount-field">
           <label htmlFor="amount">Requested payout amount, in USD</label>
           <p className={styles.description}>
             If your claim is accepted, you will be paid the equivalent value in API3 tokens
@@ -85,7 +89,11 @@ export default function NewClaimForm(props: Props) {
           <div className={styles.usdInput}>
             <UsdInput id="amount" value={form.amount} onValueChange={(amount) => onChange({ ...form, amount })} />
           </div>
-          {showMessages && messages.amount && <p className={styles.validation}>{messages.amount}</p>}
+          {showMessages && messages.amount && (
+            <p data-testid="usd-amount-error" className={styles.validation}>
+              {messages.amount}
+            </p>
+          )}
           <p className={styles.helpText}>You can claim up to {formatUsd(policy.remainingCoverageInUsd)} USD</p>
         </li>
       </ol>
