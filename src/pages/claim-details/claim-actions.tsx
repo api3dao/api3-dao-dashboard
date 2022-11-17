@@ -228,7 +228,7 @@ export default function ClaimActions(props: Props) {
                 Timed Out
               </span>
             </div>
-            <p className={styles.actionMessage}>
+            <p className={styles.actionMessage} data-testid="notifications">
               A settlement was offered by the API3 Mediators and wasn’t accepted within the required time period
             </p>
           </div>

@@ -240,6 +240,44 @@ task('update-policy-metadata', 'Updates the policy metadata')
     console.info(`Updated Policy: ${args.policyId} metadata to: ${args.metadata}`);
   });
 
+task('create-claim', 'Creates a claim for the given policy')
+  .addParam('policyId', 'The policy ID')
+  .addParam('evidence')
+  .addParam('amount')
+  .setAction(async (args, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    // The index for the manager needs to be in sync with the deploy script
+    const userInCypressTest = accounts[0];
+    const contracts = getContractAddresses(hre.network.name);
+    const claimsManager = ClaimsManagerFactory.connect(contracts.claimsManager, userInCypressTest);
+
+    const createdEvent = (await claimsManager.queryFilter(claimsManager.filters.CreatedPolicy(null, args.policyId)))[0];
+
+    if (!createdEvent) {
+      throw new Error('Policy does not exist');
+    }
+
+    const tx = await claimsManager.createClaim(
+      createdEvent.args.claimsAllowedFrom,
+      createdEvent.args.policy,
+      parseUsd(args.amount),
+      args.evidence
+    );
+
+    await tx.wait();
+    const claimEvents = await claimsManager.queryFilter(claimsManager.filters.CreatedClaim(accounts[0].address));
+
+    console.info(`User claims (${claimEvents.length}):`);
+    console.info(
+      JSON.stringify(
+        claimEvents.map((event) => event.args.claimHash),
+        null,
+        2
+      )
+    );
+  });
+
 task('accept-claim', 'Accepts the given claim')
   .addParam('claimId', 'The claim ID')
   .setAction(async (args, hre) => {
