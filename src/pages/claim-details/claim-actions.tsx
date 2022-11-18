@@ -128,7 +128,7 @@ export default function ClaimActions(props: Props) {
                   Rejected
                 </span>
               </div>
-              <p className={styles.actionMessage}>
+              <p className={styles.actionMessage} data-testid="notifications">
                 The claim was rejected by the API3 Mediators and wasn’t escalated to Kleros within the required time
                 period
               </p>
