@@ -44,7 +44,7 @@ describe('Claim process', () => {
     });
   });
 
-  context.skip('when the API3 Mediators propose a settlement', () => {
+  context('when the API3 Mediators propose a settlement', () => {
     beforeEach(() => {
       createPolicyAndClaim({ policyMetadata: 'BTC/USD', coverageAmount: '45000', claimAmount: '1999.99' }).then(
         (exec) => {
