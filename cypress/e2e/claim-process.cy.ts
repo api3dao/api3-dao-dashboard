@@ -27,6 +27,7 @@ describe('Claim process', () => {
         .invoke('text')
         .then((claimId) => {
           cy.exec(`yarn claims:accept-claim --claim-id ${claimId}`);
+
           cy.findByTestId('notifications').should('contain.text', 'All done! The claim payout has been accepted.');
           cy.findByTestId('status-prefix').should('have.text', 'API3 Mediators');
           cy.findByTestId('status').should('have.text', 'Accepted');
@@ -47,8 +48,7 @@ describe('Claim process', () => {
   context('when the API3 Mediators propose a settlement', () => {
     beforeEach(() => {
       createPolicyAndClaim({ policyMetadata: 'BTC/USD', coverageAmount: '45000', claimAmount: '1999.99' }).then(
-        (exec) => {
-          const claimId = JSON.parse(exec.stdout.split('User claims (1):')[1].trim())[0];
+        ({ claimId }) => {
           cy.exec(`yarn claims:propose-settlement --claim-id ${claimId} --amount 1200`);
         }
       );
@@ -153,9 +153,23 @@ function createPolicyAndClaim(params: CreateParams) {
     )
     .then((exec) => {
       const policyId = JSON.parse(exec.stdout.split('User policies (1):')[1].trim())[0];
-      cy.exec(
-        `yarn claims:create-claim --policy-id ${policyId} --amount ${params.claimAmount} --evidence QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB`
+
+      cy.visit(`/policies/${policyId}/claims/new`);
+      cy.findByRole('button', { name: 'Next' }).click();
+      cy.findByLabelText('Enter the IPFS hash to your Claim Evidence form').type(
+        'QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB',
+        { delay: 0 }
       );
+      cy.findByLabelText('Requested payout amount, in USD').type(params.claimAmount);
+      cy.findByRole('button', { name: 'Next' }).click();
+      cy.findByRole('button', { name: 'Submit Claim' }).click();
+
+      return cy
+        .findByTestId('claim-id')
+        .invoke('text')
+        .then((claimId) => {
+          return { policyId, claimId };
+        });
     });
 }
 
