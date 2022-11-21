@@ -94,7 +94,7 @@ describe('Claim process', () => {
     });
 
     it('times out when the user does not act within 72 hours', () => {
-      cy.increaseTimeAndRelogin(259200); // 3 days
+      cy.increaseTimeAndRelogin(3 * 24 * 60 * 60); // 3 days
 
       // My Claims page
       cy.findByRole('link', { name: 'My Claims' }).filter(':visible').click();
@@ -118,7 +118,7 @@ describe('Claim process', () => {
       createPolicyAndClaim({ policyMetadata: 'BTC/USD', coverageAmount: '45000', claimAmount: '1999.99' });
 
       // The API3 Mediators reject by not responding within the 3 days, so we go 6 days into the future
-      cy.increaseTimeAndRelogin(259200 * 2);
+      cy.increaseTimeAndRelogin(6 * 24 * 60 * 60);
 
       // My Claims page
       cy.findByRole('link', { name: 'My Claims' }).filter(':visible').click();
