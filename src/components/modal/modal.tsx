@@ -32,7 +32,7 @@ export const ModalContent = (props: ModalProps) => {
 
   return (
     <FocusLock>
-      <div className={styles.modalWrapper}>
+      <div className={styles.modalWrapper} role="dialog">
         <div
           className={classNames(styles.modalBody, {
             [styles.small]: size === 'small',

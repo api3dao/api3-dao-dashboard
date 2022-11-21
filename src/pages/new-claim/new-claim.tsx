@@ -92,7 +92,7 @@ export default function NewClaim() {
           <p>
             <span className={globalStyles.bold}>Your claim ID is: </span>
             <br />
-            {newClaimId}
+            <span data-testid="claim-id">{newClaimId}</span>
           </p>
           <p className={globalStyles.bold}>There will be an update in 72 hours. Please check back daily.</p>
           <p className={styles.processMessage}>

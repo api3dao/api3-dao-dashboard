@@ -84,7 +84,9 @@ function ClaimDetailsLayout(props: ClaimDetailsLayoutProps) {
       <div className={styles.backButtonRow}>
         <BackButton fallback={{ href: '/claims' }}>Back</BackButton>
         {' | '}
-        <span>Claim ID: {props.claimId}</span>
+        <span>
+          Claim ID: <span data-testid="claim-id">{props.claimId}</span>
+        </span>
       </div>
       {props.children}
     </BaseLayout>

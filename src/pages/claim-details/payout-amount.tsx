@@ -33,7 +33,7 @@ export default function PayoutAmount(props: Props) {
   };
 
   return (
-    <div className={styles.payoutAmount}>
+    <div className={styles.payoutAmount} data-testid="api3-payout">
       {formatApi3(payout.amountInApi3)} API3 tokens
       <Tooltip id="payout-tooltip" overlay={renderTooltip()}>
         <button aria-describedby="payout-tooltip" className={styles.helpButton}>
