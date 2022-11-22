@@ -356,7 +356,7 @@ export default function ClaimActions(props: Props) {
                 Evaluating
               </span>
             </div>
-            <p className={styles.actionMessage}>
+            <p className={styles.actionMessage} data-testid="notifications">
               The claim was escalated to Kleros. Kleros jurors are currently evaluating your claim
             </p>
           </div>
@@ -381,7 +381,7 @@ export default function ClaimActions(props: Props) {
                 </div>
               </div>
               {dispute.period === 'Appeal' && (
-                <p className={styles.actionMessage}>
+                <p className={styles.actionMessage} data-testid="notifications">
                   During this appeal period the API3 Mediators have the opportunity to appeal Kleros’s ruling
                 </p>
               )}
@@ -433,7 +433,7 @@ export default function ClaimActions(props: Props) {
                       />
                     </Modal>
                   </div>
-                  <p className={styles.actionMessage}>
+                  <p className={styles.actionMessage} data-testid="notifications">
                     During this appeal period you have the opportunity to appeal Kleros’s ruling
                   </p>
                 </>
