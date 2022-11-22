@@ -1,4 +1,4 @@
-import { assertClaimIsActive, assertClaimIsInactive, createPolicyAndClaim } from '../support/claims';
+import { createPolicyAndClaim, assertClaimIsInactive } from '../support/claims';
 
 describe('Claim process with arbitration', () => {
   beforeEach(() => {
@@ -18,22 +18,7 @@ describe('Claim process with arbitration', () => {
       cy.findByRole('link', { name: 'BTC/USD' }).click();
 
       // Claim Details page
-      cy.findByRole('heading', { name: 'BTC/USD' }).should('exist');
-      // Escalate
-      cy.findByRole('button', { name: 'Escalate to Kleros' }).click();
-      cy.findByRole('dialog').within(() => {
-        cy.findByRole('heading', { name: 'Escalation Cost' }).should('exist');
-        cy.findByTestId('cost').should('have.text', '0.075 ETH');
-        cy.findByRole('button', { name: 'Escalate' }).click();
-      });
-
-      cy.findByTestId('notifications').should(
-        'contain.text',
-        'The claim was escalated to Kleros. Kleros jurors are currently evaluating your claim'
-      );
-      cy.findByTestId('status-prefix').should('have.text', 'Kleros');
-      cy.findByTestId('status').should('have.text', 'Evaluating');
-
+      escalateToKleros();
       getDisputeIdFromDisputeResolverLink().then((disputeId) => {
         cy.exec(`yarn claims:arbitrator-decide-to-pay --dispute-id ${disputeId} --appeal-period-length 0`);
 
@@ -51,14 +36,11 @@ describe('Claim process with arbitration', () => {
         cy.exec(`yarn claims:pass-dispute-period --dispute-id ${disputeId}`);
       });
 
-      cy.findByRole('link', { name: 'My Claims' }).filter(':visible').click();
-      assertClaimIsActive();
-      cy.findByRole('link', { name: 'BTC/USD' }).click();
-
       cy.findByRole('heading', { name: 'Appeal Period' }).should('not.exist');
       cy.findByTestId('status-prefix').should('have.text', 'Kleros');
       cy.findByTestId('status').should('have.text', 'Accepted');
 
+      // Execute payout
       cy.findByRole('button', { name: 'Execute Payout' }).click();
       cy.findByRole('dialog').within(() => {
         cy.findByRole('heading', { name: 'You will be paid in API3 tokens' }).should('exist');
@@ -94,22 +76,7 @@ describe('Claim process with arbitration', () => {
       cy.findByRole('link', { name: 'BTC/USD' }).click();
 
       // Claim Details page
-      cy.findByRole('heading', { name: 'BTC/USD' }).should('exist');
-      cy.findByRole('button', { name: 'Escalate to Kleros' }).click();
-
-      cy.findByRole('dialog').within(() => {
-        cy.findByRole('heading', { name: 'Escalation Cost' }).should('exist');
-        cy.findByTestId('cost').should('have.text', '0.075 ETH');
-        cy.findByRole('button', { name: 'Escalate' }).click();
-      });
-
-      cy.findByTestId('notifications').should(
-        'contain.text',
-        'The claim was escalated to Kleros. Kleros jurors are currently evaluating your claim'
-      );
-      cy.findByTestId('status-prefix').should('have.text', 'Kleros');
-      cy.findByTestId('status').should('have.text', 'Evaluating');
-
+      escalateToKleros();
       getDisputeIdFromDisputeResolverLink().then((disputeId) => {
         cy.exec(
           `yarn claims:arbitrator-decide-to-pay-settlement --dispute-id ${disputeId} --appeal-period-length 30000`
@@ -125,6 +92,7 @@ describe('Claim process with arbitration', () => {
       cy.findByTestId('status').should('have.text', 'Accepted Settlement');
       cy.findByTestId('usd-amount').should('have.text', '1,200.0 USD');
 
+      // Appeal
       cy.findByRole('button', { name: 'Appeal' }).click();
       cy.findByRole('dialog').within(() => {
         cy.findByRole('heading', { name: 'Appeal Cost' }).should('exist');
@@ -142,6 +110,22 @@ describe('Claim process with arbitration', () => {
     });
   });
 });
+
+function escalateToKleros() {
+  cy.findByRole('button', { name: 'Escalate to Kleros' }).click();
+  cy.findByRole('dialog').within(() => {
+    cy.findByRole('heading', { name: 'Escalation Cost' }).should('exist');
+    cy.findByTestId('cost').should('have.text', '0.075 ETH');
+    cy.findByRole('button', { name: 'Escalate' }).click();
+  });
+
+  cy.findByTestId('notifications').should(
+    'contain.text',
+    'The claim was escalated to Kleros. Kleros jurors are currently evaluating your claim'
+  );
+  cy.findByTestId('status-prefix').should('have.text', 'Kleros');
+  cy.findByTestId('status').should('have.text', 'Evaluating');
+}
 
 function getDisputeIdFromDisputeResolverLink() {
   return cy
