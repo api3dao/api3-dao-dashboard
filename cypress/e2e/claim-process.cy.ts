@@ -23,19 +23,20 @@ describe('Claim process', () => {
       cy.findByTestId('claim-amount').should('have.text', '1,999.99 USD');
       cy.findByTestId('remaining-coverage').should('have.text', '45,000.0 USD');
 
+      // Accept the claim
       cy.findByTestId('claim-id')
         .invoke('text')
         .then((claimId) => {
           cy.exec(`yarn claims:accept-claim --claim-id ${claimId}`);
-
-          cy.findByTestId('notifications').should('contain.text', 'All done! The claim payout has been accepted.');
-          cy.findByTestId('status-prefix').should('have.text', 'API3 Mediators');
-          cy.findByTestId('status').should('have.text', 'Accepted');
-          cy.findByTestId('usd-amount').should('have.text', '1,999.99 USD');
-          cy.findByTestId('api3-payout').should('contain.text', '999.995 API3 tokens');
-          cy.findByTestId('remaining-coverage').should('have.text', '43,000.01 USD');
-          cy.findByTestId('settlement-amount').should('not.exist');
         });
+
+      cy.findByTestId('notifications').should('contain.text', 'All done! The claim payout has been accepted.');
+      cy.findByTestId('status-prefix').should('have.text', 'API3 Mediators');
+      cy.findByTestId('status').should('have.text', 'Accepted');
+      cy.findByTestId('usd-amount').should('have.text', '1,999.99 USD');
+      cy.findByTestId('api3-payout').should('contain.text', '999.995 API3 tokens');
+      cy.findByTestId('remaining-coverage').should('have.text', '43,000.01 USD');
+      cy.findByTestId('settlement-amount').should('not.exist');
 
       // Go back to My Claims page
       cy.findByRole('button', { name: 'Back' }).click();
