@@ -432,11 +432,6 @@ async function loadClaimPayoutData(contract: ClaimsManager, params: { userAccoun
     ...resolvedSettlementEvents,
   ] as const);
 
-  // eslint-disable-next-line no-console
-  console.log({ userAccount, claimIds });
-  // eslint-disable-next-line no-console
-  console.log({ payoutEvents });
-
   const byId = payoutEvents.reduce((acc, ev) => {
     if ('clippedAmountInUsd' in ev.args) {
       acc[ev.args.claimHash] = {
