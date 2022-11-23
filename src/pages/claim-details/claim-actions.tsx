@@ -160,7 +160,7 @@ export default function ClaimActions(props: Props) {
                 />
               </Modal>
             </div>
-            <p className={styles.actionMessage}>
+            <p className={styles.actionMessage} data-testid="notifications">
               If you don’t escalate to Kleros within the remaining time, the rejection will be accepted
             </p>
           </div>
