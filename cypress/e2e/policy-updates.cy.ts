@@ -42,4 +42,18 @@ describe('Policy updates', () => {
       cy.findByTestId('remaining-coverage').should('have.text', '50,000.0 USD');
     });
   });
+
+  it('handles metadata updates', () => {
+    cy.exec(`yarn create-user-policy --address ${ACCOUNTS[0]} --coverage-amount 27000 --metadata 'EUR/USD - v1'`).then(
+      (exec) => {
+        const policyId = JSON.parse(exec.stdout.split('User policies (1):')[1].trim())[0];
+        cy.visit(`/policies/${policyId}`);
+
+        // Policy Details page
+        cy.findByRole('heading', { name: 'EUR/USD - v1' }).should('exist');
+        cy.exec(`yarn update-policy-metadata --policy-id ${policyId} --metadata 'EUR/USD - v2'`);
+        cy.findByRole('heading', { name: 'EUR/USD - v2' }).should('exist');
+      }
+    );
+  });
 });
