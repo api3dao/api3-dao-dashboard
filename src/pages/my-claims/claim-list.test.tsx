@@ -11,6 +11,7 @@ function render(element: ReactElement) {
 }
 
 let claim: Claim;
+const timesPerPeriod = [280800, 583200, 583200, 388800];
 
 describe('<ClaimList />', () => {
   beforeEach(() => {
@@ -123,6 +124,7 @@ describe('<ClaimList />', () => {
         ruling: 'DoNotPay',
         period: 'Evidence',
         periodEndDate: addDays(new Date(), 2),
+        timesPerPeriod,
         appealedBy: null,
       };
 
@@ -142,6 +144,7 @@ describe('<ClaimList />', () => {
           ruling: 'PayClaim',
           period: 'Appeal',
           periodEndDate: addDays(new Date(), 2),
+          timesPerPeriod,
           appealedBy: null,
         };
 
@@ -159,6 +162,7 @@ describe('<ClaimList />', () => {
           ruling: 'PayClaim',
           period: 'Execution',
           periodEndDate: null,
+          timesPerPeriod,
           appealedBy: null,
         };
 
@@ -185,6 +189,7 @@ describe('<ClaimList />', () => {
           ruling: 'PaySettlement',
           period: 'Appeal',
           periodEndDate: addMinutes(new Date(), 1),
+          timesPerPeriod,
           appealedBy: null,
         };
 
@@ -204,6 +209,7 @@ describe('<ClaimList />', () => {
           ruling: 'PaySettlement',
           period: 'Execution',
           periodEndDate: null,
+          timesPerPeriod,
           appealedBy: null,
         };
 
@@ -226,6 +232,7 @@ describe('<ClaimList />', () => {
           ruling: 'DoNotPay',
           period: 'Appeal',
           periodEndDate: addMinutes(new Date(), 1),
+          timesPerPeriod,
           appealedBy: null,
         };
 
@@ -245,6 +252,7 @@ describe('<ClaimList />', () => {
           ruling: 'DoNotPay',
           period: 'Execution',
           periodEndDate: null,
+          timesPerPeriod,
           appealedBy: null,
         };
 

@@ -114,28 +114,10 @@ $min-desktop-width: 900px;
   }
 }
 
-[data-show-deadline='true'] {
-  @media (min-width: $min-desktop-width) and (max-width: 1144px) {
-    .claimId {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-
-    .createdAt {
-      display: none;
-    }
-  }
-}
-
-.createdAt {
-  display: inline;
-
-  @media (min-width: $min-desktop-width) {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
+.claimId {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .claimActionInfo {

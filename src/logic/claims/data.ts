@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { go } from '@api3/promise-utils';
-import { addDays, isAfter, isBefore } from 'date-fns';
+import { addDays, addSeconds, isAfter, isBefore } from 'date-fns';
 import { blockTimestampToDate, messages, sortEvents, useStableIds } from '../../utils';
 import {
   Claim,
@@ -199,7 +199,15 @@ function calculateDeadline(claim: Claim) {
     case 'SettlementProposed':
       return addDays(claim.statusUpdatedAt, 3);
     case 'DisputeCreated':
-      return dispute?.period === 'Appeal' ? dispute.periodEndDate! : null;
+      if (!dispute) return null; // We should always have a dispute at this point
+
+      if (dispute.period === 'Evidence') {
+        // Kleros will give the ruling after the voting period, so we add the voting period to the evidence
+        // period end date (the commit period is skipped because the sub court does not have hidden votes).
+        return addSeconds(dispute.periodEndDate!, dispute.timesPerPeriod[2]!);
+      }
+
+      return dispute.periodEndDate;
     default:
       return null;
   }
@@ -245,6 +253,8 @@ export function getCurrentDeadline(claim: Claim) {
   return claim.deadline;
 }
 
+type ClaimData = Awaited<ReturnType<ClaimsManager['claimHashToState']>>;
+
 async function getClaimContractData(contract: ClaimsManager, claimEvents: CreatedClaimEvent[]) {
   const calls = claimEvents.map((event) => {
     return contract.interface.encodeFunctionData('claimHashToState', [event.args.claimHash]);
@@ -253,11 +263,15 @@ async function getClaimContractData(contract: ClaimsManager, claimEvents: Create
   const encodedResults = await contract.callStatic.multicall(calls);
 
   return encodedResults.map((res) => {
-    return contract.interface.decodeFunctionResult('claimHashToState', res);
+    return contract.interface.decodeFunctionResult('claimHashToState', res) as ClaimData;
   });
 }
 
 export const SUB_COURT_ID = 1;
+
+type DisputeData = Awaited<ReturnType<KlerosLiquidProxy['disputes']>>;
+type SubCourt = Awaited<ReturnType<KlerosLiquidProxy['getSubcourt']>>;
+type CurrentRuling = Awaited<ReturnType<KlerosLiquidProxy['currentRuling']>>;
 
 async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents: CreatedDisputeEvent[]) {
   const disputeCalls = disputeEvents.map((ev) => {
@@ -280,14 +294,14 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
   const disputes = encodedResults
     // Get the first batch of results
     .slice(0, disputeEvents.length)
-    .map((res) => contract.interface.decodeFunctionResult('disputes', res));
+    .map((res) => contract.interface.decodeFunctionResult('disputes', res) as DisputeData);
 
   const currentRulings = encodedResults
     // Get the second batch of results
     .slice(disputeEvents.length, 2 * disputeEvents.length)
-    .map((res) => contract.interface.decodeFunctionResult('currentRuling', res));
+    .map((res) => contract.interface.decodeFunctionResult('currentRuling', res) as [CurrentRuling]);
 
-  const subCourt = contract.interface.decodeFunctionResult('getSubcourt', last(encodedResults)!);
+  const subCourt = contract.interface.decodeFunctionResult('getSubcourt', last(encodedResults)!) as SubCourt;
 
   return disputeEvents.map((ev, index) => {
     const disputeId = ev.args.disputeId.toString();
@@ -307,6 +321,7 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
       ruling: ArbitratorRulings[rulingCode],
       period,
       periodEndDate: periodLength != null ? blockTimestampToDate(dispute.lastPeriodChange.add(periodLength)) : null,
+      timesPerPeriod: subCourt.timesPerPeriod.map((time) => time.toNumber()),
       appealedBy: last(appealers) ?? null,
     };
   });

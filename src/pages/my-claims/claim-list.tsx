@@ -3,7 +3,7 @@ import Timer from '../../components/timer';
 import Api3Icon from '../../components/icons/api3-icon';
 import KlerosIcon from '../../components/icons/kleros-icon';
 import WarningIcon from '../../components/icons/warning-icon';
-import { format, isAfter } from 'date-fns';
+import { isAfter } from 'date-fns';
 import { images, useForceUpdate } from '../../utils';
 import { abbrStr, Claim } from '../../chain-data';
 import { getCurrentDeadline, isActive, useClaimPayoutDataPreload } from '../../logic/claims';
@@ -39,7 +39,6 @@ export default function ClaimList(props: Props) {
             data-active={active}
             data-status={claim.status}
             data-dispute-status={claim.dispute?.status}
-            data-show-deadline={showDeadline}
             data-testid="claim-list-item"
           >
             <div className={styles.mobileStatusRow}>
@@ -62,12 +61,6 @@ export default function ClaimList(props: Props) {
                   <span className={styles.claimId}>
                     <span className={globalStyles.tertiaryColor}>Claim ID: </span>
                     {abbrStr(claim.claimId, { startLength: 5 })}
-                  </span>
-
-                  <span className={styles.createdAt}>
-                    <span className={globalStyles.tertiaryColor}>Created: </span>
-                    {format(claim.timestamp, 'dd MMM yyyy')}
-                    <span className={globalStyles.tertiaryColor}> {format(claim.timestamp, 'HH:mm')}</span>
                   </span>
                 </div>
               </div>
