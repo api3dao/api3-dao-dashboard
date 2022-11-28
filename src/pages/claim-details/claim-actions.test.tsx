@@ -135,12 +135,13 @@ describe('<ClaimActions />', () => {
     });
 
     it('shows claimant has escalated to Kleros', () => {
+      claim.deadline = addDays(new Date(), 10);
       claim.dispute = {
         id: '1',
         status: 'Waiting',
         ruling: 'DoNotPay',
         period: 'Evidence',
-        periodEndDate: addDays(new Date(), 2),
+        periodChangedAt: new Date(),
         timesPerPeriod,
         appealedBy: null,
       };
@@ -160,7 +161,7 @@ describe('<ClaimActions />', () => {
           status: 'Appealable',
           ruling: 'PayClaim',
           period: 'Appeal',
-          periodEndDate: addDays(new Date(), 2),
+          periodChangedAt: addDays(new Date(), -2),
           timesPerPeriod,
           appealedBy: null,
         };
@@ -179,7 +180,7 @@ describe('<ClaimActions />', () => {
           status: 'Solved',
           ruling: 'PayClaim',
           period: 'Execution',
-          periodEndDate: null,
+          periodChangedAt: new Date(),
           timesPerPeriod,
           appealedBy: null,
         };
@@ -204,7 +205,7 @@ describe('<ClaimActions />', () => {
           status: 'Appealable',
           ruling: 'PaySettlement',
           period: 'Appeal',
-          periodEndDate: addMinutes(new Date(), 1),
+          periodChangedAt: addDays(new Date(), -4),
           timesPerPeriod,
           appealedBy: null,
         };
@@ -226,7 +227,7 @@ describe('<ClaimActions />', () => {
           status: 'Appealable',
           ruling: 'PaySettlement',
           period: 'Appeal',
-          periodEndDate: addMinutes(new Date(), -1),
+          periodChangedAt: addDays(new Date(), -4),
           timesPerPeriod,
           appealedBy: null,
         };
@@ -243,7 +244,7 @@ describe('<ClaimActions />', () => {
           status: 'Solved',
           ruling: 'PaySettlement',
           period: 'Execution',
-          periodEndDate: null,
+          periodChangedAt: new Date(),
           timesPerPeriod,
           appealedBy: null,
         };
@@ -264,7 +265,7 @@ describe('<ClaimActions />', () => {
           status: 'Appealable',
           ruling: 'DoNotPay',
           period: 'Appeal',
-          periodEndDate: addMinutes(new Date(), 1),
+          periodChangedAt: addDays(new Date(), -4),
           timesPerPeriod,
           appealedBy: null,
         };
@@ -285,7 +286,7 @@ describe('<ClaimActions />', () => {
           status: 'Appealable',
           ruling: 'DoNotPay',
           period: 'Appeal',
-          periodEndDate: addMinutes(new Date(), -1),
+          periodChangedAt: addDays(new Date(), -4),
           timesPerPeriod,
           appealedBy: null,
         };
@@ -302,7 +303,7 @@ describe('<ClaimActions />', () => {
           status: 'Solved',
           ruling: 'DoNotPay',
           period: 'Execution',
-          periodEndDate: null,
+          periodChangedAt: new Date(),
           timesPerPeriod,
           appealedBy: null,
         };
@@ -315,13 +316,13 @@ describe('<ClaimActions />', () => {
 
     describe('when the ruling has been appealed', () => {
       it('shows that it has been appealed to Kleros', () => {
-        claim.deadline = addDays(new Date(), 8);
+        claim.deadline = addDays(new Date(), 10);
         claim.dispute = {
           id: '1',
           status: 'Waiting',
           ruling: 'PaySettlement',
           period: 'Evidence',
-          periodEndDate: addDays(new Date(), 2),
+          periodChangedAt: new Date(),
           timesPerPeriod,
           appealedBy: '0x153EF0B488148k0aB0FED112334',
         };
@@ -341,7 +342,7 @@ describe('<ClaimActions />', () => {
           status: 'Waiting',
           ruling: 'PayClaim',
           period: 'Vote',
-          periodEndDate: addDays(new Date(), 2),
+          periodChangedAt: addDays(new Date(), -4),
           timesPerPeriod,
           appealedBy: '0xD6b040736e948621c5b6E0a4944',
         };

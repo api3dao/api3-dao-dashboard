@@ -191,7 +191,7 @@ async function loadClaims(
   };
 }
 
-function calculateDeadline(claim: Claim) {
+export function calculateDeadline(claim: Pick<Claim, 'status' | 'statusUpdatedAt' | 'dispute'>) {
   const { dispute } = claim;
 
   switch (claim.status) {
@@ -199,15 +199,18 @@ function calculateDeadline(claim: Claim) {
     case 'SettlementProposed':
       return addDays(claim.statusUpdatedAt, 3);
     case 'DisputeCreated':
-      if (!dispute) return null; // We should always have a dispute at this point
-
-      if (dispute.period === 'Evidence') {
-        // Kleros will give the ruling after the voting period, so we add the voting period to the evidence
-        // period end date (the commit period is skipped because the sub court does not have hidden votes).
-        return addSeconds(dispute.periodEndDate!, dispute.timesPerPeriod[2]!);
+      switch (dispute?.period) {
+        case 'Evidence':
+          // Kleros gives their ruling after the voting period, so we add the voting period to the evidence
+          // period (the commit period is skipped because the sub court does not have hidden votes).
+          return addSeconds(dispute.periodChangedAt, dispute.timesPerPeriod[0]! + dispute.timesPerPeriod[2]!);
+        case 'Vote':
+          return addSeconds(dispute.periodChangedAt, dispute.timesPerPeriod[2]!);
+        case 'Appeal':
+          return addSeconds(dispute.periodChangedAt, dispute.timesPerPeriod[3]!);
+        default:
+          return null;
       }
-
-      return dispute.periodEndDate;
     default:
       return null;
   }
@@ -312,15 +315,13 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
       .map((appealEv) => appealEv.args.sender);
 
     const period = DisputePeriods[dispute.period as DisputePeriodCode];
-    const periodLength = subCourt.timesPerPeriod[dispute.period] ?? null;
-
     return {
       id: disputeId,
       claimId: ev.args.claimHash,
       status: getDisputeStatus(period),
       ruling: ArbitratorRulings[rulingCode],
       period,
-      periodEndDate: periodLength != null ? blockTimestampToDate(dispute.lastPeriodChange.add(periodLength)) : null,
+      periodChangedAt: blockTimestampToDate(dispute.lastPeriodChange),
       timesPerPeriod: subCourt.timesPerPeriod.map((time) => time.toNumber()),
       appealedBy: last(appealers) ?? null,
     };
