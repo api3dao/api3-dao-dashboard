@@ -118,6 +118,7 @@ describe('<ClaimList />', () => {
     });
 
     it('shows that Kleros is evaluating', () => {
+      claim.deadline = addDays(new Date(), 8);
       claim.dispute = {
         id: '1',
         status: 'Waiting',

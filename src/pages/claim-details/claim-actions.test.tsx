@@ -315,6 +315,7 @@ describe('<ClaimActions />', () => {
 
     describe('when the ruling has been appealed', () => {
       it('shows that it has been appealed to Kleros', () => {
+        claim.deadline = addDays(new Date(), 8);
         claim.dispute = {
           id: '1',
           status: 'Waiting',
@@ -334,6 +335,7 @@ describe('<ClaimActions />', () => {
       });
 
       it('shows that API3 has appealed when it is not the claimant', () => {
+        claim.deadline = addDays(new Date(), 2);
         claim.dispute = {
           id: '1',
           status: 'Waiting',

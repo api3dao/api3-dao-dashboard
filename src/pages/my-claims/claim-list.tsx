@@ -3,6 +3,7 @@ import Timer from '../../components/timer';
 import Api3Icon from '../../components/icons/api3-icon';
 import KlerosIcon from '../../components/icons/kleros-icon';
 import WarningIcon from '../../components/icons/warning-icon';
+import { Api3EvaluatingIndicator, KlerosEvaluatingIndicator } from './evaluating-indicators';
 import { isAfter } from 'date-fns';
 import { images, useForceUpdate } from '../../utils';
 import { abbrStr, Claim } from '../../chain-data';
@@ -67,7 +68,14 @@ export default function ClaimList(props: Props) {
 
               <div className={styles.claimActionInfo} data-testid="claim-action-info">
                 {pills && <div className={styles.pillContainer}>{pills}</div>}
-                {showDeadline && <Timer deadline={currentDeadline} onDeadlineExceeded={forceUpdate} />}
+
+                {isApi3Evaluating(claim, isPastDeadline) ? (
+                  <Api3EvaluatingIndicator claim={claim} onDeadlineExceeded={forceUpdate} />
+                ) : isKlerosEvaluating(claim) ? (
+                  <KlerosEvaluatingIndicator claim={claim} onDeadlineExceeded={forceUpdate} />
+                ) : showDeadline ? (
+                  <Timer deadline={currentDeadline} onDeadlineExceeded={forceUpdate} />
+                ) : null}
               </div>
               <Link className={styles.arrowIconLink} tabIndex={-1} to={`/claims/${claim.claimId}`}>
                 <img src={images.arrowRight} alt="right arrow" />
@@ -278,4 +286,12 @@ function getClaimActions(claim: Claim, isPastDeadline: boolean) {
     default:
       return null;
   }
+}
+
+function isApi3Evaluating(claim: Claim, isPastDeadline: boolean) {
+  return claim.status === 'ClaimCreated' && !isPastDeadline;
+}
+
+function isKlerosEvaluating(claim: Claim) {
+  return claim.status === 'DisputeCreated' && claim?.dispute?.status === 'Waiting';
 }

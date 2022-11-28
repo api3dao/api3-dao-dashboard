@@ -26,37 +26,10 @@ interface Countdown {
 }
 
 const Timer = (props: Props) => {
-  const { deadline, size = 'normal', showDeadline, onDeadlineExceeded } = props;
-  const [countdown, setCountdown] = useState<Countdown>(() => calculateCountdown(deadline));
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const countdown = calculateCountdown(deadline);
-      setCountdown(countdown);
-
-      if (countdown.dateDiff === 0) {
-        clearInterval(timer);
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, [deadline]);
-
-  const callbackRef = useRef(onDeadlineExceeded);
-  useEffect(() => {
-    callbackRef.current = onDeadlineExceeded;
-  });
+  const { deadline, size = 'normal', showDeadline } = props;
+  const countdown = useCountdown(deadline, props.onDeadlineExceeded);
 
   const { dateDiff } = countdown;
-  const previousDateDiff = usePrevious(dateDiff) || 0;
-  useEffect(() => {
-    // We trigger the callback when we have gone past the deadline (i.e. from a positive diff to a zero diff)
-    if (previousDateDiff > 0 && dateDiff === 0) {
-      callbackRef.current && callbackRef.current();
-    }
-  }, [previousDateDiff, dateDiff]);
 
   const largeSize = size === 'large' ? `${styles.large}` : '';
   const status = dateDiff > 0 ? `Remaining${showDeadline ? '' : ':'}` : 'Ended';
@@ -99,6 +72,41 @@ const Timer = (props: Props) => {
 };
 
 export default Timer;
+
+export function useCountdown(deadline: Date, onDeadlineExceeded?: () => void) {
+  const [countdown, setCountdown] = useState<Countdown>(() => calculateCountdown(deadline));
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const countdown = calculateCountdown(deadline);
+      setCountdown(countdown);
+
+      if (countdown.dateDiff === 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [deadline]);
+
+  const callbackRef = useRef(onDeadlineExceeded);
+  useEffect(() => {
+    callbackRef.current = onDeadlineExceeded;
+  });
+
+  const { dateDiff } = countdown;
+  const previousDateDiff = usePrevious(dateDiff) || 0;
+  useEffect(() => {
+    // We trigger the callback when we have gone past the deadline (i.e. from a positive diff to a zero diff)
+    if (previousDateDiff > 0 && dateDiff === 0) {
+      callbackRef.current && callbackRef.current();
+    }
+  }, [previousDateDiff, dateDiff]);
+
+  return countdown;
+}
 
 function calculateCountdown(deadline: Date): Countdown {
   const now = new Date().getTime();
