@@ -2,7 +2,7 @@ import { calculateDeadline } from './data';
 import { addDays, addSeconds } from 'date-fns';
 
 describe('calculateDeadline', () => {
-  it('returns a deadline of 3 days for "ClaimCreated"', () => {
+  it('returns a deadline of 3 days for "ClaimCreated" status', () => {
     const statusUpdatedAt = addSeconds(new Date(), -42);
     const deadline = calculateDeadline({
       status: 'ClaimCreated',
@@ -13,7 +13,7 @@ describe('calculateDeadline', () => {
     expect(deadline).toEqual(addDays(statusUpdatedAt, 3));
   });
 
-  it('returns a deadline of 3 days for "SettlementProposed"', () => {
+  it('returns a deadline of 3 days for "SettlementProposed" status', () => {
     const statusUpdatedAt = addSeconds(new Date(), -42);
     const deadline = calculateDeadline({
       status: 'SettlementProposed',
@@ -25,7 +25,7 @@ describe('calculateDeadline', () => {
   });
 
   describe('when the dispute is in its "Evidence" period', () => {
-    it('returns the period end date with the "Vote" period added on', () => {
+    it('returns the vote period end date', () => {
       const periodChangedAt = addSeconds(new Date(), -42);
       const evidencePeriod = 3.25 * 24 * 60 * 60;
       const votePeriod = 6.75 * 24 * 60 * 60;
@@ -53,7 +53,7 @@ describe('calculateDeadline', () => {
   });
 
   describe('when the dispute is in its "Vote" period', () => {
-    it('returns the period end date', () => {
+    it('returns the vote period end date', () => {
       const periodChangedAt = addSeconds(new Date(), -42);
       const votePeriod = 6.75 * 24 * 60 * 60;
       const deadline = calculateDeadline({
@@ -80,7 +80,7 @@ describe('calculateDeadline', () => {
   });
 
   describe('when the dispute is in its "Appeal" period', () => {
-    it('returns the period end date', () => {
+    it('returns the appeal period end date', () => {
       const periodChangedAt = addSeconds(new Date(), -42);
       const appealPeriod = 4.5 * 24 * 60 * 60;
       const deadline = calculateDeadline({

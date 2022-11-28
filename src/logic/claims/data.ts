@@ -201,8 +201,8 @@ export function calculateDeadline(claim: Pick<Claim, 'status' | 'statusUpdatedAt
     case 'DisputeCreated':
       switch (dispute?.period) {
         case 'Evidence':
-          // Kleros gives their ruling after the voting period, so we add the voting period to the evidence
-          // period (the commit period is skipped because the sub court does not have hidden votes).
+          // Kleros gives their ruling after the voting period, so we get the voting period end date by adding the vote
+          // period to the evidence period (the commit period is skipped because the sub court does not have hidden votes).
           return addSeconds(dispute.periodChangedAt, dispute.timesPerPeriod[0]! + dispute.timesPerPeriod[2]!);
         case 'Vote':
           return addSeconds(dispute.periodChangedAt, dispute.timesPerPeriod[2]!);
