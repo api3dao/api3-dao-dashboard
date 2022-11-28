@@ -18,7 +18,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/dao-dashboard
+          images: api3/dao-dashboard
           tags: |
             # set latest tag for production branch
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'production') }}
