@@ -1,4 +1,4 @@
-import { ACCOUNTS } from '../support/common';
+import { createPolicyAndClaim, assertClaimIsActive, assertClaimIsInactive } from '../support/claims';
 
 describe('Claim process', () => {
   beforeEach(() => {
@@ -23,19 +23,20 @@ describe('Claim process', () => {
       cy.findByTestId('claim-amount').should('have.text', '1,999.99 USD');
       cy.findByTestId('remaining-coverage').should('have.text', '45,000.0 USD');
 
+      // Accept the claim
       cy.findByTestId('claim-id')
         .invoke('text')
         .then((claimId) => {
           cy.exec(`yarn claims:accept-claim --claim-id ${claimId}`);
-
-          cy.findByTestId('notifications').should('contain.text', 'All done! The claim payout has been accepted.');
-          cy.findByTestId('status-prefix').should('have.text', 'API3 Mediators');
-          cy.findByTestId('status').should('have.text', 'Accepted');
-          cy.findByTestId('usd-amount').should('have.text', '1,999.99 USD');
-          cy.findByTestId('api3-payout').should('contain.text', '999.995 API3 tokens');
-          cy.findByTestId('remaining-coverage').should('have.text', '43,000.01 USD');
-          cy.findByTestId('settlement-amount').should('not.exist');
         });
+
+      cy.findByTestId('notifications').should('contain.text', 'All done! The claim payout has been accepted.');
+      cy.findByTestId('status-prefix').should('have.text', 'API3 Mediators');
+      cy.findByTestId('status').should('have.text', 'Accepted');
+      cy.findByTestId('usd-amount').should('have.text', '1,999.99 USD');
+      cy.findByTestId('api3-payout').should('contain.text', '999.995 API3 tokens');
+      cy.findByTestId('remaining-coverage').should('have.text', '43,000.01 USD');
+      cy.findByTestId('settlement-amount').should('not.exist');
 
       // Go back to My Claims page
       cy.findByRole('button', { name: 'Back' }).click();
@@ -76,6 +77,7 @@ describe('Claim process', () => {
       cy.findByRole('button', { name: 'Accept Settlement' }).click();
       // Confirmation modal
       cy.findByRole('dialog').within(() => {
+        cy.findByRole('heading', { name: 'You will be paid in API3 tokens' }).should('exist');
         cy.findByRole('button', { name: 'Accept Settlement' }).click();
       });
 
@@ -88,7 +90,7 @@ describe('Claim process', () => {
 
       // Go back to My Claims page
       cy.findByRole('button', { name: 'Back' }).click();
-      cy.findByRole('heading', { name: 'My Claims' });
+      cy.findByRole('heading', { name: 'My Claims' }).should('exist');
       cy.findByTestId('claim-status').should('have.text', 'API3 Mediators (settled)');
       assertClaimIsInactive();
     });
@@ -139,50 +141,3 @@ describe('Claim process', () => {
     });
   });
 });
-
-interface CreateParams {
-  policyMetadata: string;
-  coverageAmount: string;
-  claimAmount: string;
-}
-
-function createPolicyAndClaim(params: CreateParams) {
-  return cy
-    .exec(
-      `yarn create-user-policy --address ${ACCOUNTS[0]} --metadata ${params.policyMetadata} --coverage-amount ${params.coverageAmount}`
-    )
-    .then((exec) => {
-      const policyId = JSON.parse(exec.stdout.split('User policies (1):')[1].trim())[0];
-
-      cy.visit(`/policies/${policyId}/claims/new`);
-      cy.findByRole('button', { name: 'Next' }).click();
-      cy.findByLabelText('Enter the IPFS hash to your Claim Evidence form').type(
-        'QmPK1s3pNYLi9ERiq3BDxKa4XosgWwFRQUydHUtz4YgpqB',
-        { delay: 0 }
-      );
-      cy.findByLabelText('Requested payout amount, in USD').type(params.claimAmount);
-      cy.findByRole('button', { name: 'Next' }).click();
-      cy.findByRole('button', { name: 'Submit Claim' }).click();
-
-      return cy
-        .findByTestId('claim-id')
-        .invoke('text')
-        .then((claimId) => {
-          return { policyId, claimId };
-        });
-    });
-}
-
-function assertClaimIsActive() {
-  cy.findAllByTestId('claim-list-item').should('have.length', 1);
-  cy.findByLabelText('Active').uncheck(); // Hide active claims
-  cy.findAllByTestId('claim-list-item').should('have.length', 0);
-  cy.findByLabelText('Active').check();
-}
-
-function assertClaimIsInactive() {
-  cy.findAllByTestId('claim-list-item').should('have.length', 1);
-  cy.findByLabelText('Inactive').uncheck(); // Hide inactive claims
-  cy.findAllByTestId('claim-list-item').should('have.length', 0);
-  cy.findByLabelText('Inactive').check();
-}

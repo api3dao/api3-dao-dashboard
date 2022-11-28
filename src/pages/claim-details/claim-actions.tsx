@@ -160,7 +160,7 @@ export default function ClaimActions(props: Props) {
                 />
               </Modal>
             </div>
-            <p className={styles.actionMessage}>
+            <p className={styles.actionMessage} data-testid="notifications">
               If you don’t escalate to Kleros within the remaining time, the rejection will be accepted
             </p>
           </div>
@@ -356,7 +356,7 @@ export default function ClaimActions(props: Props) {
                 Evaluating
               </span>
             </div>
-            <p className={styles.actionMessage}>
+            <p className={styles.actionMessage} data-testid="notifications">
               The claim was escalated to Kleros. Kleros jurors are currently evaluating your claim
             </p>
           </div>
@@ -381,7 +381,7 @@ export default function ClaimActions(props: Props) {
                 </div>
               </div>
               {dispute.period === 'Appeal' && (
-                <p className={styles.actionMessage}>
+                <p className={styles.actionMessage} data-testid="notifications">
                   During this appeal period the API3 Mediators have the opportunity to appeal Kleros’s ruling
                 </p>
               )}
@@ -433,7 +433,7 @@ export default function ClaimActions(props: Props) {
                       />
                     </Modal>
                   </div>
-                  <p className={styles.actionMessage}>
+                  <p className={styles.actionMessage} data-testid="notifications">
                     During this appeal period you have the opportunity to appeal Kleros’s ruling
                   </p>
                 </>
@@ -483,7 +483,7 @@ export default function ClaimActions(props: Props) {
                       />
                     </Modal>
                   </div>
-                  <p className={styles.actionMessage}>
+                  <p className={styles.actionMessage} data-testid="notifications">
                     During this appeal period you and the API3 Mediators have the opportunity to appeal Kleros’s ruling
                   </p>
                 </>
@@ -582,7 +582,9 @@ export default function ClaimActions(props: Props) {
               Rejected
             </span>
           </div>
-          <p className={styles.actionMessage}>The ruling wasn’t appealed to Kleros within the required time period</p>
+          <p className={styles.actionMessage} data-testid="notifications">
+            The ruling wasn’t appealed to Kleros within the required time period
+          </p>
         </div>
       );
 

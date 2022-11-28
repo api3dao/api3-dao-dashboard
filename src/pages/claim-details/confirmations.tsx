@@ -43,7 +43,7 @@ export function EscalateConfirmation(props: EscalateConfirmationProps) {
     <>
       <ModalHeader>Escalation Cost</ModalHeader>
       <div className={styles.body}>
-        <div className={styles.cost}>
+        <div className={styles.cost} data-testid="cost">
           {cost ? (
             <>{formatEther(cost)} ETH</>
           ) : status === 'failed' ? (
@@ -116,7 +116,7 @@ export function AppealConfirmation(props: AppealConfirmationProps) {
     <>
       <ModalHeader>Appeal Cost</ModalHeader>
       <div className={styles.body}>
-        <div className={styles.cost}>
+        <div className={styles.cost} data-testid="cost">
           {cost ? (
             <>{formatEther(cost)} ETH</>
           ) : status === 'failed' ? (
