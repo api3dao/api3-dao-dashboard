@@ -25,10 +25,12 @@ describe('Claim creation', () => {
     cy.findByTestId('status').should('have.text', 'Active');
     cy.findByRole('button', { name: '+ New Claim' }).should('not.be.disabled');
     cy.findByTestId('remaining-coverage').should('have.text', '45,000.0 USD');
+    cy.percySnapshot('Policy Details');
     cy.findByRole('button', { name: '+ New Claim' }).click();
 
     // Evidence step
     cy.findByRole('heading', { name: /Creating Evidence/i }).should('exist');
+    cy.percySnapshot('New Claim: Creating Evidence');
     cy.findByRole('button', { name: 'Next' }).click();
 
     // Capture step
@@ -58,10 +60,12 @@ describe('Claim creation', () => {
     cy.findByTestId('usd-amount-error').should('have.text', 'Amount must not exceed the coverage amount');
     enterUsdAmount('45000.00');
     cy.findByTestId('usd-amount-error').should('not.exist');
+    cy.percySnapshot('New Claim: Enter Claim Details');
     enterUsdAmount('15000{enter}'); // The enter key should take us to the next step
 
     // Review step
     cy.findByRole('heading', { name: /Review Your Claim/i }).should('exist');
+    cy.percySnapshot('New Claim: Review Your Claim');
     cy.findByRole('button', { name: 'Submit Claim' }).click();
     cy.findByRole('heading', { name: /Thank you for submitting your claim/i }).should('exist');
 
@@ -104,6 +108,8 @@ describe('Claim creation', () => {
       cy.findAllByTestId('policy-list-item').should('have.length', 2); // Should only show active policies that belongs to the user
       cy.findByRole('link', { name: 'BTC/USD' }).should('exist');
       cy.findByRole('link', { name: 'ETH/USD' }).should('exist');
+      cy.findAllByText('Loading remaining coverage...').should('not.exist');
+      cy.percySnapshot('Policy Select');
 
       // Searches by policy metadata
       cy.findByLabelText('Search for your policy').type(' eth {enter}');
