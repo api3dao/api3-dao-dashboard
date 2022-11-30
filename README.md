@@ -4,20 +4,35 @@ The implementation of the DAO dashboard.
 
 [![ContinuousBuild](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml)
 
-## Running dashboard on Mainnet in docker container
+## Running the dashboard on Mainnet in a docker container
 
-The decentralized approach of being a DAO member is to run API3 dashboard on your local machine. For that you will just
-need `git` and `docker`. Note, that the production source code is on the `production` branch.
+The decentralized approach to being a DAO member is to run API3 dashboard on your local machine. For that you will just
+need `docker` and, optionally, `git`.
 
+There are two approaches to running the dashboard locally. The first involves using the prebuilt Docker image, while the
+second involves building the image from source. In either case, the end result is a API3 dashboard running on port 7770
+of your localhost where it is safe to connect your wallet. Once you are finished interacting with the dashboard, the
+container can be stopped using `docker stop api3-dao-dashboard`.
+
+### Running the prebuilt image
+
+The simplest way to run the dashboard is using the prebuilt Docker image from Docker Hub:
+
+```sh
+docker run --rm --publish 7770:80 --name api3-dao-dashboard api3/dao-dashboard:latest
 ```
+
+### Building from source
+
+Alternatively, you can build the docker image from source. Note that the production source code is on the `production`
+branch.
+
+```sh
 git clone --depth=1 --branch production https://github.com/api3dao/api3-dao-dashboard.git
 cd api3-dao-dashboard
 docker build --tag api3-dao-dashboard .
 docker run --rm --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
 ```
-
-This will create a API3 dashboard running on port 7770 of your localhost where it is safe to connect your wallet. Once
-you are finished interacting with the dashboard, the container can be stopped using `docker stop api3-dao-dashboard`.
 
 ## Development instructions
 
