@@ -38,7 +38,6 @@ describe('Claim process with arbitration', () => {
           cy.findByTestId('status-prefix').should('have.text', 'Kleros');
           cy.findByTestId('status').should('have.text', 'Accepted');
           cy.findByTestId('usd-amount').should('have.text', '1,999.99 USD');
-          cy.percySnapshot('Claim Details: Kleros Accepted (Appeal Period)');
 
           // Pass the appeal period
           cy.exec(`yarn claims:pass-dispute-period --dispute-id ${disputeId}`);
@@ -153,7 +152,6 @@ describe('Claim process with arbitration', () => {
         cy.findByRole('button', { name: 'Appeal' }).should('exist');
         cy.findByTestId('status-prefix').should('have.text', 'Kleros');
         cy.findByTestId('status').should('have.text', 'Rejected');
-        cy.percySnapshot('Claim Details: Kleros Rejected (Appeal Period)');
 
         // Resolve the dispute
         cy.exec(`yarn claims:resolve-dispute --dispute-id ${disputeId}`);
@@ -166,7 +164,6 @@ describe('Claim process with arbitration', () => {
       cy.findByTestId('status-prefix').should('have.text', 'Kleros');
       cy.findByTestId('status').should('have.text', 'Rejected');
       cy.findByTestId('remaining-coverage').should('have.text', '45,000.0 USD');
-      cy.percySnapshot('Claim Details: Kleros Rejected');
 
       // Go back to My Claims page
       cy.findByRole('button', { name: 'Back' }).click();
@@ -203,7 +200,6 @@ describe('Claim process with arbitration', () => {
       cy.findByRole('dialog').within(() => {
         cy.findByRole('heading', { name: 'Appeal Cost' }).should('exist');
         cy.findByTestId('cost').should('have.text', '0.175 ETH');
-        cy.percySnapshot('Claim Details: Appeal Cost Modal');
         cy.findByRole('button', { name: 'Appeal' }).click();
       });
 

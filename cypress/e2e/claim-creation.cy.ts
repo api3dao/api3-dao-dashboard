@@ -65,7 +65,6 @@ describe('Claim creation', () => {
 
     // Review step
     cy.findByRole('heading', { name: /Review Your Claim/i }).should('exist');
-    cy.percySnapshot('New Claim: Review Your Claim');
     cy.findByRole('button', { name: 'Submit Claim' }).click();
     cy.findByRole('heading', { name: /Thank you for submitting your claim/i }).should('exist');
 
