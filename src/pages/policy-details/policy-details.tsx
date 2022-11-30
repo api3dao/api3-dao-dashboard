@@ -144,7 +144,9 @@ function PolicyDetailsLayout(props: PolicyDetailsLayoutProps) {
       <div className={styles.backButtonRow}>
         <BackButton fallback={{ href: '/claims' }}>Back</BackButton>
         {' | '}
-        <span>Policy ID: {props.policyId}</span>
+        <span>
+          Policy ID: <span className="visual-test:invisible">{props.policyId}</span>
+        </span>
       </div>
       {props.children}
     </BaseLayout>

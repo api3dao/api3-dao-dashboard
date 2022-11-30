@@ -37,6 +37,7 @@ describe('Claim process', () => {
       cy.findByTestId('api3-payout').should('contain.text', '999.995 API3 tokens');
       cy.findByTestId('remaining-coverage').should('have.text', '43,000.01 USD');
       cy.findByTestId('settlement-amount').should('not.exist');
+      cy.percySnapshot('Claim Details: API3 Mediators Accepted');
 
       // Go back to My Claims page
       cy.findByRole('button', { name: 'Back' }).click();
@@ -71,6 +72,7 @@ describe('Claim process', () => {
       cy.findByTestId('api3-payout').should('not.exist');
       cy.findByTestId('remaining-coverage').should('have.text', '45,000.0 USD');
       cy.findByTestId('settlement-amount').should('have.text', '1,200.0 USD');
+      cy.percySnapshot('Claim Details: API3 Mediators Proposed Settlement');
 
       cy.findByRole('button', { name: 'Escalate to Kleros' }).should('exist');
       // Accepts the settlement
@@ -87,6 +89,7 @@ describe('Claim process', () => {
       cy.findByTestId('usd-amount').should('have.text', '1,200.0 USD');
       cy.findByTestId('api3-payout').should('contain.text', '600.0 API3 tokens');
       cy.findByTestId('remaining-coverage').should('have.text', '43,800.0 USD');
+      cy.percySnapshot('Claim Details: API3 Mediators Settled');
 
       // Go back to My Claims page
       cy.findByRole('button', { name: 'Back' }).click();
@@ -138,6 +141,7 @@ describe('Claim process', () => {
         'contain.text',
         'The claim was rejected by the API3 Mediators and wasn’t escalated to Kleros within the required time period'
       );
+      cy.percySnapshot('Claim Details: API3 Mediators Rejected');
     });
   });
 });
