@@ -60,8 +60,10 @@ export default function PolicyDetails() {
           <span className={styles.divider}>{' | '}</span>
           <span className={styles.allowedUntil}>
             Claims Allowed Until:{' '}
-            <span className={globalStyles.primaryColor}>{format(policy.claimsAllowedUntil, 'do MMMM yyyy')} </span>
-            {format(policy.claimsAllowedUntil, 'HH:mm')}
+            <span className="visual-test:invisible">
+              <span className={globalStyles.primaryColor}>{format(policy.claimsAllowedUntil, 'do MMMM yyyy')} </span>
+              {format(policy.claimsAllowedUntil, 'HH:mm')}
+            </span>
           </span>
         </div>
       </header>
@@ -108,11 +110,15 @@ export default function PolicyDetails() {
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Claims Allowed From</p>
-              <p className={globalStyles.secondaryColor}>{format(policy.claimsAllowedFrom, 'do MMMM yyyy HH:mm')}</p>
+              <p className={`${globalStyles.secondaryColor} visual-test:invisible`}>
+                {format(policy.claimsAllowedFrom, 'do MMMM yyyy HH:mm')}
+              </p>
             </div>
             <div className={`${styles.detailsItem} ${styles.allowedUntil}`}>
               <p className={globalStyles.bold}>Claims Allowed Until</p>
-              <p className={globalStyles.secondaryColor}>{format(policy.claimsAllowedUntil, 'do MMMM yyyy HH:mm')}</p>
+              <p className={`${globalStyles.secondaryColor} visual-test:invisible`}>
+                {format(policy.claimsAllowedUntil, 'do MMMM yyyy HH:mm')}
+              </p>
             </div>
             <div className={styles.detailsItem}>
               <p className={globalStyles.bold}>Service Coverage Terms and Conditions</p>
