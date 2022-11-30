@@ -141,6 +141,7 @@ describe('Claim process', () => {
         'contain.text',
         'The claim was rejected by the API3 Mediators and wasn’t escalated to Kleros within the required time period'
       );
+      cy.findByTestId('remaining-coverage').should('have.text', '45,000.0 USD');
       cy.percySnapshot('Claim Details: API3 Mediators Rejected');
     });
   });

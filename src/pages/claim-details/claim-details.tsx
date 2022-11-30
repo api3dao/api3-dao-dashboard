@@ -158,7 +158,9 @@ function ClaimSummary(props: ClaimSummaryProps) {
       </div>
       <div className={styles.detailsItem}>
         <p className={globalStyles.bold}>Claim Created</p>
-        <p className={globalStyles.secondaryColor}>{format(claim.timestamp, 'do MMMM yyyy HH:mm')}</p>
+        <p className={`${globalStyles.secondaryColor} visual-test:invisible`}>
+          {format(claim.timestamp, 'do MMMM yyyy HH:mm')}
+        </p>
       </div>
     </div>
   );
