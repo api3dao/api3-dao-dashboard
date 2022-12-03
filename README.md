@@ -4,7 +4,7 @@ The implementation of the DAO dashboard.
 
 [![ContinuousBuild](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml)
 
-## Running the dashboard on Mainnet in a docker container
+## Running the dashboard on Mainnet in a Docker container
 
 The decentralized approach to being a DAO member is to run API3 dashboard on your local machine. For that you will just
 need `docker` and, optionally, `git`.
@@ -16,7 +16,8 @@ container can be stopped using `docker stop api3-dao-dashboard`.
 
 ### Running the prebuilt image
 
-The simplest way to run the dashboard is using the prebuilt Docker image from Docker Hub:
+The simplest, though less trustless, way to run the dashboard is using the prebuilt Docker image. This image is built
+and pushed to Docker Hub via a GitHub Actions workflow triggered by commits to the `production` branch.
 
 ```sh
 docker run --rm --publish 7770:80 --name api3-dao-dashboard api3/dao-dashboard:latest
@@ -24,7 +25,7 @@ docker run --rm --publish 7770:80 --name api3-dao-dashboard api3/dao-dashboard:l
 
 ### Building from source
 
-Alternatively, you can build the docker image from source. Note that the production source code is on the `production`
+Alternatively, you can build the Docker image from source. Note that the production source code is on the `production`
 branch.
 
 ```sh
