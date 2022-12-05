@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { go } from '@api3/promise-utils';
-import { addDays, isAfter, isBefore } from 'date-fns';
+import { addDays, addSeconds, isAfter, isBefore } from 'date-fns';
 import { blockTimestampToDate, messages, sortEvents, useStableIds } from '../../utils';
 import {
   Claim,
@@ -191,7 +191,7 @@ async function loadClaims(
   };
 }
 
-function calculateDeadline(claim: Claim) {
+export function calculateDeadline(claim: Pick<Claim, 'status' | 'statusUpdatedAt' | 'dispute'>) {
   const { dispute } = claim;
 
   switch (claim.status) {
@@ -199,7 +199,18 @@ function calculateDeadline(claim: Claim) {
     case 'SettlementProposed':
       return addDays(claim.statusUpdatedAt, 3);
     case 'DisputeCreated':
-      return dispute?.period === 'Appeal' ? dispute.periodEndDate! : null;
+      switch (dispute?.period) {
+        case 'Evidence':
+          // Kleros gives their ruling after the voting period, so we get the voting period end date by adding the vote
+          // period to the evidence period (the commit period is skipped because the sub court does not have hidden votes).
+          return addSeconds(dispute.periodChangedAt, dispute.periodTimes.evidence + dispute.periodTimes.vote);
+        case 'Vote':
+          return addSeconds(dispute.periodChangedAt, dispute.periodTimes.vote);
+        case 'Appeal':
+          return addSeconds(dispute.periodChangedAt, dispute.periodTimes.appeal);
+        default:
+          return null;
+      }
     default:
       return null;
   }
@@ -245,6 +256,8 @@ export function getCurrentDeadline(claim: Claim) {
   return claim.deadline;
 }
 
+type ClaimData = Awaited<ReturnType<ClaimsManager['claimHashToState']>>;
+
 async function getClaimContractData(contract: ClaimsManager, claimEvents: CreatedClaimEvent[]) {
   const calls = claimEvents.map((event) => {
     return contract.interface.encodeFunctionData('claimHashToState', [event.args.claimHash]);
@@ -253,11 +266,15 @@ async function getClaimContractData(contract: ClaimsManager, claimEvents: Create
   const encodedResults = await contract.callStatic.multicall(calls);
 
   return encodedResults.map((res) => {
-    return contract.interface.decodeFunctionResult('claimHashToState', res);
+    return contract.interface.decodeFunctionResult('claimHashToState', res) as ClaimData;
   });
 }
 
 export const SUB_COURT_ID = 1;
+
+type DisputeData = Awaited<ReturnType<KlerosLiquidProxy['disputes']>>;
+type SubCourt = Awaited<ReturnType<KlerosLiquidProxy['getSubcourt']>>;
+type CurrentRuling = Awaited<ReturnType<KlerosLiquidProxy['currentRuling']>>;
 
 async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents: CreatedDisputeEvent[]) {
   const disputeCalls = disputeEvents.map((ev) => {
@@ -280,14 +297,14 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
   const disputes = encodedResults
     // Get the first batch of results
     .slice(0, disputeEvents.length)
-    .map((res) => contract.interface.decodeFunctionResult('disputes', res));
+    .map((res) => contract.interface.decodeFunctionResult('disputes', res) as DisputeData);
 
   const currentRulings = encodedResults
     // Get the second batch of results
     .slice(disputeEvents.length, 2 * disputeEvents.length)
-    .map((res) => contract.interface.decodeFunctionResult('currentRuling', res));
+    .map((res) => contract.interface.decodeFunctionResult('currentRuling', res) as [CurrentRuling]);
 
-  const subCourt = contract.interface.decodeFunctionResult('getSubcourt', last(encodedResults)!);
+  const subCourt = contract.interface.decodeFunctionResult('getSubcourt', last(encodedResults)!) as SubCourt;
 
   return disputeEvents.map((ev, index) => {
     const disputeId = ev.args.disputeId.toString();
@@ -298,15 +315,18 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
       .map((appealEv) => appealEv.args.sender);
 
     const period = DisputePeriods[dispute.period as DisputePeriodCode];
-    const periodLength = subCourt.timesPerPeriod[dispute.period] ?? null;
-
     return {
       id: disputeId,
       claimId: ev.args.claimHash,
       status: getDisputeStatus(period),
       ruling: ArbitratorRulings[rulingCode],
       period,
-      periodEndDate: periodLength != null ? blockTimestampToDate(dispute.lastPeriodChange.add(periodLength)) : null,
+      periodChangedAt: blockTimestampToDate(dispute.lastPeriodChange),
+      periodTimes: {
+        evidence: subCourt.timesPerPeriod[0].toNumber(),
+        vote: subCourt.timesPerPeriod[2].toNumber(),
+        appeal: subCourt.timesPerPeriod[3].toNumber(),
+      },
       appealedBy: last(appealers) ?? null,
     };
   });
