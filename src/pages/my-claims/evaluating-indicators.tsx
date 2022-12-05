@@ -2,7 +2,7 @@ import Api3Icon from '../../components/icons/api3-icon';
 import KlerosIcon from '../../components/icons/kleros-icon';
 import InfoIcon from '../../components/icons/info-icon';
 import { Tooltip } from '../../components/tooltip';
-import { useCountdown } from '../../components/timer';
+import { useCountdown } from '../../components/timer/hooks';
 import { Claim } from '../../chain-data';
 import { formatDistanceToNow } from 'date-fns';
 import styles from './evaluating-indicators.module.scss';
