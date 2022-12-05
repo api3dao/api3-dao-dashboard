@@ -38,12 +38,11 @@ describe('calculateDeadline', () => {
           ruling: 'DoNotPay',
           period: 'Evidence',
           periodChangedAt,
-          timesPerPeriod: [
-            evidencePeriod,
-            1000, // Commit
-            votePeriod,
-            4.5 * 24 * 60 * 60, // Appeal
-          ],
+          periodTimes: {
+            evidence: evidencePeriod,
+            vote: votePeriod,
+            appeal: 4.5 * 24 * 60 * 60,
+          },
           appealedBy: null,
         },
       });
@@ -65,12 +64,11 @@ describe('calculateDeadline', () => {
           ruling: 'DoNotPay',
           period: 'Vote',
           periodChangedAt,
-          timesPerPeriod: [
-            3.25 * 24 * 60 * 60, // Evidence
-            1000, // Commit
-            votePeriod,
-            4.5 * 24 * 60 * 60, // Appeal
-          ],
+          periodTimes: {
+            evidence: 3.25 * 24 * 60 * 60,
+            vote: votePeriod,
+            appeal: 4.5 * 24 * 60 * 60,
+          },
           appealedBy: null,
         },
       });
@@ -92,12 +90,11 @@ describe('calculateDeadline', () => {
           ruling: 'DoNotPay',
           period: 'Appeal',
           periodChangedAt,
-          timesPerPeriod: [
-            3.25 * 24 * 60 * 60, // Evidence
-            1000, // Commit
-            6.75 * 24 * 60 * 60, // Vote
-            appealPeriod,
-          ],
+          periodTimes: {
+            evidence: 3.25 * 24 * 60 * 60,
+            vote: 6.75 * 24 * 60 * 60,
+            appeal: appealPeriod,
+          },
           appealedBy: null,
         },
       });
@@ -117,12 +114,11 @@ describe('calculateDeadline', () => {
           ruling: 'DoNotPay',
           period: 'Execution',
           periodChangedAt: new Date(),
-          timesPerPeriod: [
-            3.25 * 24 * 60 * 60, // Evidence
-            1000, // Commit
-            6.75 * 24 * 60 * 60, // Vote
-            4.5 * 24 * 60 * 60, // Appeal
-          ],
+          periodTimes: {
+            evidence: 3.25 * 24 * 60 * 60,
+            vote: 6.75 * 24 * 60 * 60,
+            appeal: 4.5 * 24 * 60 * 60,
+          },
           appealedBy: null,
         },
       });

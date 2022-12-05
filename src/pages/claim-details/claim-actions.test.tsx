@@ -5,7 +5,7 @@ import { addDays, addMinutes } from 'date-fns';
 import { parseApi3, parseUsd } from '../../utils';
 
 let claim: Claim;
-const timesPerPeriod = [280800, 583200, 583200, 388800];
+const periodTimes = { evidence: 280800, vote: 583200, appeal: 388800 };
 
 describe('<ClaimActions />', () => {
   beforeEach(() => {
@@ -142,7 +142,7 @@ describe('<ClaimActions />', () => {
         ruling: 'DoNotPay',
         period: 'Evidence',
         periodChangedAt: new Date(),
-        timesPerPeriod,
+        periodTimes,
         appealedBy: null,
       };
 
@@ -162,7 +162,7 @@ describe('<ClaimActions />', () => {
           ruling: 'PayClaim',
           period: 'Appeal',
           periodChangedAt: addDays(new Date(), -2),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -181,7 +181,7 @@ describe('<ClaimActions />', () => {
           ruling: 'PayClaim',
           period: 'Execution',
           periodChangedAt: new Date(),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -206,7 +206,7 @@ describe('<ClaimActions />', () => {
           ruling: 'PaySettlement',
           period: 'Appeal',
           periodChangedAt: addDays(new Date(), -4),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -228,7 +228,7 @@ describe('<ClaimActions />', () => {
           ruling: 'PaySettlement',
           period: 'Appeal',
           periodChangedAt: addDays(new Date(), -4),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -245,7 +245,7 @@ describe('<ClaimActions />', () => {
           ruling: 'PaySettlement',
           period: 'Execution',
           periodChangedAt: new Date(),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -266,7 +266,7 @@ describe('<ClaimActions />', () => {
           ruling: 'DoNotPay',
           period: 'Appeal',
           periodChangedAt: addDays(new Date(), -4),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -287,7 +287,7 @@ describe('<ClaimActions />', () => {
           ruling: 'DoNotPay',
           period: 'Appeal',
           periodChangedAt: addDays(new Date(), -4),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -304,7 +304,7 @@ describe('<ClaimActions />', () => {
           ruling: 'DoNotPay',
           period: 'Execution',
           periodChangedAt: new Date(),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -323,7 +323,7 @@ describe('<ClaimActions />', () => {
           ruling: 'PaySettlement',
           period: 'Evidence',
           periodChangedAt: new Date(),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: '0x153EF0B488148k0aB0FED112334',
         };
 
@@ -343,7 +343,7 @@ describe('<ClaimActions />', () => {
           ruling: 'PayClaim',
           period: 'Vote',
           periodChangedAt: addDays(new Date(), -4),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: '0xD6b040736e948621c5b6E0a4944',
         };
 

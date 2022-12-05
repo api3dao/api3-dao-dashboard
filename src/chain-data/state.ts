@@ -140,7 +140,11 @@ export interface Claim {
     ruling: ArbitratorRuling;
     period: DisputePeriod;
     periodChangedAt: Date;
-    timesPerPeriod: number[]; // One for each period except the last period (execution)
+    periodTimes: {
+      evidence: number;
+      vote: number;
+      appeal: number;
+    };
     appealedBy: null | string;
   };
   policy: { id: string; metadata: string };

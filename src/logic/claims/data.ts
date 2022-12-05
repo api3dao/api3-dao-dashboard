@@ -203,11 +203,11 @@ export function calculateDeadline(claim: Pick<Claim, 'status' | 'statusUpdatedAt
         case 'Evidence':
           // Kleros gives their ruling after the voting period, so we get the voting period end date by adding the vote
           // period to the evidence period (the commit period is skipped because the sub court does not have hidden votes).
-          return addSeconds(dispute.periodChangedAt, dispute.timesPerPeriod[0]! + dispute.timesPerPeriod[2]!);
+          return addSeconds(dispute.periodChangedAt, dispute.periodTimes.evidence + dispute.periodTimes.vote);
         case 'Vote':
-          return addSeconds(dispute.periodChangedAt, dispute.timesPerPeriod[2]!);
+          return addSeconds(dispute.periodChangedAt, dispute.periodTimes.vote);
         case 'Appeal':
-          return addSeconds(dispute.periodChangedAt, dispute.timesPerPeriod[3]!);
+          return addSeconds(dispute.periodChangedAt, dispute.periodTimes.appeal);
         default:
           return null;
       }
@@ -322,7 +322,11 @@ async function getDisputeContractData(contract: KlerosLiquidProxy, disputeEvents
       ruling: ArbitratorRulings[rulingCode],
       period,
       periodChangedAt: blockTimestampToDate(dispute.lastPeriodChange),
-      timesPerPeriod: subCourt.timesPerPeriod.map((time) => time.toNumber()),
+      periodTimes: {
+        evidence: subCourt.timesPerPeriod[0].toNumber(),
+        vote: subCourt.timesPerPeriod[2].toNumber(),
+        appeal: subCourt.timesPerPeriod[3].toNumber(),
+      },
       appealedBy: last(appealers) ?? null,
     };
   });

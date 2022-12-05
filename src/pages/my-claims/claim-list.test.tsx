@@ -11,7 +11,7 @@ function render(element: ReactElement) {
 }
 
 let claim: Claim;
-const timesPerPeriod = [280800, 583200, 583200, 388800];
+const periodTimes = { evidence: 280800, vote: 583200, appeal: 388800 };
 
 describe('<ClaimList />', () => {
   beforeEach(() => {
@@ -125,7 +125,7 @@ describe('<ClaimList />', () => {
         ruling: 'DoNotPay',
         period: 'Evidence',
         periodChangedAt: new Date(),
-        timesPerPeriod,
+        periodTimes,
         appealedBy: null,
       };
 
@@ -145,7 +145,7 @@ describe('<ClaimList />', () => {
           ruling: 'PayClaim',
           period: 'Appeal',
           periodChangedAt: addDays(new Date(), -2),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -163,7 +163,7 @@ describe('<ClaimList />', () => {
           ruling: 'PayClaim',
           period: 'Execution',
           periodChangedAt: new Date(),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -190,7 +190,7 @@ describe('<ClaimList />', () => {
           ruling: 'PaySettlement',
           period: 'Appeal',
           periodChangedAt: addDays(new Date(), -4),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -210,7 +210,7 @@ describe('<ClaimList />', () => {
           ruling: 'PaySettlement',
           period: 'Execution',
           periodChangedAt: new Date(),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -233,7 +233,7 @@ describe('<ClaimList />', () => {
           ruling: 'DoNotPay',
           period: 'Appeal',
           periodChangedAt: addDays(new Date(), -4),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
@@ -253,7 +253,7 @@ describe('<ClaimList />', () => {
           ruling: 'DoNotPay',
           period: 'Execution',
           periodChangedAt: new Date(),
-          timesPerPeriod,
+          periodTimes,
           appealedBy: null,
         };
 
