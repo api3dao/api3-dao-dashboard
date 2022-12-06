@@ -101,6 +101,7 @@ describe('Claim process with arbitration', () => {
         cy.findByTestId('status-prefix').should('have.text', 'Kleros');
         cy.findByTestId('status').should('have.text', 'Accepted Settlement');
         cy.findByTestId('usd-amount').should('have.text', '1,200.0 USD');
+        cy.findByTestId('timer').should('contain.text', 'Ended');
         cy.percySnapshot('Claim Details: Kleros Accepted Settlement (Appeal Period)');
 
         // Resolve the dispute
@@ -268,6 +269,7 @@ function escalateToKleros() {
   );
   cy.findByTestId('status-prefix').should('have.text', 'Kleros');
   cy.findByTestId('status').should('have.text', 'Evaluating');
+  cy.findByTestId('timer').should('contain.text', '09D');
 }
 
 function getDisputeIdFromDisputeResolverLink() {
