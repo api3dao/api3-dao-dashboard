@@ -61,7 +61,7 @@ export default function ClaimList(props: Props) {
 
                   <span className={styles.claimId}>
                     <span className={globalStyles.tertiaryColor}>Claim ID: </span>
-                    {abbrStr(claim.claimId, { startLength: 5 })}
+                    <span className="visual-test:invisible">{abbrStr(claim.claimId, { startLength: 5 })}</span>
                   </span>
                 </div>
               </div>

@@ -290,7 +290,7 @@ export default function ClaimActions(props: Props) {
             API3 Mediators
           </p>
           <div className={styles.actionMainInfo}>
-            <div className={styles.approved} data-testid="status">
+            <div className={styles.settled} data-testid="status">
               <CheckIcon aria-hidden />
               Settled
             </div>
@@ -543,7 +543,7 @@ export default function ClaimActions(props: Props) {
             Kleros
           </p>
           <div className={styles.actionMainInfo}>
-            <div className={styles.approved} data-testid="status">
+            <div className={styles.settled} data-testid="status">
               <CheckIcon aria-hidden />
               Settled
             </div>

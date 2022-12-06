@@ -36,7 +36,7 @@ export default function PolicyList(props: Props) {
                 <span className={styles.desktopActiveStatus}>{activeStatus}</span>
                 <div className={styles.infoEntry}>
                   <span className={globalStyles.tertiaryColor}>Claims Allowed Until: </span>
-                  <span>
+                  <span className="visual-test:invisible">
                     {format(policy.claimsAllowedUntil, 'dd MMM yyyy')}
                     <span className={globalStyles.tertiaryColor}> {format(policy.claimsAllowedUntil, 'HH:mm')}</span>
                   </span>
@@ -48,7 +48,9 @@ export default function PolicyList(props: Props) {
                       <span className={globalStyles.tertiaryColor}>remaining</span>
                     </span>
                   ) : (
-                    <Skeleton width="12ch" />
+                    <Skeleton width="12ch">
+                      <span className="sr-only">Loading remaining coverage...</span>
+                    </Skeleton>
                   )}
                 </div>
               </div>

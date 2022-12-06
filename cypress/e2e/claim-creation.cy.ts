@@ -9,7 +9,7 @@ describe('Claim creation', () => {
   it('goes through the New Claim steps', () => {
     cy.exec(
       'yarn concurrently ' +
-        `"yarn create-user-policy --address ${ACCOUNTS[0]} --coverage-amount 45000 --metadata BTC/USD" ` + // Active policy
+        `"yarn create-user-policy --address ${ACCOUNTS[0]} --coverage-amount 45000 --metadata BTC/USD --ipfs-hash Qmef88021f643a7809fada50ce657313e449f00ea3f95c" ` + // Active policy
         `"yarn create-user-policy --address ${ACCOUNTS[0]} --claims-allowed-until '${formatISO(
           addSeconds(new Date(), -1)
         )}' --coverage-amount 27000 --metadata EUR/USD"` // Inactive policy
@@ -25,10 +25,12 @@ describe('Claim creation', () => {
     cy.findByTestId('status').should('have.text', 'Active');
     cy.findByRole('button', { name: '+ New Claim' }).should('not.be.disabled');
     cy.findByTestId('remaining-coverage').should('have.text', '45,000.0 USD');
+    cy.percySnapshot('Policy Details');
     cy.findByRole('button', { name: '+ New Claim' }).click();
 
     // Evidence step
     cy.findByRole('heading', { name: /Creating Evidence/i }).should('exist');
+    cy.percySnapshot('New Claim: Creating Evidence');
     cy.findByRole('button', { name: 'Next' }).click();
 
     // Capture step
@@ -58,6 +60,7 @@ describe('Claim creation', () => {
     cy.findByTestId('usd-amount-error').should('have.text', 'Amount must not exceed the coverage amount');
     enterUsdAmount('45000.00');
     cy.findByTestId('usd-amount-error').should('not.exist');
+    cy.percySnapshot('New Claim: Enter Claim Details');
     enterUsdAmount('15000{enter}'); // The enter key should take us to the next step
 
     // Review step
@@ -108,6 +111,8 @@ describe('Claim creation', () => {
       // Searches by policy metadata
       cy.findByLabelText('Search for your policy').type(' eth {enter}');
       cy.findAllByTestId('policy-list-item').should('have.length', 1);
+      cy.findAllByText('Loading remaining coverage...').should('not.exist');
+      cy.percySnapshot('Policy Select');
       cy.findByRole('link', { name: 'ETH/USD' }).click();
 
       // Policy Details page
