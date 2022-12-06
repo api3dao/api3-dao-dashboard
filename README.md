@@ -11,8 +11,7 @@ need `docker` and, optionally, `git`.
 
 There are two approaches to running the dashboard locally. The first involves using the prebuilt Docker image, while the
 second involves building the image from source. In either case, the end result is a API3 dashboard running on port 7770
-of your localhost where it is safe to connect your wallet. Once you are finished interacting with the dashboard, the
-container can be stopped using `docker stop api3-dao-dashboard`.
+of your localhost where it is safe to connect your wallet.
 
 ### Running the prebuilt image
 
