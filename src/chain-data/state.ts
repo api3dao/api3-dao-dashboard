@@ -139,7 +139,12 @@ export interface Claim {
     status: DisputeStatus;
     ruling: ArbitratorRuling;
     period: DisputePeriod;
-    periodEndDate: null | Date; // The last period (execution) does not have an end date
+    periodChangedAt: Date;
+    periodTimes: {
+      evidence: number;
+      vote: number;
+      appeal: number;
+    };
     appealedBy: null | string;
   };
   policy: { id: string; metadata: string };

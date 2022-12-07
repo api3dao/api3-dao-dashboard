@@ -42,8 +42,8 @@
   margin: 0 2 * $space-xl 2 * $space-xl;
 
   @media (max-width: $max-md) {
-    font-size: $text-small;
-    line-height: $lh-small;
+    font-size: 16px;
+    line-height: 24px;
     margin: 0 0 $space-xxl;
   }
 }

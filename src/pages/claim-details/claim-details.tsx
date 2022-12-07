@@ -85,7 +85,10 @@ function ClaimDetailsLayout(props: ClaimDetailsLayoutProps) {
         <BackButton fallback={{ href: '/claims' }}>Back</BackButton>
         {' | '}
         <span>
-          Claim ID: <span data-testid="claim-id">{props.claimId}</span>
+          Claim ID:{' '}
+          <span data-testid="claim-id" className="visual-test:invisible">
+            {props.claimId}
+          </span>
         </span>
       </div>
       {props.children}
@@ -155,7 +158,9 @@ function ClaimSummary(props: ClaimSummaryProps) {
       </div>
       <div className={styles.detailsItem}>
         <p className={globalStyles.bold}>Claim Created</p>
-        <p className={globalStyles.secondaryColor}>{format(claim.timestamp, 'do MMMM yyyy HH:mm')}</p>
+        <p className={`${globalStyles.secondaryColor} visual-test:invisible`}>
+          {format(claim.timestamp, 'do MMMM yyyy HH:mm')}
+        </p>
       </div>
     </div>
   );

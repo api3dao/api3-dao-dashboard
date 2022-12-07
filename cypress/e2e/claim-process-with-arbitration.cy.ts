@@ -16,10 +16,14 @@ describe('Claim process with arbitration', () => {
 
         // My Claims page
         cy.findByRole('link', { name: 'My Claims' }).filter(':visible').click();
+        cy.findAllByTestId('claim-list-item').should('have.length', 1);
+        cy.percySnapshot('My Claims');
         cy.findByRole('link', { name: 'BTC/USD' }).click();
 
         // Claim Details page
         escalateToKleros();
+        cy.percySnapshot('Claim Details: Kleros Evaluating');
+
         getDisputeIdFromDisputeResolverLink().then((disputeId) => {
           // We set the appeal period length to zero so that we can immediately pass the appeal period
           cy.exec(`yarn claims:arbitrator-decide-to-pay --dispute-id ${disputeId} --appeal-period-length 0`);
@@ -57,6 +61,7 @@ describe('Claim process with arbitration', () => {
         cy.findByTestId('usd-amount').should('have.text', '1,999.99 USD');
         cy.findByTestId('api3-payout').should('contain.text', '999.995 API3 tokens');
         cy.findByTestId('remaining-coverage').should('have.text', '43,000.01 USD');
+        cy.percySnapshot('Claim Details: Kleros Accepted');
 
         // Go back to My Claims page
         cy.findByRole('button', { name: 'Back' }).click();
@@ -96,6 +101,8 @@ describe('Claim process with arbitration', () => {
         cy.findByTestId('status-prefix').should('have.text', 'Kleros');
         cy.findByTestId('status').should('have.text', 'Accepted Settlement');
         cy.findByTestId('usd-amount').should('have.text', '1,200.0 USD');
+        cy.findByTestId('timer').should('contain.text', 'Ended');
+        cy.percySnapshot('Claim Details: Kleros Accepted Settlement (Appeal Period)');
 
         // Resolve the dispute
         cy.exec(`yarn claims:resolve-dispute --dispute-id ${disputeId}`);
@@ -108,6 +115,7 @@ describe('Claim process with arbitration', () => {
       cy.findByTestId('usd-amount').should('have.text', '1,200.0 USD');
       cy.findByTestId('api3-payout').should('contain.text', '600.0 API3 tokens');
       cy.findByTestId('remaining-coverage').should('have.text', '43,800.0 USD');
+      cy.percySnapshot('Claim Details: Kleros Settled');
 
       // Go back to My Claims page
       cy.findByRole('button', { name: 'Back' }).click();
@@ -231,6 +239,7 @@ describe('Claim process with arbitration', () => {
       cy.findByRole('dialog').within(() => {
         cy.findByRole('heading', { name: 'Escalation Cost' }).should('exist');
         cy.findByTestId('cost').should('have.text', '0.075 ETH');
+        cy.percySnapshot('Claim Details: Escalation Cost Modal');
         cy.findByRole('button', { name: 'Escalate' }).click();
       });
 
@@ -260,6 +269,7 @@ function escalateToKleros() {
   );
   cy.findByTestId('status-prefix').should('have.text', 'Kleros');
   cy.findByTestId('status').should('have.text', 'Evaluating');
+  cy.findByTestId('timer').should('contain.text', '09D');
 }
 
 function getDisputeIdFromDisputeResolverLink() {

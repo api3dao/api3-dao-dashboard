@@ -56,13 +56,16 @@ export function EscalateConfirmation(props: EscalateConfirmationProps) {
         </div>
         <p className={styles.info}>
           <ExternalLink href="https://kleros.io" className="link-primary">
-            Kleros (link to home)
+            Kleros
           </ExternalLink>{' '}
           is used for arbitration.
         </p>
-        <ExternalLink href="https://docs.api3.org" className="link-primary">
-          Read more to understand Kleros’s fees and the appeal process (link to docs).
-        </ExternalLink>
+        <p>
+          Read more to understand{' '}
+          <ExternalLink href="https://docs.api3.org" className="link-primary">
+            Kleros’s fees and the dispute process.
+          </ExternalLink>
+        </p>
       </div>
       <ModalFooter>
         <div className={styles.buttonRow}>
@@ -129,13 +132,16 @@ export function AppealConfirmation(props: AppealConfirmationProps) {
         </div>
         <p className={styles.info}>
           <ExternalLink href="https://kleros.io" className="link-primary">
-            Kleros (link to home)
+            Kleros
           </ExternalLink>{' '}
           is used for arbitration. The cost of an appeal increases for every appeal.
         </p>
-        <ExternalLink href="https://docs.api3.org" className="link-primary">
-          Read more to understand Kleros’s fees and the appeal process (link to docs).
-        </ExternalLink>
+        <p>
+          Read more to understand{' '}
+          <ExternalLink href="https://docs.api3.org" className="link-primary">
+            Kleros’s fees and the appeal process.
+          </ExternalLink>
+        </p>
       </div>
       <ModalFooter>
         <div className={styles.buttonRow}>

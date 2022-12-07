@@ -11,6 +11,7 @@ function render(element: ReactElement) {
 }
 
 let claim: Claim;
+const periodTimes = { evidence: 280800, vote: 583200, appeal: 388800 };
 
 describe('<ClaimList />', () => {
   beforeEach(() => {
@@ -117,12 +118,14 @@ describe('<ClaimList />', () => {
     });
 
     it('shows that Kleros is evaluating', () => {
+      claim.deadline = addDays(new Date(), 10);
       claim.dispute = {
         id: '1',
         status: 'Waiting',
         ruling: 'DoNotPay',
         period: 'Evidence',
-        periodEndDate: addDays(new Date(), 2),
+        periodChangedAt: new Date(),
+        periodTimes,
         appealedBy: null,
       };
 
@@ -141,7 +144,8 @@ describe('<ClaimList />', () => {
           status: 'Appealable',
           ruling: 'PayClaim',
           period: 'Appeal',
-          periodEndDate: addDays(new Date(), 2),
+          periodChangedAt: addDays(new Date(), -2),
+          periodTimes,
           appealedBy: null,
         };
 
@@ -158,7 +162,8 @@ describe('<ClaimList />', () => {
           status: 'Solved',
           ruling: 'PayClaim',
           period: 'Execution',
-          periodEndDate: null,
+          periodChangedAt: new Date(),
+          periodTimes,
           appealedBy: null,
         };
 
@@ -184,7 +189,8 @@ describe('<ClaimList />', () => {
           status: 'Appealable',
           ruling: 'PaySettlement',
           period: 'Appeal',
-          periodEndDate: addMinutes(new Date(), 1),
+          periodChangedAt: addDays(new Date(), -4),
+          periodTimes,
           appealedBy: null,
         };
 
@@ -203,7 +209,8 @@ describe('<ClaimList />', () => {
           status: 'Solved',
           ruling: 'PaySettlement',
           period: 'Execution',
-          periodEndDate: null,
+          periodChangedAt: new Date(),
+          periodTimes,
           appealedBy: null,
         };
 
@@ -225,7 +232,8 @@ describe('<ClaimList />', () => {
           status: 'Appealable',
           ruling: 'DoNotPay',
           period: 'Appeal',
-          periodEndDate: addMinutes(new Date(), 1),
+          periodChangedAt: addDays(new Date(), -4),
+          periodTimes,
           appealedBy: null,
         };
 
@@ -244,7 +252,8 @@ describe('<ClaimList />', () => {
           status: 'Solved',
           ruling: 'DoNotPay',
           period: 'Execution',
-          periodEndDate: null,
+          periodChangedAt: new Date(),
+          periodTimes,
           appealedBy: null,
         };
 
