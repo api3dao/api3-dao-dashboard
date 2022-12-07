@@ -15,8 +15,8 @@ of your localhost where it is safe to connect your wallet.
 
 ### Running the prebuilt image
 
-The simplest, though less trustless, way to run the dashboard is using the prebuilt Docker image. This image is built
-and pushed to Docker Hub via a GitHub Actions workflow triggered by commits to the `production` branch.
+The simplest way to run the dashboard is using the prebuilt Docker image. This image is built and pushed to Docker Hub
+via a GitHub Actions workflow triggered by commits to the `production` branch.
 
 ```sh
 docker run --rm --publish 7770:80 --name api3-dao-dashboard api3/dao-dashboard:latest
