@@ -1,8 +1,9 @@
 import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
+import { go } from '@api3/promise-utils';
 import { useParams } from 'react-router';
 import classNames from 'classnames';
-import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
+import { produceState, Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout';
 import { Modal } from '../../../components/modal';
 import VoteSlider from '../vote-slider/vote-slider';
@@ -13,10 +14,9 @@ import BackButton from '../../../components/back-button';
 import Tag from '../../../components/tag';
 import { TooltipChecklist } from '../../../components/tooltip';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
-import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting } from '../../../contracts';
+import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting, useChainUpdateEffect } from '../../../contracts';
 import { decodeProposalTypeAndVoteId, isEvmScriptValid } from '../../../logic/proposals/encoding';
-import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
-import { useProposalById } from '../../../logic/proposals/hooks';
+import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import VoteForm from './vote-form/vote-form';
 import ProposalStatus from '../proposal-list/proposal-status';
 import globalStyles from '../../../styles/global-styles.module.scss';
@@ -26,6 +26,8 @@ import NotFoundPage from '../../not-found';
 import { handleTransactionError, images, messages, useScrollToTop } from '../../../utils';
 import ExternalLink from '../../../components/external-link';
 import WarningIcon from '../../../components/icons/warning-icon';
+import { useProposalById } from '../../../logic/proposals/data';
+import { convertToEnsName } from '../../../logic/proposals/encoding/ens-name';
 
 interface ProposalDescriptionProps {
   description: string;
@@ -60,14 +62,27 @@ interface ProposalDetailsContentProps {
 
 const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
   const { type, voteId } = props;
-  const { proposals, provider } = useChainData();
+  const { provider } = useChainData();
 
-  useProposalById(type, voteId);
+  const { data, status } = useProposalById(type, voteId.toString());
 
-  const proposal = proposalDetailsSelector(provider, proposals, type, voteId);
+  if (!provider) {
+    return (
+      <BaseLayout subtitle={`Proposal ${voteId.toString()}`}>
+        <p>Please connect your wallet to see the proposal details.</p>
+      </BaseLayout>
+    );
+  }
+
   return (
     <BaseLayout subtitle={`Proposal ${voteId.toString()}`}>
-      <ProposalDetailsContent proposal={proposal} />
+      {data ? (
+        <ProposalDetailsContent proposal={data} />
+      ) : status === 'loading' ? (
+        <p>Loading...</p>
+      ) : status === 'loaded' ? (
+        <p>Could not find the proposal with given id.</p>
+      ) : null}
     </BaseLayout>
   );
 };
@@ -86,21 +101,18 @@ const ProposalDetailsPage = () => {
 };
 
 interface ProposalDetailsProps {
-  proposal: Proposal | 'user not signed in' | 'does not exist';
+  proposal: Proposal;
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const { chainId } = useChainData();
   const { proposal } = props;
-  const isMalicious = useMaliciousProposalCheck(typeof proposal === 'string' ? null : proposal);
+  const isMalicious = useMaliciousProposalCheck(proposal);
   const [voteModalOpen, setVoteModalOpen] = useState(false);
   const { transactions, setChainData } = useChainData();
-  const voting = useApi3Voting();
+  const voting = useApi3Voting()!;
 
-  // TODO: implement proper "not signed in" and "does not exist" pages
-  if (!voting || proposal === 'user not signed in')
-    return <>Please connect your wallet to see the proposal details...</>;
-  if (proposal === 'does not exist') return <>Proposal with such id hasn't been created yet...</>;
+  const creatorName = useEnsName(proposal.creator);
 
   if (!proposal.decodedEvmScript) {
     return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
@@ -185,7 +197,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             onConfirm={async (choice) => {
               setVoteModalOpen(false);
               const tx = await handleTransactionError(
-                voting[proposal.type].vote(proposal.voteId, choice === 'for', true)
+                voting[proposal.type].vote(BigNumber.from(proposal.voteId), choice === 'for', true)
               );
               const type = choice === 'for' ? 'vote-for' : 'vote-against';
               if (tx) {
@@ -214,7 +226,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlCreator ? (
                   <ExternalLink className={styles.link} href={urlCreator}>
-                    {proposal.creatorName ? proposal.creatorName : proposal.creator}
+                    {creatorName || proposal.creator}
                   </ExternalLink>
                 ) : (
                   proposal.creator
@@ -273,4 +285,30 @@ function useMaliciousProposalCheck(proposal: Proposal | null) {
   }, [provider, agents, proposal]);
 
   return isMalicious;
+}
+
+function useEnsName(address: string) {
+  const { ensNamesByAddress, provider, setChainData } = useChainData();
+  const ensName = ensNamesByAddress[address];
+
+  useChainUpdateEffect(() => {
+    if (!provider || ensName !== undefined) return;
+
+    const load = async () => {
+      const result = await go(() => convertToEnsName(provider, address));
+
+      if (result.success) {
+        setChainData(
+          'Loaded ENS name',
+          produceState((draft) => {
+            draft.ensNamesByAddress[address] = result.data;
+          })
+        );
+      }
+    };
+
+    load();
+  }, [provider, address, ensName, setChainData]);
+
+  return ensName;
 }

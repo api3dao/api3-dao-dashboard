@@ -1,26 +1,103 @@
-import { BigNumber } from 'ethers';
+import { ReactNode, useEffect, useRef } from 'react';
+import { go } from '@api3/promise-utils';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Proposal, useChainData } from '../../../chain-data';
-import { images } from '../../../utils';
-import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
+import { produceState, Proposal, ProposalMetadata, ProposalType, useChainData } from '../../../chain-data';
+import { images, useStableIds } from '../../../utils';
+import { decodeEvmScript, encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../vote-slider/vote-slider';
 import Timer, { DATE_FORMAT } from '../../../components/timer';
-import Button from '../../../components/button';
 import { Tooltip } from '../../../components/tooltip';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
 import ProposalStatus from './proposal-status/proposal-status';
-import { connectWallet } from '../../../components/sign-in/sign-in';
+import Skeleton from '../../../components/skeleton';
+import uniq from 'lodash/uniq';
+import { convertToEnsName } from '../../../logic/proposals/encoding/ens-name';
+import { ProposalSkeleton } from '../../../logic/proposals/data';
 
 interface Props {
-  // Proposals should be sorted by priority (the topmost proposal in the list has index 0). Or undefined if user is not
-  // logged in.
-  proposals: Proposal[] | undefined;
-  type: 'active' | 'past';
+  proposals: (ProposalSkeleton | Proposal)[];
+}
+
+export default function ProposalList(props: Props) {
+  const { proposals } = props;
+
+  useEvmScriptPreload(proposals);
+  useEnsNamesPreload(proposals);
+
+  return (
+    <>
+      {proposals.map((proposal) => {
+        const navlink = {
+          base: proposal.open ? 'governance' : 'history',
+          typeAndVoteId: encodeProposalTypeAndVoteId(proposal.type, proposal.voteId),
+        };
+
+        if ('deadline' in proposal) {
+          const votingSliderData = voteSliderSelector(proposal);
+          return (
+            <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
+              <div className={styles.proposalItemWrapper}>
+                <ProposalInfoState proposal={proposal} device="mobile" />
+                <p className={styles.proposalItemTitle}>
+                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{proposal.metadata.title}</NavLink>
+                </p>
+                <div className={styles.proposalItemSubtitle}>
+                  <ProposalInfoState proposal={proposal} device="desktop" />
+                  <div className={styles.proposalItemBox}>
+                    {proposal.open ? <Timer deadline={proposal.deadline} /> : format(proposal.startDate, DATE_FORMAT)}
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.proposalVoteBar}>
+                <VoteSlider {...votingSliderData} />
+                <span className={styles.proposalVoteArrow}>
+                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
+                    <img src={images.arrowRight} alt="right arrow" />
+                  </NavLink>
+                </span>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
+            <div className={styles.proposalItemWrapper}>
+              <div className={styles.skeletonMobile} style={{ maxWidth: '50%', height: 32 }}>
+                <Skeleton />
+              </div>
+              <p className={styles.proposalItemTitle} style={{ opacity: '0.7' }}>
+                <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{proposal.metadata?.title}</NavLink>
+              </p>
+              <div className={styles.proposalItemSubtitle}>
+                <Skeleton />
+                <div className={styles.proposalItemBox}></div>
+              </div>
+            </div>
+
+            <div className={styles.proposalVoteBar}>
+              <Skeleton />
+              <span className={styles.proposalVoteArrow}>
+                <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
+                  <img src={images.arrowRight} alt="right arrow" />
+                </NavLink>
+              </span>
+            </div>
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+export function EmptyState(props: { children: ReactNode }) {
+  return <div className={styles.noProposals}>{props.children}</div>;
 }
 
 interface ProposalProps {
@@ -28,17 +105,13 @@ interface ProposalProps {
   device: 'mobile' | 'desktop';
 }
 
-const voteIdFormat = (voteId: BigNumber) => {
-  return voteId.toString();
-};
-
 const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
   const tooltipContent =
     proposal.type === 'primary'
       ? `Primary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`
       : `Secondary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`;
 
-  const proposalId = `#${voteIdFormat(proposal.voteId)} ${proposal.type}`;
+  const proposalId = `#${proposal.voteId} ${proposal.type}`;
 
   return (
     <div
@@ -61,64 +134,74 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
   );
 };
 
-const ProposalList = (props: Props) => {
-  const { proposals, type } = props;
-  const { setChainData, provider } = useChainData();
+function useEnsNamesPreload(proposals: { creator: string }[]) {
+  const { provider, ensNamesByAddress, setChainData } = useChainData();
 
-  if (!provider) {
-    return (
-      <div className={styles.noProposals}>
-        <span>You need to be connected to view proposals</span>
-        <Button variant="link" onClick={connectWallet(setChainData)}>
-          Connect your wallet
-        </Button>
-      </div>
-    );
-  } else if (!proposals) {
-    // TODO: Use loading skeleton
-    return <p className={styles.noProposals}>Loading...</p>;
-  } else if (proposals.length === 0) {
-    return <p className={styles.noProposals}>There are no {type} proposals</p>;
-  } else {
-    return (
-      <>
-        {proposals.map((p) => {
-          const votingSliderData = voteSliderSelector(p);
-          const navlink = {
-            base: p.open ? 'governance' : 'history',
-            typeAndVoteId: encodeProposalTypeAndVoteId(p.type, voteIdFormat(p.voteId)),
-          };
+  const proposalsToPreload = proposals.filter((prop) => {
+    return ensNamesByAddress[prop.creator] === undefined;
+  });
 
-          return (
-            <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
-              <div className={styles.proposalItemWrapper}>
-                <ProposalInfoState proposal={p} device="mobile" />
-                <p className={styles.proposalItemTitle}>
-                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{p.metadata.title}</NavLink>
-                </p>
-                <div className={styles.proposalItemSubtitle}>
-                  <ProposalInfoState proposal={p} device="desktop" />
-                  <div className={styles.proposalItemBox}>
-                    {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
-                    {p.open ? <Timer deadline={p.deadline} /> : format(p.startDate, DATE_FORMAT)}
-                  </div>
-                </div>
-              </div>
+  const addresses = useStableIds(proposalsToPreload, (p) => p.creator);
 
-              <div className={styles.proposalVoteBar}>
-                <VoteSlider {...votingSliderData} />
-                <span className={styles.proposalVoteArrow}>
-                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
-                    <img src={images.arrowRight} alt="right arrow" />
-                  </NavLink>
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </>
-    );
-  }
-};
+  useEffect(() => {
+    if (!provider || !addresses.length) return;
 
-export default ProposalList;
+    const load = async () => {
+      const result = await go(() => Promise.all(uniq(addresses).map((address) => convertToEnsName(provider, address))));
+      if (result.success) {
+        setChainData(
+          'Preloaded ENS names',
+          produceState((draft) => {
+            addresses.forEach((address, index) => {
+              draft.ensNamesByAddress[address] = result.data[index]!;
+            });
+          })
+        );
+      }
+    };
+
+    load();
+  }, [provider, addresses, setChainData]);
+}
+
+function useEvmScriptPreload(
+  proposals: { voteId: string; type: ProposalType; script?: string; metadata: ProposalMetadata }[]
+) {
+  const { provider, proposalData, setChainData } = useChainData();
+
+  const proposalsToPreload = proposals.filter((prop) => {
+    return prop.script && proposalData[prop.type].decodedEvmScriptById[prop.voteId] === undefined;
+  });
+
+  const voteIds = useStableIds(proposalsToPreload, (p) => p.voteId);
+
+  const dataRef = useRef(proposalsToPreload);
+  useEffect(() => {
+    dataRef.current = proposalsToPreload;
+  });
+
+  useEffect(() => {
+    if (!provider || !voteIds.length) return;
+
+    const data = dataRef.current;
+
+    const load = async () => {
+      const result = await Promise.all(
+        data.map(async (proposal) => {
+          return await decodeEvmScript(provider, proposal.script!, proposal.metadata);
+        })
+      );
+
+      setChainData(
+        'Preloaded EVM scripts',
+        produceState((draft) => {
+          data.forEach((p, index) => {
+            draft.proposalData[p.type].decodedEvmScriptById[p.voteId] = result[index]!;
+          });
+        })
+      );
+    };
+
+    load();
+  }, [provider, voteIds, setChainData]);
+}

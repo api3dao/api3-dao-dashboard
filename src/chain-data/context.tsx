@@ -13,7 +13,8 @@ const ChainDataContextProvider: React.FC = ({ children }) => {
         const updatedChainData = { ...oldChainData, ...newChainData };
 
         if (process.env.NODE_ENV === 'development') {
-          console.group(reason);
+          const timestamp = new Date();
+          console.group(`[${timestamp.toLocaleTimeString()}.${timestamp.getMilliseconds()}] ${reason}`);
           // eslint-disable-next-line no-console
           console.info(updatedChainData);
           console.groupEnd();

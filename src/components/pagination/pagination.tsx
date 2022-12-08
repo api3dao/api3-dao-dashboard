@@ -16,7 +16,7 @@ interface Props {
 }
 
 export default function Pagination(props: Props) {
-  const { totalResults, currentPage, pageSize } = props;
+  const { totalResults, currentPage, pageSize = DEFAULT_PAGE_SIZE } = props;
   const pagination = useMemo(
     () => paginate(totalResults, { currentPage, pageSize }),
     [totalResults, currentPage, pageSize]
@@ -30,6 +30,10 @@ export default function Pagination(props: Props) {
     newParams.set('page', page.toString());
     return location.pathname + '?' + newParams.toString();
   };
+
+  if (totalResults <= DEFAULT_PAGE_SIZE) {
+    return null;
+  }
 
   return (
     <nav className={classNames(styles.nav, props.className)} aria-label="Page navigation">

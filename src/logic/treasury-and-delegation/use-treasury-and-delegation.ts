@@ -9,7 +9,7 @@ import { convertToEnsName } from '../proposals/encoding/ens-name';
 import { go, assertGoSuccess } from '@api3/promise-utils';
 
 export const useTreasuryAndDelegation = () => {
-  const { setChainData, userAccount, proposals, provider } = useChainData();
+  const { setChainData, userAccount, provider } = useChainData();
 
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
@@ -69,6 +69,4 @@ export const useTreasuryAndDelegation = () => {
 
   // Ensure that the proposals are up to date with blockchain
   usePossibleChainDataUpdate(reloadTreasuryAndDelegation);
-
-  return proposals;
 };

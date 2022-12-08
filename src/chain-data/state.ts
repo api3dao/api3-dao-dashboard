@@ -1,12 +1,6 @@
 import { BigNumber, ethers, Signer } from 'ethers';
 import type ContractsAddresses from '../contract-deployments/localhost-dao.json';
 
-export interface PendingUnstake {
-  amount: string;
-  deadline: Date;
-  scheduledFor: Date;
-}
-
 export interface ConvenienceDashboardData {
   api3Supply: BigNumber;
   apr: BigNumber;
@@ -44,10 +38,10 @@ export interface DecodedEvmScript {
   parameters: unknown[];
   value: BigNumber; // amount of ETH that is sent to the contract
 }
+
 export interface Proposal {
-  voteId: ethers.BigNumber;
+  voteId: string;
   creator: string;
-  creatorName: string | null;
   metadata: ProposalMetadata;
   startDate: Date;
   voterState: VoterState;
@@ -69,6 +63,34 @@ export interface Proposal {
   decodedEvmScript: DecodedEvmScript | null;
 }
 
+export type StartVoteData = {
+  voteId: string;
+  type: ProposalType;
+  metadata: ProposalMetadata;
+  creator: string;
+  blockNumber: number;
+  logIndex: number;
+};
+
+export type VoteData = Pick<
+  Proposal,
+  | 'voteId'
+  | 'script'
+  | 'startDate'
+  | 'supportRequired'
+  | 'minAcceptQuorum'
+  | 'votingPower'
+  | 'deadline'
+  | 'startDateRaw'
+  | 'userVotingPowerAt'
+  | 'delegateAt'
+  | 'delegateState'
+  | 'voterState'
+  | 'executed'
+  | 'yea'
+  | 'nay'
+>;
+
 export interface Delegation {
   proposalVotingPowerThreshold: BigNumber;
   // NOTE: userVotingPower includes delegated voting power
@@ -86,13 +108,6 @@ export interface Treasury {
   decimal: number;
   balanceOfPrimaryAgent: BigNumber;
   balanceOfSecondaryAgent: BigNumber;
-}
-
-export type ProposalDictionary = { [voteId: string]: Proposal };
-
-export interface Proposals {
-  primary: ProposalDictionary;
-  secondary: ProposalDictionary;
 }
 
 export type TransactionType =
@@ -225,7 +240,6 @@ export interface ChainData {
 
   dashboardState: DashboardState | null;
   isGenesisEpoch: boolean | undefined;
-  proposals: Proposals | null;
   treasuries: Treasury[];
   delegation: Delegation | null;
   transactions: { type: TransactionType; tx: ethers.ContractTransaction }[];
@@ -239,6 +253,39 @@ export interface ChainData {
     userPolicyIds: null | string[]; // All the policy ids that are linked to the user's account
     byId: null | { [policyId: string]: Omit<Policy, 'remainingCoverageInUsd'> };
     remainingCoverageById: null | { [policyId: string]: BigNumber };
+  };
+
+  proposalData: {
+    primary: {
+      voteIds: null | string[];
+      openVoteIds: string[];
+      startVoteLogById: {
+        [voteId: string]: StartVoteData;
+      };
+      voteDataById: {
+        [voteId: string]: VoteData;
+      };
+      decodedEvmScriptById: {
+        [voteId: string]: DecodedEvmScript | null;
+      };
+    };
+    secondary: {
+      voteIds: null | string[];
+      openVoteIds: string[];
+      startVoteLogById: {
+        [voteId: string]: StartVoteData;
+      };
+      voteDataById: {
+        [voteId: string]: VoteData;
+      };
+      decodedEvmScriptById: {
+        [voteId: string]: DecodedEvmScript | null;
+      };
+    };
+  };
+
+  ensNamesByAddress: {
+    [address: string]: null | string;
   };
 }
 
@@ -260,7 +307,6 @@ export const initialChainData: ChainData = {
   contracts: null,
   dashboardState: null,
   isGenesisEpoch: undefined,
-  proposals: null,
   treasuries: [],
   delegation: null,
   transactions: [],
@@ -275,6 +321,25 @@ export const initialChainData: ChainData = {
     byId: null,
     remainingCoverageById: null,
   },
+
+  proposalData: {
+    primary: {
+      voteIds: null,
+      openVoteIds: [],
+      startVoteLogById: {},
+      voteDataById: {},
+      decodedEvmScriptById: {},
+    },
+    secondary: {
+      voteIds: null,
+      openVoteIds: [],
+      startVoteLogById: {},
+      voteDataById: {},
+      decodedEvmScriptById: {},
+    },
+  },
+
+  ensNamesByAddress: {},
 };
 
 export const initialSettableChainData: SettableChainData = { ...initialChainData, setChainData: () => {} };

@@ -18,6 +18,7 @@ import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './dashboard.module.scss';
 import ConfirmUnstakeForm from './forms/confirm-unstake-form';
 import classNames from 'classnames';
+import { useProposalBaseData } from '../../logic/proposals/data';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
@@ -26,6 +27,7 @@ const Dashboard = () => {
   const api3Pool = useApi3Pool();
 
   useLoadDashboardData();
+  useProposalBaseData(); // Preload
 
   const [openModal, setOpenModal] = useState<ModalType | null>(null);
   const [inputValue, setInputValue] = useState('');
