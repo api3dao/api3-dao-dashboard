@@ -63,7 +63,7 @@ export interface Proposal {
   decodedEvmScript: DecodedEvmScript | null;
 }
 
-export type StartVoteData = {
+export type StartVoteEventData = {
   voteId: string;
   type: ProposalType;
   metadata: ProposalMetadata;
@@ -259,8 +259,8 @@ export interface ChainData {
     primary: {
       voteIds: null | string[];
       openVoteIds: string[];
-      startVoteLogById: {
-        [voteId: string]: StartVoteData;
+      startVoteEventDataById: {
+        [voteId: string]: StartVoteEventData;
       };
       voteDataById: {
         [voteId: string]: VoteData;
@@ -272,8 +272,8 @@ export interface ChainData {
     secondary: {
       voteIds: null | string[];
       openVoteIds: string[];
-      startVoteLogById: {
-        [voteId: string]: StartVoteData;
+      startVoteEventDataById: {
+        [voteId: string]: StartVoteEventData;
       };
       voteDataById: {
         [voteId: string]: VoteData;
@@ -326,14 +326,14 @@ export const initialChainData: ChainData = {
     primary: {
       voteIds: null,
       openVoteIds: [],
-      startVoteLogById: {},
+      startVoteEventDataById: {},
       voteDataById: {},
       decodedEvmScriptById: {},
     },
     secondary: {
       voteIds: null,
       openVoteIds: [],
-      startVoteLogById: {},
+      startVoteEventDataById: {},
       voteDataById: {},
       decodedEvmScriptById: {},
     },

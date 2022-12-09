@@ -13,7 +13,7 @@ import {
   produceState,
   Proposal,
   ProposalType,
-  StartVoteData,
+  StartVoteEventData,
   useChainData,
   VoteData,
   VoterState,
@@ -24,6 +24,7 @@ import { blockTimestampToDate, sortEvents, useStableIds } from '../../utils';
 import { usePagedData } from '../../components/pagination';
 import { Convenience } from '../../generated-contracts';
 import { go } from '@api3/promise-utils';
+import { StartVoteEvent } from '../../generated-contracts/Api3Voting';
 
 export function useProposalBaseData() {
   const api3Voting = useApi3Voting();
@@ -54,36 +55,22 @@ export function useProposalBaseData() {
       }
 
       const [primaryEvents, secondaryEvents, primaryOpenVoteIds, secondaryOpenVoteIds] = result.data;
+      const processedPrimaryEvents = processStartVoteEvents('primary', primaryEvents);
+      const processedSecondaryEvents = processStartVoteEvents('secondary', secondaryEvents);
 
       setChainData(
         'Loaded proposal base data',
         produceState((draft) => {
-          draft.proposalData.primary.voteIds = primaryEvents.map((ev) => ev.args.voteId.toString());
+          draft.proposalData.primary.voteIds = processedPrimaryEvents.map((ev) => ev.voteId);
           draft.proposalData.primary.openVoteIds = primaryOpenVoteIds.map((id) => id.toString());
-          primaryEvents.forEach((ev) => {
-            const voteId = ev.args.voteId.toString();
-            draft.proposalData.primary.startVoteLogById[voteId] = {
-              voteId,
-              type: 'primary',
-              metadata: decodeMetadata(ev.args.metadata)!, // fixme
-              creator: ev.args.creator,
-              blockNumber: ev.blockNumber,
-              logIndex: ev.logIndex,
-            };
+          processedPrimaryEvents.forEach((ev) => {
+            draft.proposalData.primary.startVoteEventDataById[ev.voteId] = ev;
           });
 
-          draft.proposalData.secondary.voteIds = secondaryEvents.map((ev) => ev.args.voteId.toString());
+          draft.proposalData.secondary.voteIds = processedSecondaryEvents.map((ev) => ev.voteId);
           draft.proposalData.secondary.openVoteIds = secondaryOpenVoteIds.map((id) => id.toString());
-          secondaryEvents.forEach((ev) => {
-            const voteId = ev.args.voteId.toString();
-            draft.proposalData.secondary.startVoteLogById[voteId] = {
-              voteId,
-              type: 'secondary',
-              metadata: decodeMetadata(ev.args.metadata)!, //fixme
-              creator: ev.args.creator,
-              blockNumber: ev.blockNumber,
-              logIndex: ev.logIndex,
-            };
+          processedSecondaryEvents.forEach((ev) => {
+            draft.proposalData.secondary.startVoteEventDataById[ev.voteId] = ev;
           });
         })
       );
@@ -105,24 +92,24 @@ type Filter = {
   type?: 'primary' | 'secondary' | 'none' | null;
 };
 
-export type ProposalSkeleton = { open: boolean } & StartVoteData;
+export type ProposalSkeleton = { open: boolean } & StartVoteEventData;
 
 export function useProposals(currentPage: number, filter: Filter) {
   const convenience = useConvenience();
+  const { proposalData, userAccount, setChainData } = useChainData();
+
   const { status: baseDataStatus } = useProposalBaseData();
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
 
-  const { proposalData, userAccount, setChainData } = useChainData();
-
-  const combinedLog = getCombinedLog(proposalData, filter);
-  const pagedLog = usePagedData(combinedLog, { currentPage });
+  const combinedStartVoteData = getCombinedStartVoteEventData(proposalData, filter);
+  const pagedStartVoteData = usePagedData(combinedStartVoteData, { currentPage });
 
   const primaryVoteIdsToLoad = useStableIds(
-    pagedLog.filter((ev) => ev.type === 'primary'),
+    pagedStartVoteData.filter((ev) => ev.type === 'primary'),
     (ev) => ev.voteId
   );
   const secondaryVoteIdsToLoad = useStableIds(
-    pagedLog.filter((ev) => ev.type === 'secondary'),
+    pagedStartVoteData.filter((ev) => ev.type === 'secondary'),
     (ev) => ev.voteId
   );
 
@@ -175,15 +162,15 @@ export function useProposals(currentPage: number, filter: Filter) {
     };
   }
 
-  const data: (ProposalSkeleton | Proposal)[] = pagedLog.map((vote) => {
-    const additionalData = proposalData[vote.type].voteDataById[vote.voteId];
+  const data: (ProposalSkeleton | Proposal)[] = pagedStartVoteData.map((startVote) => {
+    const voteData = proposalData[startVote.type].voteDataById[startVote.voteId];
 
-    return { open: filter.open, ...vote, ...additionalData };
+    return { open: filter.open, ...startVote, ...voteData };
   });
 
   return {
     status,
-    totalResults: combinedLog.length,
+    totalResults: combinedStartVoteData.length,
     data,
   };
 }
@@ -196,7 +183,7 @@ export function useProposalById(type: ProposalType, voteId: string) {
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
 
-  const log = proposalData[type].startVoteLogById[voteId];
+  const startVoteData = proposalData[type].startVoteEventDataById[voteId];
   const voteData = proposalData[type].voteDataById[voteId];
   const decodedEvmScript = proposalData[type].decodedEvmScriptById[voteId];
   const openVoteIds = proposalData[type].openVoteIds;
@@ -221,22 +208,14 @@ export function useProposalById(type: ProposalType, voteId: string) {
         return;
       }
 
-      const [log, openIds, voteData] = result.data;
-      if (!log.length) {
+      const [events, openIds, voteData] = result.data;
+      const processedEvents = processStartVoteEvents(type, events);
+      if (!processedEvents.length) {
         setStatus('loaded');
         return;
       }
 
-      const ev = log[0]!;
-      const startVote = {
-        voteId,
-        type,
-        metadata: decodeMetadata(ev.args.metadata)!, // fixme
-        creator: ev.args.creator,
-        blockNumber: ev.blockNumber,
-        logIndex: ev.logIndex,
-      };
-
+      const startVote = processedEvents[0]!;
       const decResult = await go(() => decodeEvmScript(provider, voteData[0]!.script, startVote.metadata));
 
       if (!decResult.success) {
@@ -250,7 +229,7 @@ export function useProposalById(type: ProposalType, voteId: string) {
         'Loaded proposal by id',
         produceState((draft) => {
           draft.proposalData[type].openVoteIds = openIds.map((id) => id.toString());
-          draft.proposalData[type].startVoteLogById[voteId] = startVote;
+          draft.proposalData[type].startVoteEventDataById[voteId] = startVote;
           draft.proposalData[type].voteDataById[voteId] = voteData[0]!;
           draft.proposalData[type].decodedEvmScriptById[voteId] = decResult.data;
         })
@@ -265,32 +244,51 @@ export function useProposalById(type: ProposalType, voteId: string) {
   }, [provider, api3Voting, convenience, userAccount, setChainData, type, voteId]);
 
   const data: Proposal | null = useMemo(() => {
-    return log && voteData && decodedEvmScript !== undefined
+    return startVoteData && voteData && decodedEvmScript !== undefined
       ? {
-          ...log,
+          ...startVoteData,
           ...voteData,
           decodedEvmScript,
-          open: openVoteIds.includes(log.voteId),
+          open: openVoteIds.includes(startVoteData.voteId),
         }
       : null;
-  }, [log, voteData, decodedEvmScript, openVoteIds]);
+  }, [startVoteData, voteData, decodedEvmScript, openVoteIds]);
 
   return { data, status };
 }
 
-function getCombinedLog(data: ChainData['proposalData'], filter: Filter) {
+function processStartVoteEvents(type: ProposalType, events: StartVoteEvent[]) {
+  return events.reduce((acc, ev) => {
+    const metadata = decodeMetadata(ev.args.metadata);
+
+    if (metadata) {
+      acc.push({
+        type,
+        voteId: ev.args.voteId.toString(),
+        creator: ev.args.creator,
+        metadata,
+        blockNumber: ev.blockNumber,
+        logIndex: ev.logIndex,
+      });
+    }
+
+    return acc;
+  }, [] as StartVoteEventData[]);
+}
+
+function getCombinedStartVoteEventData(data: ChainData['proposalData'], filter: Filter) {
   const primaryLog =
     !filter.type || filter.type === 'primary'
       ? (data.primary.voteIds || [])
           .filter((id) => data.primary.openVoteIds.includes(id) === filter.open)
-          .map((id) => data.primary.startVoteLogById[id]!)
+          .map((id) => data.primary.startVoteEventDataById[id]!)
       : [];
 
   const secondaryLog =
     !filter.type || filter.type === 'secondary'
       ? (data.secondary.voteIds || [])
           .filter((id) => data.secondary.openVoteIds.includes(id) === filter.open)
-          .map((id) => data.secondary.startVoteLogById[id]!)
+          .map((id) => data.secondary.startVoteEventDataById[id]!)
       : [];
 
   return sortEvents([...primaryLog, ...secondaryLog], 'desc');
