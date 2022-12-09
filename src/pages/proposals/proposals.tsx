@@ -139,15 +139,15 @@ const Proposals = () => {
               {totalResults > 0 ? (
                 <>
                   <ProposalList proposals={data} />
-                  <Pagination totalResults={totalResults} currentPage={currentPage} />
+                  <Pagination totalResults={totalResults} currentPage={currentPage} className={styles.pagination} />
                 </>
               ) : (
                 <EmptyState>There are no active proposals</EmptyState>
               )}
             </>
-          ) : status === 'loading' ? (
-            <EmptyState>Loading...</EmptyState>
-          ) : null
+          ) : (
+            <EmptyState>{status === 'loading' && <p>Loading...</p>}</EmptyState>
+          )
         }
         noMobileBorders
       />

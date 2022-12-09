@@ -87,7 +87,7 @@ export default function History() {
               {totalResults > 0 ? (
                 <>
                   <ProposalList proposals={data} />
-                  <Pagination totalResults={totalResults} currentPage={currentPage} />
+                  <Pagination totalResults={totalResults} currentPage={currentPage} className={styles.pagination} />
                 </>
               ) : filter === 'none' ? (
                 <EmptyState>Please select a filter</EmptyState>
@@ -97,9 +97,9 @@ export default function History() {
                 <EmptyState>There are no past proposals</EmptyState>
               )}
             </>
-          ) : status === 'loading' ? (
-            <EmptyState>Loading...</EmptyState>
-          ) : null
+          ) : (
+            <EmptyState>{status === 'loading' && <p>Loading...</p>}</EmptyState>
+          )
         }
         noMobileBorders
       />

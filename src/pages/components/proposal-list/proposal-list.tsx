@@ -147,13 +147,19 @@ function useEnsNamesPreload(proposals: { creator: string }[]) {
     if (!provider || !addresses.length) return;
 
     const load = async () => {
-      const result = await go(() => Promise.all(uniq(addresses).map((address) => convertToEnsName(provider, address))));
+      const uniqAddresses = uniq(addresses);
+      const result = await go(() =>
+        Promise.all(
+          uniqAddresses.map((address) => convertToEnsName(provider, address).then((name) => ({ address, name })))
+        )
+      );
+
       if (result.success) {
         setChainData(
           'Preloaded ENS names',
           produceState((draft) => {
-            addresses.forEach((address, index) => {
-              draft.ensNamesByAddress[address] = result.data[index]!;
+            result.data.forEach((res) => {
+              draft.ensNamesByAddress[res.address] = res.name;
             });
           })
         );
