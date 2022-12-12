@@ -33,63 +33,48 @@ export type VoterState = 0 | 1 | 2; // Absent, Yea, Nay
 export type ProposalType = 'primary' | 'secondary';
 export type TreasuryType = 'primary' | 'secondary';
 
-export interface DecodedEvmScript {
-  targetAddress: string;
-  parameters: unknown[];
-  value: BigNumber; // amount of ETH that is sent to the contract
-}
-
-export interface Proposal {
+export interface Proposal extends StartVoteEventData, VoteData {
   voteId: string;
-  creator: string;
-  metadata: ProposalMetadata;
-  startDate: Date;
-  voterState: VoterState;
-  delegateAt: string | null;
-  delegateState: VoterState;
-  open: boolean;
-  executed: boolean;
-  supportRequired: number;
-  minAcceptQuorum: number;
-  yea: BigNumber;
-  nay: BigNumber;
-  votingPower: BigNumber;
-  deadline: Date;
-  startDateRaw: BigNumber;
   type: ProposalType;
-  script: string;
-  userVotingPowerAt: BigNumber;
-  // can be null if there was an error when decoding the proposal (proposal created outside DAO dashboard)
-  decodedEvmScript: DecodedEvmScript | null;
+  open: boolean;
+  // Proposals that are loaded on the list pages won't have the decoded EVM script (we defer loading it for the
+  // Proposal Details page). Once loaded, it can be null if there was an error when decoding the script
+  // (such a proposal would likely have been created outside the DAO dashboard)
+  decodedEvmScript?: DecodedEvmScript | null;
 }
 
-export type StartVoteEventData = {
+export interface StartVoteEventData {
   voteId: string;
   type: ProposalType;
   metadata: ProposalMetadata;
   creator: string;
   blockNumber: number;
   logIndex: number;
-};
+}
 
-export type VoteData = Pick<
-  Proposal,
-  | 'voteId'
-  | 'script'
-  | 'startDate'
-  | 'supportRequired'
-  | 'minAcceptQuorum'
-  | 'votingPower'
-  | 'deadline'
-  | 'startDateRaw'
-  | 'userVotingPowerAt'
-  | 'delegateAt'
-  | 'delegateState'
-  | 'voterState'
-  | 'executed'
-  | 'yea'
-  | 'nay'
->;
+export interface VoteData {
+  voteId: string;
+  script: string;
+  startDate: Date;
+  startDateRaw: BigNumber;
+  deadline: Date;
+  supportRequired: number;
+  minAcceptQuorum: number;
+  votingPower: BigNumber;
+  userVotingPowerAt: BigNumber;
+  delegateAt: string | null;
+  delegateState: VoterState;
+  voterState: VoterState;
+  executed: boolean;
+  yea: BigNumber;
+  nay: BigNumber;
+}
+
+export interface DecodedEvmScript {
+  targetAddress: string;
+  parameters: unknown[];
+  value: BigNumber; // amount of ETH that is sent to the contract
+}
 
 export interface Delegation {
   proposalVotingPowerThreshold: BigNumber;
@@ -321,7 +306,6 @@ export const initialChainData: ChainData = {
     byId: null,
     remainingCoverageById: null,
   },
-
   proposalData: {
     primary: {
       voteIds: null,
@@ -338,7 +322,6 @@ export const initialChainData: ChainData = {
       decodedEvmScriptById: {},
     },
   },
-
   ensNamesByAddress: {},
 };
 

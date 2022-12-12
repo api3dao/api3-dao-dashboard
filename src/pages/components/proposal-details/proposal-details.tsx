@@ -57,25 +57,25 @@ const ProposalDescription = (props: ProposalDescriptionProps) => {
 
 interface ProposalDetailsContentProps {
   type: ProposalType;
-  voteId: BigNumber;
+  voteId: string;
 }
 
 const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
   const { type, voteId } = props;
   const { provider } = useChainData();
 
-  const { data, status } = useProposalById(type, voteId.toString());
+  const { data, status } = useProposalById(type, voteId);
 
   if (!provider) {
     return (
-      <BaseLayout subtitle={`Proposal ${voteId.toString()}`}>
+      <BaseLayout subtitle={`Proposal ${voteId}`}>
         <p>Please connect your wallet to see the proposal details.</p>
       </BaseLayout>
     );
   }
 
   return (
-    <BaseLayout subtitle={`Proposal ${voteId.toString()}`}>
+    <BaseLayout subtitle={`Proposal ${voteId}`}>
       {data ? (
         <ProposalDetailsContent proposal={data} />
       ) : status === 'loading' ? (

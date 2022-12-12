@@ -7,7 +7,6 @@ import {
   useChainUpdateEffect,
   useConvenience,
 } from '../../contracts';
-import { VOTING_APP_IDS } from './hooks/commons';
 import {
   ChainData,
   produceState,
@@ -25,6 +24,12 @@ import { usePagedData } from '../../components/pagination';
 import { Convenience } from '../../generated-contracts';
 import { go } from '@api3/promise-utils';
 import { StartVoteEvent } from '../../generated-contracts/Api3Voting';
+import { ProposalSkeleton } from './types';
+
+const VOTING_APP_IDS = {
+  primary: 0,
+  secondary: 1,
+};
 
 export function useProposalBaseData() {
   const api3Voting = useApi3Voting();
@@ -87,14 +92,12 @@ export function useProposalBaseData() {
   return { status, data: proposalData };
 }
 
-type Filter = {
+interface ProposalsFilter {
   open: boolean;
   type?: 'primary' | 'secondary' | 'none' | null;
-};
+}
 
-export type ProposalSkeleton = { open: boolean } & StartVoteEventData;
-
-export function useProposals(currentPage: number, filter: Filter) {
+export function useProposals(currentPage: number, filter: ProposalsFilter) {
   const convenience = useConvenience();
   const { proposalData, userAccount, setChainData } = useChainData();
 
@@ -216,12 +219,7 @@ export function useProposalById(type: ProposalType, voteId: string) {
       }
 
       const startVote = processedEvents[0]!;
-      const decResult = await go(() => decodeEvmScript(provider, voteData[0]!.script, startVote.metadata));
-
-      if (!decResult.success) {
-        setStatus('failed');
-        return;
-      }
+      const decodedEvmScript = await decodeEvmScript(provider, voteData[0]!.script, startVote.metadata);
 
       if (!isLatest) return;
 
@@ -231,7 +229,7 @@ export function useProposalById(type: ProposalType, voteId: string) {
           draft.proposalData[type].openVoteIds = openIds.map((id) => id.toString());
           draft.proposalData[type].startVoteEventDataById[voteId] = startVote;
           draft.proposalData[type].voteDataById[voteId] = voteData[0]!;
-          draft.proposalData[type].decodedEvmScriptById[voteId] = decResult.data;
+          draft.proposalData[type].decodedEvmScriptById[voteId] = decodedEvmScript;
         })
       );
       setStatus('loaded');
@@ -276,7 +274,7 @@ function processStartVoteEvents(type: ProposalType, events: StartVoteEvent[]) {
   }, [] as StartVoteEventData[]);
 }
 
-function getCombinedStartVoteEventData(data: ChainData['proposalData'], filter: Filter) {
+function getCombinedStartVoteEventData(data: ChainData['proposalData'], filter: ProposalsFilter) {
   const primaryLog =
     !filter.type || filter.type === 'primary'
       ? (data.primary.voteIds || [])
@@ -313,11 +311,11 @@ async function getVoteData(
       script: staticVoteData.script[i]!,
 
       startDate: blockTimestampToDate(staticVoteData.startDate[i]!),
+      startDateRaw: staticVoteData.startDate[i]!,
+      deadline: blockTimestampToDate(staticVoteData.startDate[i]!.add(EPOCH_LENGTH)),
       supportRequired: toPercent(staticVoteData.supportRequired[i]!),
       minAcceptQuorum: toPercent(staticVoteData.minAcceptQuorum[i]!),
       votingPower: staticVoteData.votingPower[i]!,
-      deadline: blockTimestampToDate(staticVoteData.startDate[i]!.add(EPOCH_LENGTH)),
-      startDateRaw: staticVoteData.startDate[i]!,
       userVotingPowerAt: staticVoteData.userVotingPowerAt[i]!,
 
       delegateAt: isZeroAddress(dynamicVoteData.delegateAt[i]!) ? null : dynamicVoteData.delegateAt[i]!,

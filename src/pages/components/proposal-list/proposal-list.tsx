@@ -1,11 +1,10 @@
-import { ReactNode, useEffect, useRef } from 'react';
-import { go } from '@api3/promise-utils';
+import { ReactNode } from 'react';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { format } from 'date-fns';
-import { produceState, Proposal, ProposalMetadata, ProposalType, useChainData } from '../../../chain-data';
-import { images, useStableIds } from '../../../utils';
-import { decodeEvmScript, encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
+import { Proposal } from '../../../chain-data';
+import { images } from '../../../utils';
+import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../vote-slider/vote-slider';
 import Timer, { DATE_FORMAT } from '../../../components/timer';
 import { Tooltip } from '../../../components/tooltip';
@@ -15,9 +14,8 @@ import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
 import ProposalStatus from './proposal-status/proposal-status';
 import Skeleton from '../../../components/skeleton';
-import uniq from 'lodash/uniq';
-import { convertToEnsName } from '../../../logic/proposals/encoding/ens-name';
-import { ProposalSkeleton } from '../../../logic/proposals/data';
+import { useEvmScriptPreload, useCreatorNamePreload } from '../../../logic/proposals/preloading';
+import { ProposalSkeleton } from '../../../logic/proposals/types';
 
 interface Props {
   proposals: (ProposalSkeleton | Proposal)[];
@@ -27,7 +25,7 @@ export default function ProposalList(props: Props) {
   const { proposals } = props;
 
   useEvmScriptPreload(proposals);
-  useEnsNamesPreload(proposals);
+  useCreatorNamePreload(proposals);
 
   return (
     <>
@@ -133,81 +131,3 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
     </div>
   );
 };
-
-function useEnsNamesPreload(proposals: { creator: string }[]) {
-  const { provider, ensNamesByAddress, setChainData } = useChainData();
-
-  const proposalsToPreload = proposals.filter((prop) => {
-    return ensNamesByAddress[prop.creator] === undefined;
-  });
-
-  const addresses = useStableIds(proposalsToPreload, (p) => p.creator);
-
-  useEffect(() => {
-    if (!provider || !addresses.length) return;
-
-    const load = async () => {
-      const uniqAddresses = uniq(addresses);
-      const result = await go(() =>
-        Promise.all(
-          uniqAddresses.map((address) => convertToEnsName(provider, address).then((name) => ({ address, name })))
-        )
-      );
-
-      if (result.success) {
-        setChainData(
-          'Preloaded ENS names',
-          produceState((draft) => {
-            result.data.forEach((res) => {
-              draft.ensNamesByAddress[res.address] = res.name;
-            });
-          })
-        );
-      }
-    };
-
-    load();
-  }, [provider, addresses, setChainData]);
-}
-
-function useEvmScriptPreload(
-  proposals: { voteId: string; type: ProposalType; script?: string; metadata: ProposalMetadata }[]
-) {
-  const { provider, proposalData, setChainData } = useChainData();
-
-  const proposalsToPreload = proposals.filter((prop) => {
-    return prop.script && proposalData[prop.type].decodedEvmScriptById[prop.voteId] === undefined;
-  });
-
-  const voteIds = useStableIds(proposalsToPreload, (p) => p.voteId);
-
-  const dataRef = useRef(proposalsToPreload);
-  useEffect(() => {
-    dataRef.current = proposalsToPreload;
-  });
-
-  useEffect(() => {
-    if (!provider || !voteIds.length) return;
-
-    const data = dataRef.current;
-
-    const load = async () => {
-      const result = await Promise.all(
-        data.map(async (proposal) => {
-          return await decodeEvmScript(provider, proposal.script!, proposal.metadata);
-        })
-      );
-
-      setChainData(
-        'Preloaded EVM scripts',
-        produceState((draft) => {
-          data.forEach((p, index) => {
-            draft.proposalData[p.type].decodedEvmScriptById[p.voteId] = result[index]!;
-          });
-        })
-      );
-    };
-
-    load();
-  }, [provider, voteIds, setChainData]);
-}
