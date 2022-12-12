@@ -28,7 +28,7 @@ export default function ProposalList(props: Props) {
   useCreatorNamePreload(proposals);
 
   return (
-    <>
+    <ul className={styles.proposalList}>
       {proposals.map((proposal) => {
         const navlink = {
           base: proposal.open ? 'governance' : 'history',
@@ -37,8 +37,9 @@ export default function ProposalList(props: Props) {
 
         if ('deadline' in proposal) {
           const votingSliderData = voteSliderSelector(proposal);
+
           return (
-            <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
+            <li className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
               <div className={styles.proposalItemWrapper}>
                 <ProposalInfoState proposal={proposal} device="mobile" />
                 <p className={styles.proposalItemTitle}>
@@ -60,37 +61,39 @@ export default function ProposalList(props: Props) {
                   </NavLink>
                 </span>
               </div>
-            </div>
+            </li>
           );
         }
 
         return (
-          <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
+          <li className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
             <div className={styles.proposalItemWrapper}>
-              <div className={styles.skeletonMobile} style={{ maxWidth: '50%', height: 32 }}>
+              <div className={styles.infoSkeletonContainer}>
                 <Skeleton />
               </div>
               <p className={styles.proposalItemTitle} style={{ opacity: '0.7' }}>
                 <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{proposal.metadata?.title}</NavLink>
               </p>
-              <div className={styles.proposalItemSubtitle}>
+              <div className={styles.subtitleSkeletonContainer}>
                 <Skeleton />
-                <div className={styles.proposalItemBox}></div>
               </div>
             </div>
 
             <div className={styles.proposalVoteBar}>
-              <Skeleton />
+              <div className={styles.voteSkeletonContainer}>
+                <Skeleton className={styles.sliderSkeleton} />
+                <Skeleton />
+              </div>
               <span className={styles.proposalVoteArrow}>
                 <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
                   <img src={images.arrowRight} alt="right arrow" />
                 </NavLink>
               </span>
             </div>
-          </div>
+          </li>
         );
       })}
-    </>
+    </ul>
   );
 }
 

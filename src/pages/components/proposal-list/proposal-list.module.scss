@@ -1,5 +1,11 @@
 @import '../../../styles/variables.module.scss';
 
+.proposalList {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
 .proposalItem {
   border-top: 1px solid $black-line-color;
   padding-top: $space-md;
@@ -144,8 +150,37 @@
   }
 }
 
-.skeletonMobile {
+.infoSkeletonContainer {
+  max-width: 195px;
+  line-height: 28px;
+  margin-bottom: 4px;
+
   @media (min-width: $min-lg) {
     display: none;
+  }
+}
+
+.subtitleSkeletonContainer {
+  width: 100px;
+  line-height: 18px;
+
+  @media (min-width: $min-lg) {
+    line-height: 28px;
+    width: 320px;
+  }
+}
+
+.voteSkeletonContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1ch;
+
+  @media (min-width: $min-md) {
+    padding: 0 22px;
+  }
+
+  .sliderSkeleton {
+    border-radius: 100px;
   }
 }
