@@ -101,12 +101,12 @@ export function EmptyState(props: { children: ReactNode }) {
   return <div className={styles.noProposals}>{props.children}</div>;
 }
 
-interface ProposalProps {
+interface ProposalInfoStateProps {
   proposal: Proposal;
   device: 'mobile' | 'desktop';
 }
 
-const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
+function ProposalInfoState({ proposal, device }: ProposalInfoStateProps) {
   const tooltipContent =
     proposal.type === 'primary'
       ? `Primary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`
@@ -133,4 +133,4 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
       </div>
     </div>
   );
-};
+}

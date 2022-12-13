@@ -105,6 +105,7 @@ const Proposals = () => {
     setOpenNewProposalModal(false);
   };
 
+  const unconnected = !provider;
   return (
     <Layout title="Governance">
       <div className={styles.proposalsHeader}>
@@ -127,7 +128,7 @@ const Proposals = () => {
           </Header>
         }
         content={
-          !provider ? (
+          unconnected ? (
             <EmptyState>
               <span>You need to be connected to view proposals</span>
               <Button variant="link" onClick={connectWallet(setChainData)}>

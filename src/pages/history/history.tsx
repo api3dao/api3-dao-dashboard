@@ -46,6 +46,7 @@ export default function History() {
   const checkedPrimary = !filter || filter === 'primary';
   const checkedSecondary = !filter || filter === 'secondary';
 
+  const unconnected = !provider;
   return (
     <BaseLayout subtitle="History">
       <div className={styles.header}>
@@ -75,7 +76,7 @@ export default function History() {
           </div>
         }
         content={
-          !provider ? (
+          unconnected ? (
             <EmptyState>
               <span>You need to be connected to view proposals</span>
               <Button variant="link" onClick={connectWallet(setChainData)}>
@@ -89,12 +90,8 @@ export default function History() {
                   <ProposalList proposals={data} />
                   <Pagination totalResults={totalResults} currentPage={currentPage} className={styles.pagination} />
                 </>
-              ) : filter === 'none' ? (
-                <EmptyState>Please select a filter</EmptyState>
-              ) : filter ? (
-                <EmptyState>There are no {filter} past proposals</EmptyState>
               ) : (
-                <EmptyState>There are no past proposals</EmptyState>
+                <EmptyState>{getNoResultsMessage(filter)}</EmptyState>
               )}
             </>
           ) : (
@@ -115,5 +112,16 @@ function getValidatedTypeFilter(value: string | null): TypeFilter {
       return value;
     default:
       return 'none';
+  }
+}
+
+function getNoResultsMessage(filter: TypeFilter) {
+  switch (filter) {
+    case 'none':
+      return 'Please select a filter';
+    case null:
+      return 'There are no past proposals';
+    default:
+      return `There are no ${filter} past proposals`;
   }
 }
