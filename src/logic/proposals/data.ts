@@ -32,6 +32,12 @@ const VOTING_APP_IDS = {
   secondary: 1,
 };
 
+/**
+ * Loads all the StartVote events and the open vote IDs for both primary and secondary proposals.
+ *
+ * With this data loaded, we have the necessary data to show a paged list of proposal skeletons (for
+ * both active and past proposal lists).
+ */
 export function useProposalBaseData() {
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
@@ -99,6 +105,17 @@ interface ProposalFilter {
   type?: 'primary' | 'secondary' | 'none' | null;
 }
 
+/**
+ * Uses the proposal base data, the current page number, and proposal filter to determine the paged list of proposals
+ * to show and to load additional vote data for. While each proposal's additional vote data is busy loading, a
+ * ProposalSkeleton will be returned in its place that includes the proposal's metadata.
+ *
+ * Note: We deliberately omit:
+ * - decoding the EVM script
+ * - loading the ENS name for the proposal creator
+ *
+ * We omit the above items because they aren't required on the proposal lists and have a considerable performance impact.
+ */
 export function useProposals(currentPage: number, filter: ProposalFilter) {
   const convenience = useConvenience();
   const { proposals, userAccount, setChainData } = useChainData();
@@ -160,6 +177,7 @@ export function useProposals(currentPage: number, filter: ProposalFilter) {
     };
   }, [convenience, userAccount, primaryVoteIdsToLoad, secondaryVoteIdsToLoad, setChainData]);
 
+  // If we don't yet have vote IDs, then the proposal base data has not yet successfully loaded
   if (proposals.primary.voteIds == null) {
     return {
       status: baseDataStatus,
@@ -181,6 +199,10 @@ export function useProposals(currentPage: number, filter: ProposalFilter) {
   };
 }
 
+/**
+ * Fully loads the proposal by type and vote ID. It only returns data once all the pieces that make up the
+ * proposal is loaded. This includes the decoding of the EVM script.
+ */
 export function useProposalById(type: ProposalType, voteId: string) {
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
@@ -222,7 +244,7 @@ export function useProposalById(type: ProposalType, voteId: string) {
 
       const [events, openIds, voteDataResult] = result.data;
       const processedEvents = processStartVoteEvents(type, events);
-      // We can end up with no events if the given vote ID does not exist, or if the decoded metaddata is null.
+      // We can end up with no events if the given vote ID does not exist, or if the decoded metadata is null.
       if (!processedEvents.length) {
         setStatus('loaded');
         return;
@@ -270,6 +292,10 @@ export function useProposalById(type: ProposalType, voteId: string) {
   return { data, status };
 }
 
+/**
+ * Transforms StartVote event data into a form that is easier to consume, and filters out entries whose
+ * metadata decodes to null.
+ */
 function processStartVoteEvents(type: ProposalType, events: StartVoteEvent[]) {
   return events.reduce((acc, ev) => {
     const metadata = decodeMetadata(ev.args.metadata);
