@@ -6,7 +6,7 @@ import BorderedBox, { Header } from '../../components/bordered-box/bordered-box'
 import { TooltipChecklist } from '../../components/tooltip';
 import Treasury from '../components/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
-import { useLoadGenesisEpoch } from '../../logic/proposals/hooks';
+import { useLoadGenesisEpoch } from '../../logic/genesis-epoch';
 import { goEncodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
 import ProposalList, { EmptyState } from '../components/proposal-list';
 import Pagination from '../../components/pagination';

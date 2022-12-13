@@ -78,7 +78,7 @@ const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
       {data ? (
         <ProposalDetailsContent proposal={data} />
       ) : status === 'loading' ? (
-        <p>Loading...</p>
+        <p className={globalStyles.secondaryColor}>Loading...</p>
       ) : status === 'loaded' ? (
         <p>Could not find the proposal with given id.</p>
       ) : null}
