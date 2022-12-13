@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { BigNumber } from 'ethers';
+import { go } from '@api3/promise-utils';
 import {
   EPOCH_LENGTH,
   HUNDRED_PERCENT,
@@ -9,20 +11,19 @@ import {
 } from '../../contracts';
 import {
   ChainData,
-  produceState,
   Proposal,
   ProposalType,
   StartVoteEventData,
-  useChainData,
   VoteData,
   VoterState,
+  produceState,
+  useChainData,
 } from '../../chain-data';
 import { decodeEvmScript, decodeMetadata } from './encoding';
-import { BigNumber } from 'ethers';
-import { blockTimestampToDate, sortEvents, useStableIds } from '../../utils';
+import { blockTimestampToDate, messages, sortEvents, useStableIds } from '../../utils';
+import { notifications } from '../../components/notifications';
 import { usePagedData } from '../../components/pagination';
 import { Convenience } from '../../generated-contracts';
-import { go } from '@api3/promise-utils';
 import { StartVoteEvent } from '../../generated-contracts/Api3Voting';
 import { ProposalSkeleton } from './types';
 
@@ -34,7 +35,7 @@ const VOTING_APP_IDS = {
 export function useProposalBaseData() {
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
-  const { setChainData, proposalData, provider } = useChainData();
+  const { setChainData, proposals, provider } = useChainData();
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
 
   useChainUpdateEffect(() => {
@@ -55,6 +56,7 @@ export function useProposalBaseData() {
 
       if (!isLatest) return;
       if (!result.success) {
+        notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: result.error });
         setStatus('failed');
         return;
       }
@@ -66,16 +68,16 @@ export function useProposalBaseData() {
       setChainData(
         'Loaded proposal base data',
         produceState((draft) => {
-          draft.proposalData.primary.voteIds = processedPrimaryEvents.map((ev) => ev.voteId);
-          draft.proposalData.primary.openVoteIds = primaryOpenVoteIds.map((id) => id.toString());
+          draft.proposals.primary.voteIds = processedPrimaryEvents.map((ev) => ev.voteId);
+          draft.proposals.primary.openVoteIds = primaryOpenVoteIds.map((id) => id.toString());
           processedPrimaryEvents.forEach((ev) => {
-            draft.proposalData.primary.startVoteEventDataById[ev.voteId] = ev;
+            draft.proposals.primary.startVoteEventDataById[ev.voteId] = ev;
           });
 
-          draft.proposalData.secondary.voteIds = processedSecondaryEvents.map((ev) => ev.voteId);
-          draft.proposalData.secondary.openVoteIds = secondaryOpenVoteIds.map((id) => id.toString());
+          draft.proposals.secondary.voteIds = processedSecondaryEvents.map((ev) => ev.voteId);
+          draft.proposals.secondary.openVoteIds = secondaryOpenVoteIds.map((id) => id.toString());
           processedSecondaryEvents.forEach((ev) => {
-            draft.proposalData.secondary.startVoteEventDataById[ev.voteId] = ev;
+            draft.proposals.secondary.startVoteEventDataById[ev.voteId] = ev;
           });
         })
       );
@@ -89,22 +91,22 @@ export function useProposalBaseData() {
     };
   }, [api3Voting, convenience, setChainData, provider]);
 
-  return { status, data: proposalData };
+  return { status, data: proposals };
 }
 
-interface ProposalsFilter {
+interface ProposalFilter {
   open: boolean;
   type?: 'primary' | 'secondary' | 'none' | null;
 }
 
-export function useProposals(currentPage: number, filter: ProposalsFilter) {
+export function useProposals(currentPage: number, filter: ProposalFilter) {
   const convenience = useConvenience();
-  const { proposalData, userAccount, setChainData } = useChainData();
+  const { proposals, userAccount, setChainData } = useChainData();
 
   const { status: baseDataStatus } = useProposalBaseData();
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
 
-  const combinedStartVoteData = getCombinedStartVoteEventData(proposalData, filter);
+  const combinedStartVoteData = getCombinedStartVoteEventData(proposals, filter);
   const pagedStartVoteData = usePagedData(combinedStartVoteData, { currentPage });
 
   const primaryVoteIdsToLoad = useStableIds(
@@ -132,18 +134,19 @@ export function useProposals(currentPage: number, filter: ProposalsFilter) {
 
       if (!isLatest) return;
       if (!result.success) {
+        notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: result.error });
         setStatus('failed');
         return;
       }
 
       setChainData(
-        'Loaded vote details',
+        'Loaded vote data',
         produceState((draft) => {
           result.data[0].forEach((data) => {
-            draft.proposalData.primary.voteDataById[data.voteId] = data;
+            draft.proposals.primary.voteDataById[data.voteId] = data;
           });
           result.data[1].forEach((data) => {
-            draft.proposalData.secondary.voteDataById[data.voteId] = data;
+            draft.proposals.secondary.voteDataById[data.voteId] = data;
           });
         })
       );
@@ -157,7 +160,7 @@ export function useProposals(currentPage: number, filter: ProposalsFilter) {
     };
   }, [convenience, userAccount, primaryVoteIdsToLoad, secondaryVoteIdsToLoad, setChainData]);
 
-  if (proposalData.primary.voteIds == null) {
+  if (proposals.primary.voteIds == null) {
     return {
       status: baseDataStatus,
       totalResults: 0,
@@ -166,7 +169,7 @@ export function useProposals(currentPage: number, filter: ProposalsFilter) {
   }
 
   const data: (ProposalSkeleton | Proposal)[] = pagedStartVoteData.map((startVote) => {
-    const voteData = proposalData[startVote.type].voteDataById[startVote.voteId];
+    const voteData = proposals[startVote.type].voteDataById[startVote.voteId];
 
     return { open: filter.open, ...startVote, ...voteData };
   });
@@ -182,14 +185,14 @@ export function useProposalById(type: ProposalType, voteId: string) {
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
 
-  const { proposalData, userAccount, setChainData, provider } = useChainData();
+  const { proposals, userAccount, setChainData, provider } = useChainData();
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'failed'>('idle');
 
-  const startVoteData = proposalData[type].startVoteEventDataById[voteId];
-  const voteData = proposalData[type].voteDataById[voteId];
-  const decodedEvmScript = proposalData[type].decodedEvmScriptById[voteId];
-  const openVoteIds = proposalData[type].openVoteIds;
+  const startVoteData = proposals[type].startVoteEventDataById[voteId];
+  const voteData = proposals[type].voteDataById[voteId];
+  const decodedEvmScript = proposals[type].decodedEvmScriptById[voteId];
+  const openVoteIds = proposals[type].openVoteIds;
 
   useChainUpdateEffect(() => {
     if (!provider || !api3Voting || !convenience) return;
@@ -198,38 +201,50 @@ export function useProposalById(type: ProposalType, voteId: string) {
 
     const load = async () => {
       setStatus('loading');
-      const result = await go(() =>
-        Promise.all([
-          api3Voting[type].queryFilter(api3Voting[type].filters.StartVote(BigNumber.from(voteId))),
-          convenience.getOpenVoteIds(VOTING_APP_IDS[type]),
-          getVoteData(type, [voteId], convenience, userAccount),
-        ])
-      );
+      const result = await go(async () => {
+        const votingContract = api3Voting[type];
 
+        return Promise.all([
+          votingContract.queryFilter(votingContract.filters.StartVote(BigNumber.from(voteId))),
+          convenience.getOpenVoteIds(VOTING_APP_IDS[type]),
+          // We use the promise util for this vote data call because the call fails when provided with a vote ID
+          // that does not exist, and we want it to fail silently in that case.
+          go(getVoteData(type, [voteId], convenience, userAccount)),
+        ]);
+      });
+
+      if (!isLatest) return;
       if (!result.success) {
+        notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: result.error });
         setStatus('failed');
         return;
       }
 
-      const [events, openIds, voteData] = result.data;
+      const [events, openIds, voteDataResult] = result.data;
       const processedEvents = processStartVoteEvents(type, events);
+      // We can end up with no events if the given vote ID does not exist, or if the decoded metaddata is null.
       if (!processedEvents.length) {
         setStatus('loaded');
         return;
       }
 
-      const startVote = processedEvents[0]!;
-      const decodedEvmScript = await decodeEvmScript(provider, voteData[0]!.script, startVote.metadata);
+      if (!voteDataResult.success) {
+        notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: voteDataResult.error });
+        setStatus('failed');
+        return;
+      }
 
-      if (!isLatest) return;
+      const startVote = processedEvents[0]!;
+      const voteData = voteDataResult.data[0]!;
+      const decodedEvmScript = await decodeEvmScript(provider, voteData.script, startVote.metadata);
 
       setChainData(
         'Loaded proposal by id',
         produceState((draft) => {
-          draft.proposalData[type].openVoteIds = openIds.map((id) => id.toString());
-          draft.proposalData[type].startVoteEventDataById[voteId] = startVote;
-          draft.proposalData[type].voteDataById[voteId] = voteData[0]!;
-          draft.proposalData[type].decodedEvmScriptById[voteId] = decodedEvmScript;
+          draft.proposals[type].openVoteIds = openIds.map((id) => id.toString());
+          draft.proposals[type].startVoteEventDataById[voteId] = startVote;
+          draft.proposals[type].voteDataById[voteId] = voteData;
+          draft.proposals[type].decodedEvmScriptById[voteId] = decodedEvmScript;
         })
       );
       setStatus('loaded');
@@ -274,7 +289,7 @@ function processStartVoteEvents(type: ProposalType, events: StartVoteEvent[]) {
   }, [] as StartVoteEventData[]);
 }
 
-function getCombinedStartVoteEventData(data: ChainData['proposalData'], filter: ProposalsFilter) {
+function getCombinedStartVoteEventData(data: ChainData['proposals'], filter: ProposalFilter) {
   const primaryLog =
     !filter.type || filter.type === 'primary'
       ? (data.primary.voteIds || [])

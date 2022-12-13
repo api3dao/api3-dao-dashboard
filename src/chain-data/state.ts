@@ -240,7 +240,7 @@ export interface ChainData {
     remainingCoverageById: null | { [policyId: string]: BigNumber };
   };
 
-  proposalData: {
+  proposals: {
     primary: {
       voteIds: null | string[];
       openVoteIds: string[];
@@ -306,7 +306,7 @@ export const initialChainData: ChainData = {
     byId: null,
     remainingCoverageById: null,
   },
-  proposalData: {
+  proposals: {
     primary: {
       voteIds: null,
       openVoteIds: [],

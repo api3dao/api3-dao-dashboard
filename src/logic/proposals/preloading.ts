@@ -48,7 +48,7 @@ export function useCreatorNamePreload(proposals: (ProposalSkeleton | Proposal)[]
 }
 
 export function useEvmScriptPreload(proposals: (ProposalSkeleton | Proposal)[]) {
-  const { provider, proposalData, setChainData } = useChainData();
+  const { provider, proposals: proposalData, setChainData } = useChainData();
 
   const proposalsToPreload = proposals.filter((prop): prop is Proposal => {
     return 'script' in prop && proposalData[prop.type].decodedEvmScriptById[prop.voteId] === undefined;
@@ -81,7 +81,7 @@ export function useEvmScriptPreload(proposals: (ProposalSkeleton | Proposal)[]) 
           'Preloaded EVM scripts',
           produceState((draft) => {
             result.data.forEach((res) => {
-              draft.proposalData[res.type].decodedEvmScriptById[res.voteId] = res.decodedEvmScript;
+              draft.proposals[res.type].decodedEvmScriptById[res.voteId] = res.decodedEvmScript;
             });
           })
         );

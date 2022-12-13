@@ -1,6 +1,5 @@
 import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
-import { go } from '@api3/promise-utils';
 import { useParams } from 'react-router';
 import classNames from 'classnames';
 import { produceState, Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
@@ -295,16 +294,14 @@ function useEnsName(address: string) {
     if (!provider || ensName !== undefined) return;
 
     const load = async () => {
-      const result = await go(() => convertToEnsName(provider, address));
+      const result = await convertToEnsName(provider, address);
 
-      if (result.success) {
-        setChainData(
-          'Loaded ENS name',
-          produceState((draft) => {
-            draft.ensNamesByAddress[address] = result.data;
-          })
-        );
-      }
+      setChainData(
+        'Loaded ENS name',
+        produceState((draft) => {
+          draft.ensNamesByAddress[address] = result;
+        })
+      );
     };
 
     load();
