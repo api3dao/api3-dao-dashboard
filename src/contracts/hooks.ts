@@ -224,7 +224,7 @@ export function useChainUpdateEffect(effectFn: () => void | (() => void), effect
       if (cancelled) return;
       cleanup?.();
       cleanup = effectFnRef.current();
-    }, 100);
+    }, 20);
 
     provider.on('block', blockMinedListener);
     return () => {
