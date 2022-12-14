@@ -76,6 +76,21 @@ export interface DecodedEvmScript {
   value: BigNumber; // amount of ETH that is sent to the contract
 }
 
+// Primary and secondary proposals have data stored in this shape respectively
+interface ProposalState {
+  voteIds: null | string[];
+  openVoteIds: string[];
+  startVoteEventDataById: {
+    [voteId: string]: StartVoteEventData;
+  };
+  voteDataById: {
+    [voteId: string]: VoteData;
+  };
+  decodedEvmScriptById: {
+    [voteId: string]: DecodedEvmScript | null;
+  };
+}
+
 export interface Delegation {
   proposalVotingPowerThreshold: BigNumber;
   // NOTE: userVotingPower includes delegated voting power
@@ -225,6 +240,10 @@ export interface ChainData {
 
   dashboardState: DashboardState | null;
   isGenesisEpoch: boolean | undefined;
+  proposals: {
+    primary: ProposalState;
+    secondary: ProposalState;
+  };
   treasuries: Treasury[];
   delegation: Delegation | null;
   transactions: { type: TransactionType; tx: ethers.ContractTransaction }[];
@@ -239,36 +258,6 @@ export interface ChainData {
     byId: null | { [policyId: string]: Omit<Policy, 'remainingCoverageInUsd'> };
     remainingCoverageById: null | { [policyId: string]: BigNumber };
   };
-
-  proposals: {
-    primary: {
-      voteIds: null | string[];
-      openVoteIds: string[];
-      startVoteEventDataById: {
-        [voteId: string]: StartVoteEventData;
-      };
-      voteDataById: {
-        [voteId: string]: VoteData;
-      };
-      decodedEvmScriptById: {
-        [voteId: string]: DecodedEvmScript | null;
-      };
-    };
-    secondary: {
-      voteIds: null | string[];
-      openVoteIds: string[];
-      startVoteEventDataById: {
-        [voteId: string]: StartVoteEventData;
-      };
-      voteDataById: {
-        [voteId: string]: VoteData;
-      };
-      decodedEvmScriptById: {
-        [voteId: string]: DecodedEvmScript | null;
-      };
-    };
-  };
-
   ensNamesByAddress: {
     [address: string]: null | string;
   };

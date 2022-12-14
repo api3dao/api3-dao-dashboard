@@ -293,7 +293,7 @@ export function useProposalById(type: ProposalType, voteId: string) {
 }
 
 /**
- * Transforms StartVote event data into a form that is easier to consume, and filters out entries whose
+ * Transforms the StartVote events into a form that is easier to consume, and filters out entries whose
  * metadata decodes to null.
  */
 function processStartVoteEvents(type: ProposalType, events: StartVoteEvent[]) {
