@@ -4,18 +4,18 @@ import { NavLink } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Proposal } from '../../../chain-data';
 import { images } from '../../../utils';
-import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../vote-slider/vote-slider';
 import Timer, { DATE_FORMAT } from '../../../components/timer';
 import { Tooltip } from '../../../components/tooltip';
-import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag';
-import globalStyles from '../../../styles/global-styles.module.scss';
-import styles from './proposal-list.module.scss';
-import ProposalStatus from './proposal-status/proposal-status';
 import Skeleton from '../../../components/skeleton';
+import ProposalStatus from './proposal-status/proposal-status';
+import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
+import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useEvmScriptPreload, useCreatorNamePreload } from '../../../logic/proposals/preloading';
 import { ProposalSkeleton } from '../../../logic/proposals/types';
+import globalStyles from '../../../styles/global-styles.module.scss';
+import styles from './proposal-list.module.scss';
 
 interface Props {
   proposals: (ProposalSkeleton | Proposal)[];
@@ -24,6 +24,7 @@ interface Props {
 export default function ProposalList(props: Props) {
   const { proposals } = props;
 
+  // Preload for the Proposal Details page
   useEvmScriptPreload(proposals);
   useCreatorNamePreload(proposals);
 
@@ -37,7 +38,7 @@ export default function ProposalList(props: Props) {
 
         if ('deadline' in proposal) {
           const votingSliderData = voteSliderSelector(proposal);
-
+          // Loaded list item
           return (
             <li className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
               <div className={styles.proposalItemWrapper}>
@@ -48,6 +49,7 @@ export default function ProposalList(props: Props) {
                 <div className={styles.proposalItemSubtitle}>
                   <ProposalInfoState proposal={proposal} device="desktop" />
                   <div className={styles.proposalItemBox}>
+                    {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
                     {proposal.open ? <Timer deadline={proposal.deadline} /> : format(proposal.startDate, DATE_FORMAT)}
                   </div>
                 </div>
@@ -65,13 +67,14 @@ export default function ProposalList(props: Props) {
           );
         }
 
+        // Skeleton list item
         return (
-          <li className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
+          <li className={styles.skeletonItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
             <div className={styles.proposalItemWrapper}>
               <div className={styles.infoSkeletonContainer}>
                 <Skeleton />
               </div>
-              <p className={styles.proposalItemTitle} style={{ opacity: '0.7' }}>
+              <p className={styles.proposalItemTitle}>
                 <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{proposal.metadata?.title}</NavLink>
               </p>
               <div className={styles.subtitleSkeletonContainer}>

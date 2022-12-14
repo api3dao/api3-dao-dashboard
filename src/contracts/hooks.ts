@@ -218,11 +218,13 @@ export function useChainUpdateEffect(effectFn: () => void | (() => void), effect
     }
 
     let cancelled = false;
+    // Multiple 'block' events are often emitted simultaneously (within a few milliseconds of each other),
+    // so we debounce the event listener to avoid triggering the effect too much
     const blockMinedListener = debounce(() => {
       if (cancelled) return;
       cleanup?.();
       cleanup = effectFnRef.current();
-    }, 200);
+    }, 100);
 
     provider.on('block', blockMinedListener);
     return () => {

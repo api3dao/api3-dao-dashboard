@@ -110,7 +110,7 @@ interface ProposalFilter {
  * to show and to load additional vote data for. While each proposal's additional vote data is busy loading, a
  * ProposalSkeleton will be returned in its place that includes the proposal's metadata.
  *
- * Note: We deliberately omit:
+ * NOTE: We deliberately omit:
  * - decoding the EVM script
  * - loading the ENS name for the proposal creator
  *
@@ -315,22 +315,25 @@ function processStartVoteEvents(type: ProposalType, events: StartVoteEvent[]) {
   }, [] as StartVoteEventData[]);
 }
 
+/**
+ * Returns a filtered and sorted list of the combined primary and secondary StartVote event data.
+ */
 function getCombinedStartVoteEventData(data: ChainData['proposals'], filter: ProposalFilter) {
-  const primaryLog =
+  const primaryEvents =
     !filter.type || filter.type === 'primary'
       ? (data.primary.voteIds || [])
           .filter((id) => data.primary.openVoteIds.includes(id) === filter.open)
           .map((id) => data.primary.startVoteEventDataById[id]!)
       : [];
 
-  const secondaryLog =
+  const secondaryEvents =
     !filter.type || filter.type === 'secondary'
       ? (data.secondary.voteIds || [])
           .filter((id) => data.secondary.openVoteIds.includes(id) === filter.open)
           .map((id) => data.secondary.startVoteEventDataById[id]!)
       : [];
 
-  return sortEvents([...primaryLog, ...secondaryLog], 'desc');
+  return sortEvents([...primaryEvents, ...secondaryEvents], 'desc');
 }
 
 async function getVoteData(

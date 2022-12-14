@@ -27,7 +27,8 @@ const Dashboard = () => {
   const api3Pool = useApi3Pool();
 
   useLoadDashboardData();
-  useProposalBaseData(); // Preload
+  // Preload so that the active and past proposal pages can immediately show proposal skeletons
+  useProposalBaseData();
 
   const [openModal, setOpenModal] = useState<ModalType | null>(null);
   const [inputValue, setInputValue] = useState('');

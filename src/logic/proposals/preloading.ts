@@ -1,12 +1,16 @@
 import { produceState, Proposal, useChainData } from '../../chain-data';
 import { useStableIds } from '../../utils';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import uniq from 'lodash/uniq';
 import { go } from '@api3/promise-utils';
 import { convertToEnsName } from './encoding/ens-name';
 import { decodeEvmScript } from './encoding';
 import { ProposalSkeleton } from './types';
 
+/**
+ * Preloads the names for the creator addresses of the given proposals. Addresses that have already been loaded
+ * will be skipped.
+ */
 export function useCreatorNamePreload(proposals: (ProposalSkeleton | Proposal)[]) {
   const { provider, ensNamesByAddress, setChainData } = useChainData();
 
@@ -20,7 +24,7 @@ export function useCreatorNamePreload(proposals: (ProposalSkeleton | Proposal)[]
     if (!provider || !addresses.length) return;
 
     const load = async () => {
-      const uniqAddresses = uniq(addresses);
+      const uniqAddresses = uniq(addresses); // Make sure not to make multiple requests for the same address
 
       const result = await go(() =>
         Promise.all(
@@ -47,47 +51,51 @@ export function useCreatorNamePreload(proposals: (ProposalSkeleton | Proposal)[]
   }, [provider, addresses, setChainData]);
 }
 
+/**
+ * Preloads the decoding of the EVM script for the given proposals. EVM scrips that have already been decoded
+ * will be skipped.
+ */
 export function useEvmScriptPreload(proposals: (ProposalSkeleton | Proposal)[]) {
   const { provider, proposals: proposalData, setChainData } = useChainData();
 
+  // The raw EVM script isn't included in the ProposalSkeleton, so we need to filter out the skeletons
   const proposalsToPreload = proposals.filter((prop): prop is Proposal => {
     return 'script' in prop && proposalData[prop.type].decodedEvmScriptById[prop.voteId] === undefined;
   });
 
-  const voteIds = useStableIds(proposalsToPreload, (p) => p.voteId);
+  const voteIdsToPreload = useStableIds(proposalsToPreload, (p) => p.voteId);
 
-  const dataRef = useRef(proposalsToPreload);
-  useEffect(() => {
-    dataRef.current = proposalsToPreload;
-  });
+  useEffect(
+    () => {
+      if (!provider || !voteIdsToPreload.length) return;
 
-  useEffect(() => {
-    if (!provider || !voteIds.length) return;
-
-    const proposalsToPreload = dataRef.current;
-
-    const load = async () => {
-      const result = await go(() =>
-        Promise.all(
-          proposalsToPreload.map(async (prop) => {
-            const decodedEvmScript = await decodeEvmScript(provider, prop.script, prop.metadata);
-            return { voteId: prop.voteId, type: prop.type, decodedEvmScript };
-          })
-        )
-      );
-
-      if (result.success) {
-        setChainData(
-          'Preloaded EVM scripts',
-          produceState((draft) => {
-            result.data.forEach((res) => {
-              draft.proposals[res.type].decodedEvmScriptById[res.voteId] = res.decodedEvmScript;
-            });
-          })
+      const load = async () => {
+        const result = await go(() =>
+          Promise.all(
+            proposalsToPreload.map(async (prop) => {
+              const decodedEvmScript = await decodeEvmScript(provider, prop.script, prop.metadata);
+              return { voteId: prop.voteId, type: prop.type, decodedEvmScript };
+            })
+          )
         );
-      }
-    };
 
-    load();
-  }, [provider, voteIds, setChainData]);
+        if (result.success) {
+          setChainData(
+            'Preloaded EVM scripts',
+            produceState((draft) => {
+              result.data.forEach((res) => {
+                draft.proposals[res.type].decodedEvmScriptById[res.voteId] = res.decodedEvmScript;
+              });
+            })
+          );
+        }
+      };
+
+      load();
+    },
+    // We omit proposalsToPreload from the dependencies as it would cause the effect to trigger on every render.
+    // We use the vote IDs rather to trigger the effect when needed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [provider, voteIdsToPreload, setChainData]
+  );
 }

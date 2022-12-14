@@ -6,7 +6,8 @@
   list-style: none;
 }
 
-.proposalItem {
+.proposalItem,
+.skeletonItem {
   border-top: 1px solid $black-line-color;
   padding-top: $space-md;
   padding-bottom: $space-lg;
@@ -40,13 +41,14 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  color: $primary-color;
 
   @media (max-width: $max-md) {
     margin-bottom: $space-md;
   }
 
   a {
-    color: $primary-color;
+    color: inherit;
     text-decoration: none;
   }
 }
@@ -150,9 +152,15 @@
   }
 }
 
+.skeletonItem {
+  .proposalItemTitle {
+    color: $secondary-color;
+  }
+}
+
 .infoSkeletonContainer {
   max-width: 195px;
-  line-height: 28px;
+  line-height: $lh-normal;
   margin-bottom: 4px;
 
   @media (min-width: $min-lg) {
@@ -165,7 +173,7 @@
   line-height: 18px;
 
   @media (min-width: $min-lg) {
-    line-height: 28px;
+    line-height: $lh-normal;
     width: 320px;
   }
 }
