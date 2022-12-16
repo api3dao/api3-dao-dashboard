@@ -32,9 +32,9 @@ const Proposals = () => {
   const [openNewProposalModal, setOpenNewProposalModal] = useState(false);
 
   const params = useQueryParams();
-  const currentPage = parseInt(params.get('page') || '') || 1;
+  const currentPage = parseInt(params.get('page') || '1', 10);
 
-  const { data, totalResults, status } = useProposals(currentPage, { open: true });
+  const { data, totalResults, status } = useProposals(currentPage, { active: true });
 
   useLoadDashboardData();
   useLoadGenesisEpoch();

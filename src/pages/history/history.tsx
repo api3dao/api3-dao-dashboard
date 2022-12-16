@@ -21,11 +21,11 @@ export default function History() {
   const params = useQueryParams();
   const history = useHistory();
 
-  const currentPage = parseInt(params.get('page') || '') || 1;
+  const currentPage = parseInt(params.get('page') || '1', 10);
   const filter = getValidatedTypeFilter(params.get('type'));
 
   const { data, totalResults, status } = useProposals(currentPage, {
-    open: false,
+    active: false,
     type: filter,
   });
 

@@ -101,7 +101,7 @@ export function useProposalBaseData() {
 }
 
 interface ProposalFilter {
-  open: boolean;
+  active: boolean;
   type?: 'primary' | 'secondary' | 'none' | null;
 }
 
@@ -189,7 +189,7 @@ export function useProposals(currentPage: number, filter: ProposalFilter) {
   const data: (ProposalSkeleton | Proposal)[] = pagedStartVoteData.map((startVote) => {
     const voteData = proposals[startVote.type].voteDataById[startVote.voteId];
 
-    return { open: filter.open, ...startVote, ...voteData };
+    return { open: filter.active, ...startVote, ...voteData };
   });
 
   return {
@@ -322,14 +322,14 @@ function getCombinedStartVoteEventData(data: ChainData['proposals'], filter: Pro
   const primaryEvents =
     !filter.type || filter.type === 'primary'
       ? (data.primary.voteIds || [])
-          .filter((id) => data.primary.openVoteIds.includes(id) === filter.open)
+          .filter((id) => data.primary.openVoteIds.includes(id) === filter.active)
           .map((id) => data.primary.startVoteEventDataById[id]!)
       : [];
 
   const secondaryEvents =
     !filter.type || filter.type === 'secondary'
       ? (data.secondary.voteIds || [])
-          .filter((id) => data.secondary.openVoteIds.includes(id) === filter.open)
+          .filter((id) => data.secondary.openVoteIds.includes(id) === filter.active)
           .map((id) => data.secondary.startVoteEventDataById[id]!)
       : [];
 

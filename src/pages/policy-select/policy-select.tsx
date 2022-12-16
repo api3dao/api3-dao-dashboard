@@ -12,7 +12,7 @@ export default function PolicySelect() {
   const params = useQueryParams();
 
   const query = params.get('query') || '';
-  const currentPage = parseInt(params.get('page') || '1');
+  const currentPage = parseInt(params.get('page') || '1', 10);
 
   const handleSubmit = (value: string) => {
     const newParams = new URLSearchParams();

@@ -1,7 +1,7 @@
 import { sortEvents } from './logs';
 
 describe('sortEvents()', () => {
-  it('sorts by both block number and log index in asc order', () => {
+  it('sorts by both block number and log index in ascending order', () => {
     const events = [
       { testId: 'G', blockNumber: 4, logIndex: 0 },
       { testId: 'E', blockNumber: 2, logIndex: 3 },
@@ -26,7 +26,7 @@ describe('sortEvents()', () => {
     expect(result === events).toBe(false); // sortEvents is immutable
   });
 
-  it('sorts by both block number and log index in desc order', () => {
+  it('sorts by both block number and log index in descending order', () => {
     const events = [
       { testId: 'E', blockNumber: 2, logIndex: 3 },
       { testId: 'A', blockNumber: 0, logIndex: 0 },
