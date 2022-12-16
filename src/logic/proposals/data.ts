@@ -138,8 +138,6 @@ export function useProposals(currentPage: number, filter: ProposalFilter) {
   useChainUpdateEffect(() => {
     if (!convenience || (!primaryVoteIdsToLoad.length && !secondaryVoteIdsToLoad.length)) return;
 
-    let isLatest = true;
-
     const load = async () => {
       setStatus('loading');
       const result = await go(() =>
@@ -149,7 +147,6 @@ export function useProposals(currentPage: number, filter: ProposalFilter) {
         ])
       );
 
-      if (!isLatest) return;
       if (!result.success) {
         notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: result.error });
         setStatus('failed');
@@ -171,10 +168,6 @@ export function useProposals(currentPage: number, filter: ProposalFilter) {
     };
 
     load();
-
-    return () => {
-      isLatest = false;
-    };
   }, [convenience, userAccount, primaryVoteIdsToLoad, secondaryVoteIdsToLoad, setChainData]);
 
   // If we don't yet have vote IDs, then the proposal base data has not yet successfully loaded
@@ -219,8 +212,6 @@ export function useProposalById(type: ProposalType, voteId: string) {
   useChainUpdateEffect(() => {
     if (!provider || !api3Voting || !convenience) return;
 
-    let isLatest = true;
-
     const load = async () => {
       setStatus('loading');
       const result = await go(async () => {
@@ -235,7 +226,6 @@ export function useProposalById(type: ProposalType, voteId: string) {
         ]);
       });
 
-      if (!isLatest) return;
       if (!result.success) {
         notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: result.error });
         setStatus('failed');
@@ -273,9 +263,6 @@ export function useProposalById(type: ProposalType, voteId: string) {
     };
 
     load();
-    return () => {
-      isLatest = false;
-    };
   }, [provider, api3Voting, convenience, userAccount, setChainData, type, voteId]);
 
   const data: Proposal | null = useMemo(() => {
