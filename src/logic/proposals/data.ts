@@ -178,7 +178,7 @@ export function useProposals(currentPage: number, filter: ProposalFilter) {
   }, [convenience, userAccount, primaryVoteIdsToLoad, secondaryVoteIdsToLoad, setChainData]);
 
   // If we don't yet have vote IDs, then the proposal base data has not yet successfully loaded
-  if (proposals.primary.voteIds == null) {
+  if (proposals.primary.voteIds == null || proposals.secondary.voteIds == null) {
     return {
       status: baseDataStatus,
       totalResults: 0,
