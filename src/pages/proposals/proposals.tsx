@@ -23,7 +23,6 @@ import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposals.module.scss';
 
 const Proposals = () => {
-  // TODO: Retrieve only "userVotingPower" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
   const { provider, delegation, dashboardState, isGenesisEpoch, transactions, setChainData } = useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();

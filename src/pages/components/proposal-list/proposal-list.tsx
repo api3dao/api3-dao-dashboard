@@ -31,20 +31,18 @@ export default function ProposalList(props: Props) {
   return (
     <ul className={styles.proposalList}>
       {proposals.map((proposal) => {
-        const navlink = {
-          base: proposal.open ? 'governance' : 'history',
-          typeAndVoteId: encodeProposalTypeAndVoteId(proposal.type, proposal.voteId),
-        };
+        const typeAndVoteId = encodeProposalTypeAndVoteId(proposal.type, proposal.voteId);
+        const href = `/${proposal.open ? 'governance' : 'history'}/${typeAndVoteId}`;
 
         if ('deadline' in proposal) {
           const votingSliderData = voteSliderSelector(proposal);
           // Loaded list item
           return (
-            <li className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
+            <li className={styles.proposalItem} key={typeAndVoteId} data-cy="proposal-item">
               <div className={styles.proposalItemWrapper}>
                 <ProposalInfoState proposal={proposal} device="mobile" />
                 <p className={styles.proposalItemTitle}>
-                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{proposal.metadata.title}</NavLink>
+                  <NavLink to={href}>{proposal.metadata.title}</NavLink>
                 </p>
                 <div className={styles.proposalItemSubtitle}>
                   <ProposalInfoState proposal={proposal} device="desktop" />
@@ -58,7 +56,7 @@ export default function ProposalList(props: Props) {
               <div className={styles.proposalVoteBar}>
                 <VoteSlider {...votingSliderData} />
                 <span className={styles.proposalVoteArrow}>
-                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
+                  <NavLink to={href}>
                     <img src={images.arrowRight} alt="right arrow" />
                   </NavLink>
                 </span>
@@ -67,34 +65,7 @@ export default function ProposalList(props: Props) {
           );
         }
 
-        // Skeleton list item
-        return (
-          <li className={styles.skeletonItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
-            <div className={styles.proposalItemWrapper}>
-              <div className={styles.infoSkeletonContainer}>
-                <Skeleton />
-              </div>
-              <p className={styles.proposalItemTitle}>
-                <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{proposal.metadata?.title}</NavLink>
-              </p>
-              <div className={styles.subtitleSkeletonContainer}>
-                <Skeleton />
-              </div>
-            </div>
-
-            <div className={styles.proposalVoteBar}>
-              <div className={styles.voteSkeletonContainer}>
-                <Skeleton className={styles.sliderSkeleton} />
-                <Skeleton />
-              </div>
-              <span className={styles.proposalVoteArrow}>
-                <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
-                  <img src={images.arrowRight} alt="right arrow" />
-                </NavLink>
-              </span>
-            </div>
-          </li>
-        );
+        return <SkeletonListItem key={typeAndVoteId} proposal={proposal} href={href} />;
       })}
     </ul>
   );
@@ -102,6 +73,43 @@ export default function ProposalList(props: Props) {
 
 export function EmptyState(props: { children: ReactNode }) {
   return <div className={styles.noProposals}>{props.children}</div>;
+}
+
+interface SkeletonListItemProps {
+  proposal: ProposalSkeleton;
+  href: string;
+}
+
+function SkeletonListItem(props: SkeletonListItemProps) {
+  const { proposal, href } = props;
+
+  return (
+    <li className={styles.skeletonItem} data-cy="proposal-item">
+      <div className={styles.proposalItemWrapper}>
+        <div className={styles.infoSkeletonContainer}>
+          <Skeleton />
+        </div>
+        <p className={styles.proposalItemTitle}>
+          <NavLink to={href}>{proposal.metadata?.title}</NavLink>
+        </p>
+        <div className={styles.subtitleSkeletonContainer}>
+          <Skeleton />
+        </div>
+      </div>
+
+      <div className={styles.proposalVoteBar}>
+        <div className={styles.voteSkeletonContainer}>
+          <Skeleton className={styles.sliderSkeleton} />
+          <Skeleton />
+        </div>
+        <span className={styles.proposalVoteArrow}>
+          <NavLink to={href}>
+            <img src={images.arrowRight} alt="right arrow" />
+          </NavLink>
+        </span>
+      </div>
+    </li>
+  );
 }
 
 interface ProposalInfoStateProps {
