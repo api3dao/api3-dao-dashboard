@@ -23,7 +23,7 @@ export default function MyClaims() {
   const params = useQueryParams();
   const query = params.get('query') || '';
   const filter = params.get('filter') as Filter;
-  const currentPage = parseInt(params.get('page') || '1');
+  const currentPage = parseInt(params.get('page') || '1', 10);
 
   const filteredClaims = useMemo(() => {
     if (!claims || filter === 'none') return [];

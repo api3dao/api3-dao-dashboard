@@ -1,44 +1,129 @@
-import { BigNumber } from 'ethers';
+import { ReactNode } from 'react';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Proposal, useChainData } from '../../../chain-data';
+import { Proposal } from '../../../chain-data';
 import { images } from '../../../utils';
-import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../vote-slider/vote-slider';
 import Timer, { DATE_FORMAT } from '../../../components/timer';
-import Button from '../../../components/button';
 import { Tooltip } from '../../../components/tooltip';
-import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag';
+import Skeleton from '../../../components/skeleton';
+import ProposalStatus from './proposal-status/proposal-status';
+import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
+import { voteSliderSelector } from '../../../logic/proposals/selectors';
+import { useEvmScriptPreload, useCreatorNamePreload } from '../../../logic/proposals/preloading';
+import { ProposalSkeleton } from '../../../logic/proposals/types';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
-import ProposalStatus from './proposal-status/proposal-status';
-import { connectWallet } from '../../../components/sign-in/sign-in';
 
 interface Props {
-  // Proposals should be sorted by priority (the topmost proposal in the list has index 0). Or undefined if user is not
-  // logged in.
-  proposals: Proposal[] | undefined;
-  type: 'active' | 'past';
+  proposals: (ProposalSkeleton | Proposal)[];
 }
 
-interface ProposalProps {
+export default function ProposalList(props: Props) {
+  const { proposals } = props;
+
+  // Preload for the Proposal Details page
+  useEvmScriptPreload(proposals);
+  useCreatorNamePreload(proposals);
+
+  return (
+    <ul className={styles.proposalList}>
+      {proposals.map((proposal) => {
+        const typeAndVoteId = encodeProposalTypeAndVoteId(proposal.type, proposal.voteId);
+        const href = `/${proposal.open ? 'governance' : 'history'}/${typeAndVoteId}`;
+
+        if ('deadline' in proposal) {
+          const votingSliderData = voteSliderSelector(proposal);
+          // Loaded list item
+          return (
+            <li className={styles.proposalItem} key={typeAndVoteId} data-cy="proposal-item">
+              <div className={styles.proposalItemWrapper}>
+                <ProposalInfoState proposal={proposal} device="mobile" />
+                <p className={styles.proposalItemTitle}>
+                  <NavLink to={href}>{proposal.metadata.title}</NavLink>
+                </p>
+                <div className={styles.proposalItemSubtitle}>
+                  <ProposalInfoState proposal={proposal} device="desktop" />
+                  <div className={styles.proposalItemBox}>
+                    {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
+                    {proposal.open ? <Timer deadline={proposal.deadline} /> : format(proposal.startDate, DATE_FORMAT)}
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.proposalVoteBar}>
+                <VoteSlider {...votingSliderData} />
+                <span className={styles.proposalVoteArrow}>
+                  <NavLink to={href}>
+                    <img src={images.arrowRight} alt="right arrow" />
+                  </NavLink>
+                </span>
+              </div>
+            </li>
+          );
+        }
+
+        return <SkeletonListItem key={typeAndVoteId} proposal={proposal} href={href} />;
+      })}
+    </ul>
+  );
+}
+
+export function EmptyState(props: { children: ReactNode }) {
+  return <div className={styles.noProposals}>{props.children}</div>;
+}
+
+interface SkeletonListItemProps {
+  proposal: ProposalSkeleton;
+  href: string;
+}
+
+function SkeletonListItem(props: SkeletonListItemProps) {
+  const { proposal, href } = props;
+
+  return (
+    <li className={styles.skeletonItem} data-cy="proposal-item">
+      <div className={styles.proposalItemWrapper}>
+        <div className={styles.infoSkeletonContainer}>
+          <Skeleton />
+        </div>
+        <p className={styles.proposalItemTitle}>
+          <NavLink to={href}>{proposal.metadata?.title}</NavLink>
+        </p>
+        <div className={styles.subtitleSkeletonContainer}>
+          <Skeleton />
+        </div>
+      </div>
+
+      <div className={styles.proposalVoteBar}>
+        <div className={styles.voteSkeletonContainer}>
+          <Skeleton className={styles.sliderSkeleton} />
+          <Skeleton />
+        </div>
+        <span className={styles.proposalVoteArrow}>
+          <NavLink to={href}>
+            <img src={images.arrowRight} alt="right arrow" />
+          </NavLink>
+        </span>
+      </div>
+    </li>
+  );
+}
+
+interface ProposalInfoStateProps {
   proposal: Proposal;
   device: 'mobile' | 'desktop';
 }
 
-const voteIdFormat = (voteId: BigNumber) => {
-  return voteId.toString();
-};
-
-const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
+function ProposalInfoState({ proposal, device }: ProposalInfoStateProps) {
   const tooltipContent =
     proposal.type === 'primary'
       ? `Primary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`
       : `Secondary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`;
 
-  const proposalId = `#${voteIdFormat(proposal.voteId)} ${proposal.type}`;
+  const proposalId = `#${proposal.voteId} ${proposal.type}`;
 
   return (
     <div
@@ -59,66 +144,4 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
       </div>
     </div>
   );
-};
-
-const ProposalList = (props: Props) => {
-  const { proposals, type } = props;
-  const { setChainData, provider } = useChainData();
-
-  if (!provider) {
-    return (
-      <div className={styles.noProposals}>
-        <span>You need to be connected to view proposals</span>
-        <Button variant="link" onClick={connectWallet(setChainData)}>
-          Connect your wallet
-        </Button>
-      </div>
-    );
-  } else if (!proposals) {
-    // TODO: Use loading skeleton
-    return <p className={styles.noProposals}>Loading...</p>;
-  } else if (proposals.length === 0) {
-    return <p className={styles.noProposals}>There are no {type} proposals</p>;
-  } else {
-    return (
-      <>
-        {proposals.map((p) => {
-          const votingSliderData = voteSliderSelector(p);
-          const navlink = {
-            base: p.open ? 'governance' : 'history',
-            typeAndVoteId: encodeProposalTypeAndVoteId(p.type, voteIdFormat(p.voteId)),
-          };
-
-          return (
-            <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
-              <div className={styles.proposalItemWrapper}>
-                <ProposalInfoState proposal={p} device="mobile" />
-                <p className={styles.proposalItemTitle}>
-                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{p.metadata.title}</NavLink>
-                </p>
-                <div className={styles.proposalItemSubtitle}>
-                  <ProposalInfoState proposal={p} device="desktop" />
-                  <div className={styles.proposalItemBox}>
-                    {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
-                    {p.open ? <Timer deadline={p.deadline} /> : format(p.startDate, DATE_FORMAT)}
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.proposalVoteBar}>
-                <VoteSlider {...votingSliderData} />
-                <span className={styles.proposalVoteArrow}>
-                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
-                    <img src={images.arrowRight} alt="right arrow" />
-                  </NavLink>
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </>
-    );
-  }
-};
-
-export default ProposalList;
+}

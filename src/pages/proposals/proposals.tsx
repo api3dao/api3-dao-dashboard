@@ -6,40 +6,40 @@ import BorderedBox, { Header } from '../../components/bordered-box/bordered-box'
 import { TooltipChecklist } from '../../components/tooltip';
 import Treasury from '../components/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
-import { useActiveProposals, useLoadGenesisEpoch } from '../../logic/proposals/hooks';
+import { useLoadGenesisEpoch } from '../../logic/genesis-epoch';
 import { goEncodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
-import ProposalList from '../components/proposal-list';
+import ProposalList, { EmptyState } from '../components/proposal-list';
+import Pagination from '../../components/pagination';
 import NewProposalForm from './forms/new-proposal-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
-import {
-  openProposalsSelector,
-  canCreateNewProposalSelector,
-  votingPowerThresholdSelector,
-} from '../../logic/proposals/selectors';
+import { canCreateNewProposalSelector, votingPowerThresholdSelector } from '../../logic/proposals/selectors';
 import Delegation from './delegation';
 import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
-import { formatApi3, handleTransactionError, images, round } from '../../utils';
+import { useProposals } from '../../logic/proposals/data';
+import { formatApi3, handleTransactionError, images, round, useQueryParams } from '../../utils';
+import { connectWallet } from '../../components/sign-in/sign-in';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposals.module.scss';
 
 const Proposals = () => {
-  // TODO: Retrieve only "userVotingPower" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
-  const { provider, proposals, delegation, dashboardState, isGenesisEpoch, transactions, setChainData } =
-    useChainData();
+  const { provider, delegation, dashboardState, isGenesisEpoch, transactions, setChainData } = useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
   const api3Agent = useApi3AgentAddresses();
 
   const [openNewProposalModal, setOpenNewProposalModal] = useState(false);
 
+  const params = useQueryParams();
+  const currentPage = parseInt(params.get('page') || '1', 10);
+
+  const { data, totalResults, status } = useProposals(currentPage, { active: true });
+
   useLoadDashboardData();
   useLoadGenesisEpoch();
 
-  useActiveProposals();
   useTreasuryAndDelegation();
 
-  const sortedProposals = openProposalsSelector(proposals);
   const createNewProposal = canCreateNewProposalSelector(delegation, dashboardState, isGenesisEpoch);
   const votingThresholdPercent = votingPowerThresholdSelector(delegation);
 
@@ -104,6 +104,7 @@ const Proposals = () => {
     setOpenNewProposalModal(false);
   };
 
+  const unconnected = !provider;
   return (
     <Layout title="Governance">
       <div className={styles.proposalsHeader}>
@@ -125,7 +126,29 @@ const Proposals = () => {
             </div>
           </Header>
         }
-        content={<ProposalList proposals={sortedProposals} type="active" />}
+        content={
+          unconnected ? (
+            <EmptyState>
+              <span>You need to be connected to view proposals</span>
+              <Button variant="link" onClick={connectWallet(setChainData)}>
+                Connect your wallet
+              </Button>
+            </EmptyState>
+          ) : data ? (
+            <>
+              {totalResults > 0 ? (
+                <>
+                  <ProposalList proposals={data} />
+                  <Pagination totalResults={totalResults} currentPage={currentPage} className={styles.pagination} />
+                </>
+              ) : (
+                <EmptyState>There are no active proposals</EmptyState>
+              )}
+            </>
+          ) : (
+            <EmptyState>{status === 'loading' && <p>Loading...</p>}</EmptyState>
+          )
+        }
         noMobileBorders
       />
       <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)} size="large">

@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import debounce from 'lodash/debounce';
 import { transactionMessages, usePrevious, useIsMount, useOnMountEffect } from '../utils';
 import { getNetworkData, useChainData, displayPendingTransaction } from '../chain-data';
 import {
@@ -216,13 +217,18 @@ export function useChainUpdateEffect(effectFn: () => void | (() => void), effect
       return () => cleanup?.();
     }
 
-    const blockMinedListener = () => {
+    let cancelled = false;
+    // Multiple 'block' events are often emitted simultaneously (within a few milliseconds of each other),
+    // so we debounce the event listener to avoid triggering the effect too much
+    const blockMinedListener = debounce(() => {
+      if (cancelled) return;
       cleanup?.();
       cleanup = effectFnRef.current();
-    };
+    }, 20);
 
     provider.on('block', blockMinedListener);
     return () => {
+      cancelled = true;
       provider.removeListener('block', blockMinedListener);
       cleanup?.();
     };

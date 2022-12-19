@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { decodeProposalTypeAndVoteId, encodeProposalTypeAndVoteId } from './proposal-id';
 
 test('encoding', () => {
@@ -6,7 +5,7 @@ test('encoding', () => {
 });
 
 test('decoding', () => {
-  expect(decodeProposalTypeAndVoteId('primary-123')).toEqual({ voteId: BigNumber.from(123), type: 'primary' });
+  expect(decodeProposalTypeAndVoteId('primary-123')).toEqual({ voteId: '123', type: 'primary' });
 });
 
 test('decoding invalid value', () => {

@@ -1,1 +1,1 @@
-export { default } from './proposal-list';
+export { default, EmptyState } from './proposal-list';

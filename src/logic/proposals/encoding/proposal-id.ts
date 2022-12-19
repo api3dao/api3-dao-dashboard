@@ -27,5 +27,5 @@ export const decodeProposalTypeAndVoteId = (typeAndVoteId: string) => {
   if (!isValidProposalType(type)) return null;
   if (goSync(() => BigNumber.from(voteId)).success === false) return null;
 
-  return { type: type, voteId: BigNumber.from(voteId) };
+  return { type, voteId: voteId! };
 };
