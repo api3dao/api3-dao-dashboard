@@ -122,6 +122,9 @@
     "url": "^0.11.0"
   },
   "resolutions": {
-    "@types/jest": "^27.5.2"
+    "@types/jest": "^27.5.2",
+    "jest-regex-util": "^27.5.1",
+    "jest-watcher": "^27.5.1",
+    "jest-worker": "^27.5.1"
   }
 }
