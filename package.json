@@ -4,7 +4,7 @@
   "private": true,
   "homepage": ".",
   "scripts": {
-    "build": "react-scripts build",
+    "build": "react-app-rewired build",
     "ci:cypress": "yarn start-test \"yarn concurrently 'yarn eth:node' 'yarn ci:start'\" '8545|3000' 'yarn eth:deploy-dao-contracts-on-hardhat && yarn cypress:run'",
     "ci:start": "FORCE_COLOR=true yarn start | cat",
     "cypress:open": "cypress open",
@@ -23,9 +23,9 @@
     "prepare": "husky install",
     "send-to-account": "cd hardhat && npx hardhat send-to-account --address",
     "create-proposal": "cd hardhat && npx hardhat create-proposal",
-    "start": "BROWSER=none react-scripts start",
-    "test:watch": "react-scripts test",
-    "test": "react-scripts test --watchAll=false",
+    "start": "BROWSER=none react-app-rewired start",
+    "test:watch": "react-app-rewired test",
+    "test": "react-app-rewired test --watchAll=false",
     "tsc:watch": "tsc --project tsconfig.json --watch",
     "tsc": "tsc --project tsconfig.json"
   },
@@ -85,7 +85,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@typechain/ethers-v5": "^8.0.2",
     "@types/chai": "^4.3.0",
-    "@types/jest": "^26.0.24",
+    "@types/jest": "^27.5.2",
     "@types/lodash": "^4.14.178",
     "@types/mocha": "^9.1.0",
     "@types/node": "^17.0.15",
@@ -94,6 +94,7 @@
     "@types/react-input-autosize": "^2.2.1",
     "@types/react-router-dom": "^5.3.3",
     "api3-dao": "git+https://github.com/api3dao/api3-dao.git#0b8bb17fbda0161d5d9fff00ed4562b91cc27af6",
+    "assert": "^2.0.0",
     "chai": "^4.3.6",
     "chalk": "^4.1.2",
     "concurrently": "^7.0.0",
@@ -101,20 +102,29 @@
     "cypress-plugin-tab": "^1.0.5",
     "dotenv": "^16.0.0",
     "hardhat": "^2.8.3",
+    "http-browserify": "^1.7.0",
+    "https-browserify": "^1.0.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.3",
+    "os-browserify": "^0.3.0",
     "prettier": "^2.5.1",
-    "react-scripts": "^4.0.3",
+    "react-app-rewired": "^2.2.1",
+    "react-scripts": "5.0.1",
     "replace-in-file": "^6.3.2",
     "sass": "^1.54.5",
     "start-server-and-test": "^1.14.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
     "ts-node": "^10.4.0",
     "typechain": "^6.0.2",
     "typescript": "^4.5.5",
-    "typescript-plugin-css-modules": "^3.4.0"
+    "typescript-plugin-css-modules": "^3.4.0",
+    "url": "^0.11.0"
   },
   "resolutions": {
-    "@types/jest": "^26.0.24",
-    "react-error-overlay": "6.0.9"
+    "@types/jest": "^27.5.2",
+    "jest-regex-util": "^27.5.1",
+    "jest-watcher": "^27.5.1",
+    "jest-worker": "^27.5.1"
   }
 }
