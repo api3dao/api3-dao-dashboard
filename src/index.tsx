@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import * as Sentry from '@sentry/react';
 import './index.scss';
 import App from './app';
@@ -30,9 +29,6 @@ if (process.env.REACT_APP_NODE_ENV === 'development' && (window as any).ethereum
   mockLocalhostWeb3Provider(window);
 }
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const root = createRoot(document.getElementById('root')!);
+
+root.render(<App />);
