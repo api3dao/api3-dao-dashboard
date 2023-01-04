@@ -1,9 +1,9 @@
-import React, { createContext, useState, useMemo, useContext } from 'react';
+import { createContext, useState, useMemo, useContext, ReactNode } from 'react';
 import { initialSettableChainData, initialChainData, SettableChainData } from './state';
 
 export const ChainDataContext = createContext(initialSettableChainData);
 
-const ChainDataContextProvider: React.FC = ({ children }) => {
+const ChainDataContextProvider = (props: { children: ReactNode }) => {
   const [chainData, setChainData] = useState(initialChainData);
 
   const loggableSetChainData = useMemo(() => {
@@ -28,7 +28,7 @@ const ChainDataContextProvider: React.FC = ({ children }) => {
 
   return (
     <ChainDataContext.Provider value={{ ...chainData, setChainData: loggableSetChainData }}>
-      {children}
+      {props.children}
     </ChainDataContext.Provider>
   );
 };

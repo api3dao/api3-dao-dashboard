@@ -10,7 +10,6 @@ import ChooseDelegateAction from '../forms/choose-delegate-action/choose-delegat
 import { useApi3Pool } from '../../../contracts';
 import { handleTransactionError } from '../../../utils';
 import { images } from '../../../utils';
-import { useLoadDashboardData } from '../../../logic/dashboard';
 import { TooltipChecklist } from '../../../components/tooltip';
 import styles from './delegation.module.scss';
 import classNames from 'classnames';
@@ -19,8 +18,6 @@ const Delegation = () => {
   // TODO: Retrieve only "userStaked" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
   const { delegation, dashboardState, setChainData, transactions } = useChainData();
   const api3Pool = useApi3Pool();
-
-  useLoadDashboardData();
 
   const [openDelegationModal, setOpenDelegationModal] = useState(false);
   const [openChooseDelegateActionModal, setOpenChooseDelegateActionModal] = useState(false);
