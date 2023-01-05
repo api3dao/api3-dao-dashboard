@@ -12,6 +12,11 @@
       "enabled": false
     },
     {
+      "matchPackageNames": ["chalk"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
       "matchPackageNames": ["api3-dao"],
       "enabled": false
     },
