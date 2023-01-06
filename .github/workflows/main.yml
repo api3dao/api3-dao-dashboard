@@ -50,7 +50,7 @@ jobs:
           node-version: '14'
           cache: 'yarn'
       - name: Cache node modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: node-modules-cache
         with:
           path: |
@@ -59,7 +59,7 @@ jobs:
           key: modules-${{ hashFiles('**/yarn.lock') }}
       - name: Cache cypress
         id: cypress-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
           path: ~/.cache/Cypress
