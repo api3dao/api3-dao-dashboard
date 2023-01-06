@@ -75,7 +75,7 @@
     "@api3/promise-utils": "^0.1.0",
     "@aragon/os": "^4.4.0",
     "@nomiclabs/hardhat-ethers": "^2.0.4",
-    "@openzeppelin/contracts": "4.2.0",
+    "@openzeppelin/contracts": "4.7.3",
     "@percy/cli": "^1.6.0",
     "@percy/cypress": "^3.1.2",
     "@testing-library/cypress": "^8.0.7",
