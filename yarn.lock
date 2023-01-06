@@ -15,6 +15,12 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
+"@api3/claims-manager@api3dao/claims-manager.git#6c5eaffa3c01e38143648ef41d6bea003acae10a":
+  version "0.0.1"
+  resolved "https://codeload.github.com/api3dao/claims-manager/tar.gz/6c5eaffa3c01e38143648ef41d6bea003acae10a"
+  dependencies:
+    "@openzeppelin/contracts" "4.4.2"
+
 "@api3/promise-utils@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@api3/promise-utils/-/promise-utils-0.1.0.tgz#bc0678a5d19b32274192656dc787a131e22d82dc"
@@ -2753,6 +2759,11 @@
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@nomiclabs/hardhat-ethers/-/hardhat-ethers-2.0.4.tgz#288889c338acaf47cabd29020e561d0077b7efcf"
   integrity sha512-7LMR344TkdCYkMVF9LuC9VU2NBIi84akQiwqm7OufpWaDgHbWhuanY53rk3SVAW0E4HBk5xn5wl5+bN5f+Mq5w==
+
+"@openzeppelin/contracts@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.4.2.tgz#4e889c9c66e736f7de189a53f8ba5b8d789425c2"
+  integrity sha512-NyJV7sJgoGYqbtNUWgzzOGW4T6rR19FmX1IJgXGdapGPWsuMelGJn9h03nos0iqfforCbCB0iYIR0MtIuIFLLw==
 
 "@openzeppelin/contracts@4.7.3":
   version "4.7.3"
@@ -10656,6 +10667,11 @@ multicast-dns@^7.2.5:
   dependencies:
     dns-packet "^5.2.2"
     thunky "^1.0.2"
+
+multiformats@^9.9.0:
+  version "9.9.0"
+  resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.9.0.tgz#c68354e7d21037a8f1f8833c8ccd68618e8f1d37"
+  integrity sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==
 
 nanoid@3.3.3:
   version "3.3.3"
