@@ -8,7 +8,7 @@ const pressTabAndAssertFocusOutline = (selector: () => Cypress.Chainable<any>) =
 };
 
 describe('keyboard navigation and accessibility', () => {
-  before('login', () => {
+  beforeEach('login', () => {
     cy.resetBlockchain().visit('http://localhost:3000/#/');
   });
 
@@ -30,7 +30,7 @@ describe('keyboard navigation and accessibility', () => {
   });
 
   describe('can use keyboard keys in modal', () => {
-    before(() => {
+    beforeEach(() => {
       cy.login();
     });
 
