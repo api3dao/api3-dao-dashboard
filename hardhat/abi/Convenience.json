@@ -1,0 +1,488 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "api3PoolAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "enum Convenience.VotingAppType",
+        "name": "votingAppType",
+        "type": "uint8"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "voteId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "discussionUrl",
+        "type": "string"
+      }
+    ],
+    "name": "SetDiscussionUrl",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "erc20Addresses",
+        "type": "address[]"
+      }
+    ],
+    "name": "SetErc20Addresses",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "api3Pool",
+    "outputs": [
+      {
+        "internalType": "contract IApi3PoolExtended",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "api3Token",
+    "outputs": [
+      {
+        "internalType": "contract IERC20Metadata",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "erc20Addresses",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum Convenience.VotingAppType",
+        "name": "votingAppType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "voteIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getDynamicVoteData",
+    "outputs": [
+      {
+        "internalType": "bool[]",
+        "name": "executed",
+        "type": "bool[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "yea",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "nay",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "enum IApi3Voting.VoterState[]",
+        "name": "voterState",
+        "type": "uint8[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "delegateAt",
+        "type": "address[]"
+      },
+      {
+        "internalType": "enum IApi3Voting.VoterState[]",
+        "name": "delegateState",
+        "type": "uint8[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum Convenience.VotingAppType",
+        "name": "votingAppType",
+        "type": "uint8"
+      }
+    ],
+    "name": "getOpenVoteIds",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "voteIds",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum Convenience.VotingAppType",
+        "name": "votingAppType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "voteIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getStaticVoteData",
+    "outputs": [
+      {
+        "internalType": "uint64[]",
+        "name": "startDate",
+        "type": "uint64[]"
+      },
+      {
+        "internalType": "uint64[]",
+        "name": "supportRequired",
+        "type": "uint64[]"
+      },
+      {
+        "internalType": "uint64[]",
+        "name": "minAcceptQuorum",
+        "type": "uint64[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "votingPower",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "script",
+        "type": "bytes[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "userVotingPowerAt",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "discussionUrl",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getTreasuryAndUserDelegationData",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "names",
+        "type": "string[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "symbols",
+        "type": "string[]"
+      },
+      {
+        "internalType": "uint8[]",
+        "name": "decimals",
+        "type": "uint8[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "balancesOfPrimaryAgent",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "balancesOfSecondaryAgent",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "proposalVotingPowerThreshold",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "userVotingPower",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "delegatedToUser",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "delegate",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lastDelegationUpdateTimestamp",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lastProposalTimestamp",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getUserStakingData",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "apr",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "api3Supply",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalStake",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalShares",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "stakeTarget",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "userApi3Balance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "userStaked",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "userUnstaked",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "userVesting",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "userUnstakeAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "userUnstakeShares",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "userUnstakeScheduledFor",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "userLocked",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum Convenience.VotingAppType",
+        "name": "votingAppType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "voteId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "discussionUrl",
+        "type": "string"
+      }
+    ],
+    "name": "setDiscussionUrl",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_erc20Addresses",
+        "type": "address[]"
+      }
+    ],
+    "name": "setErc20Addresses",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum Convenience.VotingAppType",
+        "name": "",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "votingAppTypeToVoteIdToDiscussionUrl",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

@@ -7,7 +7,7 @@ import {
   useChainData,
   VoterState,
 } from '../../../chain-data';
-import { Api3Voting } from '../../../generated-contracts';
+import { Api3Voting } from '../../../contracts/artifacts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { messages } from '../../../utils';
 import difference from 'lodash/difference';

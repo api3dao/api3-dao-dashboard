@@ -129,16 +129,9 @@ const config: HardhatUserConfig = {
   },
   paths: {
     /**
-     * For now, we need the code of the contracts to build TypeChain wrappers for solidity contracts. Unfortunately,
-     * there need to be couple of hacks to support this:
-     *  1) Use DAO contracts dependency with github URL
-     *  2) We need to manually install contract dependencies (@openzeppelin/contracts)
-     *  3) Hardhat complains when we want to compile source files in `../node_modules` As a workaround, I've created a
-     *     `contracts` directory which contains symbolic links to the DAO contracts.
-     *  4) We need to use npx to run hardhat, because if we use hardhat from node_modules it wants to initialize new
-     *     project in the project root (and ignores hardhat directory).
-     *
-     * I've tried to workaround this using solidity `--allow-paths` but that didn't work.
+     * For now, we need the ABI of the contracts to build TypeChain wrappers for the DAO contracts.
+     * We need to use npx to run hardhat, because if we use hardhat from node_modules it wants to initialize new
+     * project in the project root (and ignores hardhat directory).
      *
      * NOTE: The deployment of DAO contracts is done using the DAO contracts repository
      * (https://github.com/api3dao/api3-dao). See README for more information.

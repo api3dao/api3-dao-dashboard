@@ -35,8 +35,8 @@ yarn-error.log*
 # and I want to have `.env` in gitignore and have `.env.example` checked in git instead.
 .env
 
-# TypeChain generated contracts
-/src/generated-contracts
+# TypeChain generated artifacts
+/src/contracts/artifacts
 
 # Cypress blockchain configuration
 cypress-shared.json

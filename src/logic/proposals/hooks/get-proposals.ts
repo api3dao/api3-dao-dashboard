@@ -1,6 +1,6 @@
 import { BigNumber, providers } from 'ethers';
 import { ProposalType, VoterState } from '../../../chain-data';
-import { Convenience } from '../../../generated-contracts';
+import { Convenience } from '../../../contracts/artifacts';
 import { Proposal } from '../../../chain-data';
 import { decodeEvmScript, decodeMetadata } from '../encoding';
 import { blockTimestampToDate } from '../../../utils';

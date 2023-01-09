@@ -14,7 +14,7 @@
     "eth:node": "cd hardhat && npx hardhat node --network hardhat",
     "eth:prepare-dao-contracts-for-hardhat": "node dev-scripts/prepare-dao-contracts-for-hardhat.js",
     "eth:run-script": "cd hardhat && npx hardhat run",
-    "fix-dev-issues": "node dev-scripts/copy-localhost-data.js && node dev-scripts/prepare-dao-contracts-for-typechain.js && node dev-scripts/scss-ts-hack.js",
+    "fix-dev-issues": "node dev-scripts/copy-localhost-data.js && node dev-scripts/generate-typechain-artifacts.js && node dev-scripts/scss-ts-hack.js",
     "format": "prettier --write ./**/*.{js,jsx,ts,tsx,json,css,scss,md}",
     "lint:fix": "eslint --fix --ext js,ts,tsx src dev-scripts",
     "lint": "eslint --ext js,ts,tsx src dev-scripts",
@@ -73,9 +73,7 @@
   },
   "devDependencies": {
     "@api3/promise-utils": "^0.1.0",
-    "@aragon/os": "^4.4.0",
     "@nomiclabs/hardhat-ethers": "^2.0.4",
-    "@openzeppelin/contracts": "4.7.3",
     "@percy/cli": "^1.6.0",
     "@percy/cypress": "^3.1.2",
     "@testing-library/cypress": "^9.0.0",

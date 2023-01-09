@@ -8,7 +8,7 @@ import {
   Api3Voting__factory as Api3VotingFactory,
   Convenience__factory as ConvenienceFactory,
   TimelockManager__factory as TimelockManagerFactory,
-} from '../generated-contracts';
+} from './artifacts/factories';
 import { initialChainData } from '../chain-data/state';
 
 export const useApi3Pool = () => {
