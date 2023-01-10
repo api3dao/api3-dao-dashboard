@@ -1,3 +1,10 @@
+/**
+ * NOTE: We use npx to run hardhat, because if we use hardhat from node_modules it initializes a new
+ * project in the project root (and ignores this hardhat directory).
+ *
+ * The deployment of DAO contracts is done using the DAO contracts repository
+ * (https://github.com/api3dao/api3-dao). See README for more information.
+ */
 import '@nomiclabs/hardhat-ethers';
 import { task, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
@@ -127,17 +134,6 @@ const config: HardhatUserConfig = {
       accounts: [fromEnvVariables('RINKEBY_DEPLOYER_PRIVATE_KEY')],
     },
   },
-  paths: {
-    /**
-     * For now, we need the ABI of the contracts to build TypeChain wrappers for the DAO contracts.
-     * We need to use npx to run hardhat, because if we use hardhat from node_modules it wants to initialize new
-     * project in the project root (and ignores hardhat directory).
-     *
-     * NOTE: The deployment of DAO contracts is done using the DAO contracts repository
-     * (https://github.com/api3dao/api3-dao). See README for more information.
-     */
-    sources: 'contracts',
-  },
   solidity: {
     compilers: [
       {
@@ -155,16 +151,6 @@ const config: HardhatUserConfig = {
           optimizer: {
             enabled: true,
             runs: 200,
-          },
-        },
-      },
-      // Needed to compile aragon DAO contracts
-      {
-        version: '0.4.24',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 10000,
           },
         },
       },

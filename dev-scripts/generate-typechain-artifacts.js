@@ -8,7 +8,7 @@ const main = async () => {
   console.info(bold(green('Generating typechain artifacts...')));
 
   await execAndLog(
-    "yarn typechain --target ethers-v5 --out-dir ./src/contracts/artifacts './hardhat/abi/**/!(*.dbg).json'",
+    "yarn typechain --target ethers-v5 --out-dir ./src/contracts/artifacts './src/contracts/abi/**/!(*.dbg).json'",
     DEBUG
   );
 };

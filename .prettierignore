@@ -5,6 +5,5 @@
 /dao-contracts
 /src/contract-deployments/localhost-dao.json
 .env
-/src/generated-contracts
 cypress-shared.json
 cypress/videos
