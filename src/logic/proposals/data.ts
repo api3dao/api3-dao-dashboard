@@ -23,8 +23,8 @@ import { decodeEvmScript, decodeMetadata } from './encoding';
 import { blockTimestampToDate, messages, sortEvents, useStableIds } from '../../utils';
 import { notifications } from '../../components/notifications';
 import { usePagedData } from '../../components/pagination';
-import { Convenience } from '../../generated-contracts';
-import { StartVoteEvent } from '../../generated-contracts/Api3Voting';
+import { Convenience } from '../../contracts/artifacts';
+import { StartVoteEvent } from '../../contracts/artifacts/Api3Voting';
 import { ProposalSkeleton } from './types';
 
 const VOTING_APP_IDS = {
