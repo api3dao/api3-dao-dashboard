@@ -9,7 +9,7 @@ import {
   Api3Voting__factory as Api3VotingFactory,
   Convenience__factory as ConvenienceFactory,
   TimelockManager__factory as TimelockManagerFactory,
-} from '../generated-contracts';
+} from './artifacts/factories';
 // TODO DA0-151 Delete tmp folder and import from claims-manager package
 import {
   ClaimsManager__factory as ClaimsManagerFactory,
