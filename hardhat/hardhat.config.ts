@@ -12,8 +12,10 @@ import { randomBytes } from 'crypto';
 import dotenv from 'dotenv';
 import { addDays, parseISO } from 'date-fns';
 import { parseUsd } from '../src/utils/api3-format';
-import { ClaimsManager__factory as ClaimsManagerFactory } from '../src/contracts/tmp';
-import { MockKlerosLiquid__factory as MockKlerosArbitratorFactory } from '../src/contracts/tmp/factories/mock/MockKlerosLiquid__factory';
+import {
+  ClaimsManager__factory as ClaimsManagerFactory,
+  MockKlerosLiquid__factory as MockKlerosArbitratorFactory,
+} from '../src/contracts/artifacts/factories';
 import { ChainData } from '../src/chain-data';
 import { encodeMetadata, goEncodeEvmScript } from '../src/logic/proposals/encoding';
 

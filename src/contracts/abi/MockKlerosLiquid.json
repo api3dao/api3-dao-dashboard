@@ -1,0 +1,388 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "MIN_JURORS",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "NON_PAYABLE_AMOUNT",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "disputeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "ruling",
+        "type": "uint256"
+      }
+    ],
+    "name": "__setCurrentRulingAndPassPeriodFromVoteToAppeal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "_subcourtID",
+        "type": "uint96"
+      },
+      {
+        "internalType": "uint256[4]",
+        "name": "_timesPerPeriod",
+        "type": "uint256[4]"
+      }
+    ],
+    "name": "__setSubcourtTimesPerPeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_disputeID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_extraData",
+        "type": "bytes"
+      }
+    ],
+    "name": "appeal",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_disputeID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_extraData",
+        "type": "bytes"
+      }
+    ],
+    "name": "appealCost",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "cost",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_disputeID",
+        "type": "uint256"
+      }
+    ],
+    "name": "appealPeriod",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "end",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "_extraData",
+        "type": "bytes"
+      }
+    ],
+    "name": "arbitrationCost",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "cost",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "subcourtId",
+        "type": "uint256"
+      }
+    ],
+    "name": "courts",
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "parent",
+        "type": "uint96"
+      },
+      {
+        "internalType": "bool",
+        "name": "hiddenVotes",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minStake",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "alpha",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "feeForJuror",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "jurorsForCourtJump",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_numberOfChoices",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_extraData",
+        "type": "bytes"
+      }
+    ],
+    "name": "createDispute",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "disputeID",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "currentRuling",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_disputeID",
+        "type": "uint256"
+      }
+    ],
+    "name": "disputeStatus",
+    "outputs": [
+      {
+        "internalType": "enum MockKlerosLiquid.DisputeStatus",
+        "name": "status",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "disputeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "disputes",
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "subcourtID",
+        "type": "uint96"
+      },
+      {
+        "internalType": "address",
+        "name": "arbitrated",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "numberOfChoices",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint8",
+        "name": "period",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lastPeriodChange",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "drawsInRound",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "commitsInRound",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "ruled",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_disputeID",
+        "type": "uint256"
+      }
+    ],
+    "name": "executeRuling",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "_extraData",
+        "type": "bytes"
+      }
+    ],
+    "name": "extraDataToSubcourtIDAndMinJurors",
+    "outputs": [
+      {
+        "internalType": "uint96",
+        "name": "subcourtID",
+        "type": "uint96"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minJurors",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "_subcourtID",
+        "type": "uint96"
+      }
+    ],
+    "name": "getSubcourt",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "children",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[4]",
+        "name": "timesPerPeriod",
+        "type": "uint256[4]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_disputeID",
+        "type": "uint256"
+      }
+    ],
+    "name": "passPeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

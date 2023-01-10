@@ -9,12 +9,9 @@ import {
   Api3Voting__factory as Api3VotingFactory,
   Convenience__factory as ConvenienceFactory,
   TimelockManager__factory as TimelockManagerFactory,
-} from './artifacts/factories';
-// TODO DA0-151 Delete tmp folder and import from claims-manager package
-import {
   ClaimsManager__factory as ClaimsManagerFactory,
   KlerosLiquidProxy__factory as KlerosLiquidProxyFactory,
-} from './tmp';
+} from './artifacts/factories';
 import { initialChainData } from '../chain-data/state';
 
 export const useApi3Pool = () => {
