@@ -17,15 +17,10 @@ import {
   useChainData,
 } from '../../chain-data';
 import { notifications } from '../../components/notifications';
-import {
-  useClaimsManager,
-  ClaimsManager,
-  useChainUpdateEffect,
-  KlerosLiquidProxy,
-  useArbitratorProxy,
-} from '../../contracts';
-import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManager';
-import { CreatedDisputeEvent } from '../../contracts/tmp/arbitrators/KlerosLiquidProxy';
+import { useClaimsManager, useChainUpdateEffect, useArbitratorProxy } from '../../contracts';
+import { ClaimsManager, KlerosLiquidProxy } from '../../contracts/artifacts';
+import { CreatedClaimEvent } from '../../contracts/artifacts/ClaimsManager';
+import { CreatedDisputeEvent } from '../../contracts/artifacts/KlerosLiquidProxy';
 import last from 'lodash/last';
 import uniq from 'lodash/uniq';
 

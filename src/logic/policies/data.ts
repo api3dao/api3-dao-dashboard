@@ -5,7 +5,8 @@ import { isWithinInterval } from 'date-fns';
 import { go } from '@api3/promise-utils';
 import { blockTimestampToDate, messages, sortEvents } from '../../utils';
 import { BasePolicy, Policy, produceState, useChainData } from '../../chain-data';
-import { ClaimsManager, useClaimsManager, useChainUpdateEffect } from '../../contracts';
+import { useClaimsManager, useChainUpdateEffect } from '../../contracts';
+import { ClaimsManager } from '../../contracts/artifacts';
 import { notifications } from '../../components/notifications';
 
 /**

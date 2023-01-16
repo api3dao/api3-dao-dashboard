@@ -9,7 +9,7 @@ import ArrowLeftIcon from '../../components/icons/arrow-left-icon';
 import ClaimEvidenceInstructions from './claim-evidence-instructions';
 import NewClaimForm, { FormState, FormStatus } from './new-claim-form';
 import Confirmation from './confirmation';
-import { CreatedClaimEvent } from '../../contracts/tmp/ClaimsManager';
+import { CreatedClaimEvent } from '../../contracts/artifacts/ClaimsManager';
 import { handleTransactionError } from '../../utils';
 import { useChainData } from '../../chain-data';
 import { useClaimsManager } from '../../contracts';

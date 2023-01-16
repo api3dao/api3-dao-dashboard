@@ -1,0 +1,1472 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_accessControlRegistry",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_adminRoleDescription",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_manager",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_api3Pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "_mediatorResponsePeriod",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "_claimantResponsePeriod",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "_arbitratorResponsePeriod",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "claimHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "clippedPayoutAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "clippedPayoutAmountInApi3",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "AcceptedClaim",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "claimHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "clippedAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "clippedAmountInApi3",
+        "type": "uint224"
+      }
+    ],
+    "name": "AcceptedSettlement",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "metadata",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "AnnouncedPolicyMetadata",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "claimHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "claimsAllowedFrom",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "policy",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "claimAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "evidence",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "claimCreationTime",
+        "type": "uint32"
+      }
+    ],
+    "name": "CreatedClaim",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "claimHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "arbitrator",
+        "type": "address"
+      }
+    ],
+    "name": "CreatedDispute",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "coverageAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "claimsAllowedFrom",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "claimsAllowedUntil",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "policy",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "CreatedPolicy",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "coverageAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "claimsAllowedFrom",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "claimsAllowedUntil",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "policy",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "DowngradedPolicy",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "claimHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "settlementAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "ProposedSettlement",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "ResetQuota",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "claimHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "clippedPayoutAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "clippedPayoutAmountInApi3",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "arbitrator",
+        "type": "address"
+      }
+    ],
+    "name": "ResolvedDisputeByAcceptingClaim",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "claimHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "clippedPayoutAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "clippedPayoutAmountInApi3",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "arbitrator",
+        "type": "address"
+      }
+    ],
+    "name": "ResolvedDisputeByAcceptingSettlement",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "claimHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "arbitrator",
+        "type": "address"
+      }
+    ],
+    "name": "ResolvedDisputeByRejectingClaim",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "api3Pool",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "SetApi3Pool",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "api3UsdAmountConverter",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "SetApi3UsdAmountConverter",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "arbitratorResponsePeriod",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "SetArbitratorResponsePeriod",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "claimantResponsePeriod",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "SetClaimantResponsePeriod",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "mediatorResponsePeriod",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "SetMediatorResponsePeriod",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "period",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "amountInApi3",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "SetQuota",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint224",
+        "name": "coverageAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "claimsAllowedFrom",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "claimsAllowedUntil",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "policy",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "UpgradedPolicy",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "internalType": "uint224",
+        "name": "claimAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "internalType": "string",
+        "name": "evidence",
+        "type": "string"
+      }
+    ],
+    "name": "acceptClaim",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint224",
+        "name": "claimAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "internalType": "string",
+        "name": "evidence",
+        "type": "string"
+      },
+      {
+        "internalType": "uint224",
+        "name": "minimumPayoutAmountInApi3",
+        "type": "uint224"
+      }
+    ],
+    "name": "acceptSettlement",
+    "outputs": [
+      {
+        "internalType": "uint224",
+        "name": "clippedPayoutAmountInApi3",
+        "type": "uint224"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "accessControlRegistry",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "accountToAccumulatedQuotaUsageCheckpoints",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "fromTimestamp",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint224",
+        "name": "value",
+        "type": "uint224"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "accountToQuota",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "period",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint224",
+        "name": "amount",
+        "type": "uint224"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "adminRole",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "adminRoleDescription",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "claimsAllowedFrom",
+        "type": "uint32"
+      },
+      {
+        "internalType": "string",
+        "name": "policy",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "name": "announcePolicyMetadata",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "api3Pool",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "api3UsdAmountConverter",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "arbitratorResponsePeriod",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "arbitratorRole",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "claimHashToProposedSettlementAmountInUsd",
+    "outputs": [
+      {
+        "internalType": "uint224",
+        "name": "",
+        "type": "uint224"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "claimHashToState",
+    "outputs": [
+      {
+        "internalType": "enum IClaimsManager.ClaimStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint32",
+        "name": "updateTime",
+        "type": "uint32"
+      },
+      {
+        "internalType": "address",
+        "name": "arbitrator",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claimantResponsePeriod",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "claimsAllowedFrom",
+        "type": "uint32"
+      },
+      {
+        "internalType": "string",
+        "name": "policy",
+        "type": "string"
+      },
+      {
+        "internalType": "uint224",
+        "name": "claimAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "internalType": "string",
+        "name": "evidence",
+        "type": "string"
+      }
+    ],
+    "name": "createClaim",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "claimHash",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "internalType": "uint224",
+        "name": "claimAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "internalType": "string",
+        "name": "evidence",
+        "type": "string"
+      }
+    ],
+    "name": "createDispute",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "internalType": "uint224",
+        "name": "coverageAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "internalType": "uint32",
+        "name": "claimsAllowedFrom",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "claimsAllowedUntil",
+        "type": "uint32"
+      },
+      {
+        "internalType": "string",
+        "name": "policy",
+        "type": "string"
+      }
+    ],
+    "name": "createPolicy",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "internalType": "uint224",
+        "name": "coverageAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "internalType": "uint32",
+        "name": "claimsAllowedFrom",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "claimsAllowedUntil",
+        "type": "uint32"
+      },
+      {
+        "internalType": "string",
+        "name": "policy",
+        "type": "string"
+      }
+    ],
+    "name": "downgradePolicy",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "getQuotaUsage",
+    "outputs": [
+      {
+        "internalType": "uint224",
+        "name": "",
+        "type": "uint224"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "isMediatorOrAdmin",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "manager",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "mediatorResponsePeriod",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "mediatorRole",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes[]",
+        "name": "data",
+        "type": "bytes[]"
+      }
+    ],
+    "name": "multicall",
+    "outputs": [
+      {
+        "internalType": "bytes[]",
+        "name": "results",
+        "type": "bytes[]"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "policyAgentRole",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "policyHashToState",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "claimsAllowedUntil",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint224",
+        "name": "coverageAmountInUsd",
+        "type": "uint224"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "internalType": "uint224",
+        "name": "claimAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "internalType": "string",
+        "name": "evidence",
+        "type": "string"
+      },
+      {
+        "internalType": "uint224",
+        "name": "settlementAmountInUsd",
+        "type": "uint224"
+      }
+    ],
+    "name": "proposeSettlement",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "resetQuota",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "internalType": "uint224",
+        "name": "claimAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "internalType": "string",
+        "name": "evidence",
+        "type": "string"
+      },
+      {
+        "internalType": "enum IClaimsManager.ArbitratorDecision",
+        "name": "result",
+        "type": "uint8"
+      }
+    ],
+    "name": "resolveDispute",
+    "outputs": [
+      {
+        "internalType": "uint224",
+        "name": "clippedPayoutAmountInApi3",
+        "type": "uint224"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_api3Pool",
+        "type": "address"
+      }
+    ],
+    "name": "setApi3Pool",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_api3UsdAmountConverter",
+        "type": "address"
+      }
+    ],
+    "name": "setApi3UsdAmountConverter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "_arbitratorResponsePeriod",
+        "type": "uint32"
+      }
+    ],
+    "name": "setArbitratorResponsePeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "_claimantResponsePeriod",
+        "type": "uint32"
+      }
+    ],
+    "name": "setClaimantResponsePeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "_mediatorResponsePeriod",
+        "type": "uint32"
+      }
+    ],
+    "name": "setMediatorResponsePeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "period",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint224",
+        "name": "amount",
+        "type": "uint224"
+      }
+    ],
+    "name": "setQuota",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "claimant",
+        "type": "address"
+      },
+      {
+        "internalType": "uint224",
+        "name": "coverageAmountInUsd",
+        "type": "uint224"
+      },
+      {
+        "internalType": "uint32",
+        "name": "claimsAllowedFrom",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
+        "name": "claimsAllowedUntil",
+        "type": "uint32"
+      },
+      {
+        "internalType": "string",
+        "name": "policy",
+        "type": "string"
+      }
+    ],
+    "name": "upgradePolicy",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "policyHash",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
