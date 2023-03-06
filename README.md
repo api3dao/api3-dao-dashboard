@@ -1,8 +1,6 @@
-# api3-dao-dashboard
+# api3-dao-dashboard [![ContinuousBuild](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml)
 
 The implementation of the DAO dashboard.
-
-[![ContinuousBuild](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml)
 
 We use the `main` branch to develop new features. For production code, see the
 [production branch](https://github.com/api3dao/api3-dao-dashboard/tree/production).
@@ -46,7 +44,7 @@ docker run --rm --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
 ## Verifying the Fleek build
 
 We're using Fleek to build and deploy the dashboard. To avoid trusting Fleek with build and deployments, one can also
-build the app locally and compare its hash with the has of IPFS deployment.
+build the app locally and compare its hash with the hash of IPFS deployment.
 
 To do so, first create a `docker-compose.yml` as explained
 [here](https://docs.fleek.co/hosting/site-deployment/#testing-deployments-locally) in this repo.
