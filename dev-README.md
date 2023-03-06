@@ -1,12 +1,7 @@
 # Development instructions
 
-The DAO dashboard README is reserved for tech savvy users who want to learn more about production environment. All
-development oriented can be found here.
-
-## Running on mainnet or testnets
-
-1. `yarn` - to install dependencies and generate TypeScript types
-2. `yarn start` - to start the application on localhost on port 3000
+The DAO dashboard README is reserved for tech savvy users who want to learn more about how is the DAO dashboard
+implemented. All developer oriented instructions can be found here.
 
 ## Running with hardhat
 
@@ -39,52 +34,26 @@ different network, adapt the configuration to your needs.
 
 We use [Fleek](https://fleek.co/) to host the application on IPFS. The hosting workflow works like this:
 
-- Every PR against `main` branch will be deployed by github action (as preview deployment) and you can find the IPFS
+- Every PR against `main` branch will be deployed by Github Actions (as preview deployment) and you can find the IPFS
   hash in the "fleek deploy check" details in the PR status checks panel.
 - The current version of app in `main` branch will be deployed as staging on the following URL:
-  https://api3-dao-dashboard-staging.on.fleek.co/. The app will be redeployed after every merged request automatically
-- Every push to `production` branch will trigger a production deploy. The app can be found on this URL:
-  https://api3-dao-dashboard.on.fleek.co/
+  https://api3-dao-dashboard-staging.on.fleek.co/. The app will be redeployed after every merged request automatically.
+- Every push to `production` branch will trigger a production deploy. The productions can be found on this URL:
+  https://api3-dao-dashboard.on.fleek.co/.
 
-Apart from that, we are using
-[environment variables](https://create-react-app.dev/docs/adding-custom-environment-variables/), specifically
-`REACT_APP_NODE_ENV` to specify the environment. Possible values `development`, `staging` and `production`.
+On Fleek, we are using [environment variables](https://create-react-app.dev/docs/adding-custom-environment-variables/),
+specifically `REACT_APP_NODE_ENV` to specify the environment. Possible values `development`, `staging` and `production`.
 
-### Hosting new version of production app
+### Updating the production deployment
 
-All you need to do is push the code to `production` branch. Most of the times you just want to copy what's on `main`
-branch:
-
-1. `git checkout production`
-2. `git merge main`
-3. `git push`
+All you need to do is merge a PR to `production` branch. Most of the times you just want to open a new PR from the
+`main` branch.
 
 ### Updating the name servers
 
 The primary way to access the DAO dashboard is through the `api3.eth` ENS name, which points directly to the IPFS hash.
-Then, the user can either connect to mainnet on their Metamask and visit `api3.eth/` (the recommended way), or they can
-visit `https://api3.eth.link/`.
+Then, the user can either connect to mainnet on their Metamask (or use a browser which supports resolving .eth domains)
+and visit `api3.eth/`.
 
-<!-- markdown-link-check-disable -->
-<!-- The link below exists and works, but the github actions check says it does not" -->
-
-Unfortunately, the `https://api3.eth.link/` is reported to be down frequently, see
-[this](https://blog.cloudflare.com/cloudflare-distributed-web-resolver/) for more information.
-
-<!-- markdown-link-check-enable -->
-
-After pushing to the production branch, verify the Fleek build (see below). Then,
+After pushing to the production branch, [verify the Fleek build](./README.md#verifying-the-fleek-build). Then,
 [point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
-
-<!-- markdown-link-check-disable -->
-<!-- The link below exists and works, but the github actions check says it does not" -->
-
-Then, with the Cloudflare account that manages `api3.org`,
-[update the page rule](https://support.cloudflare.com/hc/en-us/articles/200172286-Configuring-URL-forwarding-or-redirects-with-Cloudflare-Page-Rules)
-to direct `https://api3.eth.link/#/` to the URL pointing to the new deployment through the `dweb.link` gateway (you can
-get this URL from the [ENS dashboard](https://app.ens.domains/name/api3.eth)).
-
-<!-- markdown-link-check-enable -->
-
-`api3.eth/` will start forwarding to the new deployment instantly, while `https://api3.eth.link/` will have to wait for
-the DNS information to propagate (may take up to 2 hours).

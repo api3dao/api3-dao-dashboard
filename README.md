@@ -5,7 +5,7 @@ The implementation of the DAO dashboard.
 [![ContinuousBuild](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/api3dao/api3-dao-dashboard/actions/workflows/main.yml)
 
 We use the `main` branch to develop new features. For production code, see the
-[the production branch](https://github.com/api3dao/api3-dao-dashboard/tree/production).
+[production branch](https://github.com/api3dao/api3-dao-dashboard/tree/production).
 
 ## Development instructions
 
@@ -24,8 +24,8 @@ Currently, it's only possible to build the Docker image on a UNIX-like OS. If yo
 
 ### Running the prebuilt image
 
-The simplest way to run the dashboard is using the prebuilt Docker image. This image is built and pushed to Docker Hub
-via a GitHub Actions workflow triggered by commits to the `production` branch.
+The simplest way to run the dashboard locally is using the prebuilt Docker image. This image is built and pushed to
+Docker Hub automatically when new commits are added to the `production` branch.
 
 ```sh
 docker run --rm --publish 7770:80 --name api3-dao-dashboard api3/dao-dashboard:latest
@@ -33,7 +33,7 @@ docker run --rm --publish 7770:80 --name api3-dao-dashboard api3/dao-dashboard:l
 
 ### Building from source
 
-Alternatively, you can build the Docker image from source. Note that the production source code is on the `production`
+Alternatively, you can build the Docker image from source. Note that the production code is located on the `production`
 branch.
 
 ```sh
@@ -45,11 +45,11 @@ docker run --rm --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
 
 ## Verifying the Fleek build
 
-We're using Fleek to build and deploy the dashboard. To avoid trusting Fleek to build and deploy the app correctly, one
-can also build it locally and compare its hash with the IPFS deployment.
+We're using Fleek to build and deploy the dashboard. To avoid trusting Fleek with build and deployments, one can also
+build the app locally and compare its hash with the has of IPFS deployment.
 
 To do so, first create a `docker-compose.yml` as explained
-[here](https://docs.fleek.co/hosting/site-deployment/#testing-deployments-locally) in this repo
+[here](https://docs.fleek.co/hosting/site-deployment/#testing-deployments-locally) in this repo.
 
 ```yml
 version: '3.7'
@@ -75,12 +75,12 @@ and run `docker-compose run --rm app`, which will create a `./build` directory.
 
 Then, (after installing `ipfs`) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build (`sudo`
 because `build` will likely be owned by root). This should be the same as the IPFS hash as the one on the Fleek
-dashboard and what our ENS is pointing towards.
+dashboard and what our ENS record is pointing towards.
 
 ## Error Monitoring
 
 Please note that the API3 core team tracks application errors on test and production environments using
-[Sentry](https://sentry.io). This is solely used to fix errors and improve the user experience.
+[Sentry](https://sentry.io). This is solely used to fix errors and improve the experience of our users.
 
 **NOTE: No identifying user information is collected**
 
