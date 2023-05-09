@@ -73,7 +73,7 @@ export const goEncodeEvmScript = async (
     if (!formData.parameters) return formData.parameters;
     const json = JSON.parse(formData.parameters);
     if (!Array.isArray(json)) throw new Error('Parameters must be an array');
-    return json as string[];
+    return json as unknown[];
   });
   if (!goJsonParams.success) {
     return fail(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
@@ -118,6 +118,7 @@ export const goEncodeEvmScript = async (
       range(parameterTypes.length).map(async (i) => {
         const param = targetParameters[i]!;
         if (parameterTypes[i] !== 'address') return param;
+        if (typeof param !== 'string') throw new Error('Parameter must be an ENS string');
 
         return convertToAddressOrThrow(provider, param);
       })
