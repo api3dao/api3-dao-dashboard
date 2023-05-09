@@ -20,6 +20,7 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
   const agentAddresses = useApi3AgentAddresses();
   const etherscanExplainer = `Etherscan link for the ${type} DAO agent`;
   const agentAddress = agentAddresses?.[type];
+  const etherscanAddressUrl = agentAddress && getEtherscanAddressUrl(chainId, agentAddress);
 
   return (
     <Dropdown
@@ -42,10 +43,10 @@ const TreasuryDropdown = (props: TreasuryDropdownProps) => {
         >
           {type}
         </p>
-        {agentAddress && (
+        {etherscanAddressUrl && (
           <span className={classNames(styles.copy, globalStyles.textSmall)}>
             <Tooltip overlay={etherscanExplainer}>
-              <ExternalLink href={getEtherscanAddressUrl(chainId, agentAddress) ?? ''} className={styles.dropdownLink}>
+              <ExternalLink href={etherscanAddressUrl} className={styles.dropdownLink}>
                 <img
                   src={images.externalLink}
                   alt={etherscanExplainer}
