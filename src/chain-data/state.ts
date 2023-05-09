@@ -30,7 +30,7 @@ export interface DashboardState extends ConvenienceDashboardData {
 export interface ProposalMetadata {
   version: string;
   title: string;
-  targetSignature: string;
+  targetSignature: string | null;
   description: string;
 }
 
@@ -41,7 +41,7 @@ export type TreasuryType = 'primary' | 'secondary';
 
 export interface DecodedEvmScript {
   targetAddress: string;
-  parameters: unknown[];
+  parameters: unknown[] | null;
   value: BigNumber; // amount of ETH that is sent to the contract
 }
 export interface Proposal {

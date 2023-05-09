@@ -241,22 +241,26 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
                 )}
               </p>
             </div>
-            <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Target Contract Signature</p>
-              <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
-            </div>
+            {proposal.metadata.targetSignature && (
+              <div className={styles.proposalDetailsItem}>
+                <p className={globalStyles.bold}>Target Contract Signature</p>
+                <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
+              </div>
+            )}
             {value.gt(0) && (
               <div className={styles.proposalDetailsItem}>
                 <p className={globalStyles.bold}>Value (Wei)</p>
                 <p className={globalStyles.secondaryColor}>{value.toString()}</p>
               </div>
             )}
-            <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Parameters</p>
-              <p className={classNames(globalStyles.secondaryColor, styles.multiline)}>
-                {JSON.stringify(parameters, null, 2)}
-              </p>
-            </div>
+            {parameters !== null && (
+              <div className={styles.proposalDetailsItem}>
+                <p className={globalStyles.bold}>Parameters</p>
+                <p className={classNames(globalStyles.secondaryColor, styles.multiline)}>
+                  {JSON.stringify(parameters, null, 2)}
+                </p>
+              </div>
+            )}
           </div>
         }
         noMobileBorders

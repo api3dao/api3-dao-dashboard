@@ -42,6 +42,18 @@ test('correct encoding', async () => {
   expect(goRes.data).toBeDefined();
 });
 
+it('allows simple ETH transfers using empty parameters and target signature', async () => {
+  const invalidData = updateImmutably(newFormData, (data) => {
+    data.parameters = '';
+    data.targetSignature = '';
+  });
+
+  const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+  assertGoSuccess(goRes);
+  expect(goRes.data).toBeDefined();
+});
+
 describe('encoding incorrect params', () => {
   it('incorrect parameter values', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
@@ -67,20 +79,22 @@ describe('encoding incorrect params', () => {
     expect(goRes.error).toEqual(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
   });
 
-  it('empty parameters', async () => {
+  it('wrong number of parameters', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
-      data.parameters = '';
+      data.parameters = JSON.stringify(['arg1']);
     });
 
     const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
 
     assertGoError(goRes);
-    expect(goRes.error).toEqual(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('parameters', 'Please specify the correct number of function arguments')
+    );
   });
 
-  it('wrong number of parameters', async () => {
+  it('empty parameters with non-empty target signature', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
-      data.parameters = JSON.stringify(['arg1']);
+      data.parameters = '';
     });
 
     const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
@@ -116,6 +130,19 @@ describe('encoding invalid target signature', () => {
     assertGoError(goRes);
     expect(goRes.error).toEqual(
       new EncodedEvmScriptError('targetSignature', 'Please specify a valid contract signature')
+    );
+  });
+
+  it('has empty target signature but non-empty parameters', async () => {
+    const invalidData = updateImmutably(newFormData, (data) => {
+      data.targetSignature = '';
+    });
+
+    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+    assertGoError(goRes);
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('parameters', 'Please specify the correct number of function arguments')
     );
   });
 });
@@ -287,6 +314,36 @@ describe('isEvmScriptValid()', () => {
       decodedEvmScript,
       script,
     });
+
+    expect(result).toBe(true);
+  });
+
+  // The data for this proposal ware created locally.
+  it('returns true also for simple ETH transfers', async () => {
+    const script =
+      '0x00000001e0786c9956480b64808494676911f0afe39f8baa000000a4b61d27f60000000000000000000000001ddfc105fb187131ab6d77eecb966f87a2efa66400000000000000000000000000000000000000000000000000000000000005dc00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000004c5d2460100000000000000000000000000000000000000000000000000000000';
+    const metadata = {
+      description: 'Send some ETH',
+      targetSignature: '',
+      title: 'Send to Emik',
+      version: '1',
+    };
+    const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);
+    expect(decodedEvmScript).not.toBeNull();
+
+    const result = await isEvmScriptValid(
+      mockedProvider,
+      {
+        primary: '0xbb4c8c398288f2309b32dd83bc7dd3e4f93c605f',
+        secondary: '0xe0786c9956480b64808494676911f0afe39f8baa',
+      },
+      {
+        type: 'secondary',
+        metadata,
+        decodedEvmScript,
+        script,
+      }
+    );
 
     expect(result).toBe(true);
   });
