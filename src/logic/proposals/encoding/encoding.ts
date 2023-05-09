@@ -68,8 +68,9 @@ export const goEncodeEvmScript = async (
   formData: NewProposalFormData,
   api3Agent: Api3Agent
 ): Promise<GoResult<string, EncodedEvmScriptError>> => {
-  // Ensure that the form parameters form a valid JSON array
+  // Ensure that the form parameters form a valid JSON array or an empty string (in case of a simple ETH transfer)
   const goJsonParams = goSync(() => {
+    if (!formData.parameters) return formData.parameters;
     const json = JSON.parse(formData.parameters);
     if (!Array.isArray(json)) throw new Error('Parameters must be an array');
     return json as string[];
@@ -79,8 +80,13 @@ export const goEncodeEvmScript = async (
   }
   const targetParameters = goJsonParams.data;
 
-  // Target contract signature must be a valid solidity function signature
-  const goTargetSignature = goSync(() => utils.FunctionFragment.from(formData.targetSignature));
+  // Target contract signature must be a valid solidity function signature or be empty (in case of a simple ETH
+  // transfer)
+  const goTargetSignature = goSync(() => {
+    if (!formData.targetSignature) return;
+    // We only care whether the following throws or not
+    utils.FunctionFragment.from(formData.targetSignature);
+  });
   if (!goTargetSignature.success) {
     return fail(new EncodedEvmScriptError('targetSignature', 'Please specify a valid contract signature'));
   }
@@ -220,6 +226,15 @@ export const decodeEvmScript = async (
     const targetContractAddress = await tryConvertToEnsName(provider, executionParameters[0]);
     const value = executionParameters[1];
 
+    // If there is no target signature the transaction is a simple ETH transfer
+    if (!metadata.targetSignature) {
+      return {
+        targetAddress: targetContractAddress,
+        value,
+        parameters: null,
+      };
+    }
+
     // Decode the calldata of the last target function (last argument of the "execute" function) which are the decoded
     // EVM script parameters.
     const targetCallData = executionParameters[2];
@@ -263,10 +278,10 @@ export async function isEvmScriptValid(
     provider,
     {
       type: proposal.type,
-      targetSignature: metadata.targetSignature,
+      targetSignature: metadata.targetSignature ?? '',
       description: metadata.description,
       title: metadata.title,
-      parameters: JSON.stringify(decodedEvmScript.parameters),
+      parameters: decodedEvmScript.parameters === null ? '' : JSON.stringify(decodedEvmScript.parameters),
       targetAddress: decodedEvmScript.targetAddress,
       targetValue: decodedEvmScript.value.toString(),
     },
