@@ -148,12 +148,13 @@ export const goEncodeEvmScript = async (
 
   // Ensure value is a non-negative amount (in Wei)
   const goValue = goSync(() => {
-    const parsed = BigNumber.from(formData.targetValue);
-    if (parsed.lt(0)) throw new Error();
-    return parsed;
+    const goParsed = goSync(() => BigNumber.from(formData.targetValue));
+    if (!goParsed.success || goParsed.data.lt(0)) throw new Error('Please enter a valid amount in Wei');
+    if (!targetSignature && goParsed.data.eq(0)) throw new Error('Value must be greater than 0 for ETH transfers');
+    return goParsed.data;
   });
   if (!goValue.success) {
-    return fail(new EncodedEvmScriptError('targetValue', 'Please enter a valid amount in Wei'));
+    return fail(new EncodedEvmScriptError('targetValue', goValue.error.message));
   }
   const targetValue = goValue.data;
 
