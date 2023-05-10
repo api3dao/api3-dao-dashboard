@@ -42,7 +42,7 @@ it('new proposal form validation', () => {
 
   // Fill target address and value
   cy.findByText('Please specify a valid account address').should('exist');
-  cy.findByLabelText('Target Contract Address').type(ACCOUNTS[1]);
+  cy.findByLabelText('Target Address').type(ACCOUNTS[1]);
   cy.findByLabelText('Value (Wei)').type('-123456');
   cy.findByText('Create').click();
 
