@@ -119,6 +119,20 @@ describe('encoding incorrect params', () => {
       new EncodedEvmScriptError('targetValue', 'Value must be greater than 0 for ETH transfers')
     );
   });
+
+  it('empty array parameters ("[]") for simple ETH transfer', async () => {
+    const invalidData = updateImmutably(newFormData, (data) => {
+      data.parameters = '[]';
+      data.targetSignature = '';
+    });
+
+    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+    assertGoError(goRes);
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('parameters', 'Please specify an empty string for parameters for simple ETH transfer')
+    );
+  });
 });
 
 describe('encoding invalid target signature', () => {
@@ -157,7 +171,7 @@ describe('encoding invalid target signature', () => {
 
     assertGoError(goRes);
     expect(goRes.error).toEqual(
-      new EncodedEvmScriptError('parameters', 'Please specify the correct number of function arguments')
+      new EncodedEvmScriptError('parameters', 'Please specify an empty string for parameters for simple ETH transfer')
     );
   });
 });
