@@ -92,6 +92,13 @@ export const goEncodeEvmScript = async (
   }
   const targetSignature = formData.targetSignature;
 
+  // Ensure parameters are empty string in case of simple ETH transfers
+  if (!targetSignature && (typeof targetParameters !== 'string' || targetParameters.length > 0)) {
+    return fail(
+      new EncodedEvmScriptError('parameters', 'Please specify an empty string for parameters for simple ETH transfer')
+    );
+  }
+
   // Extract the parameters that were passed and check if the number of arguments is same as in the function signature
   const goExtractParameters = goSync(() => {
     // Extract the parameter types from the target function signature
