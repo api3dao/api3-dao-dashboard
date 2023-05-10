@@ -43,12 +43,12 @@ test('correct encoding', async () => {
 });
 
 it('allows simple ETH transfers using empty parameters and target signature', async () => {
-  const invalidData = updateImmutably(newFormData, (data) => {
+  const validData = updateImmutably(newFormData, (data) => {
     data.parameters = '';
     data.targetSignature = '';
   });
 
-  const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+  const goRes = await goEncodeEvmScript(mockedProvider, validData, api3Agent);
 
   assertGoSuccess(goRes);
   expect(goRes.data).toBeDefined();
