@@ -127,7 +127,7 @@ const NewProposalForm = (props: Props) => {
       </ProposalFormItem>
 
       <ProposalFormItem
-        name={<label htmlFor="target-address">Target Contract Address</label>}
+        name={<label htmlFor="target-address">Target Address</label>}
         tooltip="The address of the contract you want to be called when the proposal is executed."
       >
         <Input id="target-address" value={targetAddress} onChange={(e) => setTargetAddress(e.target.value)} block />

@@ -230,7 +230,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               </p>
             </div>
             <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Target Contract Address</p>
+              <p className={globalStyles.bold}>Target Address</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlTargetAddress ? (
                   <ExternalLink className={styles.link} href={urlTargetAddress}>
