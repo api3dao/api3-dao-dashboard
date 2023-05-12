@@ -68,9 +68,8 @@ export const goEncodeEvmScript = async (
   formData: NewProposalFormData,
   api3Agent: Api3Agent
 ): Promise<GoResult<string, EncodedEvmScriptError>> => {
-  // Ensure that the form parameters form a valid JSON array or an empty string (in case of a simple ETH transfer)
+  // Ensure that the form parameters form a valid JSON array
   const goJsonParams = goSync(() => {
-    if (!formData.parameters) return formData.parameters;
     const json = JSON.parse(formData.parameters);
     if (!Array.isArray(json)) throw new Error('Parameters must be an array');
     return json as unknown[];
@@ -91,13 +90,6 @@ export const goEncodeEvmScript = async (
     return fail(new EncodedEvmScriptError('targetSignature', 'Please specify a valid contract signature'));
   }
   const targetSignature = formData.targetSignature;
-
-  // Ensure parameters are empty string in case of simple ETH transfers
-  if (!targetSignature && (typeof targetParameters !== 'string' || targetParameters.length > 0)) {
-    return fail(
-      new EncodedEvmScriptError('parameters', 'Please specify an empty string for parameters for simple ETH transfer')
-    );
-  }
 
   // Extract the parameters that were passed and check if the number of arguments is same as in the function signature
   const goExtractParameters = goSync(() => {
@@ -240,7 +232,7 @@ export const decodeEvmScript = async (
       return {
         targetAddress: targetContractAddress,
         value,
-        parameters: null,
+        parameters: [],
       };
     }
 
@@ -290,7 +282,7 @@ export async function isEvmScriptValid(
       targetSignature: metadata.targetSignature ?? '',
       description: metadata.description,
       title: metadata.title,
-      parameters: decodedEvmScript.parameters === null ? '' : JSON.stringify(decodedEvmScript.parameters),
+      parameters: JSON.stringify(decodedEvmScript.parameters),
       targetAddress: decodedEvmScript.targetAddress,
       targetValue: decodedEvmScript.value.toString(),
     },

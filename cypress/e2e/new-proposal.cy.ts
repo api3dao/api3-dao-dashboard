@@ -13,7 +13,7 @@ it('new proposal form validation', () => {
   cy.findByText('Create').click();
   cy.findByText('Title must have at least one alphanumeric character').should('exist');
   cy.findByText('Description must have at least one alphanumeric character').should('exist');
-  cy.findByText('Please specify a valid account address').should('exist');
+  cy.findByText('Make sure parameters is a valid JSON array').should('exist');
   cy.percySnapshot('Governance: New proposal modal', { minHeight: 1500 });
 
   // Correct the errors, but fill in invalid parameters

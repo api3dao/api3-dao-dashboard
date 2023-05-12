@@ -41,7 +41,7 @@ export type TreasuryType = 'primary' | 'secondary';
 
 export interface DecodedEvmScript {
   targetAddress: string;
-  parameters: unknown[] | null;
+  parameters: unknown[];
   value: BigNumber; // amount of ETH that is sent to the contract
 }
 export interface Proposal {
