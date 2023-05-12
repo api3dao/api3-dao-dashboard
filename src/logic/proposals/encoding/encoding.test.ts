@@ -42,9 +42,9 @@ test('correct encoding', async () => {
   expect(goRes.data).toBeDefined();
 });
 
-it('allows simple ETH transfers using empty parameters and target signature', async () => {
+it('allows simple ETH transfers using zero length parameters and empty target signature', async () => {
   const validData = updateImmutably(newFormData, (data) => {
-    data.parameters = '';
+    data.parameters = '[]';
     data.targetSignature = '';
   });
 
@@ -92,9 +92,9 @@ describe('encoding incorrect params', () => {
     );
   });
 
-  it('empty parameters with non-empty target signature', async () => {
+  it('zero length parameters with non-empty target signature', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
-      data.parameters = '';
+      data.parameters = '[]';
     });
 
     const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
@@ -105,9 +105,20 @@ describe('encoding incorrect params', () => {
     );
   });
 
-  it('zero value for simple ETH transfer', async () => {
+  it('empty parameters with non-empty target signature', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
       data.parameters = '';
+    });
+
+    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+    assertGoError(goRes);
+    expect(goRes.error).toEqual(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
+  });
+
+  it('zero value for simple ETH transfer', async () => {
+    const invalidData = updateImmutably(newFormData, (data) => {
+      data.parameters = '[]';
       data.targetSignature = '';
       data.targetValue = '0';
     });
@@ -117,20 +128,6 @@ describe('encoding incorrect params', () => {
     assertGoError(goRes);
     expect(goRes.error).toEqual(
       new EncodedEvmScriptError('targetValue', 'Value must be greater than 0 for ETH transfers')
-    );
-  });
-
-  it('empty array parameters ("[]") for simple ETH transfer', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
-      data.parameters = '[]';
-      data.targetSignature = '';
-    });
-
-    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
-
-    assertGoError(goRes);
-    expect(goRes.error).toEqual(
-      new EncodedEvmScriptError('parameters', 'Please specify an empty string for parameters for simple ETH transfer')
     );
   });
 });
@@ -171,7 +168,7 @@ describe('encoding invalid target signature', () => {
 
     assertGoError(goRes);
     expect(goRes.error).toEqual(
-      new EncodedEvmScriptError('parameters', 'Please specify an empty string for parameters for simple ETH transfer')
+      new EncodedEvmScriptError('parameters', 'Please specify the correct number of function arguments')
     );
   });
 });
@@ -350,11 +347,11 @@ describe('isEvmScriptValid()', () => {
   // The data for this proposal ware created locally.
   it('returns true also for simple ETH transfers', async () => {
     const script =
-      '0x00000001e0786c9956480b64808494676911f0afe39f8baa000000a4b61d27f60000000000000000000000001ddfc105fb187131ab6d77eecb966f87a2efa66400000000000000000000000000000000000000000000000000000000000005dc00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000004c5d2460100000000000000000000000000000000000000000000000000000000';
+      '0x00000001e0786c9956480b64808494676911f0afe39f8baa000000a4b61d27f60000000000000000000000001ddfc105fb187131ab6d77eecb966f87a2efa6640000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000004c5d2460100000000000000000000000000000000000000000000000000000000';
     const metadata = {
-      description: 'Send some ETH',
+      description: 'Send ETH to an EOA',
       targetSignature: '',
-      title: 'Send to Emik',
+      title: 'Make a simple ETH transfer proposal',
       version: '1',
     };
     const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);
