@@ -35,14 +35,14 @@ const mockedProvider: providers.JsonRpcProvider = {
   },
 } as any;
 
-test('correct encoding', async () => {
+test('correct contract call proposal', async () => {
   const goRes = await goEncodeEvmScript(mockedProvider, newFormData, api3Agent);
 
   assertGoSuccess(goRes);
   expect(goRes.data).toBeDefined();
 });
 
-it('allows simple ETH transfers using zero length parameters and empty target signature', async () => {
+test('simple ETH transfers using zero length parameters and empty target signature', async () => {
   const validData = updateImmutably(newFormData, (data) => {
     data.parameters = '[]';
     data.targetSignature = '';
@@ -54,8 +54,8 @@ it('allows simple ETH transfers using zero length parameters and empty target si
   expect(goRes.data).toBeDefined();
 });
 
-describe('encoding incorrect params', () => {
-  it('incorrect parameter values', async () => {
+describe('encoding incorrect parameters', () => {
+  test('incorrect parameter values', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
       data.parameters = JSON.stringify([123, 'arg1']); // they are in the wrong order
     });
@@ -68,7 +68,7 @@ describe('encoding incorrect params', () => {
     );
   });
 
-  it('wrong shape', async () => {
+  test('wrong shape', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
       data.parameters = JSON.stringify({ param: 'value' });
     });
@@ -79,7 +79,7 @@ describe('encoding incorrect params', () => {
     expect(goRes.error).toEqual(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
   });
 
-  it('wrong number of parameters', async () => {
+  test('wrong number of parameters', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
       data.parameters = JSON.stringify(['arg1']);
     });
@@ -92,7 +92,7 @@ describe('encoding incorrect params', () => {
     );
   });
 
-  it('zero length parameters with non-empty target signature', async () => {
+  test('zero length parameters with non-empty target signature', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
       data.parameters = '[]';
     });
@@ -105,7 +105,7 @@ describe('encoding incorrect params', () => {
     );
   });
 
-  it('empty parameters with non-empty target signature', async () => {
+  test('empty parameters with non-empty target signature', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
       data.parameters = '';
     });
@@ -114,21 +114,6 @@ describe('encoding incorrect params', () => {
 
     assertGoError(goRes);
     expect(goRes.error).toEqual(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
-  });
-
-  it('zero value for simple ETH transfer', async () => {
-    const invalidData = updateImmutably(newFormData, (data) => {
-      data.parameters = '[]';
-      data.targetSignature = '';
-      data.targetValue = '0';
-    });
-
-    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
-
-    assertGoError(goRes);
-    expect(goRes.error).toEqual(
-      new EncodedEvmScriptError('targetValue', 'Value must be greater than 0 for ETH transfers')
-    );
   });
 
   it('throws when address is not a string', async () => {
@@ -144,6 +129,21 @@ describe('encoding incorrect params', () => {
       new EncodedEvmScriptError('parameters', 'Ensure parameters match target contract signature')
     );
   });
+});
+
+test('zero value for simple ETH transfer', async () => {
+  const invalidData = updateImmutably(newFormData, (data) => {
+    data.parameters = '[]';
+    data.targetSignature = '';
+    data.targetValue = '0';
+  });
+
+  const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+  assertGoError(goRes);
+  expect(goRes.error).toEqual(
+    new EncodedEvmScriptError('targetValue', 'Value must be greater than 0 for ETH transfers')
+  );
 });
 
 describe('encoding invalid target signature', () => {
@@ -199,7 +199,7 @@ describe('address validation', () => {
     expect(goRes.error).toEqual(new EncodedEvmScriptError('targetAddress', 'Please specify a valid account address'));
   });
 
-  it('empty address', async () => {
+  test('empty address', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
       data.targetAddress = '';
     });
@@ -210,7 +210,7 @@ describe('address validation', () => {
     expect(goRes.error).toEqual(new EncodedEvmScriptError('targetAddress', 'Please specify a valid account address'));
   });
 
-  it('zero address is fine', async () => {
+  test('zero address', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
       data.targetAddress = constants.AddressZero;
     });
