@@ -35,15 +35,27 @@ const mockedProvider: providers.JsonRpcProvider = {
   },
 } as any;
 
-test('correct encoding', async () => {
+test('correct contract call proposal', async () => {
   const goRes = await goEncodeEvmScript(mockedProvider, newFormData, api3Agent);
 
   assertGoSuccess(goRes);
   expect(goRes.data).toBeDefined();
 });
 
-describe('encoding incorrect params', () => {
-  it('incorrect parameter values', async () => {
+test('simple ETH transfers using zero length parameters and empty target signature', async () => {
+  const validData = produceState(newFormData, (data) => {
+    data.parameters = '[]';
+    data.targetSignature = '';
+  });
+
+  const goRes = await goEncodeEvmScript(mockedProvider, validData, api3Agent);
+
+  assertGoSuccess(goRes);
+  expect(goRes.data).toBeDefined();
+});
+
+describe('encoding incorrect parameters', () => {
+  test('incorrect parameter values', async () => {
     const invalidData = produceState(newFormData, (data) => {
       data.parameters = JSON.stringify([123, 'arg1']); // they are in the wrong order
     });
@@ -56,7 +68,7 @@ describe('encoding incorrect params', () => {
     );
   });
 
-  it('wrong shape', async () => {
+  test('wrong shape', async () => {
     const invalidData = produceState(newFormData, (data) => {
       data.parameters = JSON.stringify({ param: 'value' });
     });
@@ -67,18 +79,7 @@ describe('encoding incorrect params', () => {
     expect(goRes.error).toEqual(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
   });
 
-  it('empty parameters', async () => {
-    const invalidData = produceState(newFormData, (data) => {
-      data.parameters = '';
-    });
-
-    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
-
-    assertGoError(goRes);
-    expect(goRes.error).toEqual(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
-  });
-
-  it('wrong number of parameters', async () => {
+  test('wrong number of parameters', async () => {
     const invalidData = produceState(newFormData, (data) => {
       data.parameters = JSON.stringify(['arg1']);
     });
@@ -90,6 +91,59 @@ describe('encoding incorrect params', () => {
       new EncodedEvmScriptError('parameters', 'Please specify the correct number of function arguments')
     );
   });
+
+  test('zero length parameters with non-empty target signature', async () => {
+    const invalidData = produceState(newFormData, (data) => {
+      data.parameters = '[]';
+    });
+
+    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+    assertGoError(goRes);
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('parameters', 'Please specify the correct number of function arguments')
+    );
+  });
+
+  test('empty parameters with non-empty target signature', async () => {
+    const invalidData = produceState(newFormData, (data) => {
+      data.parameters = '';
+    });
+
+    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+    assertGoError(goRes);
+    expect(goRes.error).toEqual(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
+  });
+
+  it('throws when address is not a string', async () => {
+    const invalidData = produceState(newFormData, (data) => {
+      data.targetSignature = 'functionName(address)';
+      data.parameters = JSON.stringify([123]);
+    });
+
+    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+    assertGoError(goRes);
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('parameters', 'Ensure parameters match target contract signature')
+    );
+  });
+});
+
+test('zero value for simple ETH transfer', async () => {
+  const invalidData = produceState(newFormData, (data) => {
+    data.parameters = '[]';
+    data.targetSignature = '';
+    data.targetValue = '0';
+  });
+
+  const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+  assertGoError(goRes);
+  expect(goRes.error).toEqual(
+    new EncodedEvmScriptError('targetValue', 'Value must be greater than 0 for ETH transfers')
+  );
 });
 
 describe('encoding invalid target signature', () => {
@@ -118,6 +172,19 @@ describe('encoding invalid target signature', () => {
       new EncodedEvmScriptError('targetSignature', 'Please specify a valid contract signature')
     );
   });
+
+  it('has empty target signature but non-empty parameters', async () => {
+    const invalidData = produceState(newFormData, (data) => {
+      data.targetSignature = '';
+    });
+
+    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+    assertGoError(goRes);
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('parameters', 'Please specify the correct number of function arguments')
+    );
+  });
 });
 
 describe('address validation', () => {
@@ -132,7 +199,7 @@ describe('address validation', () => {
     expect(goRes.error).toEqual(new EncodedEvmScriptError('targetAddress', 'Please specify a valid account address'));
   });
 
-  it('empty address', async () => {
+  test('empty address', async () => {
     const invalidData = produceState(newFormData, (data) => {
       data.targetAddress = '';
     });
@@ -143,7 +210,7 @@ describe('address validation', () => {
     expect(goRes.error).toEqual(new EncodedEvmScriptError('targetAddress', 'Please specify a valid account address'));
   });
 
-  it('zero address is fine', async () => {
+  test('zero address', async () => {
     const invalidData = produceState(newFormData, (data) => {
       data.targetAddress = constants.AddressZero;
     });
@@ -287,6 +354,36 @@ describe('isEvmScriptValid()', () => {
       decodedEvmScript,
       script,
     });
+
+    expect(result).toBe(true);
+  });
+
+  // The data for this proposal ware created locally.
+  it('returns true also for simple ETH transfers', async () => {
+    const script =
+      '0x00000001e0786c9956480b64808494676911f0afe39f8baa000000a4b61d27f60000000000000000000000001ddfc105fb187131ab6d77eecb966f87a2efa6640000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000004c5d2460100000000000000000000000000000000000000000000000000000000';
+    const metadata = {
+      description: 'Send ETH to an EOA',
+      targetSignature: '',
+      title: 'Make a simple ETH transfer proposal',
+      version: '1',
+    };
+    const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);
+    expect(decodedEvmScript).not.toBeNull();
+
+    const result = await isEvmScriptValid(
+      mockedProvider,
+      {
+        primary: '0xbb4c8c398288f2309b32dd83bc7dd3e4f93c605f',
+        secondary: '0xe0786c9956480b64808494676911f0afe39f8baa',
+      },
+      {
+        type: 'secondary',
+        metadata,
+        decodedEvmScript,
+        script,
+      }
+    );
 
     expect(result).toBe(true);
   });

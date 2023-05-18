@@ -16,17 +16,15 @@ it('new proposal form validation', () => {
   cy.findByText('Make sure parameters is a valid JSON array').should('exist');
   cy.percySnapshot('Governance: New proposal modal', { minHeight: 1500 });
 
-  // Correct the errors
+  // Correct the errors, but fill in invalid parameters
   cy.findByLabelText('Title').type('Getting University Blockchain Groups Involved in Governance');
   cy.findByLabelText('Description').type('https://forum.api3.org/t/getting-university-blockchain-groups-involved');
   cy.findByLabelText('Parameters').type('{}');
   cy.findByText('Create').click();
+
+  // Let user fix invalid parameters, but make them inconsistent with the target contract signature
   cy.findByText('Make sure parameters is a valid JSON array').should('exist');
   cy.findByLabelText('Parameters').clear().type('[]');
-  cy.findByText('Create').click();
-
-  // Expect contract signature error and let user fix it
-  cy.findByText('Please specify a valid contract signature').should('exist');
   cy.findByLabelText('Target Contract Signature').type('transfer(address, unit256)');
   cy.findByText('Create').click();
 
@@ -44,7 +42,7 @@ it('new proposal form validation', () => {
 
   // Fill target address and value
   cy.findByText('Please specify a valid account address').should('exist');
-  cy.findByLabelText('Target Contract Address').type(ACCOUNTS[1]);
+  cy.findByLabelText('Target Address').type(ACCOUNTS[1]);
   cy.findByLabelText('Value (Wei)').type('-123456');
   cy.findByText('Create').click();
 

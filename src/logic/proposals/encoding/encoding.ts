@@ -72,15 +72,20 @@ export const goEncodeEvmScript = async (
   const goJsonParams = goSync(() => {
     const json = JSON.parse(formData.parameters);
     if (!Array.isArray(json)) throw new Error('Parameters must be an array');
-    return json as string[];
+    return json as unknown[];
   });
   if (!goJsonParams.success) {
     return fail(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
   }
   const targetParameters = goJsonParams.data;
 
-  // Target contract signature must be a valid solidity function signature
-  const goTargetSignature = goSync(() => utils.FunctionFragment.from(formData.targetSignature));
+  // Target contract signature must be a valid solidity function signature or be empty (in case of a simple ETH
+  // transfer)
+  const goTargetSignature = goSync(() => {
+    if (!formData.targetSignature) return;
+    // We only care whether the following throws or not
+    utils.FunctionFragment.from(formData.targetSignature);
+  });
   if (!goTargetSignature.success) {
     return fail(new EncodedEvmScriptError('targetSignature', 'Please specify a valid contract signature'));
   }
@@ -112,6 +117,7 @@ export const goEncodeEvmScript = async (
       range(parameterTypes.length).map(async (i) => {
         const param = targetParameters[i]!;
         if (parameterTypes[i] !== 'address') return param;
+        if (typeof param !== 'string') throw new Error('Parameter must be an ENS string');
 
         return convertToAddressOrThrow(provider, param);
       })
@@ -141,12 +147,13 @@ export const goEncodeEvmScript = async (
 
   // Ensure value is a non-negative amount (in Wei)
   const goValue = goSync(() => {
-    const parsed = BigNumber.from(formData.targetValue);
-    if (parsed.lt(0)) throw new Error();
-    return parsed;
+    const goParsed = goSync(() => BigNumber.from(formData.targetValue));
+    if (!goParsed.success || goParsed.data.lt(0)) throw new Error('Please enter a valid amount in Wei');
+    if (!targetSignature && goParsed.data.eq(0)) throw new Error('Value must be greater than 0 for ETH transfers');
+    return goParsed.data;
   });
   if (!goValue.success) {
-    return fail(new EncodedEvmScriptError('targetValue', 'Please enter a valid amount in Wei'));
+    return fail(new EncodedEvmScriptError('targetValue', goValue.error.message));
   }
   const targetValue = goValue.data;
 
@@ -220,6 +227,15 @@ export const decodeEvmScript = async (
     const targetContractAddress = await tryConvertToEnsName(provider, executionParameters[0]);
     const value = executionParameters[1];
 
+    // If there is no target signature the transaction is a simple ETH transfer
+    if (!metadata.targetSignature) {
+      return {
+        targetAddress: targetContractAddress,
+        value,
+        parameters: [],
+      };
+    }
+
     // Decode the calldata of the last target function (last argument of the "execute" function) which are the decoded
     // EVM script parameters.
     const targetCallData = executionParameters[2];
@@ -263,7 +279,7 @@ export async function isEvmScriptValid(
     provider,
     {
       type: proposal.type,
-      targetSignature: metadata.targetSignature,
+      targetSignature: metadata.targetSignature ?? '',
       description: metadata.description,
       title: metadata.title,
       parameters: JSON.stringify(decodedEvmScript.parameters),

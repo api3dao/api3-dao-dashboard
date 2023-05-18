@@ -24,7 +24,7 @@ export interface DashboardState extends ConvenienceDashboardData {
 export interface ProposalMetadata {
   version: string;
   title: string;
-  targetSignature: string;
+  targetSignature: string | null;
   description: string;
 }
 
@@ -177,7 +177,7 @@ export const ClaimStatuses = {
   8: 'DisputeResolvedWithSettlementPayout',
 } as const;
 export type ClaimStatusCode = keyof typeof ClaimStatuses;
-export type ClaimStatus = typeof ClaimStatuses[ClaimStatusCode];
+export type ClaimStatus = (typeof ClaimStatuses)[ClaimStatusCode];
 
 export const DisputeStatuses = {
   0: 'Waiting',
@@ -185,7 +185,7 @@ export const DisputeStatuses = {
   2: 'Solved',
 } as const;
 export type DisputeStatusCode = keyof typeof DisputeStatuses;
-export type DisputeStatus = typeof DisputeStatuses[DisputeStatusCode];
+export type DisputeStatus = (typeof DisputeStatuses)[DisputeStatusCode];
 
 export const ArbitratorRulings = {
   0: 'DoNotPay',
@@ -193,7 +193,7 @@ export const ArbitratorRulings = {
   2: 'PaySettlement',
 } as const;
 export type ArbitratorRulingCode = keyof typeof ArbitratorRulings;
-export type ArbitratorRuling = typeof ArbitratorRulings[ArbitratorRulingCode];
+export type ArbitratorRuling = (typeof ArbitratorRulings)[ArbitratorRulingCode];
 
 export const DisputePeriods = {
   0: 'Evidence',
@@ -203,7 +203,7 @@ export const DisputePeriods = {
   4: 'Execution',
 } as const;
 export type DisputePeriodCode = keyof typeof DisputePeriods;
-export type DisputePeriod = typeof DisputePeriods[DisputePeriodCode];
+export type DisputePeriod = (typeof DisputePeriods)[DisputePeriodCode];
 
 export interface ClaimPayout {
   amountInUsd: BigNumber;

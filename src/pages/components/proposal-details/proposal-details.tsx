@@ -233,7 +233,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               </p>
             </div>
             <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Target Contract Address</p>
+              <p className={globalStyles.bold}>Target Address</p>
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlTargetAddress ? (
                   <ExternalLink className={styles.link} href={urlTargetAddress}>
@@ -244,10 +244,12 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
                 )}
               </p>
             </div>
-            <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Target Contract Signature</p>
-              <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
-            </div>
+            {proposal.metadata.targetSignature && (
+              <div className={styles.proposalDetailsItem}>
+                <p className={globalStyles.bold}>Target Contract Signature</p>
+                <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
+              </div>
+            )}
             {value.gt(0) && (
               <div className={styles.proposalDetailsItem}>
                 <p className={globalStyles.bold}>Value (Wei)</p>
