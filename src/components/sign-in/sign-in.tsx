@@ -1,20 +1,16 @@
-import { Fragment, useState } from 'react';
-import { ethers } from 'ethers';
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import Web3Modal from 'web3modal';
+import { Fragment } from 'react';
 import classNames from 'classnames';
-import { initialChainData, getNetworkData, useChainData, SettableChainData } from '../../chain-data';
+import { Address, useDisconnect, useEnsName } from 'wagmi';
+import { useWeb3Modal } from '@web3modal/react';
+import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import Button from '../../components/button';
 import { Modal as GenericModal } from '../../components/modal';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown';
 import styles from './sign-in.module.scss';
 import globalStyles from '../../styles/global-styles.module.scss';
-import * as notifications from '../../components/notifications';
-import { images, messages } from '../../utils';
-import { SUPPORTED_NETWORKS, WALLET_CONNECT_RPC_PROVIDERS, useProviderSubscriptions } from '../../contracts';
-import { convertToEnsName } from '../../logic/proposals/encoding/ens-name';
-import { go } from '@api3/promise-utils';
+import { images } from '../../utils';
+import { SUPPORTED_NETWORKS, useProviderSubscriptions } from '../../contracts';
 
 type Props = {
   dark?: boolean;
@@ -22,31 +18,12 @@ type Props = {
 };
 
 const ConnectedStatus = ({ dark, position }: Props) => {
-  const { provider, setChainData, networkName, userAccount, availableAccounts, userAccountName } = useChainData();
+  const { networkName, userAccount } = useChainData();
 
-  const [changeAccountOpen, setChangeAccountOpen] = useState(false);
-  const openModal = () => setChangeAccountOpen(true);
-  const closeModal = () => setChangeAccountOpen(false);
+  const { disconnect } = useDisconnect();
+  const handleDisconnect = () => disconnect();
 
-  const onAccountChange = (account: string) => async () => {
-    if (!provider) return;
-
-    setChainData('Change user account', {
-      userAccount: account,
-      userAccountName: await convertToEnsName(provider, userAccount),
-      signer: provider.getSigner(account),
-    });
-  };
-
-  const onDisconnect = () => {
-    if (provider) {
-      const externalProvider: any = provider.provider;
-      if (typeof externalProvider.close === 'function') {
-        externalProvider.close();
-      }
-    }
-    setChainData('User disconnected', initialChainData);
-  };
+  const { data: userAccountName } = useEnsName({ address: userAccount as Address });
 
   const connectedContent = (
     <div className={styles.connectedStatus} data-cy="connected-status">
@@ -68,18 +45,9 @@ const ConnectedStatus = ({ dark, position }: Props) => {
       {position === 'mobileMenu' ? (
         <>
           {connectedContent}
-          {availableAccounts.length > 1 && (
-            <Button
-              type="secondary"
-              onClick={openModal}
-              className={classNames({ [styles.mobileMenuButton]: position === 'mobileMenu' })}
-            >
-              Change account
-            </Button>
-          )}
           <Button
             type="secondary"
-            onClick={onDisconnect}
+            onClick={handleDisconnect}
             className={classNames({ [styles.mobileMenuButton]: position === 'mobileMenu' })}
           >
             Disconnect Wallet
@@ -89,8 +57,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
         <Dropdown
           menu={
             <DropdownMenu position={dark ? 'top' : 'bottom'}>
-              <DropdownMenuItem onClick={onDisconnect}>Disconnect Wallet</DropdownMenuItem>
-              {availableAccounts.length > 1 && <DropdownMenuItem onClick={openModal}>Change account</DropdownMenuItem>}
+              <DropdownMenuItem onClick={handleDisconnect}>Disconnect Wallet</DropdownMenuItem>
             </DropdownMenu>
           }
           icon={<img src={dark ? images.arrowDropdownDark : images.arrowDropdown} alt="dropdown icon" />}
@@ -99,91 +66,32 @@ const ConnectedStatus = ({ dark, position }: Props) => {
           {connectedContent}
         </Dropdown>
       )}
-
-      {availableAccounts.length > 1 && (
-        <GenericModal open={changeAccountOpen} onClose={closeModal}>
-          <ul className={styles.availableAccounts} data-cy="available-accounts">
-            {availableAccounts.map((account) => (
-              <Button
-                key={account}
-                type="text"
-                className={styles.availableAccountButton}
-                onClick={onAccountChange(account)}
-              >
-                {account}
-              </Button>
-            ))}
-          </ul>
-        </GenericModal>
-      )}
     </div>
   );
 };
 
-export const connectWallet = (setChainData: SettableChainData['setChainData']) => async () => {
-  const web3Modal = new Web3Modal({
-    // If true, the provider will be cached in local storage and there will be no modal asking on re-login and the same
-    // provider will be used.
-    cacheProvider: false,
-    disableInjectedProvider: false,
-    providerOptions: {
-      walletconnect: {
-        package: WalletConnectProvider,
-        options: {
-          // This is actually the default value in WalletConnectProvider, but I'd rather be explicit about this
-          bridge: 'https://bridge.walletconnect.org',
-          rpc: WALLET_CONNECT_RPC_PROVIDERS,
-        },
-      },
-    },
-  });
-
-  // Enable session (connection), this triggers QR Code modal in case of wallet connect
-  const goConnect = await go(web3Modal.connect());
-  // Connection error will often be caused by user declining to connect (e.g. close the modal) so we don't show any
-  // toast message to the user.
-  // NOTE: In case users closes the wallet connect modal there is no connection error, but the provider will be null
-  if (!goConnect.success) return;
-  const web3ModalProvider = goConnect.data;
-
-  // Wrapped in callback to prevent synchronous error, because `request` property is not guaranteed to exist
-  const goRequestAccounts = await go(() => {
-    if (web3ModalProvider.isMetaMask) return web3ModalProvider.request({ method: 'eth_requestAccounts' });
-    return Promise.resolve();
-  });
-  // For example, user wants to connect via metamask, but declines connecting his account. We don't want to show toast
-  // message in this case either.
-  if (!goRequestAccounts.success) return;
-
-  // https://github.com/ethers-io/ethers.js/discussions/1480
-  // NOTE: You can access the underlying 'web3ModalProvider' using the 'provider' property
-  const externalProvider = new ethers.providers.Web3Provider(web3ModalProvider, 'any');
-  const goNetworkData = await go(getNetworkData(externalProvider));
-  if (!goNetworkData.success) {
-    return notifications.error({ message: messages.FAILED_TO_LOAD_CHAIN_DATA, errorOrMessage: goNetworkData.error });
-  }
-
-  setChainData('User connected', { ...goNetworkData.data });
-};
-
 const SignIn = ({ dark, position }: Props) => {
-  const { setChainData, provider, networkName } = useChainData();
-  useProviderSubscriptions(provider);
+  const { provider, networkName } = useChainData();
+  useProviderSubscriptions();
 
   const isSignedIn = !!provider;
   const supportedNetworks = SUPPORTED_NETWORKS.filter((name) => {
     // Disable localhost network on non-development environment
-    if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'localhost') return false;
+    if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'hardhat') return false;
     else return true;
   });
   const isSupportedNetwork = !isSignedIn || supportedNetworks.includes(networkName);
+
+  const { open } = useWeb3Modal();
 
   return (
     <>
       {!provider && (
         <Button
           type={dark ? 'secondary' : 'primary'}
-          onClick={connectWallet(setChainData)}
+          onClick={async () => {
+            await open();
+          }}
           className={classNames({
             [styles.mobileMenuButton]: dark,
             [styles.fullWidthMobile]: position === 'navigation',
@@ -221,3 +129,6 @@ const SignIn = ({ dark, position }: Props) => {
 };
 
 export default SignIn;
+
+// TODO Fix connect buttons
+export const connectWallet = (_: any) => async () => {};

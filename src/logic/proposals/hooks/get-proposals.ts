@@ -15,7 +15,7 @@ const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNu
  * Helper function which loads all necessary proposal data for multiple proposals in parallel.
  */
 export const getProposals = async (
-  provider: providers.Web3Provider,
+  provider: providers.Provider,
   convenience: Convenience,
   userAccount: string,
   startVoteProposals: StartVoteProposal[],

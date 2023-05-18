@@ -1,7 +1,7 @@
-import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
+import { useAccount } from 'wagmi';
 import { transactionMessages, usePrevious, useIsMount, useOnMountEffect } from '../utils';
-import { getNetworkData, useChainData, displayPendingTransaction } from '../chain-data';
+import { useChainData, displayPendingTransaction } from '../chain-data';
 import {
   Api3Pool__factory as Api3PoolFactory,
   Api3Token__factory as Api3TokenFactory,
@@ -12,33 +12,33 @@ import {
 import { initialChainData } from '../chain-data/state';
 
 export const useApi3Pool = () => {
-  const { provider, contracts, signer } = useChainData();
+  const { contracts, signer } = useChainData();
 
   return useMemo(() => {
-    if (!provider || !contracts || !signer) return null;
+    if (!contracts || !signer) return null;
     return Api3PoolFactory.connect(contracts.api3Pool, signer);
-  }, [provider, contracts, signer]);
+  }, [signer, contracts]);
 };
 
 export const useApi3Token = () => {
-  const { provider, contracts, signer } = useChainData();
+  const { contracts, signer } = useChainData();
 
   return useMemo(() => {
-    if (!provider || !contracts || !signer) return null;
+    if (!contracts || !signer) return null;
     return Api3TokenFactory.connect(contracts.api3Token, signer);
-  }, [provider, contracts, signer]);
+  }, [signer, contracts]);
 };
 
 export const useApi3Voting = () => {
-  const { provider, contracts, signer } = useChainData();
+  const { contracts, signer } = useChainData();
 
   return useMemo(() => {
-    if (!provider || !contracts || !signer) return null;
+    if (!contracts || !signer) return null;
     return {
       primary: Api3VotingFactory.connect(contracts.votingAppPrimary, signer),
       secondary: Api3VotingFactory.connect(contracts.votingAppSecondary, signer),
     };
-  }, [provider, contracts, signer]);
+  }, [signer, contracts]);
 };
 
 export interface Api3Agent {
@@ -59,51 +59,47 @@ export const useApi3AgentAddresses = (): Api3Agent | null => {
 };
 
 export const useConvenience = () => {
-  const { provider, contracts, signer } = useChainData();
+  const { contracts, signer } = useChainData();
 
   return useMemo(() => {
-    if (!provider || !contracts || !signer) return null;
+    if (!contracts || !signer) return null;
 
     return ConvenienceFactory.connect(contracts.convenience, signer);
-  }, [provider, contracts, signer]);
+  }, [signer, contracts]);
 };
 
 export const useTimelockManager = () => {
-  const { provider, contracts } = useChainData();
+  const { signer, contracts } = useChainData();
 
   return useMemo(() => {
-    if (!provider || !contracts) return null;
+    if (!contracts || !signer) return null;
 
-    return TimelockManagerFactory.connect(contracts.timelockManager, provider.getSigner());
-  }, [provider, contracts]);
+    return TimelockManagerFactory.connect(contracts.timelockManager, signer);
+  }, [signer, contracts]);
 };
 
-/**
- * Subscribe to events specified in EIP-1193. See: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md
- */
-export const useProviderSubscriptions = (provider: ethers.providers.Web3Provider | null) => {
+export const useProviderSubscriptions = () => {
   const { setChainData } = useChainData();
 
+  const { connector } = useAccount({
+    onDisconnect() {
+      setChainData('User disconnected', initialChainData);
+    },
+  });
+
   useEffect(() => {
-    if (!provider) return;
+    if (!connector) return;
 
-    const refreshChainData = async () => {
-      // We also want to clear the application state because data from one chain is invalid on another
-      setChainData('EIP-1193 event triggered', { ...initialChainData, ...(await getNetworkData(provider)) });
+    const onChange = () => {
+      // We clear the application state because data from one chain is invalid on another
+      setChainData('Network/Account changed', initialChainData);
     };
 
-    const underlyingProvider = provider.provider as ethers.providers.Provider;
-    // https://github.com/ethers-io/ethers.js/issues/1396
-    underlyingProvider.on('accountsChanged', refreshChainData);
-    underlyingProvider.on('chainChanged', refreshChainData);
-    underlyingProvider.on('disconnect', refreshChainData);
-
+    connector.on('change', onChange);
     return () => {
-      underlyingProvider.removeListener('accountsChanged', refreshChainData);
-      underlyingProvider.removeListener('chainChanged', refreshChainData);
-      underlyingProvider.removeListener('disconnect', refreshChainData);
+      connector.removeListener('change', onChange);
     };
-  }, [provider, setChainData]);
+  }, [connector, setChainData]);
 };
 
 /**

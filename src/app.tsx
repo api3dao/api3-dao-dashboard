@@ -1,3 +1,5 @@
+import { Web3Modal } from '@web3modal/react';
+import { WagmiConfig } from 'wagmi';
 import { BaseLayout } from './components/layout';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
@@ -14,6 +16,7 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
+import { wagmiClient, ethereumClient, projectId } from './wallet-connect';
 import './styles/variables.module.scss';
 
 const ErrorBoundary: FallbackRender = (props) => {
@@ -74,22 +77,25 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <ChainDataContextProvider>
-      <HelmetProvider>
-        {/* Helmet children can be overridden in components lower down the tree */}
-        <Helmet>
-          <title>API3 DAO</title>
-          {/* Preload any important images here */}
-          {/* https://web.dev/preload-responsive-images/ */}
-          {(Object.keys(images) as Array<keyof typeof images>).map((image) => {
-            const rel = preloadImageList.includes(images[image]) ? 'preload' : 'prefetch';
-            return <link rel={rel} as="image" href={images[image]} key={image} />;
-          })}
-        </Helmet>
+    <WagmiConfig client={wagmiClient}>
+      <ChainDataContextProvider>
+        <HelmetProvider>
+          {/* Helmet children can be overridden in components lower down the tree */}
+          <Helmet>
+            <title>API3 DAO</title>
+            {/* Preload any important images here */}
+            {/* https://web.dev/preload-responsive-images/ */}
+            {(Object.keys(images) as Array<keyof typeof images>).map((image) => {
+              const rel = preloadImageList.includes(images[image]) ? 'preload' : 'prefetch';
+              return <link rel={rel} as="image" href={images[image]} key={image} />;
+            })}
+          </Helmet>
 
-        <AppContent />
-      </HelmetProvider>
-    </ChainDataContextProvider>
+          <AppContent />
+        </HelmetProvider>
+      </ChainDataContextProvider>
+      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+    </WagmiConfig>
   );
 };
 
