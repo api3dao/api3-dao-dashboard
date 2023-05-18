@@ -46,7 +46,6 @@ export interface DecodedEvmScript {
 export interface Proposal {
   voteId: ethers.BigNumber;
   creator: string;
-  creatorName: string | null;
   metadata: ProposalMetadata;
   startDate: Date;
   voterState: VoterState;

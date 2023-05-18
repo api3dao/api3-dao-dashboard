@@ -21,7 +21,7 @@ import { BigNumber, providers, utils } from 'ethers';
 import range from 'lodash/range';
 import { DecodedEvmScript, Proposal, ProposalMetadata } from '../../../chain-data';
 import { Api3Agent } from '../../../contracts';
-import { convertToAddressOrThrow, tryConvertToEnsName } from './ens-name';
+import { convertToAddressOrThrow } from './ens-name';
 import { NewProposalFormData } from './types';
 
 // Similar to https://web3js.readthedocs.io/en/v1.2.0/web3-eth-abi.html#encodefunctionsignature
@@ -224,7 +224,7 @@ export const decodeEvmScript = async (
       ['address', 'uint256', 'bytes'],
       utils.hexDataSlice(callData, 4)
     );
-    const targetContractAddress = await tryConvertToEnsName(provider, executionParameters[0]);
+    const targetContractAddress = executionParameters[0];
     const value = executionParameters[1];
 
     // If there is no target signature the transaction is a simple ETH transfer
@@ -244,20 +244,10 @@ export const decodeEvmScript = async (
       .split(',');
     const decodedParameters = utils.defaultAbiCoder.decode(parameterTypes, utils.hexDataSlice(targetCallData, 4));
 
-    // Try to lookup ENS names for the addresses in the target calldata (EVM script parameters)
-    const parameters = await Promise.all(
-      range(parameterTypes.length).map(async (i) => {
-        const param = decodedParameters[i]!;
-        if (parameterTypes[i] !== 'address') return param;
-
-        return tryConvertToEnsName(provider, param);
-      })
-    );
-
     return {
       targetAddress: targetContractAddress,
       value,
-      parameters: stringifyBigNumbersRecursively(parameters),
+      parameters: stringifyBigNumbersRecursively(decodedParameters),
     };
   });
 
