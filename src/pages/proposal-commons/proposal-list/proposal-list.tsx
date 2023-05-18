@@ -9,14 +9,13 @@ import { images } from '../../../utils';
 import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../vote-slider/vote-slider';
 import Timer, { DATE_FORMAT } from '../../../components/timer';
-import Button from '../../../components/button';
+import ConnectButton from '../../../components/connect-button';
 import { Tooltip } from '../../../components/tooltip';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
 import ProposalStatus from './proposal-status/proposal-status';
-import { connectWallet } from '../../../components/sign-in/sign-in';
 
 interface Props {
   // Proposals should be sorted by priority (the topmost proposal in the list has index 0). Or undefined if user is not
@@ -65,15 +64,13 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
 
 const ProposalList = (props: Props) => {
   const { proposals, type } = props;
-  const { setChainData, provider } = useChainData();
+  const { provider } = useChainData();
 
   if (!provider) {
     return (
       <div className={styles.noProposals}>
         <span>You need to be connected to view proposals</span>
-        <Button type="link" onClick={connectWallet(setChainData)}>
-          Connect your wallet
-        </Button>
+        <ConnectButton type="link">Connect your wallet</ConnectButton>
       </div>
     );
   } else if (!proposals) {

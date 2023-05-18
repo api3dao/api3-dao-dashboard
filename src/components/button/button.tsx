@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import classNames from 'classnames';
 import styles from './button.module.scss';
 
-type Props = {
+export type Props = {
   children: ReactNode;
   className?: string;
   type?: 'primary' | 'secondary' | 'link' | 'text';

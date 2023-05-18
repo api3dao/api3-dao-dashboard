@@ -1,10 +1,10 @@
 import { Fragment } from 'react';
 import classNames from 'classnames';
 import { Address, useDisconnect, useEnsName } from 'wagmi';
-import { useWeb3Modal } from '@web3modal/react';
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import Button from '../../components/button';
+import ConnectButton from '../connect-button';
 import { Modal as GenericModal } from '../../components/modal';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown';
 import styles from './sign-in.module.scss';
@@ -82,23 +82,18 @@ const SignIn = ({ dark, position }: Props) => {
   });
   const isSupportedNetwork = !isSignedIn || supportedNetworks.includes(networkName);
 
-  const { open } = useWeb3Modal();
-
   return (
     <>
       {!provider && (
-        <Button
+        <ConnectButton
           type={dark ? 'secondary' : 'primary'}
-          onClick={async () => {
-            await open();
-          }}
           className={classNames({
             [styles.mobileMenuButton]: dark,
             [styles.fullWidthMobile]: position === 'navigation',
           })}
         >
           Connect Wallet
-        </Button>
+        </ConnectButton>
       )}
       {provider && <ConnectedStatus dark={dark} position={position} />}
       <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
@@ -129,6 +124,3 @@ const SignIn = ({ dark, position }: Props) => {
 };
 
 export default SignIn;
-
-// TODO Fix connect buttons
-export const connectWallet = (_: any) => async () => {};
