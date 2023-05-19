@@ -3,10 +3,23 @@ const webpack = require('webpack');
 module.exports = {
   webpack(config, env) {
     if (env === 'production') {
-      // Webpack produces a single JS bundle with the default configuration that react-scripts v5 provides,
-      // so we specify this optimization to get 2 bundles (like in react-scripts v4).
-      // See: https://github.com/facebook/create-react-app/discussions/11278#discussioncomment-1808511
-      config.optimization.splitChunks = { chunks: 'all' };
+      // Webpack produces a single JS bundle with the default configuration (for the initial non-async chunk),
+      // so we specify "chunks: all" and provide a cache group to generate more bundles
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          // The "(?<!node_modules.*)" regex ignores nested copies of packages, so that they're bundled with their issuer.
+          // See: https://github.com/vercel/next.js/pull/9012
+          framework: {
+            name: 'framework',
+            test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|use-subscription|styled-components)[\\/]/,
+          },
+          coreWeb3: {
+            name: 'core-web3',
+            test: /(?<!node_modules.*)[\\/]node_modules[\\/](@ethersproject|bn\.js|aes-js)[\\/]/,
+          },
+        },
+      };
     }
 
     // See: https://www.alchemy.com/blog/how-to-polyfill-node-core-modules-in-webpack-5
@@ -21,6 +34,10 @@ module.exports = {
     config.plugins = (config.plugins || []).concat([
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
+      }),
+      // The @web3modal/react package spawns too many async chunks, so we limit the total amount of chunks
+      new webpack.optimize.LimitChunkCountPlugin({
+        maxChunks: 5,
       }),
     ]);
 
@@ -47,6 +64,7 @@ module.exports = {
 
   jest(config) {
     config.transformIgnorePatterns = [
+      // The wagmi package ships with untranspiled import statements, so we tell Jest not to ignore them
       '/node_modules/(?!wagmi|@wagmi).+\\.(js|jsx|mjs|cjs|ts|tsx)$',
       '^.+\\.module\\.(css|sass|scss)$',
     ];
