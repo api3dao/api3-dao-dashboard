@@ -45,6 +45,7 @@ export const useChainData = () => {
 
   const { isConnected, address } = useAccount();
 
+  // Note: The signer is briefly undefined after connecting or after switching networks.
   if (isConnected && address && signer) {
     const networkName = updateNetworkName(chain?.network || '');
     return {

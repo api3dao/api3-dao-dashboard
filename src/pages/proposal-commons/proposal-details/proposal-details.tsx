@@ -258,21 +258,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Parameters</p>
               <div className={classNames(globalStyles.secondaryColor, styles.multiline)}>
-                {JSON.stringify(decodedEvmScript.parameters, null, 2)}
-                <hr />[
-                {decodedEvmScript.parameters.map((param, index) => (
-                  <div key={index} style={{ paddingLeft: 8 }}>
-                    {typeof param === 'string' && utils.isAddress(param) ? (
-                      <>
-                        "<EnsName address={param} />"
-                      </>
-                    ) : (
-                      JSON.stringify(param)
-                    )}
-                    {index < decodedEvmScript.parameters.length - 1 && ','}
-                  </div>
-                ))}
-                ]
+                <Parameters parameters={decodedEvmScript.parameters} />
               </div>
             </div>
           </div>
@@ -304,7 +290,30 @@ function WarningIcon(props: ComponentProps<'svg'>) {
 function EnsName(props: { address: Address }) {
   const { address } = props;
   const { data } = useEnsName({ address });
+
   return <>{data || address}</>;
+}
+
+function Parameters(props: { parameters: unknown[] }) {
+  const { parameters } = props;
+  return (
+    <>
+      {'['}
+      {parameters.map((param, index) => (
+        <div key={index} style={{ paddingLeft: 9 }}>
+          {typeof param === 'string' && utils.isAddress(param) ? (
+            <>
+              "<EnsName address={param} />"
+            </>
+          ) : (
+            JSON.stringify(param)
+          )}
+          {index < parameters.length - 1 && ','}
+        </div>
+      ))}
+      {']'}
+    </>
+  );
 }
 
 function useMaliciousProposalCheck(proposal: Proposal | null) {
