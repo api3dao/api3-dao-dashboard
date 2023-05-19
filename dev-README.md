@@ -10,7 +10,7 @@ implemented and its security. All developer oriented instructions can be found h
 3. `yarn eth:prepare-dao-contracts-for-hardhat` - to download the DAO contract sources locally. You need to run this
    only when running for the first time.
 4. (Optional) Modify the pool contract `EPOCH_LENGTH` variable from `1 weeks` to `1 minutes` to speed up testing. You
-   can find this constant inside `dao-contracts/packages/pool/contracts/StateUtils.sol`
+   can find this constant inside `dao-contracts/api3-dao/packages/pool/contracts/StateUtils.sol`
 5. `yarn eth:deploy-dao-contracts-on-hardhat` - to deploy the contracts locally
 6. Copy the `.env.example` to `.env`. Make sure that `REACT_APP_NODE_ENV` is set to `development`
 7. `yarn start` - to start the application on localhost on port 3000
@@ -24,6 +24,13 @@ implemented and its security. All developer oriented instructions can be found h
 > [reset the account](https://metamask.zendesk.com/hc/en-us/articles/360015488891-How-to-reset-your-wallet).
 
 <!-- markdown-link-check-enable -->
+
+### Claims/Policies development
+
+You need a policy that is linked to your account in order to create a claim. You can create a policy for your account by
+running:
+
+`yarn create-user-policy --address <address> --coverage-amount 500 --metadata 'BTC/USD'`
 
 ## Supported networks
 
