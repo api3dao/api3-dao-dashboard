@@ -1,7 +1,7 @@
 import { configureChains, createClient } from 'wagmi';
 import { EthereumClient, w3mConnectors } from '@web3modal/ethereum';
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc';
-import { mainnet, hardhat, Chain } from 'wagmi/chains';
+import { mainnet, hardhat } from 'wagmi/chains';
 
 if (!process.env.REACT_APP_PROJECT_ID) {
   throw new Error('Missing REACT_APP_PROJECT_ID env variable');
@@ -9,7 +9,7 @@ if (!process.env.REACT_APP_PROJECT_ID) {
 
 export const projectId = process.env.REACT_APP_PROJECT_ID;
 
-const chains = [getCustomMainnet(), hardhat];
+const chains = [mainnet, hardhat];
 
 const { provider } = configureChains(chains, [
   // In the web3modal docs they use their "w3mProvider", which prefers using their RPC proxy for a set number of chains,
@@ -34,17 +34,3 @@ export const wagmiClient = createClient({
 });
 
 export const ethereumClient = new EthereumClient(wagmiClient, chains);
-
-function getCustomMainnet(): Chain {
-  const customProviderUrl = process.env.REACT_APP_MAINNET_PROVIDER_URL;
-
-  if (!customProviderUrl) return mainnet;
-
-  return {
-    ...mainnet,
-    rpcUrls: {
-      ...mainnet.rpcUrls,
-      default: { ...mainnet.rpcUrls.default, http: [customProviderUrl] },
-    },
-  };
-}
