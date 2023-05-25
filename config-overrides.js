@@ -1,4 +1,6 @@
+/* eslint-disable no-console */
 const webpack = require('webpack');
+const { isEqual } = require('lodash');
 
 module.exports = {
   webpack(config, env) {
@@ -63,11 +65,24 @@ module.exports = {
   },
 
   jest(config) {
+    const defaultIgnorePatterns = [
+      '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
+      '^.+\\.module\\.(css|sass|scss)$',
+    ];
+    if (!isEqual(defaultIgnorePatterns, config.transformIgnorePatterns)) {
+      console.warn('\n******************************************************************');
+      console.warn('WARNING: The default Jest transformIgnorePatterns have changed to:');
+      console.warn(config.transformIgnorePatterns);
+      console.warn('Please make sure the current override still makes sense.');
+      console.warn('******************************************************************\n');
+    }
+
     config.transformIgnorePatterns = [
       // The wagmi package ships with untranspiled import statements, so we tell Jest not to ignore them
       '/node_modules/(?!wagmi|@wagmi).+\\.(js|jsx|mjs|cjs|ts|tsx)$',
-      '^.+\\.module\\.(css|sass|scss)$',
+      defaultIgnorePatterns[1],
     ];
+
     return config;
   },
 };

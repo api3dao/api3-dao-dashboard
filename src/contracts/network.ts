@@ -18,7 +18,6 @@ export const updateNetworkName = (networkName: string) => {
 
 export const getDaoAddresses = (networkName: string) => {
   switch (networkName) {
-    case 'localhost':
     case 'hardhat':
       return localhostDao;
     case 'rinkeby':

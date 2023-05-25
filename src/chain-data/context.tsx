@@ -40,9 +40,8 @@ export default ChainDataContextProvider;
 export const useChainData = () => {
   const data = useContext(ChainDataContext);
   const { chain } = useNetwork();
-  const provider = useProvider({ chainId: chain?.id });
-  const { data: signer } = useSigner({ chainId: chain?.id });
-
+  const provider = useProvider();
+  const { data: signer } = useSigner();
   const { isConnected, address } = useAccount();
 
   // Note: The signer is briefly undefined after connecting or after switching networks.
