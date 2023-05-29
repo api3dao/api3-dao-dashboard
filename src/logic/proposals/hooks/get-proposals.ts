@@ -6,7 +6,6 @@ import { decodeEvmScript, decodeMetadata } from '../encoding';
 import { blockTimestampToDate } from '../../../utils';
 import { EPOCH_LENGTH, HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
-import { convertToEnsName } from '../encoding/ens-name';
 import range from 'lodash/range';
 
 const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNumber();
@@ -15,7 +14,7 @@ const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNu
  * Helper function which loads all necessary proposal data for multiple proposals in parallel.
  */
 export const getProposals = async (
-  provider: providers.Web3Provider,
+  provider: providers.Provider,
   convenience: Convenience,
   userAccount: string,
   startVoteProposals: StartVoteProposal[],
@@ -47,7 +46,6 @@ export const getProposals = async (
       type,
       ...startVotesInfo[i]!,
       open: openVoteIdsStr.includes(startVotesInfo[i]!.voteId.toString()),
-      creatorName: await convertToEnsName(provider, startVotesInfo[i]!.creator),
 
       startDate: blockTimestampToDate(staticVoteData.startDate[i]!),
       supportRequired: toPercent(staticVoteData.supportRequired[i]!),

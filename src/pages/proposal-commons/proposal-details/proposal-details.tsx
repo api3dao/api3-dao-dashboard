@@ -1,5 +1,6 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
+import { useEnsName, Address } from 'wagmi';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -101,15 +102,16 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
     return <>Please connect your wallet to see the proposal details...</>;
   if (proposal === 'does not exist') return <>Proposal with such id hasn't been created yet...</>;
 
-  if (!proposal.decodedEvmScript) {
+  const { decodedEvmScript } = proposal;
+
+  if (!decodedEvmScript) {
     return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
   }
 
-  const { parameters, targetAddress, value } = proposal.decodedEvmScript;
   const voteSliderData = voteSliderSelector(proposal);
   const canVoteData = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
-  const urlTargetAddress = getEtherscanAddressUrl(chainId, targetAddress);
+  const urlTargetAddress = getEtherscanAddressUrl(chainId, decodedEvmScript.targetAddress);
   const backButton = {
     text: `Back to ${proposal.open ? 'Governance' : 'History'}`,
     url: proposal.open ? '/governance' : '/history',
@@ -222,7 +224,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlCreator ? (
                   <ExternalLink className={styles.link} href={urlCreator}>
-                    {proposal.creatorName ? proposal.creatorName : proposal.creator}
+                    <EnsName address={proposal.creator as Address} />
                   </ExternalLink>
                 ) : (
                   proposal.creator
@@ -234,10 +236,10 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlTargetAddress ? (
                   <ExternalLink className={styles.link} href={urlTargetAddress}>
-                    {targetAddress}
+                    <EnsName address={decodedEvmScript.targetAddress as Address} />
                   </ExternalLink>
                 ) : (
-                  targetAddress
+                  decodedEvmScript.targetAddress
                 )}
               </p>
             </div>
@@ -247,17 +249,17 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
                 <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
               </div>
             )}
-            {value.gt(0) && (
+            {decodedEvmScript.value.gt(0) && (
               <div className={styles.proposalDetailsItem}>
                 <p className={globalStyles.bold}>Value (Wei)</p>
-                <p className={globalStyles.secondaryColor}>{value.toString()}</p>
+                <p className={globalStyles.secondaryColor}>{decodedEvmScript.value.toString()}</p>
               </div>
             )}
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Parameters</p>
-              <p className={classNames(globalStyles.secondaryColor, styles.multiline)}>
-                {JSON.stringify(parameters, null, 2)}
-              </p>
+              <div className={classNames(globalStyles.secondaryColor, styles.multiline)}>
+                <Parameters parameters={decodedEvmScript.parameters} />
+              </div>
             </div>
           </div>
         }
@@ -282,6 +284,35 @@ function WarningIcon(props: ComponentProps<'svg'>) {
         fill="currentColor"
       />
     </svg>
+  );
+}
+
+function EnsName(props: { address: Address }) {
+  const { address } = props;
+  const { data } = useEnsName({ address });
+
+  return <>{data || address}</>;
+}
+
+function Parameters(props: { parameters: unknown[] }) {
+  const { parameters } = props;
+  return (
+    <>
+      {'['}
+      {parameters.map((param, index) => (
+        <div key={index} style={{ paddingLeft: 9 }}>
+          {typeof param === 'string' && utils.isAddress(param) ? (
+            <>
+              "<EnsName address={param} />"
+            </>
+          ) : (
+            JSON.stringify(param)
+          )}
+          {index < parameters.length - 1 && ','}
+        </div>
+      ))}
+      {']'}
+    </>
   );
 }
 

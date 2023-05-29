@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Address, useEnsName } from 'wagmi';
 import { BigNumber } from 'ethers';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
@@ -7,14 +9,13 @@ import { images } from '../../../utils';
 import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
 import VoteSlider from '../vote-slider/vote-slider';
 import Timer, { DATE_FORMAT } from '../../../components/timer';
-import Button from '../../../components/button';
+import ConnectButton from '../../../components/connect-button';
 import { Tooltip } from '../../../components/tooltip';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
 import ProposalStatus from './proposal-status/proposal-status';
-import { connectWallet } from '../../../components/sign-in/sign-in';
 
 interface Props {
   // Proposals should be sorted by priority (the topmost proposal in the list has index 0). Or undefined if user is not
@@ -63,15 +64,13 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
 
 const ProposalList = (props: Props) => {
   const { proposals, type } = props;
-  const { setChainData, provider } = useChainData();
+  const { provider } = useChainData();
 
   if (!provider) {
     return (
       <div className={styles.noProposals}>
         <span>You need to be connected to view proposals</span>
-        <Button type="link" onClick={connectWallet(setChainData)}>
-          Connect your wallet
-        </Button>
+        <ConnectButton type="link">Connect your wallet</ConnectButton>
       </div>
     );
   } else if (!proposals) {
@@ -82,39 +81,10 @@ const ProposalList = (props: Props) => {
   } else {
     return (
       <>
-        {proposals.map((p) => {
-          const votingSliderData = voteSliderSelector(p);
-          const navlink = {
-            base: p.open ? 'governance' : 'history',
-            typeAndVoteId: encodeProposalTypeAndVoteId(p.type, voteIdFormat(p.voteId)),
-          };
-
-          return (
-            <div className={styles.proposalItem} key={navlink.typeAndVoteId} data-cy="proposal-item">
-              <div className={styles.proposalItemWrapper}>
-                <ProposalInfoState proposal={p} device="mobile" />
-                <p className={styles.proposalItemTitle}>
-                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>{p.metadata.title}</NavLink>
-                </p>
-                <div className={styles.proposalItemSubtitle}>
-                  <ProposalInfoState proposal={p} device="desktop" />
-                  <div className={styles.proposalItemBox}>
-                    {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
-                    {p.open ? <Timer deadline={p.deadline} /> : format(p.startDate, DATE_FORMAT)}
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.proposalVoteBar}>
-                <VoteSlider {...votingSliderData} />
-                <span className={styles.proposalVoteArrow}>
-                  <NavLink to={`/${navlink.base}/${navlink.typeAndVoteId}`}>
-                    <img src={images.arrowRight} alt="right arrow" />
-                  </NavLink>
-                </span>
-              </div>
-            </div>
-          );
+        {proposals.map((proposal, index) => {
+          const typeAndVoteId = encodeProposalTypeAndVoteId(proposal.type, voteIdFormat(proposal.voteId));
+          const href = `/${proposal.open ? 'governance' : 'history'}/${typeAndVoteId}`;
+          return <ProposalListItem key={typeAndVoteId} proposal={proposal} href={href} index={index} />;
         })}
       </>
     );
@@ -122,3 +92,49 @@ const ProposalList = (props: Props) => {
 };
 
 export default ProposalList;
+
+interface ProposalListItemProps {
+  proposal: Proposal;
+  href: string;
+  index: number;
+}
+
+function ProposalListItem(props: ProposalListItemProps) {
+  const { proposal, href, index } = props;
+
+  const votingSliderData = voteSliderSelector(proposal);
+
+  // Preload the first 10 proposals' creator ENS name by default
+  const [preload, setPreload] = useState(index < 10);
+  useEnsName({
+    address: proposal.creator as Address,
+    enabled: preload,
+  });
+
+  return (
+    <div className={styles.proposalItem} data-cy="proposal-item" onMouseEnter={() => setPreload(true)}>
+      <div className={styles.proposalItemWrapper}>
+        <ProposalInfoState proposal={proposal} device="mobile" />
+        <p className={styles.proposalItemTitle}>
+          <NavLink to={href}>{proposal.metadata.title}</NavLink>
+        </p>
+        <div className={styles.proposalItemSubtitle}>
+          <ProposalInfoState proposal={proposal} device="desktop" />
+          <div className={styles.proposalItemBox}>
+            {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
+            {proposal.open ? <Timer deadline={proposal.deadline} /> : format(proposal.startDate, DATE_FORMAT)}
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.proposalVoteBar}>
+        <VoteSlider {...votingSliderData} />
+        <span className={styles.proposalVoteArrow}>
+          <NavLink to={href}>
+            <img src={images.arrowRight} alt="right arrow" />
+          </NavLink>
+        </span>
+      </div>
+    </div>
+  );
+}
