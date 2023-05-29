@@ -8,11 +8,9 @@ const pressTabAndAssertFocusOutline = (selector: () => Cypress.Chainable<any>) =
 };
 
 describe('keyboard navigation and accessibility', () => {
-  beforeEach('login', () => {
-    cy.resetBlockchain().visit('http://localhost:3000/#/');
-  });
-
   it('tab key cycle works', () => {
+    cy.visit('http://localhost:3000/#/');
+
     closeErrorReportingNotice();
     pressTabAndAssertFocusOutline(() => cy.dataCy('api3-logo'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Connect Wallet').filter(':visible'));
@@ -34,7 +32,7 @@ describe('keyboard navigation and accessibility', () => {
 
   describe('can use keyboard keys in modal', () => {
     beforeEach(() => {
-      cy.login();
+      cy.resetBlockchain().login();
     });
 
     it('uses focus lock (cannot tab outside modal)', () => {

@@ -1,9 +1,7 @@
 import immerProduce, { Draft } from 'immer';
 import { ethers, providers } from 'ethers';
 import { notifications } from '../components/notifications';
-import { getDaoAddresses, getEtherscanTransactionUrl, updateNetworkName } from '../contracts';
-import { ChainData, initialChainData } from './state';
-import { convertToEnsName } from '../logic/proposals/encoding/ens-name';
+import { getEtherscanTransactionUrl } from '../contracts';
 import { go } from '@api3/promise-utils';
 
 type ProducerFn<T> = (state: Draft<T>) => void;
@@ -23,37 +21,6 @@ function produce<T>(state: T, producerFn: ProducerFn<T>) {
     producerFn(draft);
   });
 }
-
-export const getNetworkData = async (provider: ethers.providers.Web3Provider | null) => {
-  // If the user has disconnected
-  if (!provider) return initialChainData;
-
-  const goResponse = await go(async () => {
-    return {
-      allAccounts: await provider.listAccounts(),
-      currentAccount: await provider.getSigner().getAddress(),
-      network: await provider.getNetwork(),
-    };
-  });
-  // Happens when the user locks his metamask account
-  if (!goResponse.success) return initialChainData;
-
-  const networkName = updateNetworkName(goResponse.data.network.name);
-  const userAccount = goResponse.data.currentAccount;
-
-  const networkData: Partial<ChainData> = {
-    provider,
-    userAccount,
-    userAccountName: await convertToEnsName(provider, userAccount),
-    signer: provider.getSigner(),
-    availableAccounts: goResponse.data.allAccounts,
-    networkName: networkName,
-    chainId: goResponse.data.network.chainId,
-    contracts: getDaoAddresses(networkName),
-  };
-
-  return networkData;
-};
 
 export const abbrStr = (str: string, options?: { startLength?: number; endLength?: number }) => {
   const startLength = options?.startLength ?? 9;

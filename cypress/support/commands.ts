@@ -66,8 +66,24 @@ Cypress.Commands.add('login', () => {
 
   // Login
   cy.findByRole('button', { name: 'Connect Wallet' }).click();
-  cy.findByText('Web3').click();
-  cy.findAllByText('Connected to localhost').filter(':visible').should('exist');
+
+  // Web3 Modal
+  cy.get('w3m-modal')
+    .shadow()
+    .find('w3m-modal-router')
+    .should('be.visible')
+    .shadow()
+    .find('w3m-connect-wallet-view')
+    .shadow()
+    .find('w3m-desktop-wallet-selection')
+    .shadow()
+    .find('w3m-wallet-button')
+    .first()
+    .shadow()
+    .find('button')
+    .click();
+
+  cy.findAllByText('Connected to hardhat').filter(':visible').should('exist');
 
   // Close the error reporting notice if it is present
   cy.get('footer').then((el) => {

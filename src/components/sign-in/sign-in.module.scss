@@ -48,14 +48,3 @@
 .unsupportedNetworkIcon {
   margin: $space-lg;
 }
-
-.availableAccountButton {
-  height: unset !important;
-}
-
-.availableAccounts {
-  @media (max-width: $max-sm) {
-    margin: 0;
-    padding: 0;
-  }
-}

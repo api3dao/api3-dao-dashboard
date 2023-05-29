@@ -1,8 +1,9 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
+import { useEnsName, Address } from 'wagmi';
 import { useParams } from 'react-router';
 import classNames from 'classnames';
-import { produceState, Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
+import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout';
 import { Modal } from '../../../components/modal';
 import VoteSlider from '../vote-slider/vote-slider';
@@ -13,7 +14,7 @@ import BackButton from '../../../components/back-button';
 import Tag from '../../../components/tag';
 import { TooltipChecklist } from '../../../components/tooltip';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
-import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting, useChainUpdateEffect } from '../../../contracts';
+import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndVoteId, isEvmScriptValid } from '../../../logic/proposals/encoding';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import VoteForm from './vote-form/vote-form';
@@ -26,7 +27,6 @@ import { handleTransactionError, images, messages, useScrollToTop } from '../../
 import ExternalLink from '../../../components/external-link';
 import WarningIcon from '../../../components/icons/warning-icon';
 import { useProposalById } from '../../../logic/proposals/data';
-import { convertToEnsName } from '../../../logic/proposals/encoding/ens-name';
 
 interface ProposalDescriptionProps {
   description: string;
@@ -111,17 +111,16 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const { transactions, setChainData } = useChainData();
   const voting = useApi3Voting()!;
 
-  const creatorName = useEnsName(proposal.creator);
+  const { decodedEvmScript } = proposal;
 
-  if (!proposal.decodedEvmScript) {
+  if (!decodedEvmScript) {
     return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
   }
 
-  const { parameters, targetAddress, value } = proposal.decodedEvmScript;
   const voteSliderData = voteSliderSelector(proposal);
   const canVoteData = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
-  const urlTargetAddress = getEtherscanAddressUrl(chainId, targetAddress);
+  const urlTargetAddress = getEtherscanAddressUrl(chainId, decodedEvmScript.targetAddress);
 
   const canVoteChecklist = [
     {
@@ -225,7 +224,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlCreator ? (
                   <ExternalLink className={styles.link} href={urlCreator}>
-                    {creatorName || proposal.creator}
+                    <EnsName address={proposal.creator as Address} />
                   </ExternalLink>
                 ) : (
                   proposal.creator
@@ -237,10 +236,10 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlTargetAddress ? (
                   <ExternalLink className={styles.link} href={urlTargetAddress}>
-                    {targetAddress}
+                    <EnsName address={decodedEvmScript.targetAddress as Address} />
                   </ExternalLink>
                 ) : (
-                  targetAddress
+                  decodedEvmScript.targetAddress
                 )}
               </p>
             </div>
@@ -250,17 +249,17 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
                 <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
               </div>
             )}
-            {value.gt(0) && (
+            {decodedEvmScript.value.gt(0) && (
               <div className={styles.proposalDetailsItem}>
                 <p className={globalStyles.bold}>Value (Wei)</p>
-                <p className={globalStyles.secondaryColor}>{value.toString()}</p>
+                <p className={globalStyles.secondaryColor}>{decodedEvmScript.value.toString()}</p>
               </div>
             )}
             <div className={styles.proposalDetailsItem}>
               <p className={globalStyles.bold}>Parameters</p>
-              <p className={classNames(globalStyles.secondaryColor, styles.multiline)}>
-                {JSON.stringify(parameters, null, 2)}
-              </p>
+              <div className={classNames(globalStyles.secondaryColor, styles.multiline)}>
+                <Parameters parameters={decodedEvmScript.parameters} />
+              </div>
             </div>
           </div>
         }
@@ -271,6 +270,35 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
 };
 
 export default ProposalDetailsPage;
+
+function EnsName(props: { address: Address }) {
+  const { address } = props;
+  const { data } = useEnsName({ address });
+
+  return <>{data || address}</>;
+}
+
+function Parameters(props: { parameters: unknown[] }) {
+  const { parameters } = props;
+  return (
+    <>
+      {'['}
+      {parameters.map((param, index) => (
+        <div key={index} style={{ paddingLeft: 9 }}>
+          {typeof param === 'string' && utils.isAddress(param) ? (
+            <>
+              "<EnsName address={param} />"
+            </>
+          ) : (
+            JSON.stringify(param)
+          )}
+          {index < parameters.length - 1 && ','}
+        </div>
+      ))}
+      {']'}
+    </>
+  );
+}
 
 function useMaliciousProposalCheck(proposal: Proposal | null) {
   const { provider } = useChainData();
@@ -286,28 +314,4 @@ function useMaliciousProposalCheck(proposal: Proposal | null) {
   }, [provider, agents, proposal]);
 
   return isMalicious;
-}
-
-function useEnsName(address: string) {
-  const { ensNamesByAddress, provider, setChainData } = useChainData();
-  const ensName = ensNamesByAddress[address];
-
-  useChainUpdateEffect(() => {
-    if (!provider || ensName !== undefined) return;
-
-    const load = async () => {
-      const result = await convertToEnsName(provider, address);
-
-      setChainData(
-        'Loaded ENS name',
-        produceState((draft) => {
-          draft.ensNamesByAddress[address] = result;
-        })
-      );
-    };
-
-    load();
-  }, [provider, address, ensName, setChainData]);
-
-  return ensName;
 }

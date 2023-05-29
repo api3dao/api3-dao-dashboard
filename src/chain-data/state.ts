@@ -1,5 +1,4 @@
-import { BigNumber, ethers, Signer } from 'ethers';
-import type ContractsAddresses from '../contract-deployments/localhost-dao.json';
+import { BigNumber, ethers } from 'ethers';
 
 export interface ConvenienceDashboardData {
   api3Supply: BigNumber;
@@ -228,16 +227,6 @@ export interface Policy extends BasePolicy {
 }
 
 export interface ChainData {
-  // TODO: move the following fields to a separate interface called GenericChainData
-  provider: ethers.providers.Web3Provider | null;
-  userAccount: string;
-  userAccountName: string | null;
-  availableAccounts: string[]; // NOTE: Contains multiple values only when connected to hardhat node
-  signer: Signer | null;
-  networkName: string;
-  chainId: undefined | number;
-  contracts: typeof ContractsAddresses | null;
-
   dashboardState: DashboardState | null;
   isGenesisEpoch: boolean | undefined;
   proposals: {
@@ -271,14 +260,6 @@ export interface SettableChainData extends ChainData {
 }
 
 export const initialChainData: ChainData = {
-  provider: null,
-  userAccount: '',
-  userAccountName: null,
-  availableAccounts: [],
-  signer: null,
-  networkName: '',
-  chainId: undefined,
-  contracts: null,
   dashboardState: null,
   isGenesisEpoch: undefined,
   treasuries: [],

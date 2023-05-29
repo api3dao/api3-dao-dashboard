@@ -2,7 +2,7 @@ import { ComponentProps } from 'react';
 import classNames from 'classnames';
 import styles from './button.module.scss';
 
-interface Props extends ComponentProps<'button'> {
+export interface Props extends ComponentProps<'button'> {
   variant?: 'primary' | 'secondary' | 'link' | 'text';
   size?: 'normal' | 'large';
 }

@@ -65,7 +65,8 @@
   },
   "dependencies": {
     "@sentry/react": "^6.19.7",
-    "@walletconnect/web3-provider": "^1.8.0",
+    "@web3modal/ethereum": "^2.4.1",
+    "@web3modal/react": "^2.4.1",
     "classnames": "^2.3.2",
     "date-fns": "^2.29.3",
     "ethers": "^5.7.2",
@@ -81,7 +82,7 @@
     "react-number-format": "^4.9.4",
     "react-router-dom": "^5.3.4",
     "react-toastify": "^7.0.4",
-    "web3modal": "^1.9.11"
+    "wagmi": "^0.12.13"
   },
   "devDependencies": {
     "@api3/claims-manager": "api3dao/claims-manager.git#6c5eaffa3c01e38143648ef41d6bea003acae10a",
@@ -134,6 +135,7 @@
   "resolutions": {
     "@types/jest": "^27.5.2",
     "@types/react": "^18.0.26",
+    "@walletconnect/ethereum-provider": "^2.7.5",
     "jest-regex-util": "^27.5.1",
     "jest-watcher": "^27.5.1",
     "jest-worker": "^27.5.1"
