@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react';
-import { connectWallet } from '../../components/sign-in/sign-in';
 import Layout from '../../components/layout';
 import Button from '../../components/button';
+import ConnectButton from '../../components/connect-button';
 import RadioButton from '../../components/radio-button';
 import BorderedBox, { Header } from '../../components/bordered-box';
 import Pagination, { usePagedData } from '../../components/pagination';
@@ -50,15 +50,15 @@ export default function MyClaims() {
 
   const pagedClaims = usePagedData(filteredClaims, { currentPage });
 
-  const { provider, setChainData } = useChainData();
+  const { provider } = useChainData();
   if (!provider) {
     return (
       <ClaimsLayout>
         <div className={styles.emptyState}>
           <span>You need to be connected to view your claims.</span>
-          <Button variant="link" onClick={connectWallet(setChainData)} className={styles.connectButton}>
+          <ConnectButton variant="link" className={styles.connectButton}>
             Connect your wallet
-          </Button>
+          </ConnectButton>
         </div>
       </ClaimsLayout>
     );

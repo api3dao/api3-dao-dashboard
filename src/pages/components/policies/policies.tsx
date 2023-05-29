@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
-import Button from '../../../components/button';
+import ConnectButton from '../../../components/connect-button';
 import PolicyList from './policy-list';
 import Pagination, { usePagedData } from '../../../components/pagination';
-import { connectWallet } from '../../../components/sign-in/sign-in';
 import { useChainData } from '../../../chain-data';
 import { useUserPolicies, isActive } from '../../../logic/policies';
 import styles from './policies.module.scss';
@@ -38,14 +37,14 @@ export default function Policies(props: Props) {
 
   const pagedPolicies = usePagedData(filteredPolicies, { currentPage });
 
-  const { provider, setChainData } = useChainData();
+  const { provider } = useChainData();
   if (!provider) {
     return (
       <div className={styles.emptyState}>
         You need to be connected to view your policies.
-        <Button variant="link" onClick={connectWallet(setChainData)} className={styles.connectButton}>
+        <ConnectButton variant="link" className={styles.connectButton}>
           Connect your wallet
-        </Button>
+        </ConnectButton>
       </div>
     );
   }

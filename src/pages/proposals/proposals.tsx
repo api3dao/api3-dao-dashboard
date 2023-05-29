@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Button from '../../components/button';
+import ConnectButton from '../../components/connect-button';
 import Layout from '../../components/layout';
 import { Modal } from '../../components/modal';
 import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
@@ -18,7 +19,6 @@ import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
 import { useProposals } from '../../logic/proposals/data';
 import { formatApi3, handleTransactionError, images, round, useQueryParams } from '../../utils';
-import { connectWallet } from '../../components/sign-in/sign-in';
 import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposals.module.scss';
 
@@ -130,9 +130,7 @@ const Proposals = () => {
           unconnected ? (
             <EmptyState>
               <span>You need to be connected to view proposals</span>
-              <Button variant="link" onClick={connectWallet(setChainData)}>
-                Connect your wallet
-              </Button>
+              <ConnectButton variant="link">Connect your wallet</ConnectButton>
             </EmptyState>
           ) : data ? (
             <>

@@ -5,18 +5,17 @@ import BorderedBox from '../../components/bordered-box/bordered-box';
 import RadioButton from '../../components/radio-button/radio-button';
 import ProposalList, { EmptyState } from '../components/proposal-list';
 import Pagination from '../../components/pagination';
-import Button from '../../components/button';
+import ConnectButton from '../../components/connect-button';
 import { useHistory } from 'react-router';
 import { useChainData } from '../../chain-data';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import { useProposals } from '../../logic/proposals/data';
-import { connectWallet } from '../../components/sign-in/sign-in';
 import styles from './history.module.scss';
 
 type TypeFilter = 'primary' | 'secondary' | 'none' | null;
 
 export default function History() {
-  const { provider, setChainData } = useChainData();
+  const { provider } = useChainData();
 
   const params = useQueryParams();
   const history = useHistory();
@@ -79,9 +78,7 @@ export default function History() {
           unconnected ? (
             <EmptyState>
               <span>You need to be connected to view proposals</span>
-              <Button variant="link" onClick={connectWallet(setChainData)}>
-                Connect your wallet
-              </Button>
+              <ConnectButton variant="link">Connect your wallet</ConnectButton>
             </EmptyState>
           ) : data ? (
             <>
