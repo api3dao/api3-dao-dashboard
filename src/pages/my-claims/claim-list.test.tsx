@@ -1,14 +1,8 @@
-import { render as baseRender, screen, within } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { ReactElement } from 'react';
+import { render, screen, within } from '../../__test_utils__';
 import ClaimList from './claim-list';
 import { Claim } from '../../chain-data';
 import { addDays, addMinutes } from 'date-fns';
 import { parseUsd } from '../../utils';
-
-function render(element: ReactElement) {
-  baseRender(<MemoryRouter>{element}</MemoryRouter>);
-}
 
 let claim: Claim;
 const periodTimes = { evidence: 280800, vote: 583200, appeal: 388800 };
