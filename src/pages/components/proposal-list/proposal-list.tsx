@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Address, useEnsName } from 'wagmi';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -12,7 +13,7 @@ import Skeleton from '../../../components/skeleton';
 import ProposalStatus from './proposal-status/proposal-status';
 import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
-import { useEvmScriptPreload, useCreatorNamePreload } from '../../../logic/proposals/preloading';
+import { useEvmScriptPreload } from '../../../logic/proposals/preloading';
 import { ProposalSkeleton } from '../../../logic/proposals/types';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-list.module.scss';
@@ -26,7 +27,6 @@ export default function ProposalList(props: Props) {
 
   // Preload for the Proposal Details page
   useEvmScriptPreload(proposals);
-  useCreatorNamePreload(proposals);
 
   return (
     <ul className={styles.proposalList}>
@@ -35,34 +35,8 @@ export default function ProposalList(props: Props) {
         const href = `/${proposal.open ? 'governance' : 'history'}/${typeAndVoteId}`;
 
         if ('deadline' in proposal) {
-          const votingSliderData = voteSliderSelector(proposal);
           // Loaded list item
-          return (
-            <li className={styles.proposalItem} key={typeAndVoteId} data-cy="proposal-item">
-              <div className={styles.proposalItemWrapper}>
-                <ProposalInfoState proposal={proposal} device="mobile" />
-                <p className={styles.proposalItemTitle}>
-                  <NavLink to={href}>{proposal.metadata.title}</NavLink>
-                </p>
-                <div className={styles.proposalItemSubtitle}>
-                  <ProposalInfoState proposal={proposal} device="desktop" />
-                  <div className={styles.proposalItemBox}>
-                    {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
-                    {proposal.open ? <Timer deadline={proposal.deadline} /> : format(proposal.startDate, DATE_FORMAT)}
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.proposalVoteBar}>
-                <VoteSlider {...votingSliderData} />
-                <span className={styles.proposalVoteArrow}>
-                  <NavLink to={href}>
-                    <img src={images.arrowRight} alt="right arrow" />
-                  </NavLink>
-                </span>
-              </div>
-            </li>
-          );
+          return <ProposalListItem key={typeAndVoteId} proposal={proposal} href={href} />;
         }
 
         return <SkeletonListItem key={typeAndVoteId} proposal={proposal} href={href} />;
@@ -71,8 +45,44 @@ export default function ProposalList(props: Props) {
   );
 }
 
-export function EmptyState(props: { children: ReactNode }) {
-  return <div className={styles.noProposals}>{props.children}</div>;
+interface ProposalListItemProps {
+  proposal: Proposal;
+  href: string;
+}
+
+function ProposalListItem(props: ProposalListItemProps) {
+  const { proposal, href } = props;
+  const votingSliderData = voteSliderSelector(proposal);
+
+  // Preload proposal creator ENS name
+  useEnsName({ address: proposal.creator as Address });
+
+  return (
+    <li className={styles.proposalItem} data-cy="proposal-item">
+      <div className={styles.proposalItemWrapper}>
+        <ProposalInfoState proposal={proposal} device="mobile" />
+        <p className={styles.proposalItemTitle}>
+          <NavLink to={href}>{proposal.metadata.title}</NavLink>
+        </p>
+        <div className={styles.proposalItemSubtitle}>
+          <ProposalInfoState proposal={proposal} device="desktop" />
+          <div className={styles.proposalItemBox}>
+            {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
+            {proposal.open ? <Timer deadline={proposal.deadline} /> : format(proposal.startDate, DATE_FORMAT)}
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.proposalVoteBar}>
+        <VoteSlider {...votingSliderData} />
+        <span className={styles.proposalVoteArrow}>
+          <NavLink to={href}>
+            <img src={images.arrowRight} alt="right arrow" />
+          </NavLink>
+        </span>
+      </div>
+    </li>
+  );
 }
 
 interface SkeletonListItemProps {
@@ -144,4 +154,8 @@ function ProposalInfoState({ proposal, device }: ProposalInfoStateProps) {
       </div>
     </div>
   );
+}
+
+export function EmptyState(props: { children: ReactNode }) {
+  return <div className={styles.noProposals}>{props.children}</div>;
 }
