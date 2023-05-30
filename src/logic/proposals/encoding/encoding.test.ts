@@ -245,6 +245,39 @@ test('decoding', async () => {
 });
 
 describe('ENS name support', () => {
+  it('supports ENS name in target address', async () => {
+    const formDataWithAddress = updateImmutably(newFormData, (data) => {
+      data.targetAddress = MOCKED_ENS_ENTRY.ensName;
+    });
+
+    const goRes = await goEncodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
+    const metadata = decodeMetadata(encodeMetadata(formDataWithAddress))!;
+
+    assertGoSuccess(goRes);
+    expect(await decodeEvmScript(mockedProvider, goRes.data, metadata)).toEqual({
+      targetAddress: MOCKED_ENS_ENTRY.address,
+      value: BigNumber.from('12'),
+      parameters: ['arg1', '123'],
+    });
+  });
+
+  it('supports ENS names in parameters', async () => {
+    const formDataWithAddress = updateImmutably(newFormData, (data) => {
+      data.targetSignature = 'functionName(address)';
+      data.parameters = JSON.stringify([MOCKED_ENS_ENTRY.ensName]);
+    });
+
+    const goRes = await goEncodeEvmScript(mockedProvider, formDataWithAddress, api3Agent);
+    const metadata = decodeMetadata(encodeMetadata(formDataWithAddress))!;
+
+    assertGoSuccess(goRes);
+    expect(await decodeEvmScript(mockedProvider, goRes.data, metadata)).toEqual({
+      targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
+      value: BigNumber.from('12'),
+      parameters: [MOCKED_ENS_ENTRY.address],
+    });
+  });
+
   it('supports addresses in parameters', async () => {
     const address = '0x4017F39E438ADA9F860E15030E6A6e4b7b1af8Ba';
     const formDataWithAddress = updateImmutably(newFormData, (data) => {
