@@ -1,55 +1,9 @@
 import { produceState, Proposal, useChainData } from '../../chain-data';
 import { useStableIds } from '../../utils';
 import { useEffect } from 'react';
-import uniq from 'lodash/uniq';
 import { go } from '@api3/promise-utils';
-import { convertToEnsName } from './encoding/ens-name';
 import { decodeEvmScript } from './encoding';
 import { ProposalSkeleton } from './types';
-
-/**
- * Preloads the names for the creator addresses of the given proposals. Addresses that have already been loaded
- * will be skipped.
- */
-export function useCreatorNamePreload(proposals: (ProposalSkeleton | Proposal)[]) {
-  const { provider, ensNamesByAddress, setChainData } = useChainData();
-
-  const proposalsToPreload = proposals.filter((prop) => {
-    return ensNamesByAddress[prop.creator] === undefined;
-  });
-
-  const addresses = useStableIds(proposalsToPreload, (p) => p.creator);
-
-  useEffect(() => {
-    if (!provider || !addresses.length) return;
-
-    const load = async () => {
-      const uniqAddresses = uniq(addresses); // Make sure not to make multiple requests for the same address
-
-      const result = await go(() =>
-        Promise.all(
-          uniqAddresses.map(async (address) => {
-            const name = await convertToEnsName(provider, address);
-            return { address, name };
-          })
-        )
-      );
-
-      if (result.success) {
-        setChainData(
-          'Preloaded ENS names',
-          produceState((draft) => {
-            result.data.forEach((res) => {
-              draft.ensNamesByAddress[res.address] = res.name;
-            });
-          })
-        );
-      }
-    };
-
-    load();
-  }, [provider, addresses, setChainData]);
-}
 
 /**
  * Preloads the decoding of the EVM script for the given proposals. EVM scrips that have already been decoded

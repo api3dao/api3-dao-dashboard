@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../__test_utils__';
 import ClaimActions from './claim-actions';
 import { Claim } from '../../chain-data';
 import { addDays, addMinutes } from 'date-fns';

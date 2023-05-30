@@ -247,9 +247,6 @@ export interface ChainData {
     byId: null | { [policyId: string]: Omit<Policy, 'remainingCoverageInUsd'> };
     remainingCoverageById: null | { [policyId: string]: BigNumber };
   };
-  ensNamesByAddress: {
-    [address: string]: null | string;
-  };
 }
 
 export interface SettableChainData extends ChainData {
@@ -292,7 +289,6 @@ export const initialChainData: ChainData = {
       decodedEvmScriptById: {},
     },
   },
-  ensNamesByAddress: {},
 };
 
 export const initialSettableChainData: SettableChainData = { ...initialChainData, setChainData: () => {} };
