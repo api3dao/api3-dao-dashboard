@@ -20,7 +20,7 @@ interface Props {
 
 const DelegateVotesForm = (props: Props) => {
   const { onClose } = props;
-  const { setChainData, transactions, userAccount, provider } = useChainData();
+  const { setChainData, transactions, userAccount, signer, provider } = useChainData();
 
   const [error, setError] = useState('');
   const [delegationAddress, setDelegationAddress] = useState('');
@@ -55,7 +55,7 @@ const DelegateVotesForm = (props: Props) => {
       return setError(messages.REDELEGATION_IS_FORBIDDEN(targetDelegate));
     }
 
-    const tx = await handleTransactionError(api3Pool.delegateVotingPower(delegationTarget));
+    const tx = await handleTransactionError(api3Pool.connect(signer!).delegateVotingPower(delegationTarget));
     if (tx) {
       setChainData('Save delegate transaction', { transactions: [...transactions, { type: 'delegate', tx }] });
     }

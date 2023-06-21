@@ -14,7 +14,7 @@ interface Props {
 
 const ProposalStatus = (props: Props) => {
   const voting = useApi3Voting();
-  const { setChainData } = useChainData();
+  const { signer, setChainData } = useChainData();
   const { proposal, large } = props;
   const proposalStatus = voteSliderSelector(proposal).proposalStatus;
 
@@ -48,7 +48,9 @@ const ProposalStatus = (props: Props) => {
           className={styles.execute}
           onClick={async () => {
             if (!voting) return;
-            const tx = await handleTransactionError(voting[proposal.type].executeVote(proposal.voteId));
+            const tx = await handleTransactionError(
+              voting[proposal.type].connect(signer!).executeVote(proposal.voteId)
+            );
             if (tx) {
               setChainData('Save execute transaction', (state) => ({
                 transactions: [...state.transactions, { type: 'execute', tx }],

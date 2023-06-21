@@ -90,7 +90,7 @@ interface ProposalDetailsProps {
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
-  const { chainId } = useChainData();
+  const { chainId, signer } = useChainData();
   const { proposal } = props;
   const isMalicious = useMaliciousProposalCheck(typeof proposal === 'string' ? null : proposal);
   const [voteModalOpen, setVoteModalOpen] = useState(false);
@@ -195,7 +195,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             onConfirm={async (choice) => {
               setVoteModalOpen(false);
               const tx = await handleTransactionError(
-                voting[proposal.type].vote(proposal.voteId, choice === 'for', true)
+                voting[proposal.type].connect(signer!).vote(proposal.voteId, choice === 'for', true)
               );
               const type = choice === 'for' ? 'vote-for' : 'vote-against';
               if (tx) {
