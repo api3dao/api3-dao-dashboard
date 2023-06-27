@@ -11,34 +11,54 @@ import {
 } from './artifacts/factories';
 import { initialChainData } from '../chain-data/state';
 
+const useContractReader = () => {
+  const { contracts, provider, signer } = useChainData();
+  const { connector } = useAccount();
+
+  /*
+   * Please note the following:
+   * 1. When connected via non-MetaMask wallets (like via Wallet Connect), loading contract data fails when
+   *    the smart contract was constructed with a signer.
+   * 2. Data loads a considerable amount faster with MetaMask when using the signer.
+   *
+   * In conclusion, we want to use the provider when connecting the contracts, except when we are connected via
+   * MetaMask (and aren't running the app locally).
+   */
+  const reader = connector?.name === 'MetaMask' && process.env.NODE_ENV !== 'development' ? signer : provider;
+  return {
+    contracts,
+    reader,
+  };
+};
+
 export const useApi3Pool = () => {
-  const { contracts, signer } = useChainData();
+  const { contracts, reader } = useContractReader();
 
   return useMemo(() => {
-    if (!contracts || !signer) return null;
-    return Api3PoolFactory.connect(contracts.api3Pool, signer);
-  }, [signer, contracts]);
+    if (!contracts || !reader) return null;
+    return Api3PoolFactory.connect(contracts.api3Pool, reader);
+  }, [reader, contracts]);
 };
 
 export const useApi3Token = () => {
-  const { contracts, signer } = useChainData();
+  const { contracts, reader } = useContractReader();
 
   return useMemo(() => {
-    if (!contracts || !signer) return null;
-    return Api3TokenFactory.connect(contracts.api3Token, signer);
-  }, [signer, contracts]);
+    if (!contracts || !reader) return null;
+    return Api3TokenFactory.connect(contracts.api3Token, reader);
+  }, [reader, contracts]);
 };
 
 export const useApi3Voting = () => {
-  const { contracts, signer } = useChainData();
+  const { contracts, reader } = useContractReader();
 
   return useMemo(() => {
-    if (!contracts || !signer) return null;
+    if (!contracts || !reader) return null;
     return {
-      primary: Api3VotingFactory.connect(contracts.votingAppPrimary, signer),
-      secondary: Api3VotingFactory.connect(contracts.votingAppSecondary, signer),
+      primary: Api3VotingFactory.connect(contracts.votingAppPrimary, reader),
+      secondary: Api3VotingFactory.connect(contracts.votingAppSecondary, reader),
     };
-  }, [signer, contracts]);
+  }, [reader, contracts]);
 };
 
 export interface Api3Agent {
@@ -59,23 +79,23 @@ export const useApi3AgentAddresses = (): Api3Agent | null => {
 };
 
 export const useConvenience = () => {
-  const { contracts, signer } = useChainData();
+  const { contracts, reader } = useContractReader();
 
   return useMemo(() => {
-    if (!contracts || !signer) return null;
+    if (!contracts || !reader) return null;
 
-    return ConvenienceFactory.connect(contracts.convenience, signer);
-  }, [signer, contracts]);
+    return ConvenienceFactory.connect(contracts.convenience, reader);
+  }, [reader, contracts]);
 };
 
 export const useTimelockManager = () => {
-  const { signer, contracts } = useChainData();
+  const { contracts, reader } = useContractReader();
 
   return useMemo(() => {
-    if (!contracts || !signer) return null;
+    if (!contracts || !reader) return null;
 
-    return TimelockManagerFactory.connect(contracts.timelockManager, signer);
-  }, [signer, contracts]);
+    return TimelockManagerFactory.connect(contracts.timelockManager, reader);
+  }, [reader, contracts]);
 };
 
 export const useProviderSubscriptions = () => {

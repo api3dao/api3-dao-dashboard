@@ -16,7 +16,7 @@ import classNames from 'classnames';
 
 const Delegation = () => {
   // TODO: Retrieve only "userStaked" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
-  const { delegation, dashboardState, setChainData, transactions } = useChainData();
+  const { signer, delegation, dashboardState, setChainData, transactions } = useChainData();
   const api3Pool = useApi3Pool();
 
   const [openDelegationModal, setOpenDelegationModal] = useState(false);
@@ -65,7 +65,7 @@ const Delegation = () => {
               onUndelegate={async () => {
                 if (!api3Pool) return;
 
-                const tx = await handleTransactionError(api3Pool.undelegateVotingPower());
+                const tx = await handleTransactionError(api3Pool.connect(signer!).undelegateVotingPower());
                 if (tx) {
                   setChainData('Save undelegate transaction', {
                     transactions: [...transactions, { type: 'undelegate', tx }],

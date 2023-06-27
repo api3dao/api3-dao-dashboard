@@ -25,7 +25,7 @@ import styles from './proposals.module.scss';
 
 const Proposals = () => {
   // TODO: Retrieve only "userVotingPower" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
-  const { provider, proposals, delegation, dashboardState, isGenesisEpoch, transactions, setChainData } =
+  const { signer, provider, proposals, delegation, dashboardState, isGenesisEpoch, transactions, setChainData } =
     useChainData();
   const api3Voting = useApi3Voting();
   const api3Token = useApi3Token();
@@ -95,7 +95,9 @@ const Proposals = () => {
 
     const tx = await handleTransactionError(
       // NOTE: For some reason only this 'ugly' version is available on the contract
-      api3Voting[formData.type]['newVote(bytes,string,bool,bool)'](goRes.data, encodeMetadata(formData), true, true)
+      api3Voting[formData.type]
+        .connect(signer!)
+        ['newVote(bytes,string,bool,bool)'](goRes.data, encodeMetadata(formData), true, true)
     );
     if (tx) {
       setChainData('Save new vote transaction', { transactions: [...transactions, { type: 'new-vote', tx }] });

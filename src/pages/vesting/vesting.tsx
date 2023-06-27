@@ -7,7 +7,7 @@ import { handleTransactionError } from '../../utils';
 import styles from './vesting.module.scss';
 
 const Vesting = () => {
-  const { userAccount, setChainData, vesting } = useChainData();
+  const { signer, userAccount, setChainData, vesting } = useChainData();
   const timelockManager = useTimelockManager();
   const api3Pool = useApi3Pool();
 
@@ -23,7 +23,7 @@ const Vesting = () => {
           onClick={async () => {
             if (!api3Pool || !userAccount) return;
 
-            const tx = await handleTransactionError(api3Pool.updateTimelockStatus(userAccount));
+            const tx = await handleTransactionError(api3Pool.connect(signer!).updateTimelockStatus(userAccount));
             if (tx) {
               setChainData('Save update timelock status transaction', (state) => ({
                 transactions: [...state.transactions, { type: 'update-timelock-status', tx }],
@@ -38,7 +38,9 @@ const Vesting = () => {
           onClick={async () => {
             if (!timelockManager || !api3Pool) return;
 
-            const tx = await handleTransactionError(timelockManager.withdrawToPool(api3Pool.address, userAccount));
+            const tx = await handleTransactionError(
+              timelockManager.connect(signer!).withdrawToPool(api3Pool.address, userAccount)
+            );
             if (tx) {
               setChainData('Save withdraw to pool transaction', (state) => ({
                 transactions: [...state.transactions, { type: 'withdraw-to-pool', tx }],

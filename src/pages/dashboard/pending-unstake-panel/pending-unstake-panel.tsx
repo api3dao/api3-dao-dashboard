@@ -19,7 +19,7 @@ interface Props {
 
 const PendingUnstakePanel = (props: Props) => {
   const api3Pool = useApi3Pool();
-  const { transactions, setChainData, userAccount } = useChainData();
+  const { signer, transactions, setChainData, userAccount } = useChainData();
 
   const { amount, canUnstake, canUnstakeAndWithdraw, unstakeDate } = props;
   const [timerDays, setTimerDays] = useState('0');
@@ -60,7 +60,7 @@ const PendingUnstakePanel = (props: Props) => {
 
   const handleUnstake = async () => {
     if (!api3Pool) return;
-    const tx = await handleTransactionError(api3Pool.unstake(userAccount));
+    const tx = await handleTransactionError(api3Pool.connect(signer!).unstake(userAccount));
     if (tx) {
       setChainData('Save unstake transaction', { transactions: [...transactions, { type: 'unstake', tx }] });
     }
@@ -68,7 +68,7 @@ const PendingUnstakePanel = (props: Props) => {
 
   const handleUnstakeAndWithdraw = async () => {
     if (!api3Pool) return;
-    const tx = await handleTransactionError(api3Pool.unstakeAndWithdraw());
+    const tx = await handleTransactionError(api3Pool.connect(signer!).unstakeAndWithdraw());
     if (tx) {
       setChainData('Save unstake and Withdraw transaction', {
         transactions: [...transactions, { type: 'unstake-withdraw', tx }],

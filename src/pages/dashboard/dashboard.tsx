@@ -22,7 +22,7 @@ import classNames from 'classnames';
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
 const Dashboard = () => {
-  const { dashboardState: data, transactions, setChainData, provider } = useChainData();
+  const { dashboardState: data, transactions, setChainData, signer, provider } = useChainData();
   const api3Pool = useApi3Pool();
 
   useLoadDashboardData();
@@ -155,7 +155,7 @@ const Dashboard = () => {
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
 
-            const tx = await handleTransactionError(api3Pool.withdrawRegular(parsedValue));
+            const tx = await handleTransactionError(api3Pool.connect(signer!).withdrawRegular(parsedValue));
             if (tx) {
               setChainData('Save withdraw transaction', { transactions: [...transactions, { type: 'withdraw', tx }] });
             }
@@ -173,7 +173,7 @@ const Dashboard = () => {
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
 
-            const tx = await handleTransactionError(api3Pool.stake(parsedValue));
+            const tx = await handleTransactionError(api3Pool.connect(signer!).stake(parsedValue));
             if (tx) {
               setChainData('Save stake transaction', { transactions: [...transactions, { type: 'stake', tx }] });
             }
@@ -205,7 +205,7 @@ const Dashboard = () => {
             onConfirm={async (parsedValue: BigNumber) => {
               if (!api3Pool || !data) return;
 
-              const tx = await handleTransactionError(api3Pool.scheduleUnstake(parsedValue));
+              const tx = await handleTransactionError(api3Pool.connect(signer!).scheduleUnstake(parsedValue));
               if (tx) {
                 setChainData('Save initiate unstake transaction', {
                   transactions: [...transactions, { type: 'initiate-unstake', tx }],
