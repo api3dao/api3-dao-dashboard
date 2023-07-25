@@ -67,7 +67,7 @@ export const goEncodeEvmScript = async (
   provider: providers.Provider,
   formData: NewProposalFormData,
   api3Agent: Api3Agent
-): Promise<GoResult<string, EncodedEvmScriptError>> => {
+): Promise<GoResult<string>> => {
   // Ensure that the form parameters form a valid JSON array
   const goJsonParams = goSync(() => {
     const json = JSON.parse(formData.parameters);
