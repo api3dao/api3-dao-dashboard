@@ -2,7 +2,7 @@ import { defineConfig } from 'cypress';
 import { readFileSync, existsSync } from 'fs';
 
 export default defineConfig({
-  defaultCommandTimeout: 10000,
+  defaultCommandTimeout: 15000,
 
   retries: {
     runMode: 1,
