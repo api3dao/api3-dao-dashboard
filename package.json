@@ -122,7 +122,7 @@
   "resolutions": {
     "@types/jest": "^27.5.2",
     "@types/react": "^18.0.26",
-    "@walletconnect/ethereum-provider": "^2.7.5",
+    "@walletconnect/ethereum-provider": "^2.9.1",
     "jest-regex-util": "^27.5.1",
     "jest-watcher": "^27.5.1",
     "jest-worker": "^27.5.1"
