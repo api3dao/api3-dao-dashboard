@@ -29,7 +29,7 @@ const DelegateVotesForm = (props: Props) => {
   const onDelegate = async () => {
     if (!api3Pool || !provider) return;
 
-    const goDelegationTargetResolvedName = await go(convertToAddressOrThrow(provider, delegationAddress));
+    const goDelegationTargetResolvedName = await go(() => convertToAddressOrThrow(provider, delegationAddress));
     const delegationTarget = goDelegationTargetResolvedName.success
       ? goDelegationTargetResolvedName.data
       : delegationAddress;
@@ -42,7 +42,7 @@ const DelegateVotesForm = (props: Props) => {
       return setError(messages.DELEGATE_IS_YOURSELF);
     }
 
-    const goDelegate = await go(api3Pool.userDelegate(delegationTarget));
+    const goDelegate = await go(() => api3Pool.userDelegate(delegationTarget));
     if (!goDelegate.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_DELEGATE,

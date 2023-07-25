@@ -141,7 +141,7 @@ const useReloadHistoryProposals = () => {
       );
     };
 
-    const goResponse = await go(loadProposals());
+    const goResponse = await go(() => loadProposals());
     if (!goResponse.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,

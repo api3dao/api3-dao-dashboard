@@ -26,7 +26,7 @@ export const convertToAddressOrThrow = async (provider: providers.Provider, ensN
 export const convertToEnsName = async (provider: providers.Provider, ensNameOrAddress: string) => {
   if (!utils.isAddress(ensNameOrAddress)) return null;
 
-  const goEnsName = await go(provider.lookupAddress(ensNameOrAddress));
+  const goEnsName = await go(() => provider.lookupAddress(ensNameOrAddress));
   if (!goEnsName.success) return null;
 
   return goEnsName.data;
