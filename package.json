@@ -73,7 +73,7 @@
     "wagmi": "^0.12.13"
   },
   "devDependencies": {
-    "@api3/promise-utils": "^0.1.0",
+    "@api3/promise-utils": "^0.4.0",
     "@nomiclabs/hardhat-ethers": "^2.0.4",
     "@percy/cli": "^1.6.0",
     "@percy/cypress": "^3.1.2",

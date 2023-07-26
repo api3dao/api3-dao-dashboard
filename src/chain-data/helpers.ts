@@ -40,7 +40,7 @@ export const displayPendingTransaction = async (
     { autoClose: false, closeOnClick: false }
   );
 
-  const goRes = await go(transaction.wait());
+  const goRes = await go(() => transaction.wait());
   if (infoToastId) notifications.close(infoToastId);
 
   // NOTE: ethers.js adds various additional fields to Error, so it's easier to type as 'any'

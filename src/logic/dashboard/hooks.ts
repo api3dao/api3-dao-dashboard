@@ -14,7 +14,7 @@ export const useLoadDashboardData = () => {
   const loadDashboardData = useCallback(async () => {
     if (!provider || !api3Pool || !api3Token || !convenience || !userAccount) return null;
 
-    const goStakingData = await go(convenience.getUserStakingData(userAccount));
+    const goStakingData = await go(() => convenience.getUserStakingData(userAccount));
     if (!goStakingData.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_CHAIN_DATA,
@@ -23,7 +23,7 @@ export const useLoadDashboardData = () => {
     }
     const stakingData = goStakingData.data;
 
-    const goAllowance = await go(api3Token.allowance(userAccount, api3Pool.address));
+    const goAllowance = await go(() => api3Token.allowance(userAccount, api3Pool.address));
     if (!goAllowance.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_CHAIN_DATA,

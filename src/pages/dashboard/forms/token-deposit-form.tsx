@@ -36,7 +36,7 @@ const TokenDepositForm = (props: Props) => {
 
     setError('');
 
-    const goResponse = await go(api3Token.connect(signer!).approve(api3Pool.address, MAX_ALLOWANCE));
+    const goResponse = await go(() => api3Token.connect(signer!).approve(api3Pool.address, MAX_ALLOWANCE));
     if (goResponse.success) {
       const tx = goResponse.data;
       setChainData('Save deposit approval', { transactions: [...transactions, { type: 'approve-deposit', tx }] });
@@ -66,7 +66,7 @@ const TokenDepositForm = (props: Props) => {
     setError('');
 
     const methodName = type === 'deposit-only' ? 'depositRegular' : 'depositAndStake';
-    const goResponse = await go(api3Pool.connect(signer!)[methodName](parsedInput));
+    const goResponse = await go(() => api3Pool.connect(signer!)[methodName](parsedInput));
     if (goResponse.success) {
       const tx = goResponse.data;
       setChainData(`Save "${type}" transaction`, { transactions: [...transactions, { type, tx }] });

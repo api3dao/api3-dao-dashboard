@@ -179,7 +179,7 @@ const useReloadActiveProposals = () => {
       }
     };
 
-    const goResponse = await go(loadProposals());
+    const goResponse = await go(() => loadProposals());
     if (!goResponse.success) {
       // TODO: error handling
       // eslint-disable-next-line no-console

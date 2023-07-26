@@ -18,7 +18,7 @@ export const useTreasuryAndDelegation = () => {
     if (!api3Voting || !convenience || !provider) return;
 
     const loadTreasuryAndDelegation = async () => {
-      const goResponse = await go(convenience.getTreasuryAndUserDelegationData(userAccount));
+      const goResponse = await go(() => convenience.getTreasuryAndUserDelegationData(userAccount));
       assertGoSuccess(goResponse);
       const data = goResponse.data;
 

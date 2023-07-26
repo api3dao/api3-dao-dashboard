@@ -6,7 +6,7 @@ import Input from '../../../components/input';
 import Textarea from '../../../components/textarea';
 import { Tooltip } from '../../../components/tooltip';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
-import { goEncodeEvmScript, NewProposalFormData } from '../../../logic/proposals/encoding';
+import { goEncodeEvmScript, EncodedEvmScriptError, NewProposalFormData } from '../../../logic/proposals/encoding';
 import { Api3Agent } from '../../../contracts';
 import { filterAlphanumerical, images } from '../../../utils';
 import styles from './new-proposal-form.module.scss';
@@ -77,8 +77,13 @@ const NewProposalForm = (props: Props) => {
 
     const goRes = await goEncodeEvmScript(provider, formData, api3Agent);
     if (!goRes.success) {
-      const { field, value } = goRes.error;
-      newErrors[field] = value;
+      if (goRes.error instanceof EncodedEvmScriptError) {
+        const { field, value } = goRes.error;
+        newErrors[field] = value;
+      } else {
+        // We should always get an EncodedEvmScriptError, but we give the user a message just in case it is not
+        newErrors.generic = 'Failed to encode';
+      }
       foundErrors = true;
     }
 

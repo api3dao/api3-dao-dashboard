@@ -13,7 +13,7 @@ export const useLoadVestingData = () => {
   const loadDashboardData = useCallback(async () => {
     if (!provider || !api3Pool || !timelockManager || !userAccount) return null;
 
-    const goVestingData = await go(api3Pool.getUser(userAccount));
+    const goVestingData = await go(() => api3Pool.getUser(userAccount));
     if (!goVestingData.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_VESTING_DATA,
@@ -22,7 +22,7 @@ export const useLoadVestingData = () => {
     }
     const vestingData = goVestingData.data;
 
-    const goTimelock = await go(timelockManager.getTimelock(userAccount));
+    const goTimelock = await go(() => timelockManager.getTimelock(userAccount));
     if (!goTimelock.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_VESTING_DATA,

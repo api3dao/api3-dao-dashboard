@@ -37,7 +37,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
     const votingApp = api3Voting[type];
     const startVoteFilter = votingApp.filters.StartVote(id, null, null);
 
-    const goStartVoteFilters = await go(votingApp.queryFilter(startVoteFilter));
+    const goStartVoteFilters = await go(() => votingApp.queryFilter(startVoteFilter));
     if (!goStartVoteFilters.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
@@ -62,7 +62,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
       voteId: ethersArgs.voteId,
     };
 
-    const goOpenVoteIds = await go(convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
+    const goOpenVoteIds = await go(() => convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
     if (!goOpenVoteIds.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
@@ -71,7 +71,9 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
     }
     const openVoteIds = goOpenVoteIds.data;
 
-    const goLoadProposal = await go(getProposals(provider, convenience, userAccount, [startVote], openVoteIds, type));
+    const goLoadProposal = await go(() =>
+      getProposals(provider, convenience, userAccount, [startVote], openVoteIds, type)
+    );
     if (!goLoadProposal.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
@@ -97,7 +99,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
   const reloadProposalsByIds = useCallback(async () => {
     if (!convenience) return;
 
-    const goVotingData = await go(convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, [id]));
+    const goVotingData = await go(() => convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, [id]));
     if (!goVotingData.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
