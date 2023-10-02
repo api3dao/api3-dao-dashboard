@@ -54,8 +54,8 @@
   },
   "dependencies": {
     "@sentry/react": "^6.19.7",
-    "@web3modal/ethereum": "^2.4.1",
-    "@web3modal/react": "^2.4.1",
+    "@web3modal/ethereum": "^2.7.1",
+    "@web3modal/react": "^2.7.1",
     "classnames": "^2.3.2",
     "date-fns": "^2.29.3",
     "ethers": "^5.7.2",
@@ -70,7 +70,8 @@
     "react-number-format": "^4.9.4",
     "react-router-dom": "^5.3.4",
     "react-toastify": "^7.0.4",
-    "wagmi": "^0.12.13"
+    "viem": "1.2.10",
+    "wagmi": "^1.4.2"
   },
   "devDependencies": {
     "@api3/promise-utils": "^0.4.0",
@@ -122,9 +123,10 @@
   "resolutions": {
     "@types/jest": "^27.5.2",
     "@types/react": "^18.0.26",
-    "@walletconnect/ethereum-provider": "^2.7.5",
+    "abitype": "0.8.7",
     "jest-regex-util": "^27.5.1",
     "jest-watcher": "^27.5.1",
-    "jest-worker": "^27.5.1"
+    "jest-worker": "^27.5.1",
+    "viem": "1.2.10"
   }
 }

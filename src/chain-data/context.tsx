@@ -1,12 +1,23 @@
 import { createContext, useState, useMemo, useContext, ReactNode } from 'react';
 import { initialSettableChainData, initialChainData, SettableChainData } from './state';
-import { useAccount, useNetwork, useProvider, useSigner } from 'wagmi';
+import { useAccount, useNetwork } from 'wagmi';
 import { getDaoAddresses, updateNetworkName } from '../contracts';
+import { useEthersProvider, useEthersSigner } from './adapters';
+import { ethers } from 'ethers';
 
 export const ChainDataContext = createContext(initialSettableChainData);
 
+const ProviderSignerContext = createContext<null | {
+  provider: ethers.providers.Provider;
+  signer?: ethers.Signer;
+}>(null);
+
 const ChainDataContextProvider = (props: { children: ReactNode }) => {
   const [chainData, setChainData] = useState(initialChainData);
+  // We call these adapter hooks here and provide them with context, so that we use a single instance of each
+  // across the codebase
+  const provider = useEthersProvider();
+  const signer = useEthersSigner();
 
   const loggableSetChainData = useMemo(() => {
     const setter: SettableChainData['setChainData'] = (reason, dataOrCallback) => {
@@ -30,7 +41,7 @@ const ChainDataContextProvider = (props: { children: ReactNode }) => {
 
   return (
     <ChainDataContext.Provider value={{ ...chainData, setChainData: loggableSetChainData }}>
-      {props.children}
+      <ProviderSignerContext.Provider value={{ provider, signer }}>{props.children}</ProviderSignerContext.Provider>
     </ChainDataContext.Provider>
   );
 };
@@ -40,12 +51,11 @@ export default ChainDataContextProvider;
 export const useChainData = () => {
   const data = useContext(ChainDataContext);
   const { chain } = useNetwork();
-  const provider = useProvider();
-  const { data: signer } = useSigner();
+  const { provider, signer } = useContext(ProviderSignerContext) || {};
   const { isConnected, address } = useAccount();
 
   // Note: The signer is briefly undefined after connecting or after switching networks.
-  if (isConnected && address && signer) {
+  if (isConnected && address && provider && signer) {
     const networkName = updateNetworkName(chain?.network || '');
     return {
       ...data,

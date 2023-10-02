@@ -77,7 +77,7 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <WagmiConfig client={wagmiClient}>
+    <WagmiConfig config={wagmiClient}>
       <ChainDataContextProvider>
         <HelmetProvider>
           {/* Helmet children can be overridden in components lower down the tree */}

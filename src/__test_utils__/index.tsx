@@ -12,7 +12,7 @@ const wagmiClient = createMockClient();
 export const render = (ui: ReactElement, options?: RenderOptions): RenderResult => {
   return baseRender(
     <BrowserRouter>
-      <WagmiConfig client={wagmiClient}>{ui}</WagmiConfig>
+      <WagmiConfig config={wagmiClient}>{ui}</WagmiConfig>
     </BrowserRouter>,
     options
   );

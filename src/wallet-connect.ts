@@ -1,4 +1,4 @@
-import { configureChains, createClient } from 'wagmi';
+import { configureChains, createConfig } from 'wagmi';
 import { EthereumClient, w3mConnectors } from '@web3modal/ethereum';
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc';
 import { mainnet, hardhat } from 'wagmi/chains';
@@ -11,7 +11,7 @@ export const projectId = process.env.REACT_APP_PROJECT_ID;
 
 const chains = [mainnet, hardhat];
 
-const { provider } = configureChains(chains, [
+const { publicClient } = configureChains(chains, [
   // In the web3modal docs they use their "w3mProvider", which prefers using their RPC proxy for a set number of chains,
   // and falls back to using a "jsonRpcProvider" (like below). It is unclear what the use of the RPC proxy is, and it seems
   // like a central point of failure, so we rather go with a "jsonRpcProvider" and use the RPC providers directly.
@@ -27,10 +27,10 @@ const { provider } = configureChains(chains, [
   }),
 ]);
 
-export const wagmiClient = createClient({
+export const wagmiClient = createConfig({
   autoConnect: false,
-  connectors: w3mConnectors({ version: 2, chains, projectId }),
-  provider,
+  connectors: w3mConnectors({ chains, projectId }),
+  publicClient,
 });
 
 export const ethereumClient = new EthereumClient(wagmiClient, chains);
