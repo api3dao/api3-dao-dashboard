@@ -16,8 +16,10 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
+import StorageFullNotification from './components/notifications/storage-full-notification';
 import { wagmiClient, ethereumClient, projectId } from './wallet-connect';
 import './styles/variables.module.scss';
+import { notifications } from './components/notifications';
 
 const ErrorBoundary: FallbackRender = (props) => {
   const { error } = props;
@@ -100,3 +102,26 @@ const App = () => {
 };
 
 export default App;
+
+// We've picked up some local storage issues through the use of Wallet Connect's web3modal, so we patch the
+// localStorage.setItem function to show a warning message to the user when it fails to store something.
+const setStorageItem = window.localStorage.setItem.bind(window.localStorage);
+window.localStorage.setItem = (key, value) => {
+  try {
+    setStorageItem(key, value);
+  } catch (e) {
+    notifications.warning(
+      { message: <StorageFullNotification /> },
+      {
+        toastId: 'storage-warning',
+        bodyClassName: 'cursor-auto',
+        closeButton: false,
+        closeOnClick: false,
+        autoClose: false,
+        draggable: false,
+      }
+    );
+
+    throw e;
+  }
+};

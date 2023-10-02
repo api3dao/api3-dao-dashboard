@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import throttle from 'lodash/throttle';
 import classNames from 'classnames';
 import { toast, Slide, ToastOptions } from 'react-toastify';
@@ -23,7 +24,7 @@ export const CloseButton = ({ closeToast }: CloseButtonProps) => (
 );
 
 interface ToastProps {
-  message: string;
+  message: ReactNode;
   url?: string;
 }
 
@@ -41,7 +42,7 @@ const CustomToast = ({ message, type, url }: ToastPropsWithType) => {
     <div className={classNames(styles.notificationBody, { [styles.url]: url })}>
       <img src={`/${type}.svg`} alt={`${type} icon`} />
       <div className={styles.notificationContent}>
-        <p>{message}</p>
+        <div>{message}</div>
         {url && (
           <div className={styles.notificationUrl}>
             <NotificationLinkButton href={url}>View transaction</NotificationLinkButton>
