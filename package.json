@@ -70,8 +70,8 @@
     "react-number-format": "^4.9.4",
     "react-router-dom": "^5.3.4",
     "react-toastify": "^7.0.4",
-    "viem": "1.2.10",
-    "wagmi": "^1.4.2"
+    "viem": "^1.14.0",
+    "wagmi": "^1.4.3"
   },
   "devDependencies": {
     "@api3/promise-utils": "^0.4.0",
@@ -114,19 +114,17 @@
     "start-server-and-test": "^1.14.0",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
-    "ts-node": "^10.4.0",
+    "ts-node": "^10.9.1",
     "typechain": "^8.1.1",
-    "typescript": "^4.5.5",
-    "typescript-plugin-css-modules": "^4.1.1",
+    "typescript": "5.1.6",
+    "typescript-plugin-css-modules": "^5.0.1",
     "url": "^0.11.0"
   },
   "resolutions": {
     "@types/jest": "^27.5.2",
     "@types/react": "^18.0.26",
-    "abitype": "0.8.7",
     "jest-regex-util": "^27.5.1",
     "jest-watcher": "^27.5.1",
-    "jest-worker": "^27.5.1",
-    "viem": "1.2.10"
+    "jest-worker": "^27.5.1"
   }
 }
