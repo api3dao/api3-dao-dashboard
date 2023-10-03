@@ -14,8 +14,8 @@ const ProviderSignerContext = createContext<null | {
 
 const ChainDataContextProvider = (props: { children: ReactNode }) => {
   const [chainData, setChainData] = useState(initialChainData);
-  // We call these adapter hooks here and provide them with context, so that we use a single instance of each
-  // across the codebase
+  // We call these adapter hooks here and provide the provider and signer with context, so that we use a
+  // single instance of each across the app
   const provider = useEthersProvider();
   const signer = useEthersSigner();
 
@@ -50,8 +50,8 @@ export default ChainDataContextProvider;
 
 export const useChainData = () => {
   const data = useContext(ChainDataContext);
-  const { chain } = useNetwork();
   const { provider, signer } = useContext(ProviderSignerContext) || {};
+  const { chain } = useNetwork();
   const { isConnected, address } = useAccount();
 
   // Note: The signer is briefly undefined after connecting or after switching networks.

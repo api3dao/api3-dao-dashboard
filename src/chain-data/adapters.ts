@@ -22,7 +22,9 @@ export function publicClientToProvider(publicClient: PublicClient) {
   return new providers.JsonRpcProvider(transport.url, network);
 }
 
-/** Hook to convert a viem Public Client to an ethers.js Provider. */
+/**
+ * Hook to convert a viem Public Client to an ethers.js Provider.
+ */
 export function useEthersProvider({ chainId }: { chainId?: number } = {}) {
   const publicClient = usePublicClient({ chainId });
   return useMemo(() => publicClientToProvider(publicClient), [publicClient]);
@@ -40,7 +42,9 @@ export function walletClientToSigner(walletClient: WalletClient) {
   return signer;
 }
 
-/** Hook to convert a viem Wallet Client to an ethers.js Signer. */
+/**
+ * Hook to convert a viem Wallet Client to an ethers.js Signer.
+ */
 export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
   const { data: walletClient } = useWalletClient({ chainId });
   return useMemo(() => (walletClient ? walletClientToSigner(walletClient) : undefined), [walletClient]);

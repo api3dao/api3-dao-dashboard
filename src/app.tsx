@@ -103,8 +103,11 @@ const App = () => {
 
 export default App;
 
-// We've picked up some local storage issues through the use of Wallet Connect's web3modal, so we patch the
-// localStorage.setItem function to show a warning message to the user when it fails to store something.
+/**
+ * We've picked up some local storage issues through the use of the web3modal
+ * (see https://github.com/WalletConnect/web3modal/issues/1345). The issue has apparently been fixed, but as a precaution,
+ * we patch the localStorage.setItem function to show a warning message when it fails to store something.
+ */
 const setStorageItem = window.localStorage.setItem.bind(window.localStorage);
 window.localStorage.setItem = (key, value) => {
   try {
