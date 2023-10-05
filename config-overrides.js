@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-const webpack = require('webpack');
 const { isEqual } = require('lodash');
+const webpack = require('webpack');
 
 module.exports = {
   webpack(config, env) {
@@ -14,11 +14,11 @@ module.exports = {
           // See: https://github.com/vercel/next.js/pull/9012
           framework: {
             name: 'framework',
-            test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|use-subscription|styled-components)[\\/]/,
+            test: /(?<!node_modules.*)[/\\]node_modules[/\\](react|react-dom|scheduler|use-subscription|styled-components)[/\\]/,
           },
           coreWeb3: {
             name: 'core-web3',
-            test: /(?<!node_modules.*)[\\/]node_modules[\\/](@ethersproject|bn\.js|aes-js)[\\/]/,
+            test: /(?<!node_modules.*)[/\\]node_modules[/\\](@ethersproject|bn\.js|aes-js)[/\\]/,
           },
         },
       };
@@ -33,7 +33,7 @@ module.exports = {
       stream: require.resolve('stream-browserify'),
     };
 
-    config.plugins = (config.plugins || []).concat([
+    config.plugins = [...(config.plugins || []), 
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
       }),
@@ -41,7 +41,7 @@ module.exports = {
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 5,
       }),
-    ]);
+    ];
 
     config.ignoreWarnings = [
       // Ignore warnings raised by source-map-loader for third party packages.

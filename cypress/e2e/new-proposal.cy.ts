@@ -3,7 +3,7 @@
 import { ACCOUNTS, EPOCH_LENGTH } from '../support/common';
 
 it('new proposal form validation', () => {
-  cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // skip the genesis epoch (add 1 hour just to be sure)
+  cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // Skip the genesis epoch (add 1 hour just to be sure)
   cy.findAllByText('Governance').filter(':visible').click();
   cy.findByText('+ New Proposal').click();
 
@@ -32,12 +32,12 @@ it('new proposal form validation', () => {
   cy.findByText('Please specify the correct number of function arguments').should('exist');
   cy.findByLabelText('Parameters')
     .clear()
-    .type(JSON.stringify([ACCOUNTS[1], 12345]));
+    .type(JSON.stringify([ACCOUNTS[1], 12_345]));
   cy.findByText('Create').click();
 
   // Catch the typo and let the user fix it
   cy.findByText('Ensure parameters match target contract signature').should('exist');
-  cy.findByLabelText('Target Contract Signature').type('{backspace}'.repeat(8) + 'uint256)');
+  cy.findByLabelText('Target Contract Signature').type(`${'{backspace}'.repeat(8)  }uint256)`);
   cy.findByText('Create').click();
 
   // Fill target address and value

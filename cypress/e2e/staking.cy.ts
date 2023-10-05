@@ -47,7 +47,7 @@ describe('staking', () => {
     cy.findByText('Initiate Unstake').click();
     cy.get('#modal').find('input').type('20');
     cy.findByText('Initiate Unstaking').click();
-    cy.findByText('Initiate Unstaking').click(); // confirm the unstake in the second modal
+    cy.findByText('Initiate Unstaking').click(); // Confirm the unstake in the second modal
     cy.findByText('Pending API3 tokens unstaking').should('exist');
     // Assert balances
     cy.dataCy('balance').should('have.text', '480.0');
@@ -55,7 +55,7 @@ describe('staking', () => {
     cy.dataCy('amount').should('have.text', '20.0');
 
     // Travel to the future and unstake
-    cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // add 1 hour to be sure unstake time passed
+    cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // Add 1 hour to be sure unstake time passed
     cy.findAllByText('Unstake').should('have.length', 2);
     cy.percySnapshot('Staking: Pending unstaking');
     cy.findAllByText('Unstake').first().click();
@@ -96,7 +96,7 @@ it.skip('user can unstake & withdraw', () => {
   cy.findByText('Initiate Unstake').click();
   cy.get('#modal').find('input').type('550');
   cy.findByText('Initiate Unstaking').click();
-  cy.findByText('Initiate Unstaking').click(); // confirm the unstake in the second modal
+  cy.findByText('Initiate Unstaking').click(); // Confirm the unstake in the second modal
   cy.findByText('Pending API3 tokens unstaking').should('exist');
   // Assert balances
   cy.dataCy('balance').should('have.text', '450.0');
@@ -104,7 +104,7 @@ it.skip('user can unstake & withdraw', () => {
   cy.dataCy('amount').should('have.text', '550.0');
 
   // Travel to the future and unstake
-  cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // add 1 hour to be sure unstake time passed
+  cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // Add 1 hour to be sure unstake time passed
   cy.findAllByText('Unstake and Withdraw').first().click();
   // Restore the original clock
   cy.resetClock();

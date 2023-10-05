@@ -16,9 +16,7 @@ interface SharedState {
   // Snapshot id of the initial blockchain state (saved before all tests)
   evmSnapshotId?: string;
   // Custom snapshots created by createChainSnapshot
-  customSnapshots?: {
-    [key: string]: string;
-  };
+  customSnapshots?: Record<string, string>;
 }
 
 const restoreAndSaveBlockchainSnapshot = () => {

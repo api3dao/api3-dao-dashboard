@@ -20,7 +20,7 @@ Cypress.Commands.add('increaseTimeAndRelogin', (timeInSeconds: number) => {
   cy.log('increaseTimeAndRelogin');
 
   cy.wrap(
-    ethersProvider.send('evm_increaseTime', [timeInSeconds]).then(() => ethersProvider.send('evm_mine', []))
+    ethersProvider.send('evm_increaseTime', [timeInSeconds]).then(async () => ethersProvider.send('evm_mine', []))
   ).then(() => cy.clock(Date.now() + 1000 * timeInSeconds, ['Date']));
 
   // Re-login to make sure app uses the increased time
@@ -43,7 +43,7 @@ Cypress.Commands.add('login', () => {
 
   cy.on('window:before:load', async (win) => {
     // The request `request` function is defined when we use Metamask, so we mock it
-    (ethersProvider as any).request = ({ method, params }: any) => {
+    (ethersProvider as any).request = async ({ method, params }: any) => {
       if (method === 'eth_requestAccounts') method = 'eth_accounts';
       return ethersProvider.send(method, params);
     };
@@ -58,7 +58,7 @@ Cypress.Commands.add('login', () => {
   // https://docs.cypress.io/guides/core-concepts/conditional-testing#The-problem
   cy.get('body').then((res) => {
     // We can't use dataCy directly, because if the element is not present cypress will fail the test
-    if (res.find('[data-cy=connected-status]:visible').length !== 0) {
+    if (res.find('[data-cy=connected-status]:visible').length > 0) {
       cy.dataCy('connected-status').filter(':visible').click();
       cy.findAllByText('Disconnect Wallet').filter(':visible').click();
     }
@@ -87,7 +87,7 @@ Cypress.Commands.add('login', () => {
 
   // Close the error reporting notice if it is present
   cy.get('footer').then((el) => {
-    if (el.text().match(/Allow error reporting/i)) {
+    if (/allow error reporting/i.test(el.text())) {
       closeErrorReportingNotice();
     }
   });

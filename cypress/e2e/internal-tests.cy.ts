@@ -6,7 +6,7 @@ it('snapshots reverts are destructive (later snapshots are destroyed)', async ()
   const s3 = await ethersProvider.send('evm_snapshot', []);
 
   // Responses should be consecutive hexadecimals numbers
-  const toInt = (n: string) => parseInt(n, 16);
+  const toInt = (n: string) => Number.parseInt(n, 16);
   const int1 = toInt(s1);
   const int2 = toInt(s2);
   const int3 = toInt(s3);

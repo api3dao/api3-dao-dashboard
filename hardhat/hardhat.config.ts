@@ -6,9 +6,11 @@
  * (https://github.com/api3dao/api3-dao). See README for more information.
  */
 import '@nomiclabs/hardhat-ethers';
-import { task, HardhatUserConfig } from 'hardhat/config';
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
+
 import dotenv from 'dotenv';
+import { task, type HardhatUserConfig } from 'hardhat/config';
+
 import { encodeMetadata, goEncodeEvmScript } from '../src/logic/proposals/encoding';
 
 dotenv.config({ path: '../.env' });
@@ -23,7 +25,7 @@ const DEFAULT_VALUES = {
 const fromEnvVariables = (key: string) => {
   const value = process.env[key];
   if (!value) return DEFAULT_VALUES[key as keyof typeof DEFAULT_VALUES]!;
-  return value!;
+  return value;
 };
 
 task('accounts', 'Prints the list of accounts', async (_args, hre) => {
@@ -52,7 +54,7 @@ task('send-to-account', 'Sends ether or API3 tokens to a specified account')
 
     const deploymentFile = require(deploymentFileName);
     // This needs to be in sync with deployer implementation (deployer should have funds and also be token owner)
-    const deployer = (await hre.ethers.getSigners())[0];
+    const [deployer] = await hre.ethers.getSigners();
     const api3Token = new hre.ethers.Contract(
       deploymentFile.api3Token,
       ['function transfer(address to, uint amount) returns (boolean)'],
@@ -107,7 +109,7 @@ task('create-proposal', 'Creates a proposal')
       targetValue: args.targetValue,
     };
 
-    let script = args.script;
+    let {script} = args;
     if (!script) {
       const agents = { primary: contracts.agentAppPrimary, secondary: contracts.agentAppSecondary };
       const result = await goEncodeEvmScript(hre.ethers.provider, formData, agents);

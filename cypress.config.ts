@@ -1,8 +1,9 @@
+import { readFileSync, existsSync } from 'node:fs';
+
 import { defineConfig } from 'cypress';
-import { readFileSync, existsSync } from 'fs';
 
 export default defineConfig({
-  defaultCommandTimeout: 15000,
+  defaultCommandTimeout: 15_000,
 
   retries: {
     runMode: 1,
@@ -13,7 +14,7 @@ export default defineConfig({
 
   e2e: {
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      // Implement node event listeners here
       on('task', {
         readFileMaybe(filename) {
           if (existsSync(filename)) {
