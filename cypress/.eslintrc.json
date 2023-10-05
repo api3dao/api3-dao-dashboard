@@ -1,7 +1,0 @@
-{
-  "extends": ["react-app"],
-  "rules": {
-    "@typescript-eslint/no-use-before-define": ["off"], // To avoid issues with Cypress global object
-    "no-console": ["error"]
-  }
-}

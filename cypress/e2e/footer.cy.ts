@@ -3,6 +3,8 @@ import { HOME_PAGE } from '../support/common';
 it('renders footer and error reporting', () => {
   cy.visit(HOME_PAGE).dataCy('error-reporting').should('exist');
 
+  console.log('aaa');
+
   // Disallow error reporting
   cy.dataCy('error-reporting').find('input').click();
   cy.findByText('Done').click();

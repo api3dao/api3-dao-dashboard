@@ -19,5 +19,15 @@
     "jsx": "react-jsx",
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
-  "include": ["src"]
+  // TODO: Separate lint config and build config into separate files.
+  "exclude": ["cypress.config.ts"],
+  "include": [
+    "*.js",
+    "*.ts",
+    "src/**/*",
+    // Files/folders starting with "." are ignored by glob patters and need to be included explicitly. See:
+    // https://github.com/microsoft/TypeScript/issues/13399#issuecomment-271939777
+    ".eslintrc.js",
+    ".prettierrc.js"
+  ]
 }
