@@ -1,21 +1,22 @@
 import { useState, useEffect } from 'react';
-import { BaseLayout } from '../../components/layout';
-import Header from '../../components/header';
-import { useQueryParams } from '../../utils';
-import { ProposalType } from '../../chain-data/state';
-import { historyProposalsSelector, OptionalProposalType } from '../../logic/proposals/selectors';
-import { useChainData } from '../../chain-data';
-import BorderedBox from '../../components/bordered-box/bordered-box';
-import RadioButton from '../../components/radio-button/radio-button';
-import ProposalList from '../proposal-commons/proposal-list';
-import styles from './history.module.scss';
 import { useHistory } from 'react-router';
-import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
+
+import { useChainData } from '../../chain-data';
+import type { ProposalType } from '../../chain-data/state';
+import BorderedBox from '../../components/bordered-box/bordered-box';
+import Header from '../../components/header';
+import { BaseLayout } from '../../components/layout';
+import RadioButton from '../../components/radio-button/radio-button';
 import { useHistoryProposals } from '../../logic/proposals/hooks/history-proposals';
+import { historyProposalsSelector, type OptionalProposalType } from '../../logic/proposals/selectors';
+import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
+import { useQueryParams } from '../../utils';
+import ProposalList from '../proposal-commons/proposal-list';
+
+import styles from './history.module.scss';
 
 const getValidatedProposalType = (typeFromUrl: string | null): OptionalProposalType => {
-  if (typeFromUrl && ['primary', 'secondary', 'none'].includes(typeFromUrl)) return typeFromUrl as ProposalType;
-  else return null;
+  return typeFromUrl && ['primary', 'secondary', 'none'].includes(typeFromUrl) ? (typeFromUrl as ProposalType) : null;
 };
 
 const History = () => {
@@ -31,7 +32,7 @@ const History = () => {
   useHistoryProposals();
   useTreasuryAndDelegation();
 
-  // useEffect is used because useState behaves asynchronously using onClick handler
+  // UseEffect is used because useState behaves asynchronously using onClick handler
   useEffect(() => {
     if (checkedPrimary && !checkedSecondary) {
       history.replace(`/history?type=primary`);
@@ -47,7 +48,7 @@ const History = () => {
   return (
     <BaseLayout subtitle="History">
       <div className={styles.header}>
-        <Header title="History"></Header>
+        <Header title="History" />
       </div>
 
       <BorderedBox

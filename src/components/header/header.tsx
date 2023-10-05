@@ -1,9 +1,9 @@
 import styles from './header.module.scss';
 
-type Props = {
+interface Props {
   title: string;
   subtitle?: string;
-};
+}
 
 const Header = ({ title, subtitle }: Props) => {
   return (

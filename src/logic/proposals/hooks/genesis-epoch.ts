@@ -1,9 +1,10 @@
-import { useCallback } from 'react';
-import { useChainData } from '../../../chain-data';
-import { useApi3Pool, usePossibleChainDataUpdate } from '../../../contracts';
-import { notifications } from '../../../components/notifications';
-import { messages } from '../../../utils';
 import { go } from '@api3/promise-utils';
+import { useCallback } from 'react';
+
+import { useChainData } from '../../../chain-data';
+import { notifications } from '../../../components/notifications';
+import { useApi3Pool, usePossibleChainDataUpdate } from '../../../contracts';
+import { messages } from '../../../utils';
 
 /**
  * Hook which loads the isGenesisEpoch boolean from the Api3Pool contract. Creating a
@@ -16,7 +17,7 @@ export const useLoadGenesisEpoch = () => {
   const loadIsGenesisEpoch = useCallback(async () => {
     if (!api3Pool) return null;
 
-    const goResponse = await go(() => api3Pool.isGenesisEpoch());
+    const goResponse = await go(async () => api3Pool.isGenesisEpoch());
     if (!goResponse.success) {
       notifications.error({
         message: messages.FAILED_TO_LOAD_GENESIS_EPOCH,

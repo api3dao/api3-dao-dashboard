@@ -1,16 +1,18 @@
-import { ReactNode } from 'react';
 import classNames from 'classnames';
+import type { ReactNode } from 'react';
+
 import { images } from '../../utils';
-import styles from './radio-button.module.scss';
 import { triggerOnEnter } from '../modal';
 
-type Props = {
+import styles from './radio-button.module.scss';
+
+interface Props {
   label: ReactNode | string;
   onChange: () => void;
   checked: boolean;
-  type?: 'radio' | 'checkbox';
-  color: 'white' | 'pink' | 'green';
-};
+  type?: 'checkbox' | 'radio';
+  color: 'green' | 'pink' | 'white';
+}
 
 const RadioButton = ({ label, onChange, type = 'radio', checked, color }: Props) => {
   return (

@@ -1,17 +1,24 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+const exec = require('node:util').promisify(require('node:child_process').exec);
+
+// eslint-disable-next-line unicorn/import-style
 const { red, bold } = require('chalk');
-const exec = require('util').promisify(require('child_process').exec);
 const replace = require('replace-in-file');
 
 const promiseWrapper = (fn) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   fn()
+    // eslint-disable-next-line unicorn/no-process-exit
     .then(() => process.exit(0))
     .catch((error) => {
       console.error(red(error));
+      // eslint-disable-next-line unicorn/no-process-exit
       process.exit(1);
     });
 };
 
 const execAndLog = async (command, debug = false) => {
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   console.info(bold(`Command: "${command}"`));
   const output = await exec(command);
 
@@ -28,10 +35,11 @@ const execAndLog = async (command, debug = false) => {
 const replaceAndLog = async (options, debug = false) => {
   // Make sure the string has roughly 20 chars
   const trimString = (str) => {
-    if (str.length > 20) return `${str.substring(0, 20)}...`;
-    else return str;
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-call
+    return str.length > 20 ? `${str.slice(0, 20)}...` : str;
   };
 
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   console.info(bold(`Replacing "${trimString(options.from)}" with "${trimString(options.to)}"`));
   const log = await replace(options);
 

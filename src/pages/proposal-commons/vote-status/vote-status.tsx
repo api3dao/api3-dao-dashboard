@@ -1,7 +1,9 @@
 import classNames from 'classnames';
-import styles from './vote-status.module.scss';
-import globalStyles from './../../../styles/global-styles.module.scss';
+
 import { VOTER_STATES } from '../../../chain-data';
+
+import globalStyles from './../../../styles/global-styles.module.scss';
+import styles from './vote-status.module.scss';
 
 interface Props {
   voterState: keyof typeof VOTER_STATES;

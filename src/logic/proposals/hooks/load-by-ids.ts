@@ -1,13 +1,15 @@
-import { useCallback, useEffect } from 'react';
-import { ProposalType, updateImmutablyCurried, useChainData, VoterState } from '../../../chain-data';
-import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
-import { getProposals } from './get-proposals';
-import { BigNumber } from 'ethers';
-import { notifications } from '../../../components/notifications';
-import { messages } from '../../../utils/messages';
-import { StartVoteProposal, VOTING_APP_IDS } from './commons';
-import { isZeroAddress } from '../../../contracts';
 import { go } from '@api3/promise-utils';
+import type { BigNumber } from 'ethers';
+import { useCallback, useEffect } from 'react';
+
+import { type ProposalType, updateImmutablyCurried, useChainData, type VoterState } from '../../../chain-data';
+import { notifications } from '../../../components/notifications';
+import { isZeroAddress } from '../../../contracts';
+import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
+import { messages } from '../../../utils/messages';
+
+import { type StartVoteProposal, VOTING_APP_IDS } from './commons';
+import { getProposals } from './get-proposals';
 
 interface DynamicVotingData {
   id: BigNumber;
@@ -37,7 +39,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
     const votingApp = api3Voting[type];
     const startVoteFilter = votingApp.filters.StartVote(id, null, null);
 
-    const goStartVoteFilters = await go(() => votingApp.queryFilter(startVoteFilter));
+    const goStartVoteFilters = await go(async () => votingApp.queryFilter(startVoteFilter));
     if (!goStartVoteFilters.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
@@ -62,7 +64,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
       voteId: ethersArgs.voteId,
     };
 
-    const goOpenVoteIds = await go(() => convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
+    const goOpenVoteIds = await go(async () => convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
     if (!goOpenVoteIds.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
@@ -71,7 +73,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
     }
     const openVoteIds = goOpenVoteIds.data;
 
-    const goLoadProposal = await go(() =>
+    const goLoadProposal = await go(async () =>
       getProposals(provider, convenience, userAccount, [startVote], openVoteIds, type)
     );
     if (!goLoadProposal.success) {
@@ -99,7 +101,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
   const reloadProposalsByIds = useCallback(async () => {
     if (!convenience) return;
 
-    const goVotingData = await go(() => convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, [id]));
+    const goVotingData = await go(async () => convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, [id]));
     if (!goVotingData.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
@@ -108,7 +110,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
     }
     const rawVotingData = goVotingData.data;
     const votingData: DynamicVotingData = {
-      id: id,
+      id,
       // The rawVotingData is an object with fields that are single element arrays
       delegateAt: isZeroAddress(rawVotingData.delegateAt[0]!) ? null : rawVotingData.delegateAt[0]!,
       delegateState: rawVotingData.delegateState[0]!,
@@ -141,7 +143,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
   }, [convenience, id, userAccount, setChainData, type]);
 
   useEffect(() => {
-    loadProposalsByIds();
+    void loadProposalsByIds();
   }, [loadProposalsByIds]);
 
   // TODO: Maybe instead of avoiding `triggerOnMount` we should merge reloadProposalsByIds and loadProposalsByIds

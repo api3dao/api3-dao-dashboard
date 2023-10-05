@@ -1,22 +1,23 @@
-import { ChangeEventHandler, useCallback } from 'react';
 import classNames from 'classnames';
+import { type ChangeEventHandler, useCallback } from 'react';
 import AutosizeInput from 'react-input-autosize';
 import NumberFormat from 'react-number-format';
+
 import styles from './input.module.scss';
 
-type Props = {
+interface Props {
   onChange: ChangeEventHandler<HTMLInputElement>;
   value: string;
-  size?: 'normal' | 'large';
+  size?: 'large' | 'normal';
   disabled?: boolean;
-  type?: 'text' | 'number';
+  type?: 'number' | 'text';
   autosize?: boolean;
   placeholder?: string;
   id?: string;
   block?: boolean;
   autoFocus?: boolean;
   allowNegative?: boolean;
-};
+}
 
 const Input = ({
   size = 'normal',

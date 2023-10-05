@@ -4,8 +4,9 @@
  *
  * @see newVote in Api3Voting.sol for more details
  */
-import { ProposalMetadata } from '../../../chain-data';
-import { NewProposalFormData } from './types';
+import type { ProposalMetadata } from '../../../chain-data';
+
+import type { NewProposalFormData } from './types';
 
 /**
  * The current version of metadata scheme.

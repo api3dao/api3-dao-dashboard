@@ -1,13 +1,17 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /**
  * For localhost development, we depend on `localhost-dao.json` file which is gitignored because it will change after
  * each redeployment of the DAO contracts. However, we have to make sure it is created before we build the
  * application.
  */
-const { join } = require('path');
-const { existsSync } = require('fs');
+const { existsSync } = require('node:fs');
+const { join } = require('node:path');
+
 const isEqual = require('lodash/isEqual');
-const { promiseWrapper, execAndLog } = require('./utils');
+
 const exampleAddresses = require('../src/contract-deployments/localhost-dao.example.json');
+
+const { promiseWrapper, execAndLog } = require('./utils');
 
 const main = async () => {
   const localAddressesPath = join(__dirname, '../src/contract-deployments/localhost-dao.json');

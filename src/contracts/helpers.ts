@@ -9,18 +9,18 @@ export const max = (first: BigNumber, ...others: BigNumber[]) =>
 // NOTE: Used to make sure BigNumber.div will not lose too much precision. Bigger value means more precision.
 const precision = 100_000_000;
 
-// based on https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
+// Based on https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
 export const calculateApy = (apr: BigNumber) => {
   // We don't need precision for this calculation, so doing with JS numbers is enough
   const aprFloatingPoint = apr.mul(precision).div(HUNDRED_PERCENT).toNumber() / precision / 52;
-  return (Math.pow(1 + aprFloatingPoint, 52) - 1) * 100;
+  return ((1 + aprFloatingPoint) ** 52 - 1) * 100;
 };
 
-// based on https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
+// Based on https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
 export const calculateAnnualMintedTokens = (totalStake: BigNumber, currentApy: number) =>
   totalStake.mul(Math.round(currentApy * precision)).div(100 * precision);
 
-// based on https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
+// Based on https://docs.google.com/document/d/1ESEkemgFOhP5_tXajhuy5Mozdm8EwU1O2YSKSBwnrUQ/edit#
 export const calculateAnnualTotalSupplyGrowth = (annualMintedTokens: BigNumber, totalSupply: BigNumber) => {
   return (annualMintedTokens.mul(precision).div(totalSupply).toNumber() / precision) * 100;
 };
@@ -46,8 +46,7 @@ export const MAX_ALLOWANCE = BigNumber.from(2).pow(256).sub(1);
 
 export const computePercentage = (value: BigNumber, hundredPercent: BigNumber, humanReadable = false) => {
   const percentage = value.mul(precision).div(hundredPercent).toNumber() / precision;
-  if (humanReadable) return percentage * 100;
-  else return percentage;
+  return humanReadable ? percentage * 100 : percentage;
 };
 
 export const isZeroAddress = (address: string) => address === constants.AddressZero;

@@ -1,11 +1,13 @@
 import classNames from 'classnames';
-import { Proposal, useChainData } from '../../../../chain-data';
-import { voteSliderSelector } from '../../../../logic/proposals/selectors';
-import { NegativeVoteIcon, PositiveVoteIcon } from '../../vote-slider/vote-slider';
+
+import { type Proposal, useChainData } from '../../../../chain-data';
 import Button from '../../../../components/button';
-import styles from './proposal-status.module.scss';
 import { useApi3Voting } from '../../../../contracts';
+import { voteSliderSelector } from '../../../../logic/proposals/selectors';
 import { handleTransactionError } from '../../../../utils';
+import { NegativeVoteIcon, PositiveVoteIcon } from '../../vote-slider/vote-slider';
+
+import styles from './proposal-status.module.scss';
 
 interface Props {
   proposal: Proposal;
@@ -16,7 +18,7 @@ const ProposalStatus = (props: Props) => {
   const voting = useApi3Voting();
   const { signer, setChainData } = useChainData();
   const { proposal, large } = props;
-  const proposalStatus = voteSliderSelector(proposal).proposalStatus;
+  const { proposalStatus } = voteSliderSelector(proposal);
 
   if (proposal.open) {
     return (

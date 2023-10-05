@@ -1,11 +1,12 @@
-import { UNKNOWN_NUMBER } from '../../../utils';
 import clamp from 'lodash/clamp';
+
+import { UNKNOWN_NUMBER } from '../../../utils';
 
 const { round, PI, cos, sin } = Math;
 
-type Props = {
+interface Props {
   completionPercent: number | undefined;
-};
+}
 
 const RadialChart = ({ completionPercent }: Props) => {
   const r = 73,
@@ -13,7 +14,7 @@ const RadialChart = ({ completionPercent }: Props) => {
     side = r * 2 + strokeWidth * 2,
     center = r + strokeWidth;
 
-  const completionText = completionPercent !== undefined ? `${completionPercent}%` : UNKNOWN_NUMBER;
+  const completionText = completionPercent === undefined ? UNKNOWN_NUMBER : `${completionPercent}%`;
   // Radial chart styling breaks if the value is more than 100%
   const completionValue = clamp(completionPercent ?? 0, 0, 100);
 
@@ -28,25 +29,13 @@ const RadialChart = ({ completionPercent }: Props) => {
         d={describeArc(center, center, r, 0, completionValue === 100 ? 359 : round((completionValue / 100) * 360))}
       />
 
-      <text
-        x="50%"
-        y="45%"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fill="white"
-        fontSize={27}
-        children={completionText}
-      />
+      <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={27}>
+        {completionText}
+      </text>
 
-      <text
-        x="50%"
-        y="62%"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fill="white"
-        children="OF TARGET MET"
-        fontSize={12}
-      />
+      <text x="50%" y="62%" textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={12}>
+        OF TARGET MET
+      </text>
 
       <defs>
         <linearGradient id="gradient" x1="0%" x2="100%" y1="0%" y2="0%">
@@ -71,7 +60,7 @@ const describeArc = (x: number, y: number, radius: number, startAngle: number, e
 };
 
 const polarToCartesian = (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
-  const angleInRadians = ((angleInDegrees - 90) * PI) / 180.0;
+  const angleInRadians = ((angleInDegrees - 90) * PI) / 180;
 
   return {
     x: centerX + radius * cos(angleInRadians),

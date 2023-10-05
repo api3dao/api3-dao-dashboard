@@ -1,13 +1,16 @@
-import throttle from 'lodash/throttle';
 import classNames from 'classnames';
-import { toast, Slide, ToastOptions } from 'react-toastify';
-import NotificationLinkButton from './notification-link-button';
+import throttle from 'lodash/throttle';
+import { toast, Slide, type ToastOptions } from 'react-toastify';
+
 import { images } from '../../utils';
+
+import NotificationLinkButton from './notification-link-button';
 import 'react-toastify/dist/ReactToastify.css';
 // Use these static classes to style react-toastify defaults
 import './react-toastify-overrides.scss';
 // Use these classes to style content
 import styles from './notifications.module.scss';
+
 import * as Sentry from '@sentry/browser';
 
 const THROTTLE_MS = 500;
@@ -33,7 +36,7 @@ interface ErrorToastProps extends ToastProps {
 }
 
 interface ToastPropsWithType extends ToastProps {
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: 'error' | 'info' | 'success' | 'warning';
 }
 
 const CustomToast = ({ message, type, url }: ToastPropsWithType) => {

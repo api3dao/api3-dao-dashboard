@@ -1,26 +1,28 @@
 import { useState } from 'react';
+
+import { useChainData } from '../../chain-data';
+import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import Button from '../../components/button';
 import Layout from '../../components/layout';
 import { Modal } from '../../components/modal';
-import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import { TooltipChecklist } from '../../components/tooltip';
-import Treasury from '../proposal-commons/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
+import { useLoadDashboardData } from '../../logic/dashboard';
+import { goEncodeEvmScript, encodeMetadata, type NewProposalFormData } from '../../logic/proposals/encoding';
 import { useActiveProposals, useLoadGenesisEpoch } from '../../logic/proposals/hooks';
-import { goEncodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
-import ProposalList from '../proposal-commons/proposal-list';
-import NewProposalForm from './forms/new-proposal-form';
-import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import {
   openProposalsSelector,
   canCreateNewProposalSelector,
   votingPowerThresholdSelector,
 } from '../../logic/proposals/selectors';
-import Delegation from './delegation';
-import { useChainData } from '../../chain-data';
-import { useLoadDashboardData } from '../../logic/dashboard';
-import { formatApi3, handleTransactionError, images, round } from '../../utils';
+import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import globalStyles from '../../styles/global-styles.module.scss';
+import { formatApi3, handleTransactionError, images, round } from '../../utils';
+import ProposalList from '../proposal-commons/proposal-list';
+import Treasury from '../proposal-commons/treasury';
+
+import Delegation from './delegation';
+import NewProposalForm from './forms/new-proposal-form';
 import styles from './proposals.module.scss';
 
 const Proposals = () => {
@@ -96,7 +98,7 @@ const Proposals = () => {
     const tx = await handleTransactionError(
       // NOTE: For some reason only this 'ugly' version is available on the contract
       api3Voting[formData.type]
-        .connect(signer!)
+        .connect(signer)
         ['newVote(bytes,string,bool,bool)'](goRes.data, encodeMetadata(formData), true, true)
     );
     if (tx) {

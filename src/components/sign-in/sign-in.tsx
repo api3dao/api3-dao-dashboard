@@ -1,21 +1,23 @@
-import { Fragment } from 'react';
 import classNames from 'classnames';
-import { Address, useDisconnect, useEnsName } from 'wagmi';
+import { Fragment } from 'react';
+import { type Address, useDisconnect, useEnsName } from 'wagmi';
+
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import Button from '../../components/button';
-import ConnectButton from '../connect-button';
-import { Modal as GenericModal } from '../../components/modal';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown';
-import styles from './sign-in.module.scss';
+import { Modal as GenericModal } from '../../components/modal';
+import { SUPPORTED_NETWORKS, useProviderSubscriptions } from '../../contracts';
 import globalStyles from '../../styles/global-styles.module.scss';
 import { images } from '../../utils';
-import { SUPPORTED_NETWORKS, useProviderSubscriptions } from '../../contracts';
+import ConnectButton from '../connect-button';
 
-type Props = {
+import styles from './sign-in.module.scss';
+
+interface Props {
   dark?: boolean;
   position: 'mobileMenu' | 'navigation';
-};
+}
 
 const ConnectedStatus = ({ dark, position }: Props) => {
   const { networkName, userAccount } = useChainData();
@@ -77,8 +79,7 @@ const SignIn = ({ dark, position }: Props) => {
   const isSignedIn = !!provider;
   const supportedNetworks = SUPPORTED_NETWORKS.filter((name) => {
     // Disable localhost network on non-development environment
-    if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'hardhat') return false;
-    else return true;
+    return process.env.REACT_APP_NODE_ENV !== 'development' && name === 'hardhat' ? false : true;
   });
   const isSupportedNetwork = !isSignedIn || supportedNetworks.includes(networkName);
 

@@ -1,11 +1,12 @@
-import { ReactNode } from 'react';
 import classNames from 'classnames';
+import type { ReactNode } from 'react';
+
 import styles from './tag.module.scss';
 
-type Props = {
+interface Props {
   children: ReactNode;
   type?: 'primary' | 'secondary';
-};
+}
 
 const Tag = ({ children, type = 'primary' }: Props) => (
   <div

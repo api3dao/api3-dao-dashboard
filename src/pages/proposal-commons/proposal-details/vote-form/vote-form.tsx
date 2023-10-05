@@ -1,9 +1,11 @@
 import { useState } from 'react';
+
 import Button from '../../../../components/button';
 import RadioButton from '../../../../components/radio-button/radio-button';
+
 import styles from './vote-form.module.scss';
 
-export type VotingChoice = 'for' | 'against';
+export type VotingChoice = 'against' | 'for';
 
 interface Props {
   onConfirm: (choice: VotingChoice) => void;

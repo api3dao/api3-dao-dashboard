@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
-import SignIn from '../sign-in/sign-in';
-import { MobileMenu } from '../menu';
+
 import { images } from '../../utils';
+import { MobileMenu } from '../menu';
+import SignIn from '../sign-in/sign-in';
+
 import styles from './navigation.module.scss';
 
 const Navigation = () => {

@@ -16,13 +16,15 @@
  * @see EVM script layout:
  *      https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
  */
-import { go, GoResult, goSync, fail, success } from '@api3/promise-utils';
-import { BigNumber, providers, utils } from 'ethers';
+import { go, type GoResult, goSync, fail, success } from '@api3/promise-utils';
+import { BigNumber, type providers, utils } from 'ethers';
 import range from 'lodash/range';
-import { DecodedEvmScript, Proposal, ProposalMetadata } from '../../../chain-data';
-import { Api3Agent } from '../../../contracts';
+
+import type { DecodedEvmScript, Proposal, ProposalMetadata } from '../../../chain-data';
+import type { Api3Agent } from '../../../contracts';
+
 import { convertToAddressOrThrow } from './ens-name';
-import { NewProposalFormData } from './types';
+import type { NewProposalFormData } from './types';
 
 // Similar to https://web3js.readthedocs.io/en/v1.2.0/web3-eth-abi.html#encodefunctionsignature
 export const encodeFunctionSignature = (functionFragment: string) => {
@@ -43,12 +45,13 @@ export const stringifyBigNumbersRecursively = (value: unknown): any => {
 // https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
 const encodedExecuteSignature = encodeFunctionSignature('execute(address,uint256,bytes)');
 
+// eslint-disable-next-line functional/no-classes
 export class EncodedEvmScriptError extends Error {
-  constructor(
-    public field:
-      | keyof Pick<NewProposalFormData, 'parameters' | 'targetSignature' | 'targetValue' | 'targetAddress'>
+  public constructor(
+    field:
+      | keyof Pick<NewProposalFormData, 'parameters' | 'targetAddress' | 'targetSignature' | 'targetValue'>
       | 'generic',
-    public value: string
+    value: string
   ) {
     super(`Invalid field value. Details: field=${field}, value=${value}`);
   }
@@ -89,7 +92,7 @@ export const goEncodeEvmScript = async (
   if (!goTargetSignature.success) {
     return fail(new EncodedEvmScriptError('targetSignature', 'Please specify a valid contract signature'));
   }
-  const targetSignature = formData.targetSignature;
+  const { targetSignature } = formData;
 
   // Extract the parameters that were passed and check if the number of arguments is same as in the function signature
   const goExtractParameters = goSync(() => {
@@ -139,7 +142,7 @@ export const goEncodeEvmScript = async (
   const encodedTargetParameters = goEncodeParameters.data;
 
   // Ensure target address is a valid address or valid ENS name
-  const goTargetAddress = await go(() => convertToAddressOrThrow(provider, formData.targetAddress));
+  const goTargetAddress = await go(async () => convertToAddressOrThrow(provider, formData.targetAddress));
   if (!goTargetAddress.success) {
     return fail(new EncodedEvmScriptError('targetAddress', 'Please specify a valid account address'));
   }
@@ -165,12 +168,12 @@ export const goEncodeEvmScript = async (
       utils.defaultAbiCoder
         .encode(
           ['address', 'uint256', 'bytes'],
-          [targetAddress, targetValue, encodeFunctionSignature(targetSignature) + encodedTargetParameters.substring(2)]
+          [targetAddress, targetValue, encodeFunctionSignature(targetSignature) + encodedTargetParameters.slice(2)]
         )
-        .substring(2);
+        .slice(2);
 
     // Calculate the length of the call data in bytes
-    const callDataLengthInBytes = utils.hexZeroPad(BigNumber.from(callData.substring(2).length / 2).toHexString(), 4);
+    const callDataLengthInBytes = utils.hexZeroPad(BigNumber.from(callData.slice(2).length / 2).toHexString(), 4);
 
     // See the EVMScript layout in:
     // https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
@@ -178,9 +181,9 @@ export const goEncodeEvmScript = async (
     // Also, remove the 0x prefix in bytes
     const evmScript = [
       '0x00000001',
-      api3Agent[formData.type].substring(2),
-      callDataLengthInBytes.substring(2),
-      callData.substring(2),
+      api3Agent[formData.type].slice(2),
+      callDataLengthInBytes.slice(2),
+      callData.slice(2),
     ].join('');
 
     return evmScript;
@@ -251,16 +254,15 @@ export const decodeEvmScript = async (
     };
   });
 
-  if (goResponse.success) return goResponse.data;
-  else return null;
+  return goResponse.success ? goResponse.data : null;
 };
 
 export async function isEvmScriptValid(
   provider: providers.Provider,
   api3Agent: Api3Agent,
-  proposal: Pick<Proposal, 'type' | 'metadata' | 'decodedEvmScript' | 'script'>
+  proposal: Pick<Proposal, 'decodedEvmScript' | 'metadata' | 'script' | 'type'>
 ) {
-  const { metadata, decodedEvmScript } = proposal;
+  const { metadata, decodedEvmScript, script, type } = proposal;
   if (!decodedEvmScript) {
     return false;
   }
@@ -268,7 +270,7 @@ export async function isEvmScriptValid(
   const result = await goEncodeEvmScript(
     provider,
     {
-      type: proposal.type,
+      type,
       targetSignature: metadata.targetSignature ?? '',
       description: metadata.description,
       title: metadata.title,
@@ -279,5 +281,5 @@ export async function isEvmScriptValid(
     api3Agent
   );
 
-  return result.success && result.data === proposal.script;
+  return result.success && result.data === script;
 }

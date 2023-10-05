@@ -1,16 +1,18 @@
-import { BigNumber } from 'ethers';
+import { go, goSync } from '@api3/promise-utils';
+import type { BigNumber } from 'ethers';
 import { useState } from 'react';
-import { MAX_ALLOWANCE, useApi3Pool, useApi3Token } from '../../../contracts';
+
 import { useChainData } from '../../../chain-data';
-import { ModalFooter, ModalHeader } from '../../../components/modal';
-import Input from '../../../components/input';
 import Button from '../../../components/button';
+import Input from '../../../components/input';
+import { ModalFooter, ModalHeader } from '../../../components/modal';
 import { notifications } from '../../../components/notifications';
-import { isUserRejection, formatApi3, parseApi3, messages, UNKNOWN_NUMBER } from '../../../utils';
+import { MAX_ALLOWANCE, useApi3Pool, useApi3Token } from '../../../contracts';
 import globalStyles from '../../../styles/global-styles.module.scss';
+import { isUserRejection, formatApi3, parseApi3, messages, UNKNOWN_NUMBER } from '../../../utils';
+
 import styles from './forms.module.scss';
 import UnstakeHelperText from './unstake-helper-text';
-import { go, goSync } from '@api3/promise-utils';
 
 interface Props {
   allowance: BigNumber;
@@ -19,7 +21,7 @@ interface Props {
 }
 
 const TokenDepositForm = (props: Props) => {
-  const { allowance, walletBalance } = props;
+  const { allowance, walletBalance, onClose } = props;
 
   const { signer, setChainData, transactions, userAccount } = useChainData();
   const api3Token = useApi3Token();
@@ -36,7 +38,7 @@ const TokenDepositForm = (props: Props) => {
 
     setError('');
 
-    const goResponse = await go(() => api3Token.connect(signer!).approve(api3Pool.address, MAX_ALLOWANCE));
+    const goResponse = await go(async () => api3Token.connect(signer!).approve(api3Pool.address, MAX_ALLOWANCE));
     if (goResponse.success) {
       const tx = goResponse.data;
       setChainData('Save deposit approval', { transactions: [...transactions, { type: 'approve-deposit', tx }] });
@@ -44,29 +46,33 @@ const TokenDepositForm = (props: Props) => {
       if (isUserRejection(goResponse.error)) {
         return notifications.info({ message: messages.TX_APPROVAL_REJECTED });
       }
-      return setError(messages.TX_APPROVAL_ERROR);
+      setError(messages.TX_APPROVAL_ERROR);
+      return;
     }
   };
 
-  const handleDeposit = (type: 'deposit-only' | 'deposit-and-stake') => async () => {
+  const handleDeposit = (type: 'deposit-and-stake' | 'deposit-only') => async () => {
     if (!api3Pool || !userAccount) return;
 
     if (!goParseApi3.success) {
-      return setError(messages.VALIDATION_INPUT_PARSE);
+      setError(messages.VALIDATION_INPUT_PARSE);
+      return;
     }
     const parsedInput = goParseApi3.data;
 
     if (parsedInput.lte(0)) {
-      return setError(messages.VALIDATION_INPUT_ZERO);
+      setError(messages.VALIDATION_INPUT_ZERO);
+      return;
     }
     if (parsedInput.gt(walletBalance)) {
-      return setError(messages.VALIDATION_DEPOSIT_TOO_HIGH);
+      setError(messages.VALIDATION_DEPOSIT_TOO_HIGH);
+      return;
     }
 
     setError('');
 
     const methodName = type === 'deposit-only' ? 'depositRegular' : 'depositAndStake';
-    const goResponse = await go(() => api3Pool.connect(signer!)[methodName](parsedInput));
+    const goResponse = await go(async () => api3Pool.connect(signer!)[methodName](parsedInput));
     if (goResponse.success) {
       const tx = goResponse.data;
       setChainData(`Save "${type}" transaction`, { transactions: [...transactions, { type, tx }] });
@@ -74,10 +80,11 @@ const TokenDepositForm = (props: Props) => {
       if (isUserRejection(goResponse.error)) {
         return notifications.info({ message: messages.TX_DEPOSIT_REJECTED });
       }
-      return setError(messages.TX_DEPOSIT_ERROR);
+      setError(messages.TX_DEPOSIT_ERROR);
+      return;
     }
 
-    props.onClose();
+    onClose();
   };
 
   const handleSetMax = () => walletBalance && setInputValue(formatApi3(walletBalance.toString(), false));

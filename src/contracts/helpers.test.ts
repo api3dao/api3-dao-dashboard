@@ -1,6 +1,8 @@
 import { BigNumber } from 'ethers';
 import round from 'lodash/round';
+
 import { formatApi3 } from '../utils/api3-format';
+
 import {
   calculateApy,
   calculateAnnualMintedTokens,
@@ -21,26 +23,26 @@ describe('calculateAnnualTotalSupplyGrowth and friends', () => {
     const currentApr = createPercentage(75, 100);
     const totalStake = API3_TOKEN_SUPPLY.div(2);
 
-    test('calculate APY', () => {
+    it('calculate APY', () => {
       // Precision is not important here
-      expect(round(calculateApy(currentApr), 6)).toBe(110.568914);
+      expect(round(calculateApy(currentApr), 6)).toBe(110.568_914);
     });
 
-    test('calculateAnnualMintedTokens', () => {
+    it('calculateAnnualMintedTokens', () => {
       const apy = calculateApy(currentApr);
       expect(calculateAnnualMintedTokens(totalStake, apy).toString()).toBe('55284457030000000000000000');
       expect(formatApi3(calculateAnnualMintedTokens(totalStake, apy))).toBe('55,284,457.03');
     });
 
-    test('calculateAnnualTotalSupplyGrowth', () => {
+    it('calculateAnnualTotalSupplyGrowth', () => {
       const apy = calculateApy(currentApr);
       const mintedTokens = calculateAnnualMintedTokens(totalStake, apy);
 
-      expect(calculateAnnualTotalSupplyGrowth(mintedTokens, API3_TOKEN_SUPPLY)).toBe(55.284456999999996);
+      expect(calculateAnnualTotalSupplyGrowth(mintedTokens, API3_TOKEN_SUPPLY)).toBe(55.284_456_999_999_996);
     });
   });
 
-  test('low total staked', () => {
+  it('low total staked', () => {
     const currentApr = createPercentage(3, 4);
     const totalStake = API3_TOKEN_SUPPLY.div(1_000_000);
 
@@ -49,10 +51,10 @@ describe('calculateAnnualTotalSupplyGrowth and friends', () => {
         calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)),
         API3_TOKEN_SUPPLY
       )
-    ).toBe(0.00011);
+    ).toBe(0.000_11);
   });
 
-  test('full stake pool', () => {
+  it('full stake pool', () => {
     const currentApr = createPercentage(3, 4);
     const totalStake = API3_TOKEN_SUPPLY;
 
@@ -61,12 +63,12 @@ describe('calculateAnnualTotalSupplyGrowth and friends', () => {
         calculateAnnualMintedTokens(totalStake, calculateApy(currentApr)),
         API3_TOKEN_SUPPLY
       )
-    ).toBe(110.56891399999999);
+    ).toBe(110.568_913_999_999_99);
   });
 });
 
 test('absoluteStakeTarget', () => {
-  expect(absoluteStakeTarget(HUNDRED_PERCENT.div(2), API3_TOKEN_SUPPLY)).toEqual(API3_TOKEN_SUPPLY.div(2));
+  expect(absoluteStakeTarget(HUNDRED_PERCENT.div(2), API3_TOKEN_SUPPLY)).toStrictEqual(API3_TOKEN_SUPPLY.div(2));
 });
 
 test('totalStakedPercentage', () => {

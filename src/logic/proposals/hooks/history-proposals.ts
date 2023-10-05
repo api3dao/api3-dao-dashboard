@@ -1,23 +1,26 @@
+import { go } from '@api3/promise-utils';
+import type { BigNumber } from 'ethers';
+import keyBy from 'lodash/keyBy';
 import { useCallback, useEffect } from 'react';
+
 import { updateImmutablyCurried, useChainData } from '../../../chain-data';
-import { Api3Voting } from '../../../contracts/artifacts';
+import { notifications } from '../../../components/notifications';
+import type { Api3Voting } from '../../../contracts/artifacts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { messages } from '../../../utils';
-import keyBy from 'lodash/keyBy';
-import { getProposals } from './get-proposals';
-import { BigNumber } from 'ethers';
-import { notifications } from '../../../components/notifications';
+
 import { VOTING_APP_IDS } from './commons';
-import { go } from '@api3/promise-utils';
+import { getProposals } from './get-proposals';
 
 const fetchStartVoteEventsForHistoryProposals = async (votingApp: Api3Voting, openVoteIds: BigNumber[]) => {
   const startVoteFilter = votingApp.filters.StartVote(null, null, null);
   const startVotesLogs = (await votingApp.queryFilter(startVoteFilter))
+    // eslint-disable-next-line unicorn/no-await-expression-member
     .map((log) => log.args)
     .map((log) => ({ voteId: log.voteId, creator: log.creator, metadata: log.metadata }));
 
-  const openVoteIdsStr = openVoteIds.map((id) => id.toString());
-  return startVotesLogs.filter((log) => !openVoteIdsStr.includes(log.voteId.toString()));
+  const openVoteIdsStr = new Set(openVoteIds.map((id) => id.toString()));
+  return startVotesLogs.filter((log) => !openVoteIdsStr.has(log.voteId.toString()));
 };
 
 const useLoadHistoryProposals = () => {
@@ -85,7 +88,7 @@ const useLoadHistoryProposals = () => {
   }, [api3Voting, convenience, userAccount, setChainData, provider]);
 
   useEffect(() => {
-    loadProposals();
+    void loadProposals();
   }, [loadProposals]);
 };
 
@@ -118,20 +121,20 @@ const useReloadHistoryProposals = () => {
       setChainData(
         'Update history proposals',
         updateImmutablyCurried((immutableState) => {
-          const proposals = immutableState.proposals;
+          const { proposals } = immutableState;
           // If proposals are not loaded yet, they are still being fetched at the moment
           if (!proposals) return immutableState;
 
-          for (let i = 0; i < primaryHistoryVoteIds.length; i++) {
-            const id = primaryHistoryVoteIds[i]!.toString();
+          for (const [i, primaryHistoryVoteId] of primaryHistoryVoteIds.entries()) {
+            const id = primaryHistoryVoteId.toString();
             const proposal = proposals.primary[id];
             // If proposals are not loaded yet, they are still being fetched at the moment
             if (!proposal) continue;
             proposal.executed = primaryProposalsUpdates.executed[i]!;
           }
 
-          for (let i = 0; i < secondaryHistoryVoteIds.length; i++) {
-            const id = secondaryHistoryVoteIds[i]!.toString();
+          for (const [i, secondaryHistoryVoteId] of secondaryHistoryVoteIds.entries()) {
+            const id = secondaryHistoryVoteId.toString();
             const proposal = proposals.secondary[id];
             // If proposals are not loaded yet, they are still being fetched at the moment
             if (!proposal) continue;
@@ -141,7 +144,7 @@ const useReloadHistoryProposals = () => {
       );
     };
 
-    const goResponse = await go(() => loadProposals());
+    const goResponse = await go(async () => loadProposals());
     if (!goResponse.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,

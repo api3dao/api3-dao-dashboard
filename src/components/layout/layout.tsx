@@ -1,20 +1,22 @@
-import { ReactNode, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import Navigation from '../navigation';
-import Header from '../header';
-import { ERROR_REPORTING_CONSENT_KEY_NAME, images, insertInBetween } from '../../utils';
-import styles from './layout.module.scss';
-import ExternalLink from '../external-link';
-import Button from '../button';
-import ErrorReportingNotice from './error-reporting-notice';
 import classNames from 'classnames';
-import { DesktopMenu } from '../menu';
+import { type ReactNode, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 
-type Props = {
+import { ERROR_REPORTING_CONSENT_KEY_NAME, images, insertInBetween } from '../../utils';
+import Button from '../button';
+import ExternalLink from '../external-link';
+import Header from '../header';
+import { DesktopMenu } from '../menu';
+import Navigation from '../navigation';
+
+import ErrorReportingNotice from './error-reporting-notice';
+import styles from './layout.module.scss';
+
+interface Props {
   children: ReactNode;
   title: string;
   subtitle?: string;
-};
+}
 
 const Layout = ({ children, title, subtitle }: Props) => {
   return (
@@ -62,23 +64,20 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
               <div className={styles.linkSpacing}>
                 {insertInBetween(
                   links.map((link) => {
-                    if (link.href)
-                      return (
-                        <ExternalLink href={link.href} className={styles.noUnderline} key={link.text}>
-                          {link.text}
-                        </ExternalLink>
-                      );
-                    else
-                      return (
-                        <Button
-                          key={link.text}
-                          type="text"
-                          className={classNames(styles.externalLinkButton, styles.noUnderline)}
-                          onClick={link.onClick}
-                        >
-                          {link.text}
-                        </Button>
-                      );
+                    return link.href ? (
+                      <ExternalLink href={link.href} className={styles.noUnderline} key={link.text}>
+                        {link.text}
+                      </ExternalLink>
+                    ) : (
+                      <Button
+                        key={link.text}
+                        type="text"
+                        className={classNames(styles.externalLinkButton, styles.noUnderline)}
+                        onClick={link.onClick}
+                      >
+                        {link.text}
+                      </Button>
+                    );
                   }),
                   (index) => (
                     <span className={styles.linkSeparator} key={index}>

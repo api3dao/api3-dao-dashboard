@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /** Script which downloads the DAO contracts repository, installs necessary dependencies and compiles the contracts such
  * that they are ready to be deployed to hardhat node for developing locally.
  */
 
-const { readFileSync } = require('fs');
-const { join } = require('path');
+const { readFileSync } = require('node:fs');
+const { join } = require('node:path');
+
 const { execAndLog, promiseWrapper } = require('./utils');
 
 // NOTE: Change this to true in case you need more information to debug issues
@@ -19,8 +21,10 @@ const main = async () => {
   await execAndLog(`cd ${rootDir} && git clone https://github.com/api3dao/api3-dao.git dao-contracts`, DEBUG);
 
   // Read the package.json to know what version to clone and checkout to it
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const commitSha = JSON.parse(readFileSync(join(rootDir, 'package.json'))).devDependencies['api3-dao'].split('#')[1];
   const daoContractsDir = join(rootDir, 'dao-contracts');
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   await execAndLog(`cd ${daoContractsDir} && git checkout ${commitSha}`, DEBUG);
 
   // NOTE: Calling `yarn bootstrap` doesn't work when executed using `exec` when runing as part of github actions

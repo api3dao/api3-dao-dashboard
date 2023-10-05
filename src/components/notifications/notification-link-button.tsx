@@ -1,11 +1,13 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+
 import ExternalLink from '../external-link';
+
 import styles from './notifications.module.scss';
 
-type Props = {
+interface Props {
   children: ReactNode;
   href: string;
-};
+}
 
 const NotificationLinkButton = ({ children, href }: Props) => {
   return (

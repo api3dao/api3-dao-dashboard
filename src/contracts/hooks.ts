@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
-import { transactionMessages, usePrevious, useIsMount, useOnMountEffect } from '../utils';
+
 import { useChainData, displayPendingTransaction } from '../chain-data';
+import { initialChainData } from '../chain-data/state';
+import { transactionMessages, usePrevious, useIsMount, useOnMountEffect } from '../utils';
+
 import {
   Api3Pool__factory as Api3PoolFactory,
   Api3Token__factory as Api3TokenFactory,
@@ -9,7 +12,6 @@ import {
   Convenience__factory as ConvenienceFactory,
   TimelockManager__factory as TimelockManagerFactory,
 } from './artifacts/factories';
-import { initialChainData } from '../chain-data/state';
 
 const useContractReader = () => {
   const { contracts, provider, signer } = useChainData();
@@ -197,12 +199,12 @@ export const useTransactionNotifications = () => {
 
   useEffect(() => {
     if (transactions.length > (prevTransactions || []).length) {
-      const { type, tx } = transactions[transactions.length - 1]!;
+      const { type, tx } = transactions.at(-1)!;
       // Check if we've already displayed a notification for the given transaction hash
       const hasBeenDisplayed = displayedTxHashes.includes(tx.hash);
       if (!hasBeenDisplayed) {
         // No need to 'await' this promise. Let it resolve in the background
-        displayPendingTransaction(tx, transactionMessages[type]);
+        void displayPendingTransaction(tx, transactionMessages[type]);
         setDisplayedTxHashes([...displayedTxHashes, tx.hash]);
       }
     }

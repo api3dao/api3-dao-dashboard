@@ -1,5 +1,5 @@
 import { go } from '@api3/promise-utils';
-import { providers, utils } from 'ethers';
+import { type providers, utils } from 'ethers';
 
 /**
  * Converts the value to ethereum address. Throws error if the value is not an address nor ENS name.
@@ -11,7 +11,7 @@ export const convertToAddressOrThrow = async (provider: providers.Provider, ensN
   if (utils.isAddress(ensNameOrAddress)) return ensNameOrAddress;
 
   const resolved = await provider.resolveName(ensNameOrAddress);
-  if (!resolved || !utils.isAddress(resolved)) throw Error(`ENS name "${ensNameOrAddress}" does not exist`);
+  if (!resolved || !utils.isAddress(resolved)) throw new Error(`ENS name "${ensNameOrAddress}" does not exist`);
   return resolved;
 };
 
@@ -26,7 +26,7 @@ export const convertToAddressOrThrow = async (provider: providers.Provider, ensN
 export const convertToEnsName = async (provider: providers.Provider, ensNameOrAddress: string) => {
   if (!utils.isAddress(ensNameOrAddress)) return null;
 
-  const goEnsName = await go(() => provider.lookupAddress(ensNameOrAddress));
+  const goEnsName = await go(async () => provider.lookupAddress(ensNameOrAddress));
   if (!goEnsName.success) return null;
 
   return goEnsName.data;

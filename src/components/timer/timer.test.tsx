@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { addSeconds } from 'date-fns';
+
 import Timer from './timer';
 
 describe('<Timer />', () => {

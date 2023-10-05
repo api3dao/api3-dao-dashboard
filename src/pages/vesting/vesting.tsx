@@ -4,6 +4,7 @@ import Layout from '../../components/layout';
 import { useApi3Pool, useTimelockManager } from '../../contracts';
 import { useLoadVestingData } from '../../logic/vesting/hooks';
 import { handleTransactionError } from '../../utils';
+
 import styles from './vesting.module.scss';
 
 const Vesting = () => {

@@ -1,19 +1,21 @@
-import { ReactNode, useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
+import { type ReactNode, useState, useRef, useEffect } from 'react';
+
 import { images } from '../../utils';
-import styles from './dropdown.module.scss';
 import { triggerOnEnter } from '../modal';
+
+import styles from './dropdown.module.scss';
 
 interface DropdownProps {
   children: ReactNode;
   menu: ReactNode;
   icon?: ReactNode;
-  alignIcon?: 'start' | 'center' | 'end';
+  alignIcon?: 'center' | 'end' | 'start';
 }
 
 interface DropdownMenuProps {
   children: ReactNode;
-  position?: 'top' | 'bottom';
+  position?: 'bottom' | 'top';
 }
 
 interface DropdownMenuItemProps {
@@ -49,7 +51,7 @@ const Dropdown = ({ children, menu, icon, alignIcon = 'center' }: DropdownProps)
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleOpen = () => setOpen(!open);
 
-  const handleOutsideEvent = (event: MouseEvent | KeyboardEvent) => {
+  const handleOutsideEvent = (event: KeyboardEvent | MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
       setOpen(false);
     }

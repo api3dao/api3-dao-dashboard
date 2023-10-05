@@ -12,7 +12,7 @@ test('getDays', () => {
   const twelveDays = 1000 * 60 * 60 * 24 * 12;
   expect(getDays(twelveDays)).toBe('12');
 
-  const fiveDays = 1000 * 60 * 60 * 24 * 5.672839;
+  const fiveDays = 1000 * 60 * 60 * 24 * 5.672_839;
   expect(getDays(fiveDays)).toBe('05');
 });
 
@@ -20,7 +20,7 @@ test('getHours', () => {
   const sixHours = 1000 * 60 * 60 * 6;
   expect(getHours(sixHours)).toBe('06');
 
-  const fiveHours = 1000 * 60 * 60 * 5.672839;
+  const fiveHours = 1000 * 60 * 60 * 5.672_839;
   expect(getHours(fiveHours)).toBe('05');
 });
 
@@ -28,7 +28,7 @@ test('getMinutes', () => {
   const twentyMinutes = 1000 * 60 * 20;
   expect(getMinutes(twentyMinutes)).toBe('20');
 
-  const thirtyThreeMinutes = 1000 * 60 * 33.2158593;
+  const thirtyThreeMinutes = 1000 * 60 * 33.215_859_3;
   expect(getMinutes(thirtyThreeMinutes)).toBe('33');
 });
 
@@ -36,27 +36,27 @@ test('getSeconds', () => {
   const fortySeconds = 1000 * 40;
   expect(getSeconds(fortySeconds)).toBe('40');
 
-  const twentySeconds = 1000 * 20.98472;
+  const twentySeconds = 1000 * 20.984_72;
   expect(getSeconds(twentySeconds)).toBe('20');
 });
 
 test('filterAlphanumerical', () => {
-  expect(filterAlphanumerical('\\test\\Red\\Bob-%./"FredNew')).toEqual('testRedBobFredNew');
-  expect(filterAlphanumerical('')).toEqual('');
-  expect(filterAlphanumerical(' \t\n')).toEqual('');
+  expect(filterAlphanumerical('\\test\\Red\\Bob-%./"FredNew')).toBe('testRedBobFredNew');
+  expect(filterAlphanumerical('')).toBe('');
+  expect(filterAlphanumerical(' \t\n')).toBe('');
 });
 
 test('insertInBetween', () => {
   const array = [1, 2, 3];
-  const joinLike: Array<string | number> = insertInBetween(array, '|'); // returns Array<string | number>
-  expect(joinLike).toEqual([1, '|', 2, '|', 3]);
+  const joinLike: (number | string)[] = insertInBetween(array, '|'); // Returns Array<string | number>
+  expect(joinLike).toStrictEqual([1, '|', 2, '|', 3]);
 
-  const joinLikeFn: Array<string | number> = insertInBetween(array, () => '|'); // returns Array<string | number>
-  expect(joinLikeFn).toEqual([1, '|', 2, '|', 3]);
+  const joinLikeFn: (number | string)[] = insertInBetween(array, () => '|'); // Returns Array<string | number>
+  expect(joinLikeFn).toStrictEqual([1, '|', 2, '|', 3]);
 
-  expect(insertInBetween([], '|')).toEqual([]);
-  expect(insertInBetween([1], '|')).toEqual([1]);
-  expect(insertInBetween([1, 2], undefined)).toEqual([1, undefined, 2]);
+  expect(insertInBetween([], '|')).toStrictEqual([]);
+  expect(insertInBetween([1], '|')).toStrictEqual([1]);
+  expect(insertInBetween([1, 2], undefined)).toStrictEqual([1, undefined, 2]);
 });
 
 test('isErrorReportingAllowed', () => {

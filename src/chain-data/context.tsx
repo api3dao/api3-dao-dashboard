@@ -1,7 +1,9 @@
-import { createContext, useState, useMemo, useContext, ReactNode } from 'react';
-import { initialSettableChainData, initialChainData, SettableChainData } from './state';
+import { createContext, useState, useMemo, useContext, type ReactNode } from 'react';
 import { useAccount, useNetwork, useProvider, useSigner } from 'wagmi';
+
 import { getDaoAddresses, updateNetworkName } from '../contracts';
+
+import { initialSettableChainData, initialChainData, type SettableChainData } from './state';
 
 export const ChainDataContext = createContext(initialSettableChainData);
 

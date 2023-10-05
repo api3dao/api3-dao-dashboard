@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import { ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
+
 import styles from './external-link.module.scss';
 
 interface Props {

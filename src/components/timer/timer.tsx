@@ -1,14 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { getDays, getHours, getMinutes, getSeconds } from '../../utils/generic';
-import globalStyles from '../../styles/global-styles.module.scss';
-import styles from './timer.module.scss';
 import { format } from 'date-fns';
+import { useState, useEffect, useRef } from 'react';
+
+import globalStyles from '../../styles/global-styles.module.scss';
 import { usePrevious } from '../../utils';
+import { getDays, getHours, getMinutes, getSeconds } from '../../utils/generic';
+
+import styles from './timer.module.scss';
 
 interface Props {
   deadline: Date;
-  size?: 'normal' | 'large';
+  size?: 'large' | 'normal';
   showDeadline?: boolean;
   onDeadlineExceeded?: () => void;
 }
@@ -101,7 +103,7 @@ const Timer = (props: Props) => {
 export default Timer;
 
 function calculateCountdown(deadline: Date): Countdown {
-  const now = new Date().getTime();
+  const now = Date.now();
   const dateDiff = Math.max(deadline.getTime() - now, 0);
 
   return {

@@ -1,20 +1,22 @@
+import classNames from 'classnames';
 import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+
 import { useChainData } from '../../chain-data';
-import { images } from '../../utils';
-import classNames from 'classnames';
-import DashboardIcon from './dashboard-icon';
-import ProposalsIcon from './proposals-icon';
-import HistoryIcon from './history-icon';
-import SignIn from '../sign-in/sign-in';
-import styles from './menu.module.scss';
 import globalStyles from '../../styles/global-styles.module.scss';
+import { images } from '../../utils';
+import SignIn from '../sign-in/sign-in';
+
+import DashboardIcon from './dashboard-icon';
+import HistoryIcon from './history-icon';
+import styles from './menu.module.scss';
+import ProposalsIcon from './proposals-icon';
 
 export const DesktopMenu = () => {
   const { pathname } = useLocation();
   return (
     <div className={styles.menu} data-cy="desktop-menu">
-      {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
+      {/* IsActive is required for the root path otherwise the link stays highlighted on other pages */}
       <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
         <div className={styles.menuItem}>
           <div className={styles.menuActiveLine} />
@@ -58,7 +60,7 @@ export const MobileMenu = () => {
         </div>
         <div className={styles.mobileMenuScrollWrap}>
           <div className={styles.mobileMenuContent}>
-            {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
+            {/* IsActive is required for the root path otherwise the link stays highlighted on other pages */}
             <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
               <div className={styles.menuMobileItem}>
                 <DashboardIcon />

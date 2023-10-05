@@ -1,6 +1,10 @@
-const { join } = require('path');
-const { existsSync } = require('fs');
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { existsSync } = require('node:fs');
+const { join } = require('node:path');
+
+// eslint-disable-next-line unicorn/import-style
 const { bold, green } = require('chalk');
+
 const { execAndLog, promiseWrapper } = require('./utils');
 
 // NOTE: Change this to true in case you need more information to debug issues

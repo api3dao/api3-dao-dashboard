@@ -1,12 +1,13 @@
+import { go, assertGoSuccess } from '@api3/promise-utils';
 import { useCallback } from 'react';
-import { Treasury, useChainData } from '../../chain-data';
+
+import { type Treasury, useChainData } from '../../chain-data';
+import * as notifications from '../../components/notifications';
+import { isZeroAddress } from '../../contracts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../contracts/hooks';
 import { blockTimestampToDate } from '../../utils';
-import { isZeroAddress } from '../../contracts';
-import * as notifications from '../../components/notifications';
 import { messages } from '../../utils/messages';
 import { convertToEnsName } from '../proposals/encoding/ens-name';
-import { go, assertGoSuccess } from '@api3/promise-utils';
 
 export const useTreasuryAndDelegation = () => {
   const { setChainData, userAccount, proposals, provider } = useChainData();
@@ -18,9 +19,9 @@ export const useTreasuryAndDelegation = () => {
     if (!api3Voting || !convenience || !provider) return;
 
     const loadTreasuryAndDelegation = async () => {
-      const goResponse = await go(() => convenience.getTreasuryAndUserDelegationData(userAccount));
+      const goResponse = await go(async () => convenience.getTreasuryAndUserDelegationData(userAccount));
       assertGoSuccess(goResponse);
-      const data = goResponse.data;
+      const { data } = goResponse;
 
       const treasuries: Treasury[] = [];
       for (let i = 0; i < data.names.length; i++) {

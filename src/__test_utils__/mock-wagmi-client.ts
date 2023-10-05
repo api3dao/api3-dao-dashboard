@@ -1,10 +1,10 @@
 /**
  * Note: https://github.com/tmm/testing-wagmi/tree/main/test was used as the starting point for this code
  */
-import { createClient, CreateClientConfig } from 'wagmi';
-import { MockConnector } from 'wagmi/dist/connectors/mock';
-import { hardhat } from 'wagmi/chains';
 import { providers, Wallet } from 'ethers';
+import { createClient, type CreateClientConfig } from 'wagmi';
+import { hardhat } from 'wagmi/chains';
+import { MockConnector } from 'wagmi/dist/connectors/mock';
 
 type Config = Partial<CreateClientConfig> & { signer?: WalletSigner };
 

@@ -1,12 +1,13 @@
-import { BigNumber, providers } from 'ethers';
-import { ProposalType, VoterState } from '../../../chain-data';
-import { Convenience } from '../../../contracts/artifacts';
-import { Proposal } from '../../../chain-data';
-import { decodeEvmScript, decodeMetadata } from '../encoding';
-import { blockTimestampToDate } from '../../../utils';
-import { EPOCH_LENGTH, HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
-import { StartVoteProposal, VOTING_APP_IDS } from './commons';
+import type { BigNumber, providers } from 'ethers';
 import range from 'lodash/range';
+
+import type { ProposalType, VoterState, Proposal } from '../../../chain-data';
+import { EPOCH_LENGTH, HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
+import type { Convenience } from '../../../contracts/artifacts';
+import { blockTimestampToDate } from '../../../utils';
+import { decodeEvmScript, decodeMetadata } from '../encoding';
+
+import { type StartVoteProposal, VOTING_APP_IDS } from './commons';
 
 const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNumber();
 
@@ -34,7 +35,7 @@ export const getProposals = async (
 
   const votingTime = EPOCH_LENGTH;
   const voteIdsToLoad = startVotesInfo.map((log) => log.voteId);
-  const openVoteIdsStr = openVoteIds.map((id) => id.toString());
+  const openVoteIdsStr = new Set(openVoteIds.map((id) => id.toString()));
   const staticVoteData = await convenience.getStaticVoteData(VOTING_APP_IDS[type], userAccount, voteIdsToLoad);
   const dynamicVoteData = await convenience.getDynamicVoteData(VOTING_APP_IDS[type], userAccount, voteIdsToLoad);
 
@@ -45,7 +46,7 @@ export const getProposals = async (
     return {
       type,
       ...startVotesInfo[i]!,
-      open: openVoteIdsStr.includes(startVotesInfo[i]!.voteId.toString()),
+      open: openVoteIdsStr.has(startVotesInfo[i]!.voteId.toString()),
 
       startDate: blockTimestampToDate(staticVoteData.startDate[i]!),
       supportRequired: toPercent(staticVoteData.supportRequired[i]!),

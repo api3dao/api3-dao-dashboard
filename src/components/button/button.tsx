@@ -1,15 +1,16 @@
-import { ReactNode } from 'react';
 import classNames from 'classnames';
+import type { ReactNode } from 'react';
+
 import styles from './button.module.scss';
 
-export type Props = {
+export interface Props {
   children: ReactNode;
   className?: string;
-  type?: 'primary' | 'secondary' | 'link' | 'text';
-  size?: 'normal' | 'large';
+  type?: 'link' | 'primary' | 'secondary' | 'text';
+  size?: 'large' | 'normal';
   disabled?: boolean;
   onClick?: () => void;
-};
+}
 
 const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick, className }: Props) => {
   return (

@@ -1,4 +1,4 @@
-import { ProposalType } from '../../../chain-data';
+import type { ProposalType } from '../../../chain-data';
 
 export interface NewProposalFormData {
   type: ProposalType;

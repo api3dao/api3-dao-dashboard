@@ -1,7 +1,8 @@
-import { render as baseRender, RenderOptions, RenderResult } from '@testing-library/react';
-import { ReactElement } from 'react';
+import { render as baseRender, type RenderOptions, type RenderResult } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { WagmiConfig } from 'wagmi';
+
 import { createMockClient } from './mock-wagmi-client';
 
 export { act, fireEvent, renderHook, screen, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react';

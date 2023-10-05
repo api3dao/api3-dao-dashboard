@@ -1,24 +1,26 @@
+import { go } from '@api3/promise-utils';
+import type { BigNumber } from 'ethers';
+import chunk from 'lodash/chunk';
+import difference from 'lodash/difference';
+import keyBy from 'lodash/keyBy';
 import { useCallback, useEffect } from 'react';
+
 import {
-  Proposal,
-  ProposalType,
+  type Proposal,
+  type ProposalType,
   updateImmutably,
   updateImmutablyCurried,
   useChainData,
-  VoterState,
+  type VoterState,
 } from '../../../chain-data';
-import { Api3Voting } from '../../../contracts/artifacts';
+import { notifications } from '../../../components/notifications';
+import type { Api3Voting } from '../../../contracts/artifacts';
 import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
 import { messages } from '../../../utils';
-import difference from 'lodash/difference';
-import keyBy from 'lodash/keyBy';
-import chunk from 'lodash/chunk';
-import { getProposals } from './get-proposals';
-import { BigNumber } from 'ethers';
-import { notifications } from '../../../components/notifications';
 import { openProposalIdsSelector, proposalDetailsSelector } from '../selectors';
-import { CHUNKS_SIZE, StartVoteProposal, VOTING_APP_IDS } from './commons';
-import { go } from '@api3/promise-utils';
+
+import { CHUNKS_SIZE, type StartVoteProposal, VOTING_APP_IDS } from './commons';
+import { getProposals } from './get-proposals';
 
 const fetchStartVoteEventsForActiveProposals = async (votingApp: Api3Voting, openVoteIds: BigNumber[]) => {
   const startVoteFilter = votingApp.filters.StartVote(null, null, null);
@@ -26,8 +28,8 @@ const fetchStartVoteEventsForActiveProposals = async (votingApp: Api3Voting, ope
     .map((log) => log.args)
     .map((log) => ({ voteId: log.voteId, creator: log.creator, metadata: log.metadata }));
 
-  const openVoteIdsStr = openVoteIds.map((id) => id.toString());
-  return startVotesLogs.filter((log) => openVoteIdsStr.includes(log.voteId.toString()));
+  const openVoteIdsStr = new Set(openVoteIds.map((id) => id.toString()));
+  return startVotesLogs.filter((log) => openVoteIdsStr.has(log.voteId.toString()));
 };
 
 const useLoadActiveProposals = () => {
@@ -114,13 +116,13 @@ const useReloadActiveProposals = () => {
       const updateState = (type: ProposalType, loadedChunk: Proposal[]) => {
         setChainData('Update active proposals after chunk loaded', (state) =>
           updateImmutably(state, (immutableState) => {
-            const proposals = immutableState.proposals;
+            const { proposals } = immutableState;
             // If proposals are not loaded yet, they are still being fetched at the moment
             if (!proposals) return immutableState;
 
-            loadedChunk.forEach((proposal) => {
+            for (const proposal of loadedChunk) {
               proposals[type][proposal.voteId.toString()] = proposal;
-            });
+            }
           })
         );
       };
@@ -179,7 +181,7 @@ const useReloadActiveProposals = () => {
       }
     };
 
-    const goResponse = await go(() => loadProposals());
+    const goResponse = await go(async () => loadProposals());
     if (!goResponse.success) {
       // TODO: error handling
       // eslint-disable-next-line no-console

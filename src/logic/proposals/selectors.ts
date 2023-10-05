@@ -1,10 +1,10 @@
-import { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '../../chain-data';
-import { computePercentage, EPOCH_LENGTH } from '../../contracts';
 import { addSeconds, differenceInDays, isAfter } from 'date-fns';
-import { HUNDRED_PERCENT } from '../../contracts';
-import { BigNumber, providers } from 'ethers';
+import type { BigNumber, providers } from 'ethers';
 
-export type ProposalStatus = 'Passing' | 'Failing' | 'Executed' | 'Execute' | 'Rejected';
+import type { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '../../chain-data';
+import { computePercentage, EPOCH_LENGTH, HUNDRED_PERCENT } from '../../contracts';
+
+export type ProposalStatus = 'Execute' | 'Executed' | 'Failing' | 'Passing' | 'Rejected';
 export const voteSliderSelector = (proposal: Proposal) => {
   const minAcceptanceQuorum = proposal.minAcceptQuorum;
   const forPercentage = computePercentage(proposal.yea, proposal.votingPower, true);
@@ -20,8 +20,7 @@ export const voteSliderSelector = (proposal: Proposal) => {
     }
 
     if (isPassing) {
-      if (proposal.executed) return 'Executed';
-      else return 'Execute';
+      return proposal.executed ? 'Executed' : 'Execute';
     } else {
       return 'Rejected';
     }
@@ -84,14 +83,25 @@ export const historyProposalsSelector = (proposals: Proposals | null, type: Opti
   const secondaryProposals = Object.values(proposals.secondary);
 
   let allProposals: Proposal[];
-  if (type === 'primary') {
-    allProposals = primaryProposals;
-  } else if (type === 'secondary') {
-    allProposals = secondaryProposals;
-  } else if (type === 'none') {
-    allProposals = [];
-  } else {
-    allProposals = [...primaryProposals, ...secondaryProposals];
+  switch (type) {
+    case 'primary': {
+      allProposals = primaryProposals;
+
+      break;
+    }
+    case 'secondary': {
+      allProposals = secondaryProposals;
+
+      break;
+    }
+    case 'none': {
+      allProposals = [];
+
+      break;
+    }
+    default: {
+      allProposals = [...primaryProposals, ...secondaryProposals];
+    }
   }
 
   return allProposals.filter((p) => !p.open).sort((p1, p2) => (p1.startDateRaw.gt(p2.startDateRaw) ? -1 : 1));

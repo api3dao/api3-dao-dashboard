@@ -1,25 +1,27 @@
-import { BigNumber } from 'ethers';
+import classNames from 'classnames';
+import type { BigNumber } from 'ethers';
 import { useState } from 'react';
+
 import { useChainData } from '../../chain-data';
-import { useApi3Pool } from '../../contracts';
-import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
-import { formatAndRoundApi3, handleTransactionError, images, UNKNOWN_NUMBER } from '../../utils';
-import TokenAmountForm from './forms/token-amount-form';
-import TokenDepositForm from './forms/token-deposit-form';
+import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
+import Button from '../../components/button';
 import Layout from '../../components/layout';
 import { Modal } from '../../components/modal';
-import Button from '../../components/button';
 import { Tooltip } from '../../components/tooltip';
-import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
-import StakingPool from './staking/staking-pool';
-import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
-import UnstakeBanner from './unstake-banner/unstake-banner';
+import { useApi3Pool } from '../../contracts';
+import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
 import globalStyles from '../../styles/global-styles.module.scss';
+import { formatAndRoundApi3, handleTransactionError, images, UNKNOWN_NUMBER } from '../../utils';
+
 import styles from './dashboard.module.scss';
 import ConfirmUnstakeForm from './forms/confirm-unstake-form';
-import classNames from 'classnames';
+import TokenAmountForm from './forms/token-amount-form';
+import TokenDepositForm from './forms/token-deposit-form';
+import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
+import StakingPool from './staking/staking-pool';
+import UnstakeBanner from './unstake-banner/unstake-banner';
 
-type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
+type ModalType = 'confirm-unstake' | 'deposit' | 'stake' | 'unstake' | 'withdraw';
 
 const Dashboard = () => {
   const { dashboardState: data, transactions, setChainData, signer, provider } = useChainData();
@@ -38,8 +40,8 @@ const Dashboard = () => {
   const tokenBalances = tokenBalancesSelector(data);
   const pendingUnstake = pendingUnstakeSelector(data);
 
-  const canStake = data && data.userUnstaked.gt(0);
-  const canWithdraw = tokenBalances && tokenBalances.withdrawable.gt(0);
+  const canStake = data?.userUnstaked.gt(0);
+  const canWithdraw = tokenBalances?.withdrawable.gt(0);
   const canInitiateUnstake = data && !pendingUnstake && data.userStaked.gt(0);
 
   return (
@@ -49,13 +51,14 @@ const Dashboard = () => {
         <>
           <p className={styles.dashboardHeader}>How This Works</p>
           <div className={styles.tutorialVideo}>
+            {/* eslint-disable-next-line react/iframe-missing-sandbox */}
             <iframe
               src="https://www.youtube-nocookie.com/embed/videoseries?list=PL9BKN1mys69GgMLD_EVkH-S3CKrPFf_ct"
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-            ></iframe>
+            />
           </div>
         </>
       )}

@@ -1,10 +1,12 @@
 import classNames from 'classnames';
-import { ProposalStatus } from '../../../logic/proposals/selectors';
-import { images } from '../../../utils';
+
+import type { VOTER_STATES } from '../../../chain-data';
+import type { ProposalStatus } from '../../../logic/proposals/selectors';
 import globalStyles from '../../../styles/global-styles.module.scss';
-import styles from './vote-slider.module.scss';
-import { VOTER_STATES } from '../../../chain-data';
+import { images } from '../../../utils';
 import VoteStatus from '../vote-status';
+
+import styles from './vote-slider.module.scss';
 
 interface IconProp {
   large?: boolean;
@@ -28,7 +30,7 @@ interface Props {
   open: boolean;
   proposalStatus: ProposalStatus;
   wasDelegated: boolean;
-  size?: 'normal' | 'large';
+  size?: 'large' | 'normal';
 }
 
 const VoteSlider = (props: Props) => {
@@ -57,17 +59,17 @@ const VoteSlider = (props: Props) => {
         <PositiveVoteIcon large={isLarge} />
         <div className={styles.barWrapper}>
           <div className={styles.bar}>
-            <div className={styles.acceptanceQuorum} style={{ left: `${minAcceptanceQuorum}%` }}></div>
+            <div className={styles.acceptanceQuorum} style={{ left: `${minAcceptanceQuorum}%` }} />
             <div
               className={classNames(styles.for, { [styles.grayOut]: !open && proposalStatus === 'Rejected' })}
               style={{ width: formatPercentage(forPercentage) }}
-            ></div>
+            />
             <div
               className={classNames(styles.against, {
                 [styles.grayOut]: !open && (proposalStatus === 'Execute' || proposalStatus === 'Executed'),
               })}
               style={{ width: formatPercentage(againstPercentage) }}
-            ></div>
+            />
           </div>
           <div
             className={classNames(styles.voteInfo, {

@@ -1,6 +1,8 @@
-import { BigNumber } from 'ethers';
-import { ModalFooter, ModalHeader } from '../../../components/modal';
+import type { BigNumber } from 'ethers';
+
 import Button from '../../../components/button';
+import { ModalFooter, ModalHeader } from '../../../components/modal';
+
 import styles from './forms.module.scss';
 import UnstakeHelperText from './unstake-helper-text';
 

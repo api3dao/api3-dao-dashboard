@@ -1,4 +1,5 @@
-import { utils, BigNumberish } from 'ethers';
+import { utils, type BigNumberish } from 'ethers';
+
 import { useChainData } from '../../../chain-data';
 
 export interface FormattedTreasury {
@@ -20,11 +21,11 @@ export const useTreasuries = (): Treasuries => {
 
   return {
     primary: treasuries.map(({ name, balanceOfPrimaryAgent, symbol, decimal }) => ({
-      name: name,
+      name,
       amountAndSymbol: formatTreasuryAmount(balanceOfPrimaryAgent, decimal, symbol),
     })),
     secondary: treasuries.map(({ name, balanceOfSecondaryAgent, symbol, decimal }) => ({
-      name: name,
+      name,
       amountAndSymbol: formatTreasuryAmount(balanceOfSecondaryAgent, decimal, symbol),
     })),
   };

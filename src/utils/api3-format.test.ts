@@ -18,15 +18,15 @@ test('formatAndRoundApi3', () => {
 test('formatApi3', () => {
   expect(formatApi3('10000000000000000000').toString()).toBe('10.0');
   expect(formatApi3('12345000000').toString()).toBe('0.000000012345');
-  expect(() => formatApi3('abc')).toThrowError('invalid BigNumber string');
+  expect(() => formatApi3('abc')).toThrow('invalid BigNumber string');
   expect(formatApi3('1234567890000000000000000000')).toBe('1,234,567,890.0');
   expect(formatApi3('1234567890000000000000000000', false)).toBe('1234567890.0');
 });
 
 test('round', () => {
-  expect(round(55.15616541)).toBe('55.16');
+  expect(round(55.156_165_41)).toBe('55.16');
   expect(round('55.15616541')).toBe('55.16');
-  expect(round(55.15616541, 3)).toBe('55.156');
+  expect(round(55.156_165_41, 3)).toBe('55.156');
   expect(round('55.15616541', 3)).toBe('55.156');
   expect(round(0)).toBe('0.00');
 });

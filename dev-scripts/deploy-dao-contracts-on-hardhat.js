@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /** Deploys the dao contracts on hardhat node running locally. It assumes the dao-contracts repository has been
  * initialized already.
  */
+const { writeFileSync } = require('node:fs');
+const { join } = require('node:path');
+
+// eslint-disable-next-line unicorn/import-style
 const { bold, green } = require('chalk');
-const { writeFileSync } = require('fs');
-const { join } = require('path');
+
 const { execAndLog, promiseWrapper } = require('./utils');
 
 // NOTE: Change this to true in case you need more information to debug issues

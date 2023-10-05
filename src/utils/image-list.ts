@@ -7,10 +7,10 @@ export const images = {
   arrowDropdownDark: '/arrow-dropdown-dark.svg',
   arrowLeft: '/arrow-left.svg',
   arrowRight: '/arrow-right.svg',
-  checkboxEmpty: '/checkbox-empty.svg',
-  checkboxFilled: '/checkbox-filled.svg',
   checkBlack: '/check-black.svg',
   checkGreen: '/check-green.svg',
+  checkboxEmpty: '/checkbox-empty.svg',
+  checkboxFilled: '/checkbox-filled.svg',
   close: '/close.svg',
   closePink: '/close-pink.svg',
   connected: '/connected.svg',
@@ -30,10 +30,10 @@ export const images = {
   triangleBracketRight: '/triangle-bracket-right.svg',
   triangleBracketRightMobile: '/triangle-bracket-right-mobile.svg',
   triangles: '/triangles.svg',
+  unsupportedNetwork: '/unsupported-network.svg',
   votedAgainst: '/voted-against.svg',
   votedFor: '/voted-for.svg',
   warning: '/warning.svg',
-  unsupportedNetwork: '/unsupported-network.svg',
 };
 
 // We only want to 'preload' certain images that will definitely be displayed immediately.

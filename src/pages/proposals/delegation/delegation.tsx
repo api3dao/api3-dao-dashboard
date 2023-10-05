@@ -1,18 +1,19 @@
+import classNames from 'classnames';
 import { useState } from 'react';
-import { abbrStr } from '../../../chain-data/helpers';
-import DelegateVotesForm from '../forms/delegate/delegate-form';
-import globalStyles from '../../../styles/global-styles.module.scss';
+
 import { useChainData } from '../../../chain-data';
+import { abbrStr } from '../../../chain-data/helpers';
 import Button from '../../../components/button';
 import { Modal } from '../../../components/modal';
-import { canDelegateSelector, canUndelegateSelector } from '../../../logic/proposals/selectors';
-import ChooseDelegateAction from '../forms/choose-delegate-action/choose-delegate-action';
-import { useApi3Pool } from '../../../contracts';
-import { handleTransactionError } from '../../../utils';
-import { images } from '../../../utils';
 import { TooltipChecklist } from '../../../components/tooltip';
+import { useApi3Pool } from '../../../contracts';
+import { canDelegateSelector, canUndelegateSelector } from '../../../logic/proposals/selectors';
+import globalStyles from '../../../styles/global-styles.module.scss';
+import { handleTransactionError, images } from '../../../utils';
+import ChooseDelegateAction from '../forms/choose-delegate-action/choose-delegate-action';
+import DelegateVotesForm from '../forms/delegate/delegate-form';
+
 import styles from './delegation.module.scss';
-import classNames from 'classnames';
 
 const Delegation = () => {
   // TODO: Retrieve only "userStaked" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
@@ -45,7 +46,7 @@ const Delegation = () => {
       {delegation?.delegate ? (
         <div>
           <p className={classNames(globalStyles.secondaryColor, globalStyles.bold)} data-cy="delegated-to">
-            Delegated to: {delegation.delegateName ? delegation.delegateName : abbrStr(delegation.delegate)}
+            Delegated to: {delegation.delegateName ?? abbrStr(delegation.delegate)}
           </p>
           <Button
             className={styles.proposalsLink}

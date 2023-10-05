@@ -1,8 +1,9 @@
-import produce from 'immer';
+import { go } from '@api3/promise-utils';
 import { ethers, providers } from 'ethers';
+import produce from 'immer';
+
 import { notifications } from '../components/notifications';
 import { getEtherscanTransactionUrl } from '../contracts';
-import { go } from '@api3/promise-utils';
 
 export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => void) => {
   // NOTE: This needs to be written in a function like this, to make sure `produce` doesn't return anything.
@@ -18,7 +19,7 @@ export const updateImmutablyCurried =
     updateImmutably(state, updateCb);
 
 export const abbrStr = (str: string) => {
-  return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
+  return `${str.slice(0, 9)}...${str.slice(-4, str.length - 4 + str.length)}`;
 };
 
 export interface PendingTransactionMessages {
@@ -35,12 +36,9 @@ export const displayPendingTransaction = async (
 
   // It's common for transactions to take between 1-5 minutes to confirm. Keep the
   // initial "progress" toast open until then
-  const infoToastId = notifications.info(
-    { url: url, message: messages.start },
-    { autoClose: false, closeOnClick: false }
-  );
+  const infoToastId = notifications.info({ url, message: messages.start }, { autoClose: false, closeOnClick: false });
 
-  const goRes = await go(() => transaction.wait());
+  const goRes = await go(async () => transaction.wait());
   if (infoToastId) notifications.close(infoToastId);
 
   // NOTE: ethers.js adds various additional fields to Error, so it's easier to type as 'any'
@@ -87,7 +85,7 @@ export const mockLocalhostWeb3Provider = (window: Window) => {
   const ethersProvider = new providers.JsonRpcProvider('http://localhost:8545');
 
   // The request `request` function is defined when we use Metamask, so we mock it
-  (ethersProvider as any).request = ({ method, params }: any) => {
+  (ethersProvider as any).request = async ({ method, params }: any) => {
     if (method === 'eth_requestAccounts') method = 'eth_accounts';
     return ethersProvider.send(method, params);
   };

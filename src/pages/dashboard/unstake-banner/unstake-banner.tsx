@@ -1,10 +1,10 @@
-import { useApi3Pool } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
-import { images } from '../../../utils';
 import Button from '../../../components/button';
+import { useApi3Pool } from '../../../contracts';
 import globalStyles from '../../../styles/global-styles.module.scss';
+import { images, handleTransactionError } from '../../../utils';
+
 import styles from './unstake-banner.module.scss';
-import { handleTransactionError } from '../../../utils';
 
 interface Props {
   canUnstakeAndWithdraw: boolean;

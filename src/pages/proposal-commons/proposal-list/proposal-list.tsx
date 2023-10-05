@@ -1,19 +1,21 @@
-import { useState } from 'react';
-import { Address, useEnsName } from 'wagmi';
-import { BigNumber } from 'ethers';
 import classNames from 'classnames';
-import { NavLink } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Proposal, useChainData } from '../../../chain-data';
-import { images } from '../../../utils';
-import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
-import VoteSlider from '../vote-slider/vote-slider';
-import Timer, { DATE_FORMAT } from '../../../components/timer';
+import type { BigNumber } from 'ethers';
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import { type Address, useEnsName } from 'wagmi';
+
+import { type Proposal, useChainData } from '../../../chain-data';
 import ConnectButton from '../../../components/connect-button';
-import { Tooltip } from '../../../components/tooltip';
-import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import Tag from '../../../components/tag';
+import Timer, { DATE_FORMAT } from '../../../components/timer';
+import { Tooltip } from '../../../components/tooltip';
+import { encodeProposalTypeAndVoteId } from '../../../logic/proposals/encoding';
+import { voteSliderSelector } from '../../../logic/proposals/selectors';
 import globalStyles from '../../../styles/global-styles.module.scss';
+import { images } from '../../../utils';
+import VoteSlider from '../vote-slider/vote-slider';
+
 import styles from './proposal-list.module.scss';
 import ProposalStatus from './proposal-status/proposal-status';
 
@@ -26,7 +28,7 @@ interface Props {
 
 interface ProposalProps {
   proposal: Proposal;
-  device: 'mobile' | 'desktop';
+  device: 'desktop' | 'mobile';
 }
 
 const voteIdFormat = (voteId: BigNumber) => {
@@ -99,7 +101,7 @@ interface ProposalListItemProps {
   index: number;
 }
 
-function ProposalListItem(props: ProposalListItemProps) {
+const ProposalListItem = (props: ProposalListItemProps) => {
   const { proposal, href, index } = props;
 
   const votingSliderData = voteSliderSelector(proposal);
@@ -137,4 +139,4 @@ function ProposalListItem(props: ProposalListItemProps) {
       </div>
     </div>
   );
-}
+};

@@ -1,14 +1,14 @@
-import { Web3Modal } from '@web3modal/react';
-import { WagmiConfig } from 'wagmi';
-import { BaseLayout } from './components/layout';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { HelmetProvider, Helmet } from 'react-helmet-async';
-import { images, preloadImageList, useOnMountEffect } from './utils';
-import { FallbackRender } from '@sentry/react/dist/errorboundary';
-import { ToastContainer } from 'react-toastify';
-import { useTransactionNotifications } from './contracts';
 import * as Sentry from '@sentry/react';
+import type { FallbackRender } from '@sentry/react/dist/errorboundary';
+import { Web3Modal } from '@web3modal/react';
+import { HelmetProvider, Helmet } from 'react-helmet-async';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import { WagmiConfig } from 'wagmi';
+
 import ChainDataContextProvider from './chain-data';
+import { BaseLayout } from './components/layout';
+import { useTransactionNotifications } from './contracts';
 import Dashboard from './pages/dashboard';
 import History from './pages/history';
 import HistoryDetails from './pages/history-details';
@@ -16,6 +16,7 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
+import { images, preloadImageList, useOnMountEffect } from './utils';
 import { wagmiClient, ethereumClient, projectId } from './wallet-connect';
 import './styles/variables.module.scss';
 
@@ -85,7 +86,7 @@ const App = () => {
             <title>API3 DAO</title>
             {/* Preload any important images here */}
             {/* https://web.dev/preload-responsive-images/ */}
-            {(Object.keys(images) as Array<keyof typeof images>).map((image) => {
+            {(Object.keys(images) as (keyof typeof images)[]).map((image) => {
               const rel = preloadImageList.includes(images[image]) ? 'preload' : 'prefetch';
               return <link rel={rel} as="image" href={images[image]} key={image} />;
             })}

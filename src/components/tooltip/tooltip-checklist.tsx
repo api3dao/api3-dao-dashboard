@@ -1,6 +1,8 @@
-import { ReactElement } from 'react';
-import Tooltip from './tooltip';
+import type { ReactElement } from 'react';
+
 import { images } from '../../utils';
+
+import Tooltip from './tooltip';
 import styles from './tooltip.module.scss';
 
 interface Props {

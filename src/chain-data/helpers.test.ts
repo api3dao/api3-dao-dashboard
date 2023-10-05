@@ -6,8 +6,8 @@ test('updateImmutably', () => {
     draft.a = 789;
   });
 
-  expect(value).toEqual({ a: 123, b: 'hi' });
-  expect(newValue).toEqual({ a: 789, b: 'hi' });
+  expect(value).toStrictEqual({ a: 123, b: 'hi' });
+  expect(newValue).toStrictEqual({ a: 789, b: 'hi' });
 });
 
 test('abbrStr', () => {

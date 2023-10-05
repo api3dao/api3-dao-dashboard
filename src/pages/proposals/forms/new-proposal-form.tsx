@@ -1,18 +1,20 @@
-import { useState, ReactNode } from 'react';
-import { ProposalType } from '../../../chain-data';
+import classNames from 'classnames';
+import type { providers } from 'ethers';
+import { useState, type ReactNode } from 'react';
+
+import type { ProposalType } from '../../../chain-data';
 import Button from '../../../components/button';
-import RadioButton from '../../../components/radio-button/radio-button';
 import Input from '../../../components/input';
+import { ModalFooter, ModalHeader } from '../../../components/modal';
+import RadioButton from '../../../components/radio-button/radio-button';
 import Textarea from '../../../components/textarea';
 import { Tooltip } from '../../../components/tooltip';
-import { ModalFooter, ModalHeader } from '../../../components/modal';
-import { goEncodeEvmScript, EncodedEvmScriptError, NewProposalFormData } from '../../../logic/proposals/encoding';
-import { Api3Agent } from '../../../contracts';
-import { filterAlphanumerical, images } from '../../../utils';
-import styles from './new-proposal-form.module.scss';
+import type { Api3Agent } from '../../../contracts';
+import { goEncodeEvmScript, EncodedEvmScriptError, type NewProposalFormData } from '../../../logic/proposals/encoding';
 import globalStyles from '../../../styles/global-styles.module.scss';
-import classNames from 'classnames';
-import { providers } from 'ethers';
+import { filterAlphanumerical, images } from '../../../utils';
+
+import styles from './new-proposal-form.module.scss';
 
 interface ProposalFormItemProps {
   children: ReactNode;

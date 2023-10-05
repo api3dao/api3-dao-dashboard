@@ -19,7 +19,7 @@ test('encoding', () => {
 
 test('decoding', () => {
   const encodedMetadata = encodeMetadata(newFormData);
-  expect(decodeMetadata(encodedMetadata)).toEqual({
+  expect(decodeMetadata(encodedMetadata)).toStrictEqual({
     description: 'My description',
     targetSignature: 'functionName(string,uint256)',
     title: 'My title',
@@ -34,5 +34,5 @@ test('decoding invalid (separated by reserved delimiter)', () => {
   };
   const metadata = decodeMetadata(encodeMetadata(invalidData));
 
-  expect(metadata).toEqual(null);
+  expect(metadata).toBeNull();
 });

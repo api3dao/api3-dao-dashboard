@@ -1,4 +1,4 @@
-import { utils, BigNumberish } from 'ethers';
+import { utils, type BigNumberish } from 'ethers';
 
 const DEFAULT_DECIMALS = 2;
 

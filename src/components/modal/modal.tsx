@@ -1,9 +1,11 @@
-import FocusLock from 'react-focus-lock';
+import classNames from 'classnames';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import classNames from 'classnames';
+import FocusLock from 'react-focus-lock';
+
 import { useOnAccountOrNetworkChange } from '../../contracts';
 import { images } from '../../utils';
+
 import styles from './modal.module.scss';
 
 interface ModalProps {
@@ -11,7 +13,7 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   hideCloseButton?: true;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'large' | 'medium' | 'small';
   closeOnAccountChange?: false;
 }
 
@@ -68,7 +70,7 @@ export const Modal = (props: ModalProps) => {
   });
 
   if (!open) return null;
-  return ReactDOM.createPortal(<ModalContent {...props} />, document.getElementById('modal')!);
+  return ReactDOM.createPortal(<ModalContent {...props} />, document.querySelector('#modal')!);
 };
 
 interface ModalHeaderProps {

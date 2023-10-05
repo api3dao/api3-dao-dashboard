@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import type { BigNumber, ethers } from 'ethers';
 
 export interface PendingUnstake {
   amount: string;
@@ -41,7 +41,7 @@ export type TreasuryType = 'primary' | 'secondary';
 export interface DecodedEvmScript {
   targetAddress: string;
   parameters: unknown[];
-  value: BigNumber; // amount of ETH that is sent to the contract
+  value: BigNumber; // Amount of ETH that is sent to the contract
 }
 export interface Proposal {
   voteId: ethers.BigNumber;
@@ -63,7 +63,7 @@ export interface Proposal {
   type: ProposalType;
   script: string;
   userVotingPowerAt: BigNumber;
-  // can be null if there was an error when decoding the proposal (proposal created outside DAO dashboard)
+  // Can be null if there was an error when decoding the proposal (proposal created outside DAO dashboard)
   decodedEvmScript: DecodedEvmScript | null;
 }
 
@@ -86,7 +86,7 @@ export interface Treasury {
   balanceOfSecondaryAgent: BigNumber;
 }
 
-export type ProposalDictionary = { [voteId: string]: Proposal };
+export type ProposalDictionary = Record<string, Proposal>;
 
 export interface Proposals {
   primary: ProposalDictionary;
@@ -95,21 +95,21 @@ export interface Proposals {
 
 export type TransactionType =
   | 'approve-deposit'
-  | 'deposit-only'
-  | 'deposit-and-stake'
-  | 'stake'
-  | 'initiate-unstake'
-  | 'unstake'
-  | 'unstake-withdraw'
-  | 'withdraw'
   | 'delegate'
-  | 'undelegate'
-  | 'new-vote'
-  | 'vote-for'
-  | 'vote-against'
+  | 'deposit-and-stake'
+  | 'deposit-only'
   | 'execute'
+  | 'initiate-unstake'
+  | 'new-vote'
+  | 'stake'
+  | 'undelegate'
+  | 'unstake-withdraw'
+  | 'unstake'
   | 'update-timelock-status'
-  | 'withdraw-to-pool';
+  | 'vote-against'
+  | 'vote-for'
+  | 'withdraw-to-pool'
+  | 'withdraw';
 
 interface Vesting {
   amountVested: BigNumber;

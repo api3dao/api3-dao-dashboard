@@ -1,6 +1,6 @@
-import { configureChains, createClient } from 'wagmi';
-import { EthereumClient, w3mConnectors } from '@web3modal/ethereum';
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc';
+import { EthereumClient, w3mConnectors } from '@web3modal/ethereum';
+import { configureChains, createClient } from 'wagmi';
 import { mainnet, hardhat } from 'wagmi/chains';
 
 if (!process.env.REACT_APP_PROJECT_ID) {

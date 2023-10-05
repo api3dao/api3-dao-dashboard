@@ -1,13 +1,15 @@
 import classNames from 'classnames';
+
+import { type TreasuryType, useChainData } from '../../../chain-data';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../../components/dropdown';
-import { FormattedTreasury, useTreasuries } from './hooks';
-import globalStyles from '../../../styles/global-styles.module.scss';
-import styles from './treasury.module.scss';
-import { images } from '../../../utils';
-import { getEtherscanAddressUrl, useApi3AgentAddresses } from '../../../contracts';
-import { TreasuryType, useChainData } from '../../../chain-data';
-import { Tooltip } from '../../../components/tooltip';
 import ExternalLink from '../../../components/external-link';
+import { Tooltip } from '../../../components/tooltip';
+import { getEtherscanAddressUrl, useApi3AgentAddresses } from '../../../contracts';
+import globalStyles from '../../../styles/global-styles.module.scss';
+import { images } from '../../../utils';
+
+import { type FormattedTreasury, useTreasuries } from './hooks';
+import styles from './treasury.module.scss';
 
 interface TreasuryDropdownProps {
   data: FormattedTreasury[];

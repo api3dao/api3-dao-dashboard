@@ -1,14 +1,15 @@
-import { BigNumber } from 'ethers';
-import { useState, useEffect } from 'react';
 import classNames from 'classnames';
+import type { BigNumber } from 'ethers';
+import { useState, useEffect } from 'react';
+
+import { useChainData } from '../../../chain-data';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import Button from '../../../components/button';
 import { useApi3Pool } from '../../../contracts';
-import { useChainData } from '../../../chain-data';
-import { formatAndRoundApi3, getDays, getHours, getMinutes, getSeconds } from '../../../utils';
 import globalStyles from '../../../styles/global-styles.module.scss';
+import { formatAndRoundApi3, getDays, getHours, getMinutes, getSeconds, handleTransactionError } from '../../../utils';
+
 import styles from './pending-unstake-panel.module.scss';
-import { handleTransactionError } from '../../../utils';
 
 interface Props {
   amount: BigNumber;
@@ -29,7 +30,7 @@ const PendingUnstakePanel = (props: Props) => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const now = new Date().getTime();
+      const now = Date.now();
       const unstakeTime = unstakeDate.getTime();
 
       const distance = unstakeTime - now;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /**
  * We want to use `noUncheckedIndexedAccess`by TSC to be strict about array and object access. This is especially
  * useful, because the app only stores data that is necessary for the current page. For example, when browsing proposal
@@ -11,7 +12,9 @@
  * NOTE: It's possible (but unlikely) that the module typings change, filename changes or react-scripts end up installed
  * somewhere else. These cases are unfortunately, out of scope.
  */
+// eslint-disable-next-line unicorn/import-style
 const { bold, green } = require('chalk');
+
 const { promiseWrapper, replaceAndLog } = require('./utils');
 
 const TEXT_TO_REMOVE = `

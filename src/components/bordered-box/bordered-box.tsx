@@ -1,21 +1,22 @@
-import { ReactNode } from 'react';
 import classNames from 'classnames';
+import type { ReactNode } from 'react';
+
 import styles from './bordered-box.module.scss';
 
-type Props = {
+interface Props {
   header: ReactNode;
   content: ReactNode | ReactNode[];
   footer?: ReactNode;
   borderColor?: 'green' | 'grey';
   borderBottom?: boolean;
   noMobileBorders?: boolean;
-};
+}
 
-type HeaderProps = {
+interface HeaderProps {
   children: ReactNode | ReactNode[];
   alignCenter?: boolean;
   largeSpaces?: boolean;
-};
+}
 
 export const Header = ({ children, alignCenter, largeSpaces }: HeaderProps) => {
   return (

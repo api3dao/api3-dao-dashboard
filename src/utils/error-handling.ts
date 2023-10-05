@@ -1,5 +1,7 @@
 import { go } from '@api3/promise-utils';
+
 import { notifications } from '../components/notifications';
+
 import { messages } from './messages';
 
 type ErrorWithCode = Error & { code?: number };
@@ -9,7 +11,7 @@ type ErrorWithCode = Error & { code?: number };
 export const isUserRejection = (err: ErrorWithCode) => err.code === 4001 || err.code === 4100;
 
 export const handleTransactionError = async <T>(transaction: Promise<T>) => {
-  const goTransaction = await go(() => transaction);
+  const goTransaction = await go(async () => transaction);
 
   if (!goTransaction.success) {
     if (isUserRejection(goTransaction.error)) {

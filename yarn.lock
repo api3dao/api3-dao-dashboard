@@ -5804,10 +5804,10 @@ commondir@^1.0.1:
   resolved "http://localhost:4873/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
   integrity sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==
 
-commons@^1.0.3:
-  version "1.0.3"
-  resolved "http://localhost:4873/commons/-/commons-1.0.3.tgz#43718a5c257feb9391572153ff164aa3b942f9db"
-  integrity sha512-bPd7FgWIiu2XfLYJvTVfkoNJkljGCq+YZtDcPfbc4BWfIMKlJVQHCiEeqPFQx0N1AH9pe8FtQ28TWil8bpwbxQ==
+commons@^1.0.4:
+  version "1.0.4"
+  resolved "http://localhost:4873/commons/-/commons-1.0.4.tgz#2fd21c83e8c98feee158c6798c5445125d5276f5"
+  integrity sha512-I87yt6GBRf1kDPQjxVdZhrlhiIGaCaHu4q8xFcuf3aHRrI9NR2cUo/qUkGRJEDPc/3SlGiI+7N6043FH37b9+A==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^6.2.1"
     "@typescript-eslint/parser" "^6.2.1"
@@ -5823,6 +5823,7 @@ commons@^1.0.3:
     eslint-plugin-prefer-arrow "^1.2.3"
     eslint-plugin-promise "^6.1.1"
     eslint-plugin-react "^7.32.1"
+    eslint-plugin-react-hooks "^4.6.0"
     eslint-plugin-unicorn "^48.0.1"
     lodash "^4.17.21"
 
@@ -7174,7 +7175,7 @@ eslint-plugin-promise@^6.1.1:
   resolved "http://localhost:4873/eslint-plugin-promise/-/eslint-plugin-promise-6.1.1.tgz#269a3e2772f62875661220631bd4dafcb4083816"
   integrity sha512-tjqWDwVZQo7UIPMeDReOpUgHCmCiH+ePnVT+5zVapL0uuHnegBUs2smM13CzOs2Xb5+MHMRFTs9v24yjba4Oig==
 
-eslint-plugin-react-hooks@^4.3.0, "eslint-plugin-react-hooks@^4.5.0 || 5.0.0-canary-7118f5dd7-20230705":
+eslint-plugin-react-hooks@^4.3.0, "eslint-plugin-react-hooks@^4.5.0 || 5.0.0-canary-7118f5dd7-20230705", eslint-plugin-react-hooks@^4.6.0:
   version "4.6.0"
   resolved "http://localhost:4873/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.6.0.tgz#4c3e697ad95b77e93f8646aaa1630c1ba607edd3"
   integrity sha512-oFc7Itz9Qxh2x4gNHStv3BqJq54ExXmfC+a1NjAta66IAN87Wu0R/QArgIS9qKzX3dXKPI9H5crl9QchNMY9+g==

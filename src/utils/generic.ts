@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import type { BigNumber } from 'ethers';
 
 export const blockTimestampToDate = (timestamp: BigNumber) => new Date(timestamp.mul(1000).toNumber());
 
@@ -33,7 +33,7 @@ export const getSeconds = (distance: number) => {
 // If the user is not logged in, we want to display dash in the number fields
 export const UNKNOWN_NUMBER = '-';
 
-export const filterAlphanumerical = (value: string) => value.replace(/[^0-9a-zA-Z]/g, '');
+export const filterAlphanumerical = (value: string) => value.replaceAll(/[^\dA-Za-z]/g, '');
 
 // Name of the localstorage key that will be used to remember whether the user allowed us to gather error reports
 export const ERROR_REPORTING_CONSENT_KEY_NAME = 'reportErrors';
@@ -44,17 +44,17 @@ export const isErrorReportingAllowed = (localStorageValue: string | null) => {
 export const insertInBetween = <Type, Delimeter>(
   array: Type[],
   toInsert: Delimeter | ((index: number, array: Type[]) => Delimeter)
-): Array<Type | Delimeter> => {
+): (Delimeter | Type)[] => {
   if (!Array.isArray(array) || array.length === 0) return [];
 
   const afterInsert = [];
+  // eslint-disable-next-line @typescript-eslint/ban-types
   const toInsertFn: Function = typeof toInsert === 'function' ? toInsert : () => toInsert;
 
   for (let i = 0; i < array.length - 1; i++) {
-    afterInsert.push(array[i]);
-    afterInsert.push(toInsertFn(i, array));
+    afterInsert.push(array[i], toInsertFn(i, array));
   }
-  afterInsert.push(array[array.length - 1]);
+  afterInsert.push(array.at(-1));
 
   return afterInsert;
 };

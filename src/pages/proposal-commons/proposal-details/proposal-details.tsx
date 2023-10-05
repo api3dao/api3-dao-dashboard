@@ -1,31 +1,32 @@
-import { BigNumber, utils } from 'ethers';
-import { ComponentProps, useEffect, useMemo, useState } from 'react';
-import { useEnsName, Address } from 'wagmi';
+import classNames from 'classnames';
+import { type BigNumber, utils } from 'ethers';
+import { type ComponentProps, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import classNames from 'classnames';
-import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
+import { useEnsName, type Address } from 'wagmi';
+
+import { type Proposal, type ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
+import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
+import Button from '../../../components/button';
+import ExternalLink from '../../../components/external-link';
 import { BaseLayout } from '../../../components/layout';
 import { Modal } from '../../../components/modal';
-import VoteSlider from '../vote-slider/vote-slider';
-import VoteStatus from '../vote-status';
-import Timer from '../../../components/timer';
-import Button from '../../../components/button';
 import Tag from '../../../components/tag';
+import Timer from '../../../components/timer';
 import { TooltipChecklist } from '../../../components/tooltip';
-import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndVoteId, isEvmScriptValid } from '../../../logic/proposals/encoding';
-import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useProposalById } from '../../../logic/proposals/hooks';
-import VoteForm from './vote-form/vote-form';
-import ProposalStatus from '../proposal-list/proposal-status';
+import { proposalDetailsSelector, voteSliderSelector, canVoteSelector } from '../../../logic/proposals/selectors';
 import globalStyles from '../../../styles/global-styles.module.scss';
-import styles from './proposal-details.module.scss';
-import { canVoteSelector } from '../../../logic/proposals/selectors';
-import NotFoundPage from '../../not-found';
 import { handleTransactionError, images, messages, useScrollToTop } from '../../../utils';
-import ExternalLink from '../../../components/external-link';
+import NotFoundPage from '../../not-found';
+import ProposalStatus from '../proposal-list/proposal-status';
+import VoteSlider from '../vote-slider/vote-slider';
+import VoteStatus from '../vote-status';
+
+import styles from './proposal-details.module.scss';
+import VoteForm from './vote-form/vote-form';
 
 interface ProposalDescriptionProps {
   description: string;
@@ -37,17 +38,18 @@ const ProposalDescription = (props: ProposalDescriptionProps) => {
   // The regex is intentionally simpler than usual URL checking regexes.
   //
   // The whole regex expression must be quoted, otherwise the delimeter (the URL) will be excluded.
-  const parts = description.split(/(https?:\/\/[^\s]+)/g);
+  // eslint-disable-next-line prefer-named-capture-group
+  const parts = description.split(/(https?:\/\/\S+)/g);
   return (
     <>
       {parts.map((part, i) => {
-        if (i % 2 === 0) return part;
-        else
-          return (
-            <ExternalLink className={styles.link} href={part} key={part}>
-              {part}
-            </ExternalLink>
-          );
+        return i % 2 === 0 ? (
+          part
+        ) : (
+          <ExternalLink className={styles.link} href={part} key={part}>
+            {part}
+          </ExternalLink>
+        );
       })}
     </>
   );
@@ -86,7 +88,7 @@ const ProposalDetailsPage = () => {
 };
 
 interface ProposalDetailsProps {
-  proposal: Proposal | 'user not signed in' | 'does not exist';
+  proposal: Proposal | 'does not exist' | 'user not signed in';
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
@@ -98,11 +100,12 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const voting = useApi3Voting();
 
   // TODO: implement proper "not signed in" and "does not exist" pages
-  if (!voting || proposal === 'user not signed in')
+  if (!voting || proposal === 'user not signed in') {
     return <>Please connect your wallet to see the proposal details...</>;
+  }
   if (proposal === 'does not exist') return <>Proposal with such id hasn't been created yet...</>;
 
-  const { decodedEvmScript } = proposal;
+  const { decodedEvmScript, creator, metadata, open, voteId, type, deadline, delegateAt } = proposal;
 
   if (!decodedEvmScript) {
     return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
@@ -110,11 +113,11 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
 
   const voteSliderData = voteSliderSelector(proposal);
   const canVoteData = canVoteSelector(proposal);
-  const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
+  const urlCreator = getEtherscanAddressUrl(chainId, creator);
   const urlTargetAddress = getEtherscanAddressUrl(chainId, decodedEvmScript.targetAddress);
   const backButton = {
-    text: `Back to ${proposal.open ? 'Governance' : 'History'}`,
-    url: proposal.open ? '/governance' : '/history',
+    text: `Back to ${open ? 'Governance' : 'History'}`,
+    url: open ? '/governance' : '/history',
   };
 
   const canVoteChecklist = [
@@ -147,17 +150,17 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
 
       <div className={styles.proposalDetailsHeader}>
         <div>
-          <h4 className={styles.proposalDetailsTitle}>{proposal.metadata.title}</h4>
+          <h4 className={styles.proposalDetailsTitle}>{metadata.title}</h4>
           <div className={styles.proposalTag}>
-            <Tag type={proposal.type}>
+            <Tag type={type}>
               <span className={globalStyles.capitalize}>
-                #{proposal.voteId.toString()} {proposal.type}
+                #{voteId.toString()} {type}
               </span>
             </Tag>
           </div>
         </div>
         <div className={styles.proposalDetailsTimer}>
-          <Timer size="large" deadline={proposal.deadline} showDeadline />
+          <Timer size="large" deadline={deadline} showDeadline />
         </div>
       </div>
 
@@ -182,7 +185,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             <img src={images.help} alt="voting help" className={globalStyles.helpIcon} />
           </TooltipChecklist>
         </div>
-        {proposal.delegateAt && (
+        {delegateAt && (
           <p className={styles.voteButtonHelperText}>
             {VOTER_STATES[voteSliderData.voterState] === 'Unvoted'
               ? 'Your voting power is delegated.'
@@ -191,16 +194,16 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         )}
         <Modal open={voteModalOpen} onClose={() => setVoteModalOpen(false)}>
           <VoteForm
-            voteId={proposal.voteId.toString()}
+            voteId={voteId.toString()}
             onConfirm={async (choice) => {
               setVoteModalOpen(false);
               const tx = await handleTransactionError(
-                voting[proposal.type].connect(signer!).vote(proposal.voteId, choice === 'for', true)
+                voting[type].connect(signer!).vote(voteId, choice === 'for', true)
               );
-              const type = choice === 'for' ? 'vote-for' : 'vote-against';
+              const txType = choice === 'for' ? 'vote-for' : 'vote-against';
               if (tx) {
                 setChainData('Save vote transaction', {
-                  transactions: [...transactions, { tx, type }],
+                  transactions: [...transactions, { tx, type: txType }],
                 });
               }
             }}
@@ -216,7 +219,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         content={
           <div className={styles.proposalDetailsSummary}>
             <pre className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor, styles.scrollX)}>
-              <ProposalDescription description={proposal.metadata.description} />
+              <ProposalDescription description={metadata.description} />
             </pre>
 
             <div className={styles.proposalDetailsItem}>
@@ -224,10 +227,10 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               <p className={classNames(globalStyles.secondaryColor, styles.address)}>
                 {urlCreator ? (
                   <ExternalLink className={styles.link} href={urlCreator}>
-                    <EnsName address={proposal.creator as Address} />
+                    <EnsName address={creator as Address} />
                   </ExternalLink>
                 ) : (
-                  proposal.creator
+                  creator
                 )}
               </p>
             </div>
@@ -243,10 +246,10 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
                 )}
               </p>
             </div>
-            {proposal.metadata.targetSignature && (
+            {metadata.targetSignature && (
               <div className={styles.proposalDetailsItem}>
                 <p className={globalStyles.bold}>Target Contract Signature</p>
-                <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
+                <p className={globalStyles.secondaryColor}>{metadata.targetSignature}</p>
               </div>
             )}
             {decodedEvmScript.value.gt(0) && (
@@ -291,15 +294,16 @@ function EnsName(props: { address: Address }) {
   const { address } = props;
   const { data } = useEnsName({ address });
 
-  return <>{data || address}</>;
+  return data || address;
 }
 
 function Parameters(props: { parameters: unknown[] }) {
   const { parameters } = props;
   return (
     <>
-      {'['}
+      [
       {parameters.map((param, index) => (
+        // eslint-disable-next-line react/no-array-index-key
         <div key={index} style={{ paddingLeft: 9 }}>
           {typeof param === 'string' && utils.isAddress(param) ? (
             <>
@@ -311,7 +315,7 @@ function Parameters(props: { parameters: unknown[] }) {
           {index < parameters.length - 1 && ','}
         </div>
       ))}
-      {']'}
+      ]
     </>
   );
 }
@@ -324,9 +328,7 @@ function useMaliciousProposalCheck(proposal: Proposal | null) {
   useEffect(() => {
     if (!provider || !agents || !proposal) return;
 
-    isEvmScriptValid(provider, agents, proposal).then((valid) => {
-      setIsMalicious(!valid);
-    });
+    void isEvmScriptValid(provider, agents, proposal).then((valid) => setIsMalicious(!valid));
   }, [provider, agents, proposal]);
 
   return isMalicious;

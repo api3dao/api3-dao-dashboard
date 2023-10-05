@@ -1,9 +1,10 @@
-import { useCallback } from 'react';
-import { useChainData } from '../../chain-data';
-import { useApi3Pool, useApi3Token, useConvenience, usePossibleChainDataUpdate } from '../../contracts';
-import { notifications } from '../../components/notifications';
-import { messages } from '../../utils';
 import { go } from '@api3/promise-utils';
+import { useCallback } from 'react';
+
+import { useChainData } from '../../chain-data';
+import { notifications } from '../../components/notifications';
+import { useApi3Pool, useApi3Token, useConvenience, usePossibleChainDataUpdate } from '../../contracts';
+import { messages } from '../../utils';
 
 export const useLoadDashboardData = () => {
   const api3Pool = useApi3Pool();
@@ -14,7 +15,7 @@ export const useLoadDashboardData = () => {
   const loadDashboardData = useCallback(async () => {
     if (!provider || !api3Pool || !api3Token || !convenience || !userAccount) return null;
 
-    const goStakingData = await go(() => convenience.getUserStakingData(userAccount));
+    const goStakingData = await go(async () => convenience.getUserStakingData(userAccount));
     if (!goStakingData.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_CHAIN_DATA,
@@ -23,7 +24,7 @@ export const useLoadDashboardData = () => {
     }
     const stakingData = goStakingData.data;
 
-    const goAllowance = await go(() => api3Token.allowance(userAccount, api3Pool.address));
+    const goAllowance = await go(async () => api3Token.allowance(userAccount, api3Pool.address));
     if (!goAllowance.success) {
       return notifications.error({
         message: messages.FAILED_TO_LOAD_CHAIN_DATA,

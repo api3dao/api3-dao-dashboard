@@ -1,14 +1,15 @@
-import { ReactElement } from 'react';
 import RCTooltip from 'rc-tooltip';
+import type { ReactElement } from 'react';
+
 // Additional styles that require access to CSS variables
 import styles from './tooltip.module.scss';
 // NOTE: This is required for basic tooltip styling
 import 'rc-tooltip/assets/bootstrap_white.css';
 
-type Props = {
+interface Props {
   children: ReactElement;
   overlay: ReactElement | string;
-};
+}
 
 const Tooltip = ({ children, overlay }: Props) => {
   // NOTE: rc-tooltip requires us to override default styles directly using objects

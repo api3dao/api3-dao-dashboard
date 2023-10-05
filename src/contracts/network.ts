@@ -1,7 +1,8 @@
-import { ethers } from 'ethers';
+import type { ethers } from 'ethers';
+
 import localhostDao from '../contract-deployments/localhost-dao.json';
-import rinkebyDao from '../contract-deployments/rinkeby-dao.json';
 import mainnetDao from '../contract-deployments/mainnet-dao.json';
+import rinkebyDao from '../contract-deployments/rinkeby-dao.json';
 
 export const SUPPORTED_NETWORKS = ['hardhat', 'rinkeby', 'mainnet'];
 
@@ -18,18 +19,22 @@ export const updateNetworkName = (networkName: string) => {
 
 export const getDaoAddresses = (networkName: string) => {
   switch (networkName) {
-    case 'hardhat':
+    case 'hardhat': {
       return localhostDao;
-    case 'rinkeby':
+    }
+    case 'rinkeby': {
       return rinkebyDao;
-    case 'mainnet':
+    }
+    case 'mainnet': {
       return mainnetDao;
-    default:
+    }
+    default: {
       return null;
+    }
   }
 };
 
-export const ETHERSCAN_HOSTS: { [chainId: string]: string } = {
+export const ETHERSCAN_HOSTS: Record<string, string> = {
   1: 'https://etherscan.io',
   3: 'https://ropsten.etherscan.io',
   4: 'https://rinkeby.etherscan.io',

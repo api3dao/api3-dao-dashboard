@@ -1,12 +1,14 @@
-import { useChainData } from '../../../chain-data';
-import { formatAndRoundApi3, round } from '../../../utils/api3-format';
-import { stakingPoolSelector } from '../../../logic/dashboard';
-import RadialChart from './radial-chart';
-import globalStyles from '../../../styles/global-styles.module.scss';
-import styles from './staking-pool.module.scss';
 import classNames from 'classnames';
-import { images, UNKNOWN_NUMBER } from '../../../utils';
+
+import { useChainData } from '../../../chain-data';
 import { Tooltip } from '../../../components/tooltip';
+import { stakingPoolSelector } from '../../../logic/dashboard';
+import globalStyles from '../../../styles/global-styles.module.scss';
+import { images, UNKNOWN_NUMBER } from '../../../utils';
+import { formatAndRoundApi3, round } from '../../../utils/api3-format';
+
+import RadialChart from './radial-chart';
+import styles from './staking-pool.module.scss';
 
 const StakingPool = () => {
   const { dashboardState: data } = useChainData();

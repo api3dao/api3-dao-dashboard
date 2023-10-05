@@ -1,4 +1,7 @@
 import { isAfter } from 'date-fns';
+import { BigNumber } from 'ethers';
+
+import type { ConvenienceDashboardData } from '../../chain-data';
 import {
   absoluteStakeTarget,
   calculateAnnualTotalSupplyGrowth,
@@ -8,8 +11,6 @@ import {
   max,
   totalStakedPercentage,
 } from '../../contracts';
-import { ConvenienceDashboardData } from '../../chain-data';
-import { BigNumber } from 'ethers';
 
 export const tokenBalancesSelector = (dashboardData: ConvenienceDashboardData | null) => {
   if (!dashboardData) return null;
