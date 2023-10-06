@@ -303,7 +303,7 @@ function Parameters(props: { parameters: unknown[] }) {
         <div key={index} style={{ paddingLeft: 9 }}>
           {typeof param === 'string' && utils.isAddress(param) ? (
             <>
-              "<EnsName address={param} />"
+              "<EnsName address={param as Address} />"
             </>
           ) : (
             JSON.stringify(param)

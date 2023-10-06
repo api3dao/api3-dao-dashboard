@@ -79,10 +79,11 @@ module.exports = {
 
     config.transformIgnorePatterns = [
       // The wagmi package ships with untranspiled import statements, so we tell Jest not to ignore them
-      '/node_modules/(?!wagmi|@wagmi).+\\.(js|jsx|mjs|cjs|ts|tsx)$',
+      '/node_modules/(?!wagmi|@wagmi|@adraffy/ens-normalize).+\\.(js|jsx|mjs|cjs|ts|tsx)$',
       defaultIgnorePatterns[1],
     ];
 
+    config.setupFiles = ['<rootDir>/setup-jest.js'];
     return config;
   },
 };
