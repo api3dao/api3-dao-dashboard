@@ -289,7 +289,13 @@ function WarningIcon(props: ComponentProps<'svg'>) {
 
 function EnsName(props: { address: Address }) {
   const { address } = props;
-  const { data } = useEnsName({ address });
+  const { data } = useEnsName({
+    address,
+    onError(error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    },
+  });
 
   return <>{data || address}</>;
 }
