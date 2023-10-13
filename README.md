@@ -47,7 +47,8 @@ We're using Fleek to build and deploy the dashboard. To avoid trusting Fleek wit
 build the app locally and compare its hash with the hash of IPFS deployment.
 
 To do so, first create a `docker-compose.yml` as explained
-[here](https://docs.fleek.co/hosting/site-deployment/#testing-deployments-locally) in this repo.
+[here](https://docs.fleek.co/hosting/site-deployment/#testing-deployments-locally) in this repo. See the Fleek
+configuration for the values in the `environment` field.
 
 ```yml
 version: '3.7'
@@ -63,16 +64,19 @@ services:
     command: sh -c 'npm set registry http://verdaccio:4873 && yarn && yarn build'
     working_dir: /workspace/build
     environment:
-      - REACT_APP_NODE_ENV=staging
-      - REACT_APP_RINKEBY_PROVIDER_URL=https://rinkeby.infura.io/v3/...
+      - REACT_APP_NODE_ENV=...
+      - REACT_APP_RINKEBY_PROVIDER_URL=...
+      - REACT_APP_SENTRY_DSN=...
+      - REACT_APP_MAINNET_PROVIDER_URL=...
+      - REACT_APP_PROJECT_ID=...
     volumes:
       - './:/workspace'
 ```
 
 and run `docker-compose run --rm app`, which will create a `./build` directory.
 
-Then, (after installing `ipfs`) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build (`sudo`
-because `build` will likely be owned by root). This should be the same as the IPFS hash as the one on the Fleek
+Then, (after installing IPFS Kubo) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build
+(`sudo` because `build` will likely be owned by root). This should be the same as the IPFS hash as the one on the Fleek
 dashboard and what our ENS record is pointing towards.
 
 ## Error Monitoring
