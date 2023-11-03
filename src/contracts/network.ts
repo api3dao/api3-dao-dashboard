@@ -1,9 +1,8 @@
 import { ethers } from 'ethers';
 import localhostDao from '../contract-deployments/localhost-dao.json';
-import rinkebyDao from '../contract-deployments/rinkeby-dao.json';
 import mainnetDao from '../contract-deployments/mainnet-dao.json';
 
-export const SUPPORTED_NETWORKS = ['hardhat', 'rinkeby', 'mainnet'];
+export const SUPPORTED_NETWORKS = ['hardhat', 'mainnet'];
 
 export const updateNetworkName = (networkName: string) => {
   // NOTE: The localhost doesn't have a name, so set any unknown networks
@@ -20,8 +19,6 @@ export const getDaoAddresses = (networkName: string) => {
   switch (networkName) {
     case 'hardhat':
       return localhostDao;
-    case 'rinkeby':
-      return rinkebyDao;
     case 'mainnet':
       return mainnetDao;
     default:
@@ -31,10 +28,6 @@ export const getDaoAddresses = (networkName: string) => {
 
 export const ETHERSCAN_HOSTS: { [chainId: string]: string } = {
   1: 'https://etherscan.io',
-  3: 'https://ropsten.etherscan.io',
-  4: 'https://rinkeby.etherscan.io',
-  5: 'https://goerli.etherscan.io',
-  42: 'https://kovan.etherscan.io',
 };
 
 export const getEtherscanTransactionUrl = (transaction: ethers.Transaction) => {
