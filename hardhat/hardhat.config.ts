@@ -13,19 +13,6 @@ import { encodeMetadata, goEncodeEvmScript } from '../src/logic/proposals/encodi
 
 dotenv.config({ path: '../.env' });
 
-// Invalid default values, just to silence hardhat configuration checks.
-// (They throw on invalid network configuration - but not everyone needs to care about these)
-const DEFAULT_VALUES = {
-  RINKEBY_DEPLOYER_PRIVATE_KEY: '3a9dc87d9c854849084cb47aa4f2471b9530e0f09a2b3fb3066b1a242ddef185',
-  RINKEBY_PROVIDER_URL: 'https://www.google.com/',
-};
-
-const fromEnvVariables = (key: string) => {
-  const value = process.env[key];
-  if (!value) return DEFAULT_VALUES[key as keyof typeof DEFAULT_VALUES]!;
-  return value!;
-};
-
 task('accounts', 'Prints the list of accounts', async (_args, hre) => {
   const accounts = await hre.ethers.getSigners();
 
@@ -128,11 +115,6 @@ const config: HardhatUserConfig = {
   defaultNetwork: 'localhost',
   networks: {
     hardhat: {},
-    // NOTE: Non local networks are only needed for hardhat tasks
-    rinkeby: {
-      url: fromEnvVariables('RINKEBY_PROVIDER_URL'),
-      accounts: [fromEnvVariables('RINKEBY_DEPLOYER_PRIVATE_KEY')],
-    },
   },
   solidity: {
     compilers: [
