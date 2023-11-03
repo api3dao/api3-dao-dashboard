@@ -27,8 +27,8 @@ implemented and its security. All developer oriented instructions can be found h
 
 ## Supported networks
 
-Currently, only `hardhat`, `rinkeby` and `mainnet` networks are supported. If you want to test the application on a
-different network, adapt the configuration to your needs.
+Currently, only `hardhat` and `mainnet` networks are supported. If you want to test the application on a different
+network, adapt the configuration to your needs.
 
 ## Hosting
 
