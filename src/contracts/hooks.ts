@@ -20,11 +20,8 @@ const useContractReader = () => {
    * 1. When connected via non-MetaMask wallets (like via Wallet Connect), loading contract data fails when
    *    the smart contract was constructed with a signer.
    * 2. Data loads a considerable amount faster with MetaMask when using the signer.
-   *
-   * In conclusion, we want to use the provider when connecting the contracts, except when we are connected via
-   * MetaMask (and aren't running the app locally).
    */
-  const reader = connector?.name === 'MetaMask' && process.env.NODE_ENV !== 'development' ? signer : provider;
+  const reader = connector?.name === 'MetaMask' ? signer : provider;
   return {
     contracts,
     reader,
