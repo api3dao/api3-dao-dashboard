@@ -1,36 +1,71 @@
+import { createWeb3Modal } from '@web3modal/wagmi/react';
+import { EIP6963Connector } from '@web3modal/wagmi';
 import { configureChains, createConfig } from 'wagmi';
-import { EthereumClient, w3mConnectors } from '@web3modal/ethereum';
-import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc';
 import { mainnet, hardhat } from 'wagmi/chains';
+import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc';
+
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 
 if (!process.env.REACT_APP_PROJECT_ID) {
   throw new Error('Missing REACT_APP_PROJECT_ID env variable');
 }
 
+if (!process.env.REACT_APP_MAINNET_ALCHEMY_RPC_URL) {
+  throw new Error('Missing REACT_APP_MAINNET_ALCHEMY_RPC_URL env variable');
+}
+
 export const projectId = process.env.REACT_APP_PROJECT_ID;
 
-const chains = [mainnet, hardhat];
+const chainInfos = [
+  // The RPC URL will be visible in the browser network tab (leaking the API key). This is not a problem, because
+  // we use Alchemy addresses whitelisting to allow access only to API3 DAO contracts.
+  { chain: mainnet, rpcUrl: process.env.REACT_APP_MAINNET_ALCHEMY_RPC_URL },
+  { chain: hardhat, rpcUrl: 'http://localhost:8545' },
+];
 
-const { publicClient } = configureChains(chains, [
-  // In the web3modal docs they use their "w3mProvider", which prefers using their RPC proxy for a set number of chains,
-  // and falls back to using a "jsonRpcProvider" (like below). It is unclear what the use of the RPC proxy is, and it seems
-  // like a central point of failure, so we rather go with a "jsonRpcProvider" and use the RPC providers directly.
-  // See: https://docs.walletconnect.com/2.0/web3modal/react/installation
-  // See: https://github.com/WalletConnect/web3modal/blob/V2/chains/ethereum/src/utils.ts
-  jsonRpcProvider({
-    rpc: (chain) => {
-      return {
-        http: chain.rpcUrls.default.http[0]!,
-        webSocket: chain.rpcUrls.default.webSocket?.[0],
-      };
-    },
-  }),
-]);
+// The metadata is used by WalletConnect to display the app information in the user Wallet.
+const metadata = {
+  name: 'API3 DAO',
+  description: 'Decentralized APIs for Web 3.0', // Taken from API3 whitepaper.
+  url: window.location.origin, // The URL is deployment specific.
+  icons: ['https://avatars.githubusercontent.com/u/69474416'], // Taken from API3 GitHub. The icon is a bit cut, but still looks good. Using the page favicon (window.location.origin + '/favicon.ico') does not work.
+};
 
-export const wagmiClient = createConfig({
+const { chains, publicClient } = configureChains(
+  chainInfos.map(({ chain }) => chain),
+  // In wagmi docs, they suggest using multiple provider configurations. See:
+  // https://wagmi.sh/react/providers/configuring-chains#multiple-rpc-providers.
+  //
+  // Based on our testing this doesn't work. When the mainnet public RPC provider (Cloudflare ETH) was down, using the
+  // multiple provider configurations still trigger errors suggesting the fallback mechanism is not implemented
+  // properly. To avoid depending on this behaviour, we use a fixed RPC URL provider configuration that is set by us.
+  [
+    jsonRpcProvider({
+      rpc: (chain) => {
+        const chainInfo = chainInfos.find(({ chain: { id } }) => chain.id === id)!;
+        return {
+          http: chainInfo.rpcUrl,
+        };
+      },
+    }),
+  ]
+);
+
+// We are using a "createConfig" from "wagmi" instead of "defaultWagmiConfig" from "@web3modal/wagmi/react" because it
+// does not support "autoConnect: false" option and it ignores RPC urls set by ourselves (and uses the public ones).
+export const wagmiConfig = createConfig({
   autoConnect: false,
-  connectors: w3mConnectors({ chains, projectId }),
+  connectors: [
+    new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } }),
+    new EIP6963Connector({ chains }),
+    new InjectedConnector({ chains, options: { shimDisconnect: true } }),
+    new CoinbaseWalletConnector({ chains, options: { appName: metadata.name } }),
+  ],
   publicClient,
 });
 
-export const ethereumClient = new EthereumClient(wagmiClient, chains);
+// Creates the Web3Modal instance that can be used to connect to a wallet. Must be called outside of React component.
+// See: https://docs.walletconnect.com/web3modal/react/about
+export const registerWeb3Modal = () => createWeb3Modal({ wagmiConfig, projectId, chains });

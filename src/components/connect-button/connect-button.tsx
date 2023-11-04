@@ -1,4 +1,4 @@
-import { useWeb3Modal } from '@web3modal/react';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import Button, { Props } from '../button';
 
 export default function ConnectButton(props: Props) {
