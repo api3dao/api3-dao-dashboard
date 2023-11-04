@@ -12,16 +12,14 @@ if (!process.env.REACT_APP_PROJECT_ID) {
   throw new Error('Missing REACT_APP_PROJECT_ID env variable');
 }
 
-if (!process.env.REACT_APP_MAINNET_ALCHEMY_RPC_URL) {
-  throw new Error('Missing REACT_APP_MAINNET_ALCHEMY_RPC_URL env variable');
+if (!process.env.REACT_APP_MAINNET_RPC_URL) {
+  throw new Error('Missing REACT_APP_MAINNET_RPC_URL env variable');
 }
 
 export const projectId = process.env.REACT_APP_PROJECT_ID;
 
 const chainInfos = [
-  // The RPC URL will be visible in the browser network tab (leaking the API key). This is not a problem, because
-  // we use Alchemy addresses whitelisting to allow access only to API3 DAO contracts.
-  { chain: mainnet, rpcUrl: process.env.REACT_APP_MAINNET_ALCHEMY_RPC_URL },
+  { chain: mainnet, rpcUrl: process.env.REACT_APP_MAINNET_RPC_URL },
   { chain: hardhat, rpcUrl: 'http://localhost:8545' },
 ];
 
