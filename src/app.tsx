@@ -1,4 +1,3 @@
-import { Web3Modal } from '@web3modal/react';
 import { WagmiConfig } from 'wagmi';
 import { BaseLayout } from './components/layout';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
@@ -17,7 +16,7 @@ import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
 import StorageFullNotification from './components/notifications/storage-full-notification';
-import { wagmiClient, ethereumClient, projectId } from './wallet-connect';
+import { registerWeb3Modal, wagmiConfig } from './wallet-connect';
 import './styles/variables.module.scss';
 import { notifications } from './components/notifications';
 
@@ -77,9 +76,11 @@ const AppContent = () => {
   );
 };
 
+registerWeb3Modal();
+
 const App = () => {
   return (
-    <WagmiConfig config={wagmiClient}>
+    <WagmiConfig config={wagmiConfig}>
       <ChainDataContextProvider>
         <HelmetProvider>
           {/* Helmet children can be overridden in components lower down the tree */}
@@ -96,7 +97,6 @@ const App = () => {
           <AppContent />
         </HelmetProvider>
       </ChainDataContextProvider>
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
     </WagmiConfig>
   );
 };
