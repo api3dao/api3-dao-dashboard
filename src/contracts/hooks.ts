@@ -17,12 +17,17 @@ const useContractReader = () => {
 
   /*
    * Please note the following:
-   * 1. When connected via non-MetaMask wallets (like via Wallet Connect), loading contract data fails when the smart
+   * 1. When connected via non-browser wallets (like via Wallet Connect), loading contract data fails when the smart
    *    contract was constructed with a signer.
    * 2. Data loads a considerable amount faster when the provider of the browser wallet is used. Web3Modal supports
    *    EIP6963 which can be used to detect multiple in-browser wallets.
+   *
+   * The "MetaMask" connector name is probably not needed anymore after Web3Modal supports EIP6963, but this likely
+   * depends on the version of MM browser wallet. We keep it to be sure we are compatible with the previous version of
+   * DAO dashboard.
    */
-  const reader = connector?.name === 'EIP6963' ? signer : provider;
+  const isBrowserWallet = connector?.name === 'EIP6963' || connector?.name === 'MetaMask';
+  const reader = isBrowserWallet ? signer : provider;
   return {
     contracts,
     reader,
