@@ -17,11 +17,12 @@ const useContractReader = () => {
 
   /*
    * Please note the following:
-   * 1. When connected via non-MetaMask wallets (like via Wallet Connect), loading contract data fails when
-   *    the smart contract was constructed with a signer.
-   * 2. Data loads a considerable amount faster with MetaMask when using the signer.
+   * 1. When connected via non-MetaMask wallets (like via Wallet Connect), loading contract data fails when the smart
+   *    contract was constructed with a signer.
+   * 2. Data loads a considerable amount faster when the provider of the browser wallet is used. Web3Modal supports
+   *    EIP6963 which can be used to detect multiple in-browser wallets.
    */
-  const reader = connector?.name === 'MetaMask' ? signer : provider;
+  const reader = connector?.name === 'EIP6963' ? signer : provider;
   return {
     contracts,
     reader,
