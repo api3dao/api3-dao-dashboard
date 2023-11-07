@@ -80,6 +80,7 @@ jobs:
           REACT_APP_NODE_ENV: development
           REACT_APP_PROJECT_ID: e7e6e90622ec8e65c4d02e829a68529a
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          REACT_APP_MAINNET_PROVIDER_URL: ${{ secrets.REACT_APP_MAINNET_PROVIDER_URL }}
         run: yarn percy exec -- -- yarn ci:cypress
         timeout-minutes: 60
       - name: Store artifacts
