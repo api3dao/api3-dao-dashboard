@@ -8,7 +8,8 @@ implemented and its security. All developer oriented instructions can be found h
 1. `yarn` - to install dependencies and generate TypeScript types
 2. `yarn eth:node` - to start hardhat network
 3. `yarn eth:prepare-dao-contracts-for-hardhat` - to download the DAO contract sources locally. You need to run this
-   only when running for the first time.
+   only when running for the first time. The installation of contract dependencies is fragile, it's recommended to use
+   node@16.
 4. (Optional) Modify the pool contract `EPOCH_LENGTH` variable from `1 weeks` to `1 minutes` to speed up testing. You
    can find this constant inside `dao-contracts/packages/pool/contracts/StateUtils.sol`
 5. `yarn eth:deploy-dao-contracts-on-hardhat` - to deploy the contracts locally
