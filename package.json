@@ -112,7 +112,7 @@
     "react-scripts": "5.0.1",
     "replace-in-file": "^6.3.2",
     "sass": "^1.54.5",
-    "start-server-and-test": "^1.14.0",
+    "start-server-and-test": "^1.15.4",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "ts-node": "^10.9.1",
