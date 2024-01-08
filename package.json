@@ -76,6 +76,7 @@
   },
   "devDependencies": {
     "@api3/promise-utils": "^0.4.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@percy/cli": "1.18.0",
     "@percy/cypress": "^3.1.2",
