@@ -81,7 +81,7 @@
     "@percy/cli": "1.18.0",
     "@percy/cypress": "^3.1.2",
     "@testing-library/cypress": "^9.0.0",
-    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.5.2",
     "@typechain/ethers-v5": "^10.2.1",
