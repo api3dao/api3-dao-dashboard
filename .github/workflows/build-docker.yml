@@ -34,5 +34,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          build-args: |
+            REACT_APP_MAINNET_PROVIDER_URL=${{ secrets.REACT_APP_MAINNET_PROVIDER_URL }}
           push: ${{ github.ref == 'refs/heads/production' }}
           tags: ${{ steps.meta.outputs.tags }}
