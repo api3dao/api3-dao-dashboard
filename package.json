@@ -82,7 +82,7 @@
     "@percy/cypress": "^3.1.2",
     "@testing-library/cypress": "^9.0.0",
     "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/react": "^14.3.0",
     "@testing-library/user-event": "^14.5.2",
     "@typechain/ethers-v5": "^10.2.1",
     "@types/chai": "^4.3.11",
