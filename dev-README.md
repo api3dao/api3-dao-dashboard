@@ -47,8 +47,12 @@ specifically `REACT_APP_NODE_ENV` to specify the environment. Possible values `d
 
 ### Updating the production deployment
 
-All you need to do is merge a PR to `production` branch. Most of the times you just want to open a new PR from the
-`main` branch.
+All you need to do is push the code to `production` branch. Most of the times you just want to copy what's on `main`
+branch:
+
+1. `git checkout production`
+2. `git merge main`
+3. `git push`
 
 ### Updating the name servers
 
