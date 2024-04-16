@@ -13,7 +13,7 @@ import { NewProposalFormData } from './types';
  * We version metadata schemes to allow simpler updates to the scheme in the future (e.g. if we decide to support
  * multiple EVM proposal calls).
  */
-const METADATA_SCHEME_VERSION = '1';
+export const METADATA_SCHEME_VERSION = '2';
 /**
  * The metadata scheme simply takes multiple values and inserts a non printable character used to separate words between
  * each of the values. The delimeter can't be written by user, however nothing prevents people from creating proposals

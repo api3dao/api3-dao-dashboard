@@ -19,6 +19,7 @@ const newFormData = {
   targetAddress: '0xB97F3A052d5562437e42EDeEBd1afec2376666eD',
   targetValue: '12',
   type: 'primary' as const,
+  version: '2',
 };
 const api3Agent = {
   primary: '0xd9f80bdb37e6bad114d747e60ce6d2aaf26704ae',
@@ -359,7 +360,8 @@ describe('isEvmScriptValid()', () => {
   });
 
   // The data for this proposal ware created locally.
-  it('returns true also for simple ETH transfers', async () => {
+  it('returns true for simple ETH transfers (version 1)', async () => {
+    // Version 1 encoded the target signature and params even though the target signature is blank
     const script =
       '0x00000001e0786c9956480b64808494676911f0afe39f8baa000000a4b61d27f60000000000000000000000001ddfc105fb187131ab6d77eecb966f87a2efa6640000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000004c5d2460100000000000000000000000000000000000000000000000000000000';
     const metadata = {
@@ -367,6 +369,36 @@ describe('isEvmScriptValid()', () => {
       targetSignature: '',
       title: 'Make a simple ETH transfer proposal',
       version: '1',
+    };
+    const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);
+    expect(decodedEvmScript).not.toBeNull();
+
+    const result = await isEvmScriptValid(
+      mockedProvider,
+      {
+        primary: '0xbb4c8c398288f2309b32dd83bc7dd3e4f93c605f',
+        secondary: '0xe0786c9956480b64808494676911f0afe39f8baa',
+      },
+      {
+        type: 'secondary',
+        metadata,
+        decodedEvmScript,
+        script,
+      }
+    );
+
+    expect(result).toBe(true);
+  });
+
+  it('returns true for simple ETH transfers (version 2)', async () => {
+    // Version 2 no longer encodes the target signature and params when the target signature is blank
+    const script =
+      '0x00000001e0786c9956480b64808494676911f0afe39f8baa00000044b61d27f60000000000000000000000001ddfc105fb187131ab6d77eecb966f87a2efa6640000000000000000000000000000000000000000000000000de0b6b3a7640000';
+    const metadata = {
+      description: 'Send ETH to an EOA',
+      targetSignature: '',
+      title: 'Make a simple ETH transfer proposal',
+      version: '2',
     };
     const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);
     expect(decodedEvmScript).not.toBeNull();

@@ -13,7 +13,7 @@ const newFormData = {
 test('encoding', () => {
   expect(encodeMetadata(newFormData)).toBe(
     // There is not a nice way to test it because METADATA_DELIMETER is non printable character
-    ['1', 'functionName(string,uint256)', 'My title', 'My description'].join(METADATA_DELIMETER)
+    ['2', 'functionName(string,uint256)', 'My title', 'My description'].join(METADATA_DELIMETER)
   );
 });
 
@@ -23,7 +23,7 @@ test('decoding', () => {
     description: 'My description',
     targetSignature: 'functionName(string,uint256)',
     title: 'My title',
-    version: '1',
+    version: '2',
   });
 });
 

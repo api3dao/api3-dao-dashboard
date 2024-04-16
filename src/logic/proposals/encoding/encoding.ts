@@ -65,7 +65,7 @@ export class EncodedEvmScriptError extends Error {
  */
 export const goEncodeEvmScript = async (
   provider: providers.Provider,
-  formData: NewProposalFormData,
+  { version, ...formData }: NewProposalFormData & { version: string },
   api3Agent: Api3Agent
 ): Promise<GoResult<string>> => {
   // Ensure that the form parameters form a valid JSON array
@@ -160,14 +160,19 @@ export const goEncodeEvmScript = async (
   // Build the EVM script according to the scheme
   const goBuildEvmScript = goSync(() => {
     // Build the call data that the EVMScript will use (and remove 0x prefix)
-    const callData =
-      encodedExecuteSignature +
-      utils.defaultAbiCoder
-        .encode(
-          ['address', 'uint256', 'bytes'],
-          [targetAddress, targetValue, encodeFunctionSignature(targetSignature) + encodedTargetParameters.substring(2)]
-        )
-        .substring(2);
+    const targetCallData =
+      version === '1' || !!targetSignature
+        ? utils.defaultAbiCoder.encode(
+            ['address', 'uint256', 'bytes'],
+            [
+              targetAddress,
+              targetValue,
+              encodeFunctionSignature(targetSignature) + encodedTargetParameters.substring(2),
+            ]
+          )
+        : utils.defaultAbiCoder.encode(['address', 'uint256'], [targetAddress, targetValue]);
+
+    const callData = encodedExecuteSignature + targetCallData.substring(2);
 
     // Calculate the length of the call data in bytes
     const callDataLengthInBytes = utils.hexZeroPad(BigNumber.from(callData.substring(2).length / 2).toHexString(), 4);
@@ -220,10 +225,11 @@ export const decodeEvmScript = async (
 
     // Decode the parameters of the "execute" function:
     // https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
-    const executionParameters = utils.defaultAbiCoder.decode(
-      ['address', 'uint256', 'bytes'],
-      utils.hexDataSlice(callData, 4)
-    );
+    const executionParameters =
+      metadata.version === '1' || metadata.targetSignature
+        ? utils.defaultAbiCoder.decode(['address', 'uint256', 'bytes'], utils.hexDataSlice(callData, 4))
+        : utils.defaultAbiCoder.decode(['address', 'uint256'], utils.hexDataSlice(callData, 4));
+
     const targetContractAddress = executionParameters[0];
     const value = executionParameters[1];
 
@@ -275,6 +281,7 @@ export async function isEvmScriptValid(
       parameters: JSON.stringify(decodedEvmScript.parameters),
       targetAddress: decodedEvmScript.targetAddress,
       targetValue: decodedEvmScript.value.toString(),
+      version: metadata.version,
     },
     api3Agent
   );
