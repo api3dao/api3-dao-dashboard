@@ -361,7 +361,7 @@ describe('isEvmScriptValid()', () => {
 
   // The data for this proposal ware created locally.
   it('returns true for simple ETH transfers (version 1)', async () => {
-    // Version 1 encoded the target signature and params even though the target signature is blank
+    // Version 1 encodes the target signature and params even though the target signature is blank
     const script =
       '0x00000001e0786c9956480b64808494676911f0afe39f8baa000000a4b61d27f60000000000000000000000001ddfc105fb187131ab6d77eecb966f87a2efa6640000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000004c5d2460100000000000000000000000000000000000000000000000000000000';
     const metadata = {
