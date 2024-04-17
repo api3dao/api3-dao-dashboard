@@ -43,16 +43,57 @@ test('correct contract call proposal', async () => {
   expect(goRes.data).toBeDefined();
 });
 
-test('simple ETH transfers using zero length parameters and empty target signature', async () => {
-  const validData = updateImmutably(newFormData, (data) => {
-    data.parameters = '[]';
-    data.targetSignature = '';
+describe('goEncodeEvmScript', () => {
+  describe('simple ETH transfers', () => {
+    it('requires a value greater than zero', async () => {
+      const invalidData = updateImmutably(newFormData, (data) => {
+        data.parameters = '[]';
+        data.targetSignature = '';
+        data.targetValue = '0';
+      });
+
+      const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+      assertGoError(goRes);
+      expect(goRes.error).toEqual(
+        new EncodedEvmScriptError('targetValue', 'Value must be greater than 0 for ETH transfers')
+      );
+    });
+
+    it('encodes the empty target signature and params (version 1)', async () => {
+      const validData = updateImmutably(newFormData, (data) => {
+        data.parameters = '[]';
+        data.targetSignature = '';
+        data.version = '1';
+      });
+
+      const goRes = await goEncodeEvmScript(mockedProvider, validData, api3Agent);
+
+      assertGoSuccess(goRes);
+      expect(goRes.data).toBeDefined();
+      expect(goRes.data.length).toEqual(386);
+      expect(goRes.data).toEqual(
+        '0x00000001d9f80bdb37e6bad114d747e60ce6d2aaf26704ae000000a4b61d27f6000000000000000000000000b97f3a052d5562437e42edeebd1afec2376666ed000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000004c5d2460100000000000000000000000000000000000000000000000000000000'
+      );
+    });
+
+    it('omits encoding the empty target signature and params (version 2)', async () => {
+      const validData = updateImmutably(newFormData, (data) => {
+        data.parameters = '[]';
+        data.targetSignature = '';
+        data.version = '2';
+      });
+
+      const goRes = await goEncodeEvmScript(mockedProvider, validData, api3Agent);
+
+      assertGoSuccess(goRes);
+      expect(goRes.data).toBeDefined();
+      expect(goRes.data.length).toEqual(322);
+      expect(goRes.data).toEqual(
+        '0x00000001d9f80bdb37e6bad114d747e60ce6d2aaf26704ae00000084b61d27f6000000000000000000000000b97f3a052d5562437e42edeebd1afec2376666ed000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000'
+      );
+    });
   });
-
-  const goRes = await goEncodeEvmScript(mockedProvider, validData, api3Agent);
-
-  assertGoSuccess(goRes);
-  expect(goRes.data).toBeDefined();
 });
 
 describe('encoding incorrect parameters', () => {
@@ -130,21 +171,6 @@ describe('encoding incorrect parameters', () => {
       new EncodedEvmScriptError('parameters', 'Ensure parameters match target contract signature')
     );
   });
-});
-
-test('zero value for simple ETH transfer', async () => {
-  const invalidData = updateImmutably(newFormData, (data) => {
-    data.parameters = '[]';
-    data.targetSignature = '';
-    data.targetValue = '0';
-  });
-
-  const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
-
-  assertGoError(goRes);
-  expect(goRes.error).toEqual(
-    new EncodedEvmScriptError('targetValue', 'Value must be greater than 0 for ETH transfers')
-  );
 });
 
 describe('encoding invalid target signature', () => {
@@ -338,7 +364,7 @@ describe('stringifyBigNumbersRecursively', () => {
 
 const versions = ['1', '2'];
 
-describe('isEvmScriptValid()', () => {
+describe('isEvmScriptValid', () => {
   it('returns true if the EVM script matches the original proposal data', async () => {
     // All encoding versions should generate the same script
     const script =
