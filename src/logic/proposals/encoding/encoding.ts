@@ -160,19 +160,18 @@ export const goEncodeEvmScript = async (
   // Build the EVM script according to the scheme
   const goBuildEvmScript = goSync(() => {
     // Build the call data that the EVMScript will use (and remove 0x prefix)
-    const targetCallData =
-      // If this is a version 1 proposal, then we need to keep encoding the target signature regardless if it's blank
-      // or not, otherwise we could get a script mismatch and a false-positive for the malicious proposal check
-      version === '1' || targetSignature
-        ? utils.defaultAbiCoder.encode(
-            ['address', 'uint256', 'bytes'],
-            [
-              targetAddress,
-              targetValue,
-              encodeFunctionSignature(targetSignature) + encodedTargetParameters.substring(2),
-            ]
-          )
-        : utils.defaultAbiCoder.encode(['address', 'uint256'], [targetAddress, targetValue]);
+    const targetCallData = utils.defaultAbiCoder.encode(
+      ['address', 'uint256', 'bytes'],
+      [
+        targetAddress,
+        targetValue,
+        // If this is a version 1 proposal, then we need to keep encoding the target signature regardless if it's blank
+        // or not, otherwise we could get a script mismatch and a false-positive for the malicious proposal check
+        version === '1' || targetSignature
+          ? encodeFunctionSignature(targetSignature) + encodedTargetParameters.substring(2)
+          : '0x',
+      ]
+    );
 
     const callData = encodedExecuteSignature + targetCallData.substring(2);
 
@@ -227,11 +226,10 @@ export const decodeEvmScript = async (
 
     // Decode the parameters of the "execute" function:
     // https://github.com/aragon/aragon-apps/blob/631048d54b9cc71058abb8bd7c17f6738755d950/apps/agent/contracts/Agent.sol#L70
-    const executionParameters =
-      // Version 1 proposals encoded the target signature regardless if it was blank or not
-      metadata.version === '1' || metadata.targetSignature
-        ? utils.defaultAbiCoder.decode(['address', 'uint256', 'bytes'], utils.hexDataSlice(callData, 4))
-        : utils.defaultAbiCoder.decode(['address', 'uint256'], utils.hexDataSlice(callData, 4));
+    const executionParameters = utils.defaultAbiCoder.decode(
+      ['address', 'uint256', 'bytes'],
+      utils.hexDataSlice(callData, 4)
+    );
 
     const targetContractAddress = executionParameters[0];
     const value = executionParameters[1];
