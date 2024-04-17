@@ -163,16 +163,16 @@ export const goEncodeEvmScript = async (
     const targetCallData =
       // If this is a version 1 proposal, then we need to keep encoding the target signature regardless if it's blank
       // or not, otherwise we could get a script mismatch and a false-positive for the malicious proposal check
-      version === '1' || targetSignature
-        ? utils.defaultAbiCoder.encode(
-            ['address', 'uint256', 'bytes'],
-            [
-              targetAddress,
-              targetValue,
-              encodeFunctionSignature(targetSignature) + encodedTargetParameters.substring(2),
-            ]
-          )
-        : utils.defaultAbiCoder.encode(['address', 'uint256'], [targetAddress, targetValue]);
+      utils.defaultAbiCoder.encode(
+        ['address', 'uint256', 'bytes'],
+        [
+          targetAddress,
+          targetValue,
+          version === '1' || targetSignature
+            ? encodeFunctionSignature(targetSignature) + encodedTargetParameters.substring(2)
+            : '0x',
+        ]
+      );
 
     const callData = encodedExecuteSignature + targetCallData.substring(2);
 
