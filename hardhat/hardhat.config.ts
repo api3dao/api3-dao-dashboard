@@ -9,7 +9,7 @@ import '@nomiclabs/hardhat-ethers';
 import { task, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
 import dotenv from 'dotenv';
-import { encodeMetadata, goEncodeEvmScript } from '../src/logic/proposals/encoding';
+import { encodeMetadata, goEncodeEvmScript, METADATA_SCHEME_VERSION } from '../src/logic/proposals/encoding';
 
 dotenv.config({ path: '../.env' });
 
@@ -92,6 +92,7 @@ task('create-proposal', 'Creates a proposal')
       parameters: args.parameters,
       targetAddress: args.targetAddress,
       targetValue: args.targetValue,
+      version: METADATA_SCHEME_VERSION,
     };
 
     let script = args.script;

@@ -7,7 +7,12 @@ import { TooltipChecklist } from '../../components/tooltip';
 import Treasury from '../proposal-commons/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
 import { useActiveProposals, useLoadGenesisEpoch } from '../../logic/proposals/hooks';
-import { goEncodeEvmScript, encodeMetadata, NewProposalFormData } from '../../logic/proposals/encoding';
+import {
+  goEncodeEvmScript,
+  encodeMetadata,
+  NewProposalFormData,
+  METADATA_SCHEME_VERSION,
+} from '../../logic/proposals/encoding';
 import ProposalList from '../proposal-commons/proposal-list';
 import NewProposalForm from './forms/new-proposal-form';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
@@ -89,7 +94,7 @@ const Proposals = () => {
   const onCreateProposal = async (formData: NewProposalFormData) => {
     if (!api3Token || !api3Voting || !api3Agent || !provider) return null;
 
-    const goRes = await goEncodeEvmScript(provider, formData, api3Agent);
+    const goRes = await goEncodeEvmScript(provider, { ...formData, version: METADATA_SCHEME_VERSION }, api3Agent);
     // Should not happen, because user will not be allowed to press the create proposal button if there are errors
     if (!goRes.success) return null;
 

@@ -6,7 +6,12 @@ import Input from '../../../components/input';
 import Textarea from '../../../components/textarea';
 import { Tooltip } from '../../../components/tooltip';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
-import { goEncodeEvmScript, EncodedEvmScriptError, NewProposalFormData } from '../../../logic/proposals/encoding';
+import {
+  goEncodeEvmScript,
+  EncodedEvmScriptError,
+  NewProposalFormData,
+  METADATA_SCHEME_VERSION,
+} from '../../../logic/proposals/encoding';
 import { Api3Agent } from '../../../contracts';
 import { filterAlphanumerical, images } from '../../../utils';
 import styles from './new-proposal-form.module.scss';
@@ -75,7 +80,7 @@ const NewProposalForm = (props: Props) => {
       foundErrors = true;
     }
 
-    const goRes = await goEncodeEvmScript(provider, formData, api3Agent);
+    const goRes = await goEncodeEvmScript(provider, { ...formData, version: METADATA_SCHEME_VERSION }, api3Agent);
     if (!goRes.success) {
       if (goRes.error instanceof EncodedEvmScriptError) {
         const { field, value } = goRes.error;
