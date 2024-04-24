@@ -63,7 +63,7 @@ services:
       - '4873:4873'
 
   app:
-    image: fleek/create-react-app
+    image: fleek/create-react-app:node-18
     command: sh -c 'npm set registry http://verdaccio:4873 && yarn && yarn build'
     working_dir: /workspace/build
     environment:
