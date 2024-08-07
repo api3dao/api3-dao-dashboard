@@ -68,6 +68,29 @@ export const goEncodeEvmScript = async (
   { version, ...formData }: NewProposalFormData & { version: string },
   api3Agent: Api3Agent
 ): Promise<GoResult<string>> => {
+  // Ensure target address is a valid address or valid ENS name
+  const goTargetAddress = await go(() => convertToAddressOrThrow(provider, formData.targetAddress));
+  if (!goTargetAddress.success) {
+    return fail(new EncodedEvmScriptError('targetAddress', 'Please specify a valid account address'));
+  }
+  const targetAddress = goTargetAddress.data;
+
+  // Target contract signature must be a valid solidity function signature or be empty (in case of a simple ETH transfer)
+  const { targetSignature } = formData;
+  if (targetSignature.includes(' ')) {
+    return fail(
+      new EncodedEvmScriptError('targetSignature', 'Make sure the contract signature contains no whitespace')
+    );
+  }
+  const goValidateTargetSignature = goSync(() => {
+    if (!targetSignature) return;
+    // We only care whether the following throws or not
+    utils.FunctionFragment.from(targetSignature);
+  });
+  if (!goValidateTargetSignature.success) {
+    return fail(new EncodedEvmScriptError('targetSignature', 'Please specify a valid contract signature'));
+  }
+
   // Ensure that the form parameters form a valid JSON array
   const goJsonParams = goSync(() => {
     const json = JSON.parse(formData.parameters);
@@ -78,18 +101,6 @@ export const goEncodeEvmScript = async (
     return fail(new EncodedEvmScriptError('parameters', 'Make sure parameters is a valid JSON array'));
   }
   const targetParameters = goJsonParams.data;
-
-  // Target contract signature must be a valid solidity function signature or be empty (in case of a simple ETH
-  // transfer)
-  const goTargetSignature = goSync(() => {
-    if (!formData.targetSignature) return;
-    // We only care whether the following throws or not
-    utils.FunctionFragment.from(formData.targetSignature);
-  });
-  if (!goTargetSignature.success) {
-    return fail(new EncodedEvmScriptError('targetSignature', 'Please specify a valid contract signature'));
-  }
-  const targetSignature = formData.targetSignature;
 
   // Extract the parameters that were passed and check if the number of arguments is same as in the function signature
   const goExtractParameters = goSync(() => {
@@ -137,13 +148,6 @@ export const goEncodeEvmScript = async (
     );
   }
   const encodedTargetParameters = goEncodeParameters.data;
-
-  // Ensure target address is a valid address or valid ENS name
-  const goTargetAddress = await go(() => convertToAddressOrThrow(provider, formData.targetAddress));
-  if (!goTargetAddress.success) {
-    return fail(new EncodedEvmScriptError('targetAddress', 'Please specify a valid account address'));
-  }
-  const targetAddress = goTargetAddress.data;
 
   // Ensure value is a non-negative amount (in Wei)
   const goValue = goSync(() => {
