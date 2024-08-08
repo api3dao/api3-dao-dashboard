@@ -98,7 +98,7 @@
     "assert": "^2.1.0",
     "chai": "^4.3.10",
     "chalk": "^4.1.2",
-    "concurrently": "^7.6.0",
+    "concurrently": "^8.2.2",
     "cypress": "^12.17.4",
     "cypress-plugin-tab": "^1.0.5",
     "dotenv": "^16.3.1",
