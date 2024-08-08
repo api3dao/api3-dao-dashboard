@@ -200,6 +200,19 @@ describe('encoding invalid target signature', () => {
     );
   });
 
+  it('detects when it contains whitespace', async () => {
+    const invalidData = updateImmutably(newFormData, (data) => {
+      data.targetSignature = 'transfer(string, unit256)';
+    });
+
+    const goRes = await goEncodeEvmScript(mockedProvider, invalidData, api3Agent);
+
+    assertGoError(goRes);
+    expect(goRes.error).toEqual(
+      new EncodedEvmScriptError('targetSignature', 'Make sure the contract signature contains no whitespace')
+    );
+  });
+
   it('has empty target signature but non-empty parameters', async () => {
     const invalidData = updateImmutably(newFormData, (data) => {
       data.targetSignature = '';

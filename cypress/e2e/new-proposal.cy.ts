@@ -7,42 +7,48 @@ it('new proposal form validation', () => {
   cy.findAllByText('Governance').filter(':visible').click();
   cy.findByText('+ New Proposal').click();
 
-  // Let's create a secondary proposal
+  // Create a secondary proposal
   cy.findByLabelText('Secondary').should('be.checked');
 
   cy.findByText('Create').click();
   cy.findByText('Title must have at least one alphanumeric character').should('exist');
   cy.findByText('Description must have at least one alphanumeric character').should('exist');
-  cy.findByText('Make sure parameters is a valid JSON array').should('exist');
+  cy.findByText('Please specify a valid account address').should('exist');
   cy.percySnapshot('Governance: New proposal modal', { minHeight: 1500 });
 
-  // Correct the errors, but fill in invalid parameters
+  // Correct the initial errors
   cy.findByLabelText('Title').type('Getting University Blockchain Groups Involved in Governance');
   cy.findByLabelText('Description').type('https://forum.api3.org/t/getting-university-blockchain-groups-involved');
-  cy.findByLabelText('Parameters').type('{}');
+  cy.findByLabelText('Target Address').type(ACCOUNTS[1]);
   cy.findByText('Create').click();
+  cy.findByText('Title must have at least one alphanumeric character').should('not.exist');
+  cy.findByText('Description must have at least one alphanumeric character').should('not.exist');
+  cy.findByText('Please specify a valid account address').should('not.exist');
 
-  // Let user fix invalid parameters, but make them inconsistent with the target contract signature
+  // Input a JSON array, but make it inconsistent with the target contract signature
   cy.findByText('Make sure parameters is a valid JSON array').should('exist');
-  cy.findByLabelText('Parameters').clear().type('[]');
+  cy.findByLabelText('Parameters').type('[]');
   cy.findByLabelText('Target Contract Signature').type('transfer(address, unit256)');
   cy.findByText('Create').click();
 
-  // Let user fix incorrect number of parameters
+  // Remove the whitespace in the target contract signature
+  cy.findByText('Make sure the contract signature contains no whitespace').should('exist');
+  cy.findByLabelText('Target Contract Signature').clear().type('transfer(address,unit256)');
+  cy.findByText('Create').click();
+  cy.findByText('Make sure the contract signature contains no whitespace').should('not.exist');
+
+  // Fix incorrect number of parameters
   cy.findByText('Please specify the correct number of function arguments').should('exist');
   cy.findByLabelText('Parameters')
     .clear()
     .type(JSON.stringify([ACCOUNTS[1], 12345]));
   cy.findByText('Create').click();
 
-  // Catch the typo and let the user fix it
+  // Fix the typo in the target contract signature
   cy.findByText('Ensure parameters match target contract signature').should('exist');
   cy.findByLabelText('Target Contract Signature').type('{backspace}'.repeat(8) + 'uint256)');
-  cy.findByText('Create').click();
 
-  // Fill target address and value
-  cy.findByText('Please specify a valid account address').should('exist');
-  cy.findByLabelText('Target Address').type(ACCOUNTS[1]);
+  // Fill the value
   cy.findByLabelText('Value (Wei)').type('-123456');
   cy.findByText('Create').click();
 
