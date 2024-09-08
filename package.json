@@ -94,7 +94,7 @@
     "@types/react-dom": "^18.2.18",
     "@types/react-input-autosize": "^2.2.4",
     "@types/react-router-dom": "^5.3.3",
-    "api3-dao": "git+https://github.com/api3dao/api3-dao.git#0b8bb17fbda0161d5d9fff00ed4562b91cc27af6",
+    "api3-dao": "git+https://github.com/api3dao/api3-dao.git#b516800f1d79d3e919cf432d5a7bf70a4d86257c",
     "assert": "^2.1.0",
     "chai": "^4.3.10",
     "chalk": "^4.1.2",
