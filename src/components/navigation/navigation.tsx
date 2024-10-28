@@ -9,7 +9,7 @@ const Navigation = () => {
     <div className={styles.navigation}>
       <div className={styles.navigationMenu}>
         <Link to="/" data-cy="api3-logo">
-          <img src={images.api3LogoWhite} alt="logo" height="36" width="116" />
+          <img src={images.api3DaoLogoLightTheme} alt="logo" className={styles.api3DaoLogo} />
         </Link>
         <MobileMenu />
       </div>

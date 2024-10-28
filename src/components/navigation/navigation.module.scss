@@ -21,6 +21,16 @@
   }
 }
 
+.api3DaoLogo {
+  height: 20px;
+  width: 103px;
+
+  @media (min-width: $md) {
+    height: 31px;
+    width: 160px;
+  }
+}
+
 .navigationMenu {
   position: relative;
   display: flex;

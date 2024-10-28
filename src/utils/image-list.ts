@@ -1,7 +1,7 @@
 // Images list here will also be prefetched in the document head
 export const images = {
-  api3LogoDark: '/api3-logo-dark.svg',
-  api3LogoWhite: '/api3-logo-white.svg',
+  api3DaoLogoDarkTheme: '/api3-dao-logo-dark-theme.svg',
+  api3DaoLogoLightTheme: '/api3-dao-logo-light-theme.svg',
   apiIcon: '/api-icon.svg',
   arrowDropdown: '/arrow-dropdown.svg',
   arrowDropdownDark: '/arrow-dropdown-dark.svg',
@@ -40,4 +40,4 @@ export const images = {
 // All other images are fetched with 'prefetch'. Preloading too many resources can be
 // a net negative for performance.
 // https://www.debugbear.com/blog/rel-preload-problems
-export const preloadImageList = [images.api3LogoWhite, images.api3LogoDark];
+export const preloadImageList = [images.api3DaoLogoDarkTheme, images.api3DaoLogoLightTheme];

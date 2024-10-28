@@ -53,7 +53,7 @@ export const MobileMenu = () => {
       </div>
       <div className={classNames(styles.mobileMenu, { [styles.open]: open })}>
         <div className={styles.mobileMenuHeader}>
-          <img src={images.api3LogoDark} alt="dark logo" />
+          <img src={images.api3DaoLogoDarkTheme} alt="dark logo" />
           <img className={styles.menuIcon} onClick={() => setOpen(false)} src={images.menuClose} alt="close icon" />
         </div>
         <div className={styles.mobileMenuScrollWrap}>
