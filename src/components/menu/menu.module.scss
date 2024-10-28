@@ -88,11 +88,11 @@
 }
 
 .mobileMenuWrapper {
-  display: none;
+  display: flex;
+  align-items: center;
 
-  @media (max-width: $max-sm) {
-    display: flex;
-    align-items: center;
+  @media (min-width: $md) {
+    display: none;
   }
 }
 

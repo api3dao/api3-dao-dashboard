@@ -3,43 +3,47 @@
 .navigation {
   height: $navigation-height;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 0 $space-xxl;
+  padding: 0 16px;
   box-sizing: border-box;
 
-  // Make sure the texture is behind the navigation
-  position: relative;
-  z-index: 2;
+  a {
+    height: 24px;
 
-  @media (max-width: $max-md) {
-    padding: 0 $space-lg;
+    .api3DaoLogo {
+      height: 24px;
+      width: 103px;
+    }
   }
-
-  @media (max-width: $max-sm) {
-    flex-direction: column;
-  }
-}
-
-.api3DaoLogo {
-  height: 20px;
-  width: 103px;
 
   @media (min-width: $md) {
-    height: 31px;
-    width: 160px;
+    flex-direction: row;
+    padding: 0 40px;
+
+    a {
+      height: 34px;
+
+      .api3DaoLogo {
+        height: 34px;
+        width: 160px;
+      }
+    }
   }
 }
 
 .navigationMenu {
-  position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  align-self: flex-start;
   box-sizing: border-box;
+  height: 56px;
+  width: 100%;
 
-  @media (max-width: $max-sm) {
-    width: 100%;
-    justify-content: space-between;
-    margin: auto;
+  @media (min-width: $md) {
+    align-self: center;
+    height: unset;
   }
 }
