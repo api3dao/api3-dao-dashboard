@@ -90,8 +90,6 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
             </div>
           )}
         </footer>
-
-        <img className={styles.layoutTexture} src={images.texture} alt="texture background" />
       </div>
     </>
   );
