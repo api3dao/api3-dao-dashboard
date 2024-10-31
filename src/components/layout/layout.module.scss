@@ -11,34 +11,22 @@
 }
 
 .main {
-  max-width: min(calc(100vw - 170px), 1024px);
-  min-height: calc(100vh - #{$navigation-height} - #{$footer-height});
+  max-width: 468px;
+  min-height: calc(100vh - #{$navigation-height} - #{$footer-height-mobile});
+  padding: 0 16px;
   margin: 0 auto;
-  padding: 0 $space-xxl;
-  padding-bottom: 2 * $space-xxl;
-  box-sizing: border-box;
   flex: 1;
 
-  @media (max-width: $max-sm) {
-    max-width: unset;
-    min-height: calc(100vh - #{$navigation-height} - #{$footer-height-media-sm});
-    padding: $space-lg;
-    padding-bottom: $space-xxxl;
+  @media (min-width: $sm) {
+    max-width: 640px;
+    min-height: calc(100vh - #{$navigation-height} - #{$footer-height-desktop});
   }
 
-  @media (max-width: $max-lg) {
-    max-width: calc(100vw - 100px);
-  }
-
-  @media (max-width: $max-md) {
-    max-width: calc(100vw - 80px);
-  }
-
-  @media (max-width: $max-sm) {
-    max-width: calc(100vw - 50px);
-    min-height: calc(100vh - #{$navigation-height} - #{$footer-height-media-sm});
-    padding: unset;
-    padding-bottom: $space-xxxl;
+  @media (min-width: $md) {
+    max-width: 920px;
+    padding: 0 64px;
+    min-height: calc(100vh - #{$navigation-height} - #{$footer-height-desktop});
+    padding-bottom: 80px;
   }
 }
 
@@ -48,11 +36,11 @@
   bottom: 0;
   width: 100%;
   z-index: 30;
-  height: $footer-height;
+  height: $footer-height-mobile;
   border-top: 1px solid rgba($green-color, 0.5);
 
-  @media (max-width: $max-sm) {
-    height: $footer-height-media-sm;
+  @media (min-width: $md) {
+    height: $footer-height-desktop;
   }
 
   &Content {
@@ -65,12 +53,6 @@
 .externalLinkButton {
   button {
     color: $secondary-color;
-  }
-}
-
-.linkSeparator {
-  @media (max-width: $max-sm) {
-    display: none; // Hide the link separators in smaller resolutions
   }
 }
 

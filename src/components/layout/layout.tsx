@@ -35,7 +35,7 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
     localStorage.getItem(ERROR_REPORTING_CONSENT_KEY_NAME) === null
   );
 
-  const links = [
+  const footerLinks = [
     { text: 'About API3', href: 'https://api3.org/' },
     { text: 'Docs', href: 'https://docs.api3.org/latest/members/' },
     { text: 'Error Reporting', onClick: () => setErrorReportingNoticeOpen(true) },
@@ -61,7 +61,7 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
             <div className={styles.footerContent}>
               <div className={styles.linkSpacing}>
                 {insertInBetween(
-                  links.map((link) => {
+                  footerLinks.map((link) => {
                     if (link.href)
                       return (
                         <ExternalLink href={link.href} className={styles.noUnderline} key={link.text}>
