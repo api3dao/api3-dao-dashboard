@@ -15,23 +15,25 @@ export const DesktopMenu = () => {
   return (
     <div className={styles.menu} data-cy="desktop-menu">
       {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
-      <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
+      <NavLink
+        className={styles.navLink}
+        activeClassName={styles.activeNavLink}
+        to="/"
+        isActive={() => ['/'].includes(pathname)}
+      >
         <div className={styles.menuItem}>
-          <div className={styles.menuActiveLine} />
           <DashboardIcon />
           <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Staking</p>
         </div>
       </NavLink>
-      <NavLink activeClassName={styles.menuActiveItem} to="/governance">
+      <NavLink className={styles.navLink} activeClassName={styles.activeNavLink} to="/governance">
         <div className={styles.menuItem}>
-          <div className={styles.menuActiveLine} />
           <ProposalsIcon />
           <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Governance</p>
         </div>
       </NavLink>
-      <NavLink activeClassName={styles.menuActiveItem} to="/history">
+      <NavLink className={styles.navLink} activeClassName={styles.activeNavLink} to="/history">
         <div className={styles.menuItem}>
-          <div className={styles.menuActiveLine} />
           <HistoryIcon />
           <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>History</p>
         </div>
@@ -59,19 +61,19 @@ export const MobileMenu = () => {
         <div className={styles.mobileMenuScrollWrap}>
           <div className={styles.mobileMenuContent}>
             {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
-            <NavLink activeClassName={styles.menuActiveItem} to="/" isActive={() => ['/'].includes(pathname)}>
+            <NavLink activeClassName={styles.activeNavLink} to="/" isActive={() => ['/'].includes(pathname)}>
               <div className={styles.menuMobileItem}>
                 <DashboardIcon />
                 <p className={styles.menuMobileItemText}>Staking</p>
               </div>
             </NavLink>
-            <NavLink activeClassName={styles.menuActiveItem} to="/governance">
+            <NavLink activeClassName={styles.activeNavLink} to="/governance">
               <div className={styles.menuMobileItem}>
                 <ProposalsIcon />
                 <p className={styles.menuMobileItemText}>Governance</p>
               </div>
             </NavLink>
-            <NavLink activeClassName={styles.menuActiveItem} to="/history">
+            <NavLink activeClassName={styles.activeNavLink} to="/history">
               <div className={styles.menuMobileItem}>
                 <HistoryIcon />
                 <p className={styles.menuMobileItemText}>History</p>
