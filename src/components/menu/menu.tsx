@@ -6,38 +6,54 @@ import classNames from 'classnames';
 import DashboardIcon from './dashboard-icon';
 import ProposalsIcon from './proposals-icon';
 import HistoryIcon from './history-icon';
+import TrackerIcon from './tracker-icon';
+import ForumIcon from './forum-icon';
+import MarketIcon from './market-icon';
+import DocsIcon from './docs-icon';
 import SignIn from '../sign-in/sign-in';
 import styles from './menu.module.scss';
-import globalStyles from '../../styles/global-styles.module.scss';
+import ExternalLink from '../external-link';
+
+const MenuItems = [
+  { to: '/', icon: DashboardIcon, text: 'Staking' },
+  { to: '/governance', icon: ProposalsIcon, text: 'Governance' },
+  { to: '/history', icon: HistoryIcon, text: 'History' },
+];
+
+const ExternalLinks = [
+  { to: 'https://tracker.api3.org/', icon: TrackerIcon, text: 'Tracker' },
+  { to: 'https://forum.api3.org/', icon: ForumIcon, text: 'Forum' },
+  { to: 'https://market.api3.org/', icon: MarketIcon, text: 'Api3 Market' },
+  { to: 'https://docs.api3.org/', icon: DocsIcon, text: 'Docs' },
+];
 
 export const DesktopMenu = () => {
   const { pathname } = useLocation();
   return (
     <div className={styles.menu} data-cy="desktop-menu">
       {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
-      <NavLink
-        className={styles.navLink}
-        activeClassName={styles.activeNavLink}
-        to="/"
-        isActive={() => ['/'].includes(pathname)}
-      >
-        <div className={styles.menuItem}>
-          <DashboardIcon />
-          <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Staking</p>
-        </div>
-      </NavLink>
-      <NavLink className={styles.navLink} activeClassName={styles.activeNavLink} to="/governance">
-        <div className={styles.menuItem}>
-          <ProposalsIcon />
-          <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>Governance</p>
-        </div>
-      </NavLink>
-      <NavLink className={styles.navLink} activeClassName={styles.activeNavLink} to="/history">
-        <div className={styles.menuItem}>
-          <HistoryIcon />
-          <p className={classNames(styles.menuItemText, globalStyles.textSmall)}>History</p>
-        </div>
-      </NavLink>
+      {MenuItems.map(({ to, icon: Icon, text }) => (
+        <NavLink
+          key={to}
+          to={to}
+          activeClassName={styles.activeNavLink}
+          className={styles.navLink}
+          isActive={() => [to].includes(pathname)}
+        >
+          <div className={styles.menuItem}>
+            <Icon />
+            <p className={styles.menuItemText}>{text}</p>
+          </div>
+        </NavLink>
+      ))}
+      <div className={styles.externalLinksHeader}>External Links</div>
+      {ExternalLinks.map(({ to, text, icon: Icon }) => (
+        <ExternalLink key={to} className={styles.externalLink} href={to}>
+          <Icon />
+          {text}
+          <img src={images.externalLink} alt="" />
+        </ExternalLink>
+      ))}
     </div>
   );
 };

@@ -53,6 +53,39 @@
   }
 }
 
+.externalLinksHeader {
+  margin: 40px 0 8px 32px;
+  @include font-body-14;
+  color: $color-dark-blue-50;
+  display: flex;
+  align-items: center;
+
+  // Horizontal line after the External Links Header
+  &::after {
+    content: '';
+    display: block;
+    margin-left: 8px;
+    height: 1px;
+    background-color: $color-dark-blue-10;
+    width: 96px;
+  }
+}
+
+.externalLink {
+  display: flex;
+  align-items: center;
+  margin-left: 44px;
+  height: 40px;
+  gap: 8px;
+  text-decoration: none;
+  color: $color-dark-blue-400;
+  @include font-link-3;
+
+  img {
+    margin-left: 4px;
+  }
+}
+
 .mobileMenuWrapper {
   display: flex;
   align-items: center;
