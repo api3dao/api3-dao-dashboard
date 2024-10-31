@@ -66,4 +66,4 @@ export const wagmiConfig = createConfig({
 
 // Creates the Web3Modal instance that can be used to connect to a wallet. Must be called outside of React component.
 // See: https://docs.walletconnect.com/web3modal/react/about
-export const registerWeb3Modal = () => createWeb3Modal({ wagmiConfig, projectId, chains });
+export const registerWeb3Modal = () => createWeb3Modal({ wagmiConfig, projectId, chains, themeMode: 'light' });

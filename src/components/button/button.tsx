@@ -6,31 +6,20 @@ export type Props = {
   children: ReactNode;
   className?: string;
   type?: 'primary' | 'secondary' | 'link' | 'text';
-  size?: 'normal' | 'large';
+  size?: 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'normal' | 'large'; //TODO: remove normal and large
   disabled?: boolean;
   onClick?: () => void;
 };
 
-const Button = ({ children, disabled, type = 'primary', size = 'normal', onClick, className }: Props) => {
+const Button = ({ children, disabled, type = 'primary', size = 'md', onClick, className }: Props) => {
   return (
     <div className={classNames(styles.buttonWrapper, { [styles.disabled]: disabled }, className)}>
-      <button
-        className={classNames(styles.button, {
-          [styles.primary]: type === 'primary',
-          [styles.secondary]: type === 'secondary',
-          [styles.link]: type === 'link',
-          [styles.text]: type === 'text',
-          [styles.normal]: size === 'normal' && type !== 'link',
-          [styles.large]: size === 'large' && type !== 'link',
-        })}
-        onClick={onClick}
-        disabled={disabled}
-      >
+      <button className={classNames(styles.button, styles[type], styles[size])} onClick={onClick} disabled={disabled}>
         {children}
       </button>
       {['primary', 'secondary'].includes(type) && (
         <div
-          className={classNames(styles.buttonUnderline, {
+          className={classNames({
             [styles.primary]: type === 'primary',
             [styles.secondary]: type === 'secondary',
           })}

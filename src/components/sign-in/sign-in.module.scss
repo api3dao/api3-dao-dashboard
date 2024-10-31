@@ -5,6 +5,19 @@
   align-items: flex-start;
 }
 
+.connectButton {
+  width: 100%;
+  max-width: 264px;
+
+  button {
+    width: 100%;
+  }
+
+  @media (min-width: $md) {
+    max-width: 224px;
+  }
+}
+
 .connectedStatusInfo {
   margin: 0 $space-md;
 }
@@ -37,17 +50,9 @@
 }
 
 .hideSignInStatus {
-  @media (max-width: $max-sm) {
-    display: none;
-  }
-}
-
-.fullWidthMobile {
-  @media (max-width: $max-sm) {
-    width: 100%;
-    button {
-      width: 100%;
-    }
+  display: none;
+  @media (min-width: $md) {
+    display: block;
   }
 }
 

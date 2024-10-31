@@ -86,11 +86,9 @@ const SignIn = ({ dark, position }: Props) => {
     <>
       {!provider && (
         <ConnectButton
-          type={dark ? 'secondary' : 'primary'}
-          className={classNames({
-            [styles.mobileMenuButton]: dark,
-            [styles.fullWidthMobile]: position === 'navigation',
-          })}
+          type={dark ? 'primary' : 'secondary'}
+          size="md"
+          className={classNames(styles.connectButton, { [styles.mobileMenuButton]: dark })}
         >
           Connect Wallet
         </ConnectButton>

@@ -126,8 +126,41 @@ $progressbar-success: #57d4a2;
 $progressbar-warning: #ffc53d;
 $progressbar-error: $pink-color;
 
+$gradient-soft-light: linear-gradient(
+    rgba(91, 167, 245, 0.5) 0%,
+    rgba(0, 15, 220, 0.5) 28%,
+    rgba(255, 255, 255, 0.4) 64%,
+    rgba(245, 245, 245, 0) 92%
+  ),
+  linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.4) 7%,
+    rgba(0, 0, 0, 0.3) 23%,
+    rgba(255, 255, 255, 0.4) 37%,
+    rgba(0, 0, 0, 0.3) 51%,
+    rgba(255, 255, 255, 0.4) 65%,
+    rgba(0, 0, 0, 0.3) 81%,
+    rgba(255, 255, 255, 0.4) 97%
+  ),
+  linear-gradient(90deg, #1a4fde 0%, #5effd7 39%, #3e7aff 65%, #8ca7ee 100%);
+
+@mixin gradient-border($gradient) {
+  @supports (mask-composite: exclude) {
+    &:before {
+      content: '';
+      position: absolute;
+      inset: -1px -1px -1px -1px;
+      padding: 1px;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      background: $gradient;
+      border-radius: inherit;
+    }
+  }
+}
+
 // HEIGHTS
-$navigation-height: 110px;
+$navigation-height: 120px;
 $footer-height: 70px;
 $footer-height-media-sm: 200px;
 
