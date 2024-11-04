@@ -14,6 +14,7 @@ export interface Props extends BreakpointsProps {
   size?: Size;
   disabled?: boolean;
   href?: string;
+  theme?: 'light' | 'dark';
   onClick?: () => void;
 }
 
@@ -25,6 +26,7 @@ const Button = ({
   onClick,
   className,
   href,
+  theme = 'light',
   xs,
   sm,
   md,
@@ -38,14 +40,14 @@ const Button = ({
       {href ? (
         <a
           href={href}
-          className={classNames(styles.button, styles[type], styles[sizeClass])}
+          className={classNames(styles.button, styles[type], styles[theme], styles[sizeClass])}
           {...(isExternal(href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         >
           {children}
         </a>
       ) : (
         <button
-          className={classNames(styles.button, styles[type], styles[sizeClass])}
+          className={classNames(styles.button, styles[type], styles[theme], styles[sizeClass])}
           onClick={onClick}
           disabled={disabled}
         >

@@ -4,10 +4,8 @@ import Navigation from '../navigation';
 import Header from '../header';
 import { ERROR_REPORTING_CONSENT_KEY_NAME } from '../../utils';
 import styles from './layout.module.scss';
-import ExternalLink from '../external-link';
 import Button from '../button';
 import ErrorReportingNotice from './error-reporting-notice';
-import classNames from 'classnames';
 import { DesktopMenu } from '../menu';
 
 type Props = {
