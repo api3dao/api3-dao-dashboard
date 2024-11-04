@@ -144,6 +144,19 @@ $gradient-soft-light: linear-gradient(
   ),
   linear-gradient(90deg, #1a4fde 0%, #5effd7 39%, #3e7aff 65%, #8ca7ee 100%);
 
+$gradient-medium-light: linear-gradient(
+  90deg,
+  #003fde 3%,
+  #0047dc 19%,
+  #0092cd 31%,
+  #08c6c9 42%,
+  #00a2d8 51%,
+  #c4f2e3 64%,
+  #ccd8ec 70%,
+  #3c82ee 84%,
+  #53a0d7 98%
+);
+
 @mixin gradient-border($gradient) {
   @supports (mask-composite: exclude) {
     &:before {

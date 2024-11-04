@@ -10,6 +10,7 @@
 
 .button {
   background-color: transparent;
+  text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,7 +26,6 @@
 
   &.secondary {
     position: relative;
-    border: none;
     color: $color-dark-blue-400;
     border: 1px solid transparent;
     @include gradient-border($gradient-soft-light);
@@ -86,6 +86,43 @@
     &:disabled {
       color: $color-gray-400;
       border: 1px solid $color-gray-400;
+    }
+  }
+
+  &.menu-link-secondary {
+    position: relative;
+    border: none;
+    color: $color-dark-blue-400;
+    height: 20px;
+    padding: 0;
+
+    &.xs {
+      @include font-overline-2;
+    }
+
+    &.sm {
+      @include font-body-15;
+    }
+
+    &.md {
+      @include font-body-12;
+    }
+
+    &.lg {
+      height: 24px;
+      @include font-description-6;
+    }
+
+    &:hover {
+      color: $color-blue-400;
+    }
+
+    &:active {
+      color: $color-blue-300;
+    }
+
+    &:disabled {
+      color: $color-dark-blue-25;
     }
   }
 

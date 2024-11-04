@@ -33,52 +33,45 @@
 .footer {
   display: flex;
   position: relative;
-  bottom: 0;
-  width: 100%;
-  z-index: 30;
+  align-items: center;
+  justify-content: center;
   height: $footer-height-mobile;
-  border-top: 1px solid rgba($green-color, 0.5);
 
-  @media (min-width: $md) {
-    height: $footer-height-desktop;
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: $gradient-medium-light;
   }
 
   &Content {
     display: flex;
-    flex: 1;
-    justify-content: space-around;
-  }
-}
+    padding-top: 44px;
 
-.externalLinkButton {
-  button {
-    color: $secondary-color;
-  }
-}
+    & > * {
+      border-right: 1px solid $color-dark-blue-10;
+      padding: 0 8px;
 
-.noUnderline {
-  text-decoration: none;
-
-  button {
-    text-decoration: none !important;
-  }
-}
-
-.linkSpacing {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  @media (max-width: $max-sm) {
-    flex-direction: column;
-
-    & > *:not(:last-child) {
-      margin-bottom: $space-lg;
-      margin-right: 0 !important; // override the spacing for horizontal layout
+      &:last-child {
+        border-right: none;
+      }
     }
   }
+}
 
-  & > *:not(:last-child) {
-    margin-right: $space-md;
+@media (min-width: $md) {
+  .footer {
+    height: $footer-height-desktop;
+
+    &Content {
+      padding-top: 64px;
+
+      & > * {
+        padding: 0 40px;
+      }
+    }
   }
 }

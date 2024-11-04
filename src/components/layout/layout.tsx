@@ -2,7 +2,7 @@ import { ReactNode, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Navigation from '../navigation';
 import Header from '../header';
-import { ERROR_REPORTING_CONSENT_KEY_NAME, insertInBetween } from '../../utils';
+import { ERROR_REPORTING_CONSENT_KEY_NAME } from '../../utils';
 import styles from './layout.module.scss';
 import ExternalLink from '../external-link';
 import Button from '../button';
@@ -37,7 +37,6 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
 
   const footerLinks = [
     { text: 'About API3', href: 'https://api3.org/' },
-    { text: 'Docs', href: 'https://docs.api3.org/latest/members/' },
     { text: 'Error Reporting', onClick: () => setErrorReportingNoticeOpen(true) },
     { text: 'Github', href: 'https://github.com/api3dao/api3-dao-dashboard' },
   ];
@@ -59,34 +58,18 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
             <ErrorReportingNotice onClose={() => setErrorReportingNoticeOpen(false)} />
           ) : (
             <div className={styles.footerContent}>
-              <div className={styles.linkSpacing}>
-                {insertInBetween(
-                  footerLinks.map((link) => {
-                    if (link.href)
-                      return (
-                        <ExternalLink href={link.href} className={styles.noUnderline} key={link.text}>
-                          {link.text}
-                        </ExternalLink>
-                      );
-                    else
-                      return (
-                        <Button
-                          key={link.text}
-                          type="text"
-                          className={classNames(styles.externalLinkButton, styles.noUnderline)}
-                          onClick={link.onClick}
-                        >
-                          {link.text}
-                        </Button>
-                      );
-                  }),
-                  (index) => (
-                    <span className={styles.linkSeparator} key={index}>
-                      |
-                    </span>
-                  )
-                )}
-              </div>
+              {footerLinks.map((link) => (
+                <Button
+                  key={link.text}
+                  type="menu-link-secondary"
+                  onClick={link.onClick}
+                  href={link.href}
+                  size="xs"
+                  md={{ size: 'sm' }}
+                >
+                  {link.text}
+                </Button>
+              ))}
             </div>
           )}
         </footer>
