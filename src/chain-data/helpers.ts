@@ -18,7 +18,7 @@ export const updateImmutablyCurried =
     updateImmutably(state, updateCb);
 
 export const abbrStr = (str: string) => {
-  return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
+  return str.substring(0, 5) + '...' + str.substring(str.length - 4, str.length);
 };
 
 export interface PendingTransactionMessages {

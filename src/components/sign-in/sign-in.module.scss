@@ -1,8 +1,34 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+
+.accountDropdown {
+  margin-top: 20px;
+
+  .accountDropdownMenu {
+    border-top: none;
+    box-shadow: none;
+    background-color: $color-light-ui;
+    // background-color: $color-gray-300;
+    border-radius: 0 0 8px 8px;
+  }
+}
+
+.accountDropdownItem {
+  display: flex;
+  gap: 16px;
+  @include font-body-12;
+  color: $color-dark-blue-500;
+  padding: 16px 32px;
+  border: none;
+}
 
 .connectedStatus {
   display: flex;
   align-items: flex-start;
+
+  img {
+    margin: -20px -20px 0 0;
+  }
 }
 
 .connectButton {
@@ -19,7 +45,18 @@
 }
 
 .connectedStatusInfo {
-  margin: 0 $space-md;
+  width: 128px;
+  margin: 0 8px;
+}
+
+.accountName {
+  color: $color-dark-blue-500;
+  @include font-body-6;
+}
+
+.connectedTo {
+  @include font-body-15;
+  color: $color-dark-blue-100;
 }
 
 .dark {

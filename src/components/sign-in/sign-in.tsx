@@ -29,8 +29,10 @@ const ConnectedStatus = ({ dark, position }: Props) => {
     <div className={styles.connectedStatus} data-cy="connected-status">
       <img src={dark ? images.connectedDark : images.connected} alt="connected icon" />
       <div className={classNames(styles.connectedStatusInfo, { [styles.dark]: dark })}>
-        <p data-cy="account">{userAccountName ? userAccountName : abbrStr(userAccount)}</p>
-        <p className={globalStyles.textXSmall}>Connected to {networkName}</p>
+        <p data-cy="account" className={styles.accountName}>
+          {userAccountName ? userAccountName : abbrStr(userAccount)}
+        </p>
+        <p className={styles.connectedTo}>Connected to {networkName}</p>
       </div>
     </div>
   );
@@ -55,12 +57,15 @@ const ConnectedStatus = ({ dark, position }: Props) => {
         </>
       ) : (
         <Dropdown
+          className={styles.accountDropdown}
           menu={
-            <DropdownMenu position={dark ? 'top' : 'bottom'}>
-              <DropdownMenuItem onClick={handleDisconnect}>Disconnect Wallet</DropdownMenuItem>
+            <DropdownMenu position={dark ? 'top' : 'bottom'} className={styles.accountDropdownMenu}>
+              <DropdownMenuItem className={styles.accountDropdownItem} onClick={handleDisconnect}>
+                <img src={images.disconnect} alt="" /> Disconnect Wallet
+              </DropdownMenuItem>
             </DropdownMenu>
           }
-          icon={<img src={dark ? images.arrowDropdownDark : images.arrowDropdown} alt="dropdown icon" />}
+          icon={<img src={images.arrowDropdown} alt="dropdown icon" />}
           alignIcon="start"
         >
           {connectedContent}
