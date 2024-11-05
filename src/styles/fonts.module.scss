@@ -263,6 +263,14 @@
   letter-spacing: 0.16px;
 }
 
+@mixin font-link-1 {
+  font-family: Karla;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%; /* 22.4px */
+}
+
 @mixin font-link-2 {
   font-family: Karla;
   font-size: 14px;

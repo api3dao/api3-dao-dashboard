@@ -10,7 +10,7 @@ type BreakpointsProps = { [key in BreakpointKeys]?: { size?: Size } };
 export interface Props extends BreakpointsProps {
   children: ReactNode;
   className?: string;
-  type?: 'primary' | 'secondary' | 'link' | 'text' | 'menu-link-secondary';
+  type?: 'primary' | 'secondary' | 'link' | 'text' | 'menu-link-secondary' | 'link-blue';
   size?: Size;
   disabled?: boolean;
   href?: string;
