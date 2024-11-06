@@ -21,7 +21,6 @@ export const images = {
   hamburgerMenu: '/hamburger-menu.svg',
   help: '/help.svg',
   info: '/info.svg',
-  menuClose: '/menu-close.svg',
   notificationClose: '/notification-close.svg',
   success: '/success.svg',
   texture: '/texture.png',

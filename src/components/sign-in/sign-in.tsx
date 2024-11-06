@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { Address, useDisconnect, useEnsName } from 'wagmi';
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
-import Button from '../../components/button';
 import ConnectButton from '../connect-button';
 import { Modal as GenericModal } from '../../components/modal';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown';
@@ -11,6 +10,7 @@ import styles from './sign-in.module.scss';
 import globalStyles from '../../styles/global-styles.module.scss';
 import { images } from '../../utils';
 import { SUPPORTED_NETWORKS, useProviderSubscriptions } from '../../contracts';
+import DisconnectIcon from './disconnect-icon';
 
 type Props = {
   dark?: boolean;
@@ -47,13 +47,9 @@ const ConnectedStatus = ({ dark, position }: Props) => {
       {position === 'mobileMenu' ? (
         <>
           {connectedContent}
-          <Button
-            type="secondary"
-            onClick={handleDisconnect}
-            className={classNames({ [styles.mobileMenuButton]: position === 'mobileMenu' })}
-          >
-            Disconnect Wallet
-          </Button>
+          <button onClick={handleDisconnect} className={styles.mobileMenuButton}>
+            <DisconnectIcon /> Disconnect
+          </button>
         </>
       ) : (
         <Dropdown
@@ -61,7 +57,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
           menu={
             <DropdownMenu position={dark ? 'top' : 'bottom'} className={styles.accountDropdownMenu}>
               <DropdownMenuItem className={styles.accountDropdownItem} onClick={handleDisconnect}>
-                <img src={images.disconnect} alt="" /> Disconnect Wallet
+                <DisconnectIcon /> Disconnect
               </DropdownMenuItem>
             </DropdownMenu>
           }
@@ -92,8 +88,9 @@ const SignIn = ({ dark, position }: Props) => {
       {!provider && (
         <ConnectButton
           type={dark ? 'primary' : 'secondary'}
-          size="md"
-          className={classNames(styles.connectButton, { [styles.mobileMenuButton]: dark })}
+          size="sm"
+          md={{ size: 'md' }}
+          className={styles.connectButton}
         >
           Connect Wallet
         </ConnectButton>

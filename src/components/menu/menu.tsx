@@ -71,30 +71,28 @@ export const MobileMenu = () => {
       </div>
       <div className={classNames(styles.mobileMenu, { [styles.open]: open })}>
         <div className={styles.mobileMenuHeader}>
-          <img src={images.api3DaoLogoDarkTheme} alt="dark logo" />
-          <img className={styles.menuIcon} onClick={() => setOpen(false)} src={images.menuClose} alt="close icon" />
+          <img src={images.api3DaoLogoDarkTheme} alt="dark logo" width={80} />
+          <img onClick={() => setOpen(false)} src={images.close} alt="close icon" />
         </div>
         <div className={styles.mobileMenuScrollWrap}>
           <div className={styles.mobileMenuContent}>
             {/* isActive is required for the root path otherwise the link stays highlighted on other pages */}
-            <NavLink activeClassName={styles.activeNavLink} to="/" isActive={() => ['/'].includes(pathname)}>
-              <div className={styles.menuMobileItem}>
-                <DashboardIcon />
-                <p className={styles.menuMobileItemText}>Staking</p>
-              </div>
-            </NavLink>
-            <NavLink activeClassName={styles.activeNavLink} to="/governance">
-              <div className={styles.menuMobileItem}>
-                <ProposalsIcon />
-                <p className={styles.menuMobileItemText}>Governance</p>
-              </div>
-            </NavLink>
-            <NavLink activeClassName={styles.activeNavLink} to="/history">
-              <div className={styles.menuMobileItem}>
-                <HistoryIcon />
-                <p className={styles.menuMobileItemText}>History</p>
-              </div>
-            </NavLink>
+            {MenuItems.map(({ to, icon: Icon, text }) => (
+              <NavLink key={to} to={to} activeClassName={styles.activeNavLink} isActive={() => [to].includes(pathname)}>
+                <div className={styles.menuMobileItem}>
+                  <Icon />
+                  <p className={styles.menuMobileItemText}>{text}</p>
+                </div>
+              </NavLink>
+            ))}
+            <div className={styles.externalLinksHeader}>External Links</div>
+            {ExternalLinks.map(({ to, text, icon: Icon }) => (
+              <ExternalLink key={to} className={styles.externalLink} href={to}>
+                <Icon />
+                {text}
+                <img src={images.externalLink} alt="" />
+              </ExternalLink>
+            ))}
           </div>
           <div className={classNames(styles.mobileMenuFooter, { [styles.borderTop]: provider })}>
             <SignIn position="mobileMenu" dark />

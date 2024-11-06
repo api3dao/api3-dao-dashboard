@@ -8,18 +8,17 @@
     border-top: none;
     box-shadow: none;
     background-color: $color-light-ui;
-    // background-color: $color-gray-300;
     border-radius: 0 0 8px 8px;
   }
-}
 
-.accountDropdownItem {
-  display: flex;
-  gap: 16px;
-  @include font-body-12;
-  color: $color-dark-blue-500;
-  padding: 16px 32px;
-  border: none;
+  .accountDropdownItem {
+    display: flex;
+    gap: 16px;
+    @include font-body-12;
+    color: $color-dark-blue-500;
+    padding: 16px 32px;
+    border: none;
+  }
 }
 
 .connectedStatus {
@@ -27,7 +26,7 @@
   align-items: flex-start;
 
   img {
-    margin: -20px -20px 0 0;
+    margin: -20px -20px -20px -20px;
   }
 }
 
@@ -61,13 +60,30 @@
 
 .dark {
   color: $black-color;
+
+  .accountName {
+    color: $color-base-light;
+  }
+
+  .connectedTo {
+    color: $color-dark-blue-25;
+  }
 }
 
 .mobileMenuButton {
   width: 100%;
-  button {
-    width: 100%;
-    color: $secondary-black-color;
+  color: $color-base-light;
+  background-color: $color-base-blue-ui;
+  border: none;
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  gap: 16px;
+  padding: 24px 40px;
+  @include font-body-9;
+
+  svg {
+    width: 24px;
+    height: 24px;
   }
 }
 
@@ -75,10 +91,10 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  margin: 0 8px;
 
   & > * {
-    margin-bottom: $space-lg;
+    margin-bottom: 16px;
   }
 
   & > *:last-child {
