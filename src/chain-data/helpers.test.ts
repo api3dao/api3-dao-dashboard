@@ -13,5 +13,5 @@ test('updateImmutably', () => {
 test('abbrStr', () => {
   const string = 'dffd4543xggdfgdter5452442zsdfs31214';
 
-  expect(abbrStr(string)).toBe('dffd4543x...1214');
+  expect(abbrStr(string)).toBe('dffd4...1214');
 });
