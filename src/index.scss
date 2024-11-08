@@ -20,6 +20,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+html:has(.mobile-menu-open) {
+  overflow: hidden;
+}
+
 // This is third party lib - it is necessary to change z-index
 #WEB3_CONNECT_MODAL_ID {
   position: relative;

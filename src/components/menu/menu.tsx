@@ -64,7 +64,7 @@ export const MobileMenu = () => {
   const { provider } = useChainData();
 
   return (
-    <div className={styles.mobileMenuWrapper}>
+    <div className={classNames(styles.mobileMenuWrapper, { 'mobile-menu-open': open })}>
       <div className={classNames(styles.menuIconWrapper, { [styles.connected]: !!provider })}>
         {provider && <img src={images.connected} alt="connected icon" />}
         <img className={styles.menuIcon} onClick={() => setOpen(true)} src={images.hamburgerMenu} alt="menu icon" />
