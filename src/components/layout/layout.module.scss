@@ -12,20 +12,17 @@
 
 .main {
   max-width: 468px;
-  min-height: calc(100vh - #{$navigation-height} - #{$footer-height-mobile});
   padding: 0 16px;
   margin: 0 auto;
   flex: 1;
 
   @media (min-width: $sm) {
     max-width: 640px;
-    min-height: calc(100vh - #{$navigation-height} - #{$footer-height-desktop});
   }
 
   @media (min-width: $md) {
     max-width: 920px;
     padding: 0 64px;
-    min-height: calc(100vh - #{$navigation-height} - #{$footer-height-desktop});
     padding-bottom: 80px;
   }
 }
@@ -35,7 +32,7 @@
   position: relative;
   align-items: center;
   justify-content: center;
-  height: $footer-height-mobile;
+  height: 196px;
 
   &Content {
     display: flex;
@@ -64,7 +61,7 @@
 
 @media (min-width: $md) {
   .footer {
-    height: $footer-height-desktop;
+    height: 140px;
 
     &Content {
       padding-top: 64px;

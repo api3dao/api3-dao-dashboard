@@ -65,7 +65,7 @@ export const MobileMenu = () => {
 
   return (
     <div className={styles.mobileMenuWrapper}>
-      <div className={styles.menuIconWrapper}>
+      <div className={classNames(styles.menuIconWrapper, { [styles.connected]: !!provider })}>
         {provider && <img src={images.connected} alt="connected icon" />}
         <img className={styles.menuIcon} onClick={() => setOpen(true)} src={images.hamburgerMenu} alt="menu icon" />
       </div>

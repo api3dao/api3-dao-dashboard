@@ -33,12 +33,14 @@
 .connectButton {
   width: calc(100% - 64px);
   max-width: 404px;
+  margin-top: 24px;
 
   button {
     width: 100%;
   }
 
   @media (min-width: $md) {
+    margin-top: 0;
     max-width: 224px;
   }
 }
@@ -106,6 +108,8 @@
   display: none;
   @media (min-width: $md) {
     display: block;
+    height: 96px;
+    padding-top: 24px;
   }
 }
 

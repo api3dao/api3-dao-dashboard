@@ -207,4 +207,9 @@
 .menuIconWrapper {
   display: flex;
   align-items: center;
+  height: 56px;
+
+  &.connected {
+    height: 64px;
+  }
 }
