@@ -82,7 +82,7 @@
   @include font-link-3;
 
   img {
-    margin-left: 4px;
+    padding: 4px;
   }
 }
 
@@ -101,7 +101,6 @@
   position: fixed;
   top: 0;
   right: 0;
-  left: 0;
   bottom: 0;
   z-index: 100;
   transform: translateX(100%);

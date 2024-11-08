@@ -31,8 +31,8 @@
 }
 
 .connectButton {
-  width: 100%;
-  max-width: 264px;
+  width: calc(100% - 64px);
+  max-width: 404px;
 
   button {
     width: 100%;
