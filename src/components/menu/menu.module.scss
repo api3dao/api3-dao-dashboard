@@ -59,6 +59,7 @@
   color: $color-dark-blue-50;
   display: flex;
   align-items: center;
+  white-space: nowrap;
 
   // Horizontal line after the External Links Header
   &::after {
@@ -78,6 +79,7 @@
   height: 40px;
   gap: 8px;
   text-decoration: none;
+  white-space: nowrap;
   color: $color-dark-blue-400;
   @include font-link-3;
 
@@ -106,6 +108,11 @@
   transform: translateX(100%);
   transition: transform 350ms;
   box-sizing: border-box;
+  width: 100%;
+
+  @media (min-width: $xs) {
+    width: unset;
+  }
 
   &.open {
     transform: translateX(0);
@@ -167,7 +174,11 @@
 
 .mobileMenuContent {
   box-sizing: border-box;
-  padding: 0 48px;
+  padding: 0 0 0 16px;
+
+  @media (min-width: $xs) {
+    padding: 0 48px;
+  }
 
   & > * {
     color: $color-base-light;
@@ -176,6 +187,8 @@
 
   svg {
     color: $color-base-light;
+    min-width: 24px;
+    min-height: 24px;
   }
 }
 
@@ -196,6 +209,11 @@
   display: flex;
   align-items: center;
   margin-bottom: 8px;
+
+  svg {
+    min-width: 32px;
+    min-height: 32px;
+  }
 }
 
 .menuMobileItemText {
