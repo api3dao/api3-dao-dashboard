@@ -37,7 +37,7 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
 
   const links = [
     { text: 'About API3', href: 'https://api3.org/' },
-    { text: 'Docs', href: 'https://docs.api3.org/latest/members/' },
+    { text: 'Docs', href: 'https://dao-docs.api3.org/members/' },
     { text: 'Error Reporting', onClick: () => setErrorReportingNoticeOpen(true) },
     { text: 'Github', href: 'https://github.com/api3dao/api3-dao-dashboard' },
   ];
