@@ -35,6 +35,7 @@
       "groupSlug": "dev-dependencies"
     }
   ],
+  "ignoreDeps": ["api3-dao"],
   "rangeStrategy": "bump",
   "lockFileMaintenance": {
     "enabled": true
