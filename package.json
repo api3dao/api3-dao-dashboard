@@ -123,8 +123,8 @@
     "url": "^0.11.3"
   },
   "resolutions": {
-    "@typescript-eslint/eslint-plugin": "^6.17.0",
-    "@typescript-eslint/parser": "^6.17.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "@types/jest": "^27.5.2",
     "@types/react": "^18.2.46",
     "jest-regex-util": "^27.5.1",
