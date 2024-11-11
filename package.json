@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
-  "engines": {
-    "node": "18"
-  },
   "scripts": {
     "build": "react-app-rewired build",
     "ci:cypress": "yarn start-test \"yarn concurrently 'yarn eth:node' 'yarn ci:start'\" '8545|3000' 'yarn eth:deploy-dao-contracts-on-hardhat && yarn cypress:run'",
