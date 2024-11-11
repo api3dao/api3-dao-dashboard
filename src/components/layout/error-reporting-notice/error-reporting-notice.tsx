@@ -3,6 +3,7 @@ import { ERROR_REPORTING_CONSENT_KEY_NAME, images, isErrorReportingAllowed } fro
 import Button from '../../button';
 import { triggerOnEnter } from '../../modal';
 import styles from './error-reporting-notice.module.scss';
+import ExternalLink from '../../external-link';
 
 interface WelcomeModalContentProps {
   onClose: () => void;
@@ -28,9 +29,9 @@ const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
         <div className={styles.content}>
           <div className={styles.notice}>
             In order to provide the best services for you, we collect anonymized error data through{' '}
-            <Button type="link-blue" size="sm" md={{ size: 'md' }} theme="dark" href="https://sentry.io/">
+            <ExternalLink className={styles.dark} href="https://sentry.io/">
               Sentry
-            </Button>
+            </ExternalLink>
             <img src={images.externalLink} alt="" className={styles.externalLinkIcon} />. We do not gather IP address or
             user agent information.
           </div>

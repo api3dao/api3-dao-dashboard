@@ -1,4 +1,6 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+@import '../../styles/link-styles.module.scss';
 
 .layout {
   background: linear-gradient(334deg, #fafafa -0.91%, #ebf0ff 48.81%, #fafafa 99.52%);
@@ -38,7 +40,16 @@
     display: flex;
     padding-top: 44px;
 
-    & > * {
+    a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      @include font-overline-2;
+      @include menu-link-secondary;
+    }
+
+    & > *,
+    & > a {
       border-right: 1px solid $color-dark-blue-10;
       padding: 0 8px;
 
@@ -66,7 +77,12 @@
     &Content {
       padding-top: 64px;
 
-      & > * {
+      a {
+        @include font-body-15;
+      }
+
+      & > *,
+      & > a {
         padding: 0 40px;
       }
     }

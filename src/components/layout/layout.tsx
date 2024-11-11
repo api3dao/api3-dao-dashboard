@@ -7,6 +7,7 @@ import styles from './layout.module.scss';
 import Button from '../button';
 import ErrorReportingNotice from './error-reporting-notice';
 import { DesktopMenu } from '../menu';
+import ExternalLink from '../external-link';
 
 type Props = {
   children: ReactNode;
@@ -56,18 +57,21 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
             <ErrorReportingNotice onClose={() => setErrorReportingNoticeOpen(false)} />
           ) : (
             <div className={styles.footerContent}>
-              {footerLinks.map((link) => (
-                <Button
-                  key={link.text}
-                  type="menu-link-secondary"
-                  onClick={link.onClick}
-                  href={link.href}
-                  size="xs"
-                  md={{ size: 'sm' }}
-                >
-                  {link.text}
-                </Button>
-              ))}
+              {footerLinks.map((link) =>
+                link.href ? (
+                  <ExternalLink href={link.href}>{link.text}</ExternalLink>
+                ) : (
+                  <Button
+                    key={link.text}
+                    type="menu-link-secondary"
+                    onClick={link.onClick}
+                    size="xs"
+                    md={{ size: 'sm' }}
+                  >
+                    {link.text}
+                  </Button>
+                )
+              )}
             </div>
           )}
         </footer>
