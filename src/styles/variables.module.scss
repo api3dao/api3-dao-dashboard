@@ -157,6 +157,7 @@ $gradient-medium-light: linear-gradient(
   #3c82ee 84%,
   #53a0d7 98%
 );
+$gradient-light: linear-gradient(180deg, #fafafa 0%, #f0f4ff 100%);
 
 @mixin gradient-border($gradient) {
   @supports (mask-composite: exclude) {
