@@ -63,12 +63,14 @@
 
 .dark {
   color: $black-color;
+  width: unset;
 
   .accountName {
     color: $color-base-light;
   }
 
   .connectedTo {
+    @include font-body-12;
     color: $color-dark-blue-25;
   }
 }
