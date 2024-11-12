@@ -1,4 +1,15 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
+
+.pendingUnstakePanel {
+  padding-top: $space-md;
+  border-top: 1px solid $color-dark-blue-10;
+  box-sizing: border-box;
+
+  @media (min-width: $sm) {
+    padding: $space-lg $space-lg $space-md $space-lg;
+  }
+}
 
 .pendingUnstakeContent {
   display: flex;
@@ -8,35 +19,46 @@
 .pendingUnstakeRow {
   width: 100%;
   display: flex;
-  margin-top: $space-lg;
+  margin-top: $space-xs;
+
   &.amount {
     align-items: center;
+  }
+
+  h5 {
+    @include font-subtitle-6;
+    color: $color-dark-blue-400;
+  }
+
+  @media (min-width: $sm) {
+    h5 {
+      @include font-subtitle-3;
+    }
   }
 }
 
 .pendingUnstakeTitle {
-  font-size: $text-small;
-  line-height: 17px;
-  color: $green-color;
-  font-weight: 500;
+  @include font-body-11;
+  color: $color-dark-blue-50;
   text-align: center;
+  padding-top: $space-xs;
 }
 
 .pendingUnstakeName {
-  flex: 0 0 40%;
-  font-size: $text-small;
-  line-height: 17px;
-  font-weight: 500;
+  @include font-body-11;
+  color: $color-dark-blue-100;
   text-align: right;
-  margin-right: $space-md;
+  width: 40%;
+  margin-right: $space-lg;
 }
 
 .pendingUnstakeActions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: $space-md;
-  margin-bottom: $space-xs;
+  justify-content: center;
+  gap: $space-md;
+  margin-top: $space-lg;
+  white-space: nowrap;
 }
 
 .pendingUnstakeCountdown {
@@ -44,7 +66,10 @@
 }
 
 .pendingUnstakeCountdownItem {
+  @include font-body-11;
+  color: $color-dark-blue-400;
   text-align: center;
+
   & > * {
     margin-bottom: $space-xxs;
   }
@@ -54,15 +79,12 @@
 }
 
 .shortcut {
-  font-size: $text-xsmall;
-  line-height: 18px;
-  font-weight: 500;
-  color: $tertiary-color;
+  @include font-body-14;
+  color: $color-dark-blue-50;
 }
 
 .colon {
-  font-size: $text-small;
-  line-height: 17px;
-  font-weight: 500;
-  margin: 0 $space-xxs;
+  @include font-body-11;
+  color: $color-dark-blue-50;
+  margin: 0 5px;
 }

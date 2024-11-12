@@ -1,0 +1,29 @@
+@import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+
+.card {
+  border-radius: 20px;
+  border: 1px solid $color-blue-25;
+  background: $gradient-light;
+  box-shadow: 0px 4px 4px 0px rgba(190, 210, 255, 0.2);
+  padding: $space-lg;
+  padding-bottom: $space-xl;
+}
+
+.cardHeader {
+  @include font-heading-9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: $space-md;
+  margin-bottom: $space-xxl;
+}
+
+.contentFooter {
+  margin-top: $space-xl;
+  text-align: center;
+}
+
+.cardChildren {
+  margin-top: $space-lg;
+}
