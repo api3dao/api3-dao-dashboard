@@ -113,7 +113,7 @@
     "react-scripts": "5.0.1",
     "replace-in-file": "^6.3.5",
     "sass": "^1.69.7",
-    "start-server-and-test": "^1.15.4",
+    "start-server-and-test": "^2.0.8",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "ts-node": "^10.9.2",
@@ -123,10 +123,10 @@
     "url": "^0.11.3"
   },
   "resolutions": {
-    "@typescript-eslint/eslint-plugin": "^6.17.0",
-    "@typescript-eslint/parser": "^6.17.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "@types/jest": "^27.5.2",
-    "@types/react": "^18.2.46",
+    "@types/react": "^18.3.12",
     "jest-regex-util": "^27.5.1",
     "jest-watcher": "^27.5.1",
     "jest-worker": "^27.5.1"
