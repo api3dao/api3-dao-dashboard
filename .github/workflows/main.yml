@@ -5,11 +5,15 @@ on:
     branches:
       - main
       - dev
+      - test-node18
   pull_request:
     branches:
       - main
       - production
       - dev
+
+env:
+  NODE_VERSION: 18
 
 jobs:
   documentation:
@@ -28,7 +32,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
@@ -47,7 +51,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'
       - name: Cache node modules
         uses: actions/cache@v4
@@ -56,14 +60,13 @@ jobs:
           path: |
             node_modules
             */*/node_modules
-          key: modules-${{ hashFiles('**/yarn.lock') }}
+          key: modules-node${{ env.NODE_VERSION }}-${{ hashFiles('**/yarn.lock') }}
       - name: Cache cypress
         id: cypress-cache
         uses: actions/cache@v4
         with:
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node${{ env.NODE_VERSION }}-cypress-${{ hashFiles('**/yarn.lock') }}
           path: ~/.cache/Cypress
-          restore-keys: ${{ runner.os }}-cypress-
       - name: Install Dependencies
         # We add the additional cypress install to handle the common Missing Binary issue: https://docs.cypress.io/guides/continuous-integration/introduction#Missing-binary
         run: |
