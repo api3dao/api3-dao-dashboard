@@ -7,7 +7,7 @@ const { join } = require('path');
 const { execAndLog, promiseWrapper } = require('./utils');
 
 // NOTE: Change this to true in case you need more information to debug issues
-const DEBUG = false;
+const DEBUG = true;
 
 const main = async () => {
   const rootDir = join(__dirname, '../');
