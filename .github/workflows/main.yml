@@ -83,12 +83,21 @@ jobs:
       - name: Cypress tests
         timeout-minutes: 60
         env:
+          HARDHAT_MAX_MEMORY: 4096
           NODE_OPTIONS: '--max-old-space-size=4096'
           REACT_APP_NODE_ENV: development
           REACT_APP_PROJECT_ID: e7e6e90622ec8e65c4d02e829a68529a
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
           REACT_APP_MAINNET_PROVIDER_URL: ${{ secrets.REACT_APP_MAINNET_PROVIDER_URL }}
-        run: yarn percy exec -- -- yarn ci:cypress
+        run: |
+          yarn eth:node > hardhat.log 2>&1 & 
+          yarn ci:start > react.log 2>&1 &
+          # Wait for both services to be ready
+          timeout 60s bash -c 'until nc -z localhost 8545; do sleep 1; done'
+          timeout 60s bash -c 'until nc -z localhost 3000; do sleep 1; done'
+          # Deploy contracts and run tests
+          yarn eth:deploy-dao-contracts-on-hardhat
+          yarn cypress:run
       - name: Store artifacts
         uses: actions/upload-artifact@v4
         if: always()
