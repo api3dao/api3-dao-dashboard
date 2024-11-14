@@ -69,18 +69,25 @@
 }
 
 .firstSectionCell {
-  text-wrap: pretty;
+  display: flex;
+  justify-content: space-between;
+}
+
+.leftColumn {
+  text-align: right;
+}
+
+.rightColumn {
+  width: 100%;
 
   & img {
-    margin-left: 8px;
-    transform: translateY(4px);
+    margin-left: 4px;
   }
 }
 
 .firstSectionLabel {
   @include font-body-6;
-  display: inline;
-  white-space: wrap;
+  text-wrap: pretty;
   color: $color-dark-blue-100;
 
   @media (min-width: $sm) {

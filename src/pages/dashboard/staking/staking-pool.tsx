@@ -2,7 +2,6 @@ import { useChainData } from '../../../chain-data';
 import { formatAndRoundApi3, round } from '../../../utils/api3-format';
 import { stakingPoolSelector } from '../../../logic/dashboard';
 import RadialChart from './radial-chart';
-import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './staking-pool.module.scss';
 import classNames from 'classnames';
 import { images, UNKNOWN_NUMBER } from '../../../utils';
@@ -27,10 +26,10 @@ const StakingPool = () => {
     <div className={styles.stakingPool}>
       <div className={styles.firstSection}>
         <div className={styles.sectionRow}>
-          <div className={classNames(styles.firstSectionCell, globalStyles.textRight)}>
+          <div className={classNames(styles.firstSectionCell, styles.leftColumn)}>
             <p className={styles.firstSectionValue}>{currentApyText}</p>
           </div>
-          <div className={styles.firstSectionCell}>
+          <div className={classNames(styles.firstSectionCell, styles.rightColumn)}>
             <p className={styles.firstSectionLabel}>Annual Rewards (APY)</p>
             <Tooltip overlay={estimatedValueTooltip}>
               <img src={images.helpOutline} alt="help" />
@@ -38,12 +37,12 @@ const StakingPool = () => {
           </div>
         </div>
         <div className={styles.sectionRow}>
-          <div className={classNames(styles.firstSectionCell, globalStyles.textRight)}>
+          <div className={classNames(styles.firstSectionCell, styles.leftColumn)}>
             <h5 className={classNames(styles.firstSectionValue, styles.firstSectionValueSupplyGrowth)}>
               {annualTotalSupplyGrowthText}
             </h5>
           </div>
-          <div className={styles.firstSectionCell}>
+          <div className={classNames(styles.firstSectionCell, styles.rightColumn)}>
             <p className={styles.firstSectionLabel}>Annual Total Supply Growth</p>
             <Tooltip overlay={estimatedValueTooltip}>
               <img src={images.helpOutline} alt="help" />
