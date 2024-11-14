@@ -110,7 +110,7 @@ const Dashboard = () => {
             </div>
           }
           contentFooter={
-            <Button type="secondary" size="sm" onClick={() => setOpenModal('withdraw')} disabled={!canWithdraw}>
+            <Button type="secondary-neutral" size="xs" onClick={() => setOpenModal('withdraw')} disabled={!canWithdraw}>
               Withdraw
             </Button>
           }
@@ -148,7 +148,12 @@ const Dashboard = () => {
           }
           contentFooter={
             !pendingUnstake && (
-              <Button size="sm" type="secondary" onClick={() => setOpenModal('unstake')} disabled={!canInitiateUnstake}>
+              <Button
+                type="secondary-neutral"
+                size="xs"
+                onClick={() => setOpenModal('unstake')}
+                disabled={!canInitiateUnstake}
+              >
                 Initiate Unstake
               </Button>
             )

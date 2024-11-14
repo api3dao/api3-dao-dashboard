@@ -1,6 +1,9 @@
 @import '../../styles/variables.module.scss';
 @import '../../styles/fonts.module.scss';
 @import '../../styles/link-styles.module.scss';
+@import './variants/primary.module.scss';
+@import './variants/secondary.module.scss';
+@import './variants/secondary-neutral.module.scss';
 
 .buttonWrapper {
   display: inline-block;
@@ -21,139 +24,15 @@
   cursor: pointer;
 
   &.primary {
-    background-color: $color-blue-500;
-    color: $color-base-light;
-    border: none;
-
-    &.xxs {
-      padding: 0 10px;
-      border-radius: 24px;
-      height: 24px;
-      @include font-body-17;
-    }
-
-    &.xs {
-      padding: 0 16px;
-      border-radius: 24px;
-      height: 32px;
-      @include font-body-14;
-    }
-
-    &.sm {
-      padding: 0 20px;
-      border-radius: 24px;
-      height: 40px;
-      @include font-button-3;
-    }
-
-    &.md {
-      padding: 0 24px;
-      border-radius: 28px;
-      height: 48px;
-      @include font-button-2;
-    }
-
-    &.lg {
-      padding: 0 32px;
-      border-radius: 32px;
-      height: 56px;
-      @include font-button-1;
-    }
-
-    &:hover {
-      background-color: $color-blue-200;
-    }
-
-    &:active {
-      background-color: $color-blue-600;
-    }
-
-    &:disabled {
-      color: $color-blue-50;
-      background-color: $color-blue-10;
-    }
-
-    &.dark {
-      background-color: $color-blue-400;
-
-      &:hover {
-        background-color: $color-blue-200;
-      }
-
-      &:active {
-        background-color: $color-blue-500;
-      }
-
-      &:disabled {
-        color: $color-blue-400;
-        background-color: $color-dark-blue-400;
-      }
-    }
+    @include button-primary;
   }
 
   &.secondary {
-    position: relative;
-    color: $color-dark-blue-400;
-    border: 1px solid transparent;
-    @include gradient-border($gradient-soft-light);
+    @include button-secondary;
+  }
 
-    &.xxs {
-      padding: 0 10px;
-      border-radius: 24px;
-      height: 24px;
-      @include font-body-17;
-    }
-
-    &.xs {
-      padding: 0 16px;
-      border-radius: 24px;
-      height: 32px;
-      @include font-body-14;
-    }
-
-    &.sm {
-      padding: 0 20px;
-      border-radius: 24px;
-      height: 40px;
-      @include font-button-3;
-    }
-
-    &.md {
-      padding: 0 24px;
-      border-radius: 28px;
-      height: 48px;
-      @include font-button-2;
-    }
-
-    &.lg {
-      padding: 0 32px;
-      border-radius: 32px;
-      height: 56px;
-      @include font-button-1;
-    }
-
-    &:hover,
-    &:active,
-    &:disabled {
-      &:before {
-        padding: 0px;
-      }
-    }
-
-    &:hover {
-      color: $color-blue-200;
-      border: 1px solid $color-blue-200;
-    }
-
-    &:active {
-      color: $color-blue-600;
-      border: 1px solid $color-blue-600;
-    }
-
-    &:disabled {
-      color: $color-gray-400;
-      border: 1px solid $color-gray-400;
-    }
+  &.secondary-neutral {
+    @include button-secondary-neutral;
   }
 
   &.link-blue {

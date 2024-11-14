@@ -1,0 +1,64 @@
+@mixin button-secondary-neutral {
+  position: relative;
+  color: $color-blue-500;
+  border: 1px solid $color-blue-500;
+  background: $color-base-light;
+
+  &.xxs {
+    padding: 0 10px;
+    border-radius: 24px;
+    height: 24px;
+    @include font-body-17;
+  }
+
+  &.xs {
+    padding: 0 16px;
+    border-radius: 24px;
+    height: 32px;
+    @include font-body-14;
+  }
+
+  &.sm {
+    padding: 0 20px;
+    border-radius: 24px;
+    height: 40px;
+    @include font-button-3;
+  }
+
+  &.md {
+    padding: 0 24px;
+    border-radius: 28px;
+    height: 48px;
+    @include font-button-2;
+  }
+
+  &.lg {
+    padding: 0 32px;
+    border-radius: 32px;
+    height: 56px;
+    @include font-button-1;
+  }
+
+  &:hover,
+  &:active,
+  &:disabled {
+    &:before {
+      padding: 0px;
+    }
+  }
+
+  &:hover {
+    color: $color-blue-200;
+    border: 1px solid $color-blue-200;
+  }
+
+  &:active {
+    color: $color-blue-600;
+    border: 1px solid $color-blue-600;
+  }
+
+  &:disabled {
+    color: $color-gray-400;
+    border: 1px solid $color-blue-50;
+  }
+}
