@@ -58,7 +58,7 @@ const Dashboard = () => {
             </div>
 
             <div className={styles.connectWalletBoxButton}>
-              <ConnectButton type="link-blue" size="sm" md={{ size: 'md' }}>
+              <ConnectButton type="link-blue" size="sm" sm={{ size: 'md' }}>
                 Connect Wallet
               </ConnectButton>
             </div>

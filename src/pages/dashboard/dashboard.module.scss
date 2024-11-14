@@ -134,7 +134,7 @@
 .connectWalletBoxContent {
   display: flex;
   align-items: center;
-  gap: $space-lg;
+  gap: 16px;
   height: 40px;
 
   & img {
@@ -181,7 +181,7 @@
 }
 
 .connectWalletBoxButton {
-  margin-left: 45px;
+  margin-left: 42px;
 
   @media (min-width: $sm) {
     margin-left: 0;
