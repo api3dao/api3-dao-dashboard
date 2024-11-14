@@ -158,6 +158,7 @@ const Dashboard = () => {
               </Button>
             )
           }
+          gradientBorder={!!pendingUnstake}
         >
           {pendingUnstake && (
             <PendingUnstakePanel

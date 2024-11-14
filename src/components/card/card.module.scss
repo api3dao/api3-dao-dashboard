@@ -2,6 +2,7 @@
 @import '../../styles/fonts.module.scss';
 
 .card {
+  position: relative;
   border-radius: 20px;
   border: 1px solid $color-blue-25;
   background: $gradient-light;
@@ -35,4 +36,9 @@
 
 .cardChildren {
   margin-top: $space-lg;
+}
+
+.gradientBorder {
+  border: none;
+  @include gradient-border($gradient-base-blue-01);
 }
