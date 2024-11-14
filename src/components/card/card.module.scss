@@ -11,12 +11,21 @@
 }
 
 .cardHeader {
-  @include font-heading-9;
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-left: $space-md;
   margin-bottom: $space-xxl;
+
+  > h5 {
+    @include font-heading-9;
+  }
+
+  @media (min-width: $md) {
+    > h5 {
+      @include font-heading-7;
+    }
+  }
 }
 
 .contentFooter {
