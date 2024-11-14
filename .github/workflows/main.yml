@@ -78,6 +78,8 @@ jobs:
         run: yarn eth:prepare-dao-contracts-for-hardhat --github-actions
       - name: Bootstrap DAO contracts
         run: cd dao-contracts && yarn bootstrap
+      - name: Verify cypress
+        run: yarn cypress verify
       - name: Cypress tests
         env:
           REACT_APP_NODE_ENV: development
