@@ -5,7 +5,6 @@ import Button from '../../../components/button';
 import { useApi3Pool } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
 import { formatAndRoundApi3, getDays, getHours, getMinutes, getSeconds } from '../../../utils';
-import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './pending-unstake-panel.module.scss';
 import { handleTransactionError } from '../../../utils';
 
@@ -83,32 +82,32 @@ const PendingUnstakePanel = (props: Props) => {
           <p className={styles.pendingUnstakeName}>Amount</p>
           <h5 data-cy="amount">{formatAndRoundApi3(amount)}</h5>
         </div>
-        <div className={classNames(styles.pendingUnstakeRow, { [globalStyles.tertiaryColor]: canUnstake })}>
+        <div className={styles.pendingUnstakeRow}>
           <p className={styles.pendingUnstakeName}>Cooldown</p>
           <div className={styles.pendingUnstakeCountdown}>
             <div className={styles.pendingUnstakeCountdownItem}>
-              <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerDays}</p>
+              <p>{timerDays}</p>
               <p className={styles.shortcut}>D</p>
             </div>
             <div className={styles.colon}>:</div>
             <div className={styles.pendingUnstakeCountdownItem}>
-              <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerHours}</p>
+              <p>{timerHours}</p>
               <p className={styles.shortcut}>HR</p>
             </div>
             <div className={styles.colon}>:</div>
             <div className={styles.pendingUnstakeCountdownItem}>
-              <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerMinutes}</p>
+              <p>{timerMinutes}</p>
               <p className={styles.shortcut}>MIN</p>
             </div>
             <div className={styles.colon}>:</div>
             <div className={styles.pendingUnstakeCountdownItem}>
-              <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerSeconds}</p>
+              <p>{timerSeconds}</p>
               <p className={styles.shortcut}>SEC</p>
             </div>
           </div>
         </div>
         <div className={styles.pendingUnstakeActions}>
-          <Button size="xs" type="secondary" onClick={handleUnstake} disabled={!canUnstake}>
+          <Button size="xs" type="secondary-neutral" onClick={handleUnstake} disabled={!canUnstake}>
             Unstake
           </Button>
           <Button size="xs" type="primary" onClick={handleUnstakeAndWithdraw} disabled={!canUnstakeAndWithdraw}>

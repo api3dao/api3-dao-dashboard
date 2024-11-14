@@ -48,8 +48,12 @@
   @include font-body-11;
   color: $color-dark-blue-100;
   text-align: right;
+  margin-right: 24px;
   width: 40%;
-  margin-right: $space-lg;
+
+  @media (min-width: $sm) and (max-width: $md) {
+    width: 80px;
+  }
 }
 
 .pendingUnstakeActions {
@@ -63,6 +67,11 @@
 
 .pendingUnstakeCountdown {
   display: flex;
+  margin-left: 2px;
+
+  @media (min-width: $sm) {
+    margin-left: 4px;
+  }
 }
 
 .pendingUnstakeCountdownItem {
