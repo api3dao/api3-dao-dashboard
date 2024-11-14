@@ -34,14 +34,10 @@
 .cardContent {
   display: flex;
   flex-direction: column;
-  gap: $space-xl;
+  gap: 24px;
 
   & > div {
     text-align: center;
-  }
-
-  @media (min-width: $md) {
-    gap: 64px;
   }
 }
 
