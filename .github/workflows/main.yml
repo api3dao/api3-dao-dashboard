@@ -90,11 +90,12 @@ jobs:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
           REACT_APP_MAINNET_PROVIDER_URL: ${{ secrets.REACT_APP_MAINNET_PROVIDER_URL }}
         run: |
-          yarn eth:node > hardhat.log 2>&1 & 
-          yarn ci:start > react.log 2>&1 &
+          yarn eth:node &
+          yarn ci:start &
           # Wait for both services to be ready
           timeout 60s bash -c 'until nc -z localhost 8545; do sleep 1; done'
           timeout 60s bash -c 'until nc -z localhost 3000; do sleep 1; done'
+          echo "Both services are ready"
           # Deploy contracts and run tests
           yarn eth:deploy-dao-contracts-on-hardhat
           yarn cypress:run
