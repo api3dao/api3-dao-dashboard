@@ -102,6 +102,30 @@
   line-height: 140%; /* 16.8px */
 }
 
+@mixin font-body-16 {
+  font-family: Karla;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%; /* 16.8px */
+}
+
+@mixin font-body-17 {
+  font-family: Karla;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 140%; /* 16.8px */
+}
+
+@mixin font-body-18 {
+  font-family: Karla;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 16.8px */
+}
+
 @mixin font-codeSnippet-1 {
   font-family: 'Source Code Pro';
   font-size: 12px;
@@ -239,6 +263,14 @@
   letter-spacing: 0.16px;
 }
 
+@mixin font-link-1 {
+  font-family: Karla;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%; /* 22.4px */
+}
+
 @mixin font-link-2 {
   font-family: Karla;
   font-size: 14px;
@@ -267,7 +299,7 @@
   font-family: Karla;
   font-size: 10px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 700;
   line-height: 170%; /* 17px */
 }
 
@@ -323,4 +355,31 @@
   font-weight: 500;
   line-height: 140%; /* 25.2px */
   letter-spacing: -0.36px;
+}
+
+@mixin font-button-1 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%; /* 18px */
+  letter-spacing: 0.3px;
+}
+
+@mixin font-button-2 {
+  font-family: Karla;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%; /* 16px */
+  letter-spacing: 0.3px;
+}
+
+@mixin font-button-3 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%; /* 14px */
+  letter-spacing: 0.2px;
 }

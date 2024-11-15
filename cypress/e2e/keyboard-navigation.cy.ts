@@ -18,9 +18,12 @@ describe('keyboard navigation and accessibility', () => {
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Staking').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Governance').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('History').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('Tracker').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('Forum').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('Api3 Market').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('Docs').filter(':visible').closest('a'));
 
     pressTabAndAssertFocusOutline(() => cy.findByText('About API3'));
-    pressTabAndAssertFocusOutline(() => cy.findByText('Docs'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Error Reporting'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Github'));
 

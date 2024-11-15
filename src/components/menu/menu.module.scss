@@ -1,24 +1,16 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
 .menu {
-  display: flex;
-  flex-direction: column;
-  margin-left: $space-xxl;
+  display: none;
 
-  @media (max-width: $max-sm) {
-    display: none;
+  @media (min-width: $md) {
+    display: flex;
+    flex-direction: column;
   }
 
   & > * {
-    margin-bottom: $space-md;
     text-decoration: none;
-  }
-
-  & > *:last-child {
-    margin-bottom: 0;
-    @media (max-width: $max-sm) {
-      margin-right: 0;
-    }
   }
 }
 
@@ -26,17 +18,19 @@
   cursor: pointer;
 }
 
-.menuActiveItem {
+.navLink {
+  border-left: 2px solid transparent;
+}
+
+.activeNavLink {
   cursor: default;
+  border-left: 2px solid $color-blue-500;
 
   .menuItem,
   .menuItemText,
   .menuMobileItemText,
   .menuMobileItem svg {
-    color: $green-color;
-  }
-  .menuActiveLine {
-    display: block;
+    color: $color-blue-500;
   }
 }
 
@@ -44,42 +38,14 @@
   position: relative;
   display: flex;
   align-items: center;
-  color: $primary-color;
-
-  @media (max-width: $max-md) {
-    svg {
-      width: 24px;
-      height: 24px;
-    }
-  }
-}
-
-.menuActiveLine {
-  position: absolute;
-  display: none;
-  background-color: $green-color;
-
-  @media (min-width: $min-sm) {
-    width: 2px;
-    height: 32px;
-    left: -$space-lg;
-  }
-
-  @media (min-width: $min-md) {
-    height: 40px;
-    left: -$space-xxl;
-  }
-
-  @media (max-width: $max-sm) {
-    left: -4px;
-    bottom: -18px;
-    height: 2px;
-    width: $space-xl;
-  }
+  margin-left: 42px;
+  height: 40px;
+  color: $color-dark-blue-400;
 }
 
 .menuItemText {
   padding-left: $space-xs;
+  @include font-link-2;
 
   @media (max-width: $max-lg) {
     display: none;
@@ -87,61 +53,143 @@
   }
 }
 
-.mobileMenuWrapper {
-  display: none;
+.externalLinksHeader {
+  margin: 40px 0 8px 32px;
+  @include font-body-14;
+  color: $color-dark-blue-50;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
 
-  @media (max-width: $max-sm) {
-    display: flex;
-    align-items: center;
+  // Horizontal line after the External Links Header
+  &::after {
+    content: '';
+    display: block;
+    margin-left: 8px;
+    height: 1px;
+    background-color: $color-dark-blue-10;
+    width: 96px;
+  }
+}
+
+.externalLink {
+  display: flex;
+  align-items: center;
+  margin-left: 44px;
+  height: 40px;
+  gap: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+  color: $color-dark-blue-400;
+  @include font-link-3;
+
+  img {
+    padding: 4px;
+  }
+}
+
+.mobileMenuWrapper {
+  display: flex;
+  align-items: center;
+
+  @media (min-width: $md) {
+    display: none;
   }
 }
 
 .mobileMenu {
-  background-color: $primary-color;
+  background-color: $color-dark-blue-700;
+  padding: 24px 16px;
   position: fixed;
   top: 0;
   right: 0;
-  left: 0;
   bottom: 0;
   z-index: 100;
   transform: translateX(100%);
   transition: transform 350ms;
   box-sizing: border-box;
+  width: 100%;
+  overflow-y: auto;
+
+  @media (min-width: $xs) {
+    width: unset;
+  }
 
   &.open {
     transform: translateX(0);
   }
+
+  .activeNavLink {
+    border-left: none;
+    & * {
+      color: $color-green-500;
+    }
+  }
+
+  .externalLinksHeader {
+    color: $color-dark-blue-25;
+    margin: 40px 0 24px 0;
+    @include font-body-11;
+
+    // Horizontal line after the External Links Header
+    &::after {
+      content: '';
+      display: block;
+      margin-left: 7px;
+      height: 1px;
+      background-color: $color-dark-blue-300;
+      width: 131px;
+    }
+  }
+
+  .externalLink {
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+    margin-bottom: 16px;
+    height: 24px;
+    gap: 16px;
+    text-decoration: none;
+    @include font-heading-9;
+
+    img {
+      width: 12px;
+    }
+  }
 }
 
 .mobileMenuHeader {
-  background-color: $primary-color;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $space-lg;
+  height: 32px;
 }
 
 .mobileMenuScrollWrap {
-  height: calc(100% - 77px);
+  height: calc(100% - 32px);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  padding: $space-lg;
+  padding: 80px 0 0 0;
   box-sizing: border-box;
 }
 
 .mobileMenuContent {
   box-sizing: border-box;
-  padding-top: $space-xxxl;
-  padding-bottom: $space-xxl;
+  padding: 0 0 0 16px;
+
+  @media (min-width: $xs) {
+    padding: 0 48px;
+  }
 
   & > * {
-    color: $black-color;
+    color: $color-base-light;
     text-decoration: none;
   }
 
   svg {
-    color: $secondary-black-color;
+    color: $color-base-light;
+    min-width: 24px;
+    min-height: 24px;
   }
 }
 
@@ -152,35 +200,35 @@
   margin-top: auto;
   padding-top: $space-md;
   box-sizing: border-box;
-
+  max-width: 320px;
   &.borderTop {
-    border-top: 1px solid $secondary-color;
+    border-top: 1px solid $color-dark-blue-300;
   }
 }
 
 .menuMobileItem {
   display: flex;
   align-items: center;
-  margin-bottom: $space-lg;
+  margin-bottom: 8px;
+
+  svg {
+    min-width: 32px;
+    min-height: 32px;
+  }
 }
 
 .menuMobileItemText {
-  font-size: $heading-5;
-  line-height: 44px;
-  font-weight: 600;
-  margin-left: $space-lg;
+  @include font-heading-7;
+  margin-left: 16px;
   text-decoration: none;
 }
 
 .menuIconWrapper {
   display: flex;
   align-items: center;
+  height: 56px;
 
-  & > * {
-    margin-right: $space-sm;
-  }
-
-  & > *:last-child {
-    margin-right: 0;
+  &.connected {
+    height: 64px;
   }
 }

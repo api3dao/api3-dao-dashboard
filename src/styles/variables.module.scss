@@ -2,6 +2,7 @@
 $color-base-light: #fafafa;
 $color-base-dark: #030412;
 $color-base-blue-ui: #111648;
+$color-light-ui: #f2f4ff;
 $color-blue-background: var($color-base-blue-ui);
 $color-gray-25: #f8fafd;
 $color-gray-50: #f4f7fc;
@@ -126,10 +127,51 @@ $progressbar-success: #57d4a2;
 $progressbar-warning: #ffc53d;
 $progressbar-error: $pink-color;
 
-// HEIGHTS
-$navigation-height: 110px;
-$footer-height: 70px;
-$footer-height-media-sm: 200px;
+$gradient-soft-light: linear-gradient(
+    rgba(91, 167, 245, 0.5) 0%,
+    rgba(0, 15, 220, 0.5) 28%,
+    rgba(255, 255, 255, 0.4) 64%,
+    rgba(245, 245, 245, 0) 92%
+  ),
+  linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.4) 7%,
+    rgba(0, 0, 0, 0.3) 23%,
+    rgba(255, 255, 255, 0.4) 37%,
+    rgba(0, 0, 0, 0.3) 51%,
+    rgba(255, 255, 255, 0.4) 65%,
+    rgba(0, 0, 0, 0.3) 81%,
+    rgba(255, 255, 255, 0.4) 97%
+  ),
+  linear-gradient(90deg, #1a4fde 0%, #5effd7 39%, #3e7aff 65%, #8ca7ee 100%);
+
+$gradient-medium-light: linear-gradient(
+  90deg,
+  #003fde 3%,
+  #0047dc 19%,
+  #0092cd 31%,
+  #08c6c9 42%,
+  #00a2d8 51%,
+  #c4f2e3 64%,
+  #ccd8ec 70%,
+  #3c82ee 84%,
+  #53a0d7 98%
+);
+
+@mixin gradient-border($gradient) {
+  @supports (mask-composite: exclude) {
+    &:before {
+      content: '';
+      position: absolute;
+      inset: -1px -1px -1px -1px;
+      padding: 1px;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      background: $gradient;
+      border-radius: inherit;
+    }
+  }
+}
 
 // FONT-SIZES
 $heading-1: 136px;
