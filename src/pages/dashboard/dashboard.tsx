@@ -48,7 +48,7 @@ const Dashboard = () => {
       {!provider && (
         <>
           {/* Connect Wallet */}
-          <div className={styles.connectWalletBox} data-cy="connect-wallet-staking">
+          <div className={styles.connectWalletBox}>
             <div className={styles.connectWalletBoxContent}>
               <img src={images.infoCircle} alt="connect wallet info" />
               <div className={styles.connectWalletBoxText}>
@@ -58,7 +58,7 @@ const Dashboard = () => {
             </div>
 
             <div className={styles.connectWalletBoxButton}>
-              <ConnectButton type="link-blue" size="sm" sm={{ size: 'md' }}>
+              <ConnectButton type="link-blue" size="sm" sm={{ size: 'md' }} data-testid="connect-wallet-staking-btn">
                 Connect Wallet
               </ConnectButton>
             </div>
@@ -81,13 +81,19 @@ const Dashboard = () => {
       {/* Staking Pool */}
       <p className={classNames(styles.dashboardHeader, provider && styles.extraTopSpacing)}>Staking Pool</p>
       <StakingPool />
-      <div className={styles.cardsWrapper} data-cy="staking-cards">
+      <div className={styles.cardsWrapper}>
         <Card
           header={
             <CardHeader>
               <h5>Balance</h5>
               <div className={styles.cardHeaderButton}>
-                <Button type="secondary" size="sm" onClick={() => setOpenModal('deposit')} disabled={!data}>
+                <Button
+                  type="secondary"
+                  size="sm"
+                  onClick={() => setOpenModal('deposit')}
+                  disabled={!data}
+                  data-testid="staking-card-deposit-btn"
+                >
                   Deposit
                 </Button>
               </div>
@@ -124,7 +130,13 @@ const Dashboard = () => {
                 <Tooltip overlay="You need to deposit API3 tokens before staking">
                   <img src={images.helpOutline} alt="new proposal help" />
                 </Tooltip>
-                <Button type="secondary" size="sm" onClick={() => setOpenModal('stake')} disabled={!canStake}>
+                <Button
+                  type="secondary"
+                  size="sm"
+                  onClick={() => setOpenModal('stake')}
+                  disabled={!canStake}
+                  data-testid="staking-card-stake-btn"
+                >
                   Stake
                 </Button>
               </div>

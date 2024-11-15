@@ -7,7 +7,7 @@ describe('staking', () => {
     cy.resetBlockchain().login();
 
     // Approve and deposit
-    cy.dataCy('staking-cards').findByRole('button', { name: 'Deposit' }).click();
+    cy.findByTestId('staking-card-deposit-btn').click();
     cy.get('#modal').find('input').type('500');
     cy.findByText('Approve').click();
     cy.findByText('Deposit').should('be.visible');
@@ -17,7 +17,7 @@ describe('staking', () => {
     cy.dataCy('balance').should('have.text', '500.0');
 
     // Stake
-    cy.dataCy('staking-cards').findByRole('button', { name: 'Stake' }).click();
+    cy.findByTestId('staking-card-stake-btn').click();
     cy.get('#modal').find('input').type('100');
     cy.get('#modal').findByRole('button', { name: 'Stake' }).click();
     cy.dataCy('unstaked').should('have.text', '400.0');
@@ -32,7 +32,7 @@ describe('staking', () => {
   it('can deposit and stake', () => {
     cy.useChainSnapshot('user-staked');
 
-    cy.dataCy('staking-cards').findByRole('button', { name: 'Deposit' }).click();
+    cy.findByTestId('staking-card-deposit-btn').click();
     cy.get('#modal').find('input').type('200');
     cy.findByText('Deposit and Stake').click();
 
@@ -87,7 +87,7 @@ it.skip('user can unstake & withdraw', () => {
   cy.resetBlockchain().login();
 
   // Approve and deposit
-  cy.dataCy('staking-cards').findByRole('button', { name: 'Deposit' }).click();
+  cy.findByTestId('staking-card-deposit-btn').click();
   cy.get('#modal').find('input').type('1000');
   cy.findByText('Approve').click();
   cy.findByText('Deposit and Stake').click();
