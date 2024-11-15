@@ -52,7 +52,7 @@
   width: 40%;
 
   @media (min-width: $sm) and (max-width: $md) {
-    width: 80px;
+    width: 60px;
   }
 }
 
@@ -63,6 +63,14 @@
   gap: $space-md;
   margin-top: $space-lg;
   white-space: nowrap;
+
+  @media (min-width: $sm) and (max-width: $md) {
+    flex-direction: column-reverse;
+
+    * {
+      width: 100%;
+    }
+  }
 }
 
 .pendingUnstakeCountdown {
