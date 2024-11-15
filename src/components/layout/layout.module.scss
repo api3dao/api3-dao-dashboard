@@ -1,117 +1,90 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+@import '../../styles/link-styles.module.scss';
 
 .layout {
-  background: $black-color;
+  background: linear-gradient(334deg, #fafafa -0.91%, #ebf0ff 48.81%, #fafafa 99.52%);
   min-height: 100vh;
   position: relative;
 }
 
 .content {
   display: flex;
-
-  // Make sure the texture is behind the content
-  position: relative;
-  z-index: 1;
 }
 
 .main {
-  max-width: min(calc(100vw - 170px), 1024px);
-  min-height: calc(100vh - #{$navigation-height} - #{$footer-height});
+  max-width: 468px;
+  padding: 0 16px;
   margin: 0 auto;
-  padding: 0 $space-xxl;
-  padding-bottom: 2 * $space-xxl;
-  box-sizing: border-box;
   flex: 1;
 
-  @media (max-width: $max-sm) {
-    max-width: unset;
-    min-height: calc(100vh - #{$navigation-height} - #{$footer-height-media-sm});
-    padding: $space-lg;
-    padding-bottom: $space-xxxl;
+  @media (min-width: $sm) {
+    max-width: 640px;
   }
 
-  @media (max-width: $max-lg) {
-    max-width: calc(100vw - 100px);
-  }
-
-  @media (max-width: $max-md) {
-    max-width: calc(100vw - 80px);
-  }
-
-  @media (max-width: $max-sm) {
-    max-width: calc(100vw - 50px);
-    min-height: calc(100vh - #{$navigation-height} - #{$footer-height-media-sm});
-    padding: unset;
-    padding-bottom: $space-xxxl;
-  }
-}
-
-.layoutTexture {
-  position: absolute;
-  bottom: $footer-height;
-  right: 0;
-
-  @media (max-width: $max-sm) {
-    bottom: $footer-height-media-sm;
+  @media (min-width: $md) {
+    max-width: 920px;
+    padding: 0 64px;
+    padding-bottom: 80px;
   }
 }
 
 .footer {
   display: flex;
   position: relative;
-  bottom: 0;
-  width: 100%;
-  background: black;
-  z-index: 30;
-  height: $footer-height;
-  border-top: 1px solid rgba($green-color, 0.5);
-
-  @media (max-width: $max-sm) {
-    height: $footer-height-media-sm;
-  }
+  align-items: center;
+  justify-content: center;
+  height: 196px;
 
   &Content {
     display: flex;
-    flex: 1;
-    justify-content: space-around;
-  }
-}
+    padding-top: 44px;
 
-.externalLinkButton {
-  button {
-    color: $secondary-color;
-  }
-}
+    a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      @include font-overline-2;
+      @include menu-link-secondary;
+    }
 
-.linkSeparator {
-  @media (max-width: $max-sm) {
-    display: none; // Hide the link separators in smaller resolutions
-  }
-}
+    & > *,
+    & > a {
+      border-right: 1px solid $color-dark-blue-10;
+      padding: 0 8px;
 
-.noUnderline {
-  text-decoration: none;
+      &:last-child {
+        border-right: none;
+      }
+    }
 
-  button {
-    text-decoration: none !important;
-  }
-}
-
-.linkSpacing {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  @media (max-width: $max-sm) {
-    flex-direction: column;
-
-    & > *:not(:last-child) {
-      margin-bottom: $space-lg;
-      margin-right: 0 !important; // override the spacing for horizontal layout
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: $gradient-medium-light;
     }
   }
+}
 
-  & > *:not(:last-child) {
-    margin-right: $space-md;
+@media (min-width: $md) {
+  .footer {
+    height: 140px;
+
+    &Content {
+      padding-top: 64px;
+
+      a {
+        @include font-body-15;
+      }
+
+      & > *,
+      & > a {
+        padding: 0 40px;
+      }
+    }
   }
 }

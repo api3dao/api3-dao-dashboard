@@ -1,35 +1,167 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+@import '../../styles/link-styles.module.scss';
 
 .buttonWrapper {
   display: inline-block;
   &.disabled {
-    opacity: 0.4;
     pointer-events: none;
-  }
-
-  &:hover {
-    transform: scale(1.02);
   }
 }
 
 .button {
   background-color: transparent;
+  text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $button-color;
   border-width: 1px;
   border-style: solid;
   outline: none;
   cursor: pointer;
 
   &.primary {
-    border-image-source: $primary-border;
-    border-image-slice: 1;
+    background-color: $color-blue-500;
+    color: $color-base-light;
+    border: none;
+
+    &.xxs {
+      padding: 0 10px;
+      border-radius: 24px;
+      height: 24px;
+      @include font-body-17;
+    }
+
+    &.xs {
+      padding: 0 16px;
+      border-radius: 24px;
+      height: 32px;
+      @include font-body-14;
+    }
+
+    &.sm {
+      padding: 0 20px;
+      border-radius: 24px;
+      height: 40px;
+      @include font-button-3;
+    }
+
+    &.md {
+      padding: 0 24px;
+      border-radius: 28px;
+      height: 48px;
+      @include font-button-2;
+    }
+
+    &.lg {
+      padding: 0 32px;
+      border-radius: 32px;
+      height: 56px;
+      @include font-button-1;
+    }
+
+    &:hover {
+      background-color: $color-blue-200;
+    }
+
+    &:active {
+      background-color: $color-blue-600;
+    }
+
+    &:disabled {
+      color: $color-blue-50;
+      background-color: $color-blue-10;
+    }
+
+    &.dark {
+      background-color: $color-blue-400;
+
+      &:hover {
+        background-color: $color-blue-200;
+      }
+
+      &:active {
+        background-color: $color-blue-500;
+      }
+
+      &:disabled {
+        color: $color-blue-400;
+        background-color: $color-dark-blue-400;
+      }
+    }
   }
 
   &.secondary {
-    border-color: $secondary-border;
+    position: relative;
+    color: $color-dark-blue-400;
+    border: 1px solid transparent;
+    @include gradient-border($gradient-soft-light);
+
+    &.xxs {
+      padding: 0 10px;
+      border-radius: 24px;
+      height: 24px;
+      @include font-body-17;
+    }
+
+    &.xs {
+      padding: 0 16px;
+      border-radius: 24px;
+      height: 32px;
+      @include font-body-14;
+    }
+
+    &.sm {
+      padding: 0 20px;
+      border-radius: 24px;
+      height: 40px;
+      @include font-button-3;
+    }
+
+    &.md {
+      padding: 0 24px;
+      border-radius: 28px;
+      height: 48px;
+      @include font-button-2;
+    }
+
+    &.lg {
+      padding: 0 32px;
+      border-radius: 32px;
+      height: 56px;
+      @include font-button-1;
+    }
+
+    &:hover,
+    &:active,
+    &:disabled {
+      &:before {
+        padding: 0px;
+      }
+    }
+
+    &:hover {
+      color: $color-blue-200;
+      border: 1px solid $color-blue-200;
+    }
+
+    &:active {
+      color: $color-blue-600;
+      border: 1px solid $color-blue-600;
+    }
+
+    &:disabled {
+      color: $color-gray-400;
+      border: 1px solid $color-gray-400;
+    }
+  }
+
+  &.link-blue {
+    @include link-blue;
+  }
+
+  &.menu-link-secondary {
+    @include menu-link-secondary;
   }
 
   &.normal {
@@ -64,17 +196,5 @@
     border: 0;
     text-decoration: underline;
     padding: 0;
-  }
-}
-
-.buttonUnderline {
-  margin-top: $space-xxs;
-  height: 1px;
-  width: 100%;
-  &.primary {
-    background: linear-gradient(to left, $green-color, $violet-color);
-  }
-  &.secondary {
-    background-color: $secondary-border;
   }
 }

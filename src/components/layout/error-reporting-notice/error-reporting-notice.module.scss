@@ -1,4 +1,6 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
+@import '../../../styles/link-styles.module.scss';
 @import '../layout.module.scss';
 
 .wrapper {
@@ -8,57 +10,60 @@
   position: fixed;
   width: 100%;
   bottom: 0;
-  height: 120px;
-  background: $black-color;
+  height: 221px;
+  background: $color-dark-blue-700;
+  align-items: center;
 
-  @media (max-width: $max-lg) {
-    height: 120px;
+  @media (min-width: $md) {
+    height: 92px;
   }
 
-  @media (max-width: $max-md) {
-    height: 230px;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: $gradient-medium-light;
   }
-
-  @media (max-width: $max-sm) {
-    height: 300px;
-  }
-}
-
-.gradient {
-  background: linear-gradient(76.31deg, #7ce3cb 2.01%, #7963b2 99.02%);
-  height: 4px;
 }
 
 .closeButton {
   z-index: 1;
-  height: 16px;
+  height: 24px;
   align-self: flex-end;
-  margin: 20px 16px;
+  margin: 20px 24px;
   position: absolute;
-  color: $secondary-color;
+  color: $color-base-light;
   cursor: pointer;
-  transition: transform 0.35s;
 
   &:hover {
-    transform: scale(1.2);
+    color: $color-blue-25;
   }
 }
 
 .content {
-  padding: 0 15vw;
+  padding: 64px 24px 32px 24px;
   display: flex;
-  font-size: $text-small;
   align-items: center;
   justify-content: space-around;
   flex: 1;
+  flex-direction: column;
+  @include font-body-15;
+  color: $color-gray-200;
 
-  @media (max-width: $max-sm) {
-    flex-direction: column;
+  @media (min-width: $md) {
+    flex-direction: row;
+    gap: 80px;
+    padding: 24px 0;
+    max-width: 948px;
+    @include font-body-12;
   }
+}
 
-  & > *:not(:last-child) {
-    margin-right: $space-md;
-  }
+.buttons {
+  display: flex;
 }
 
 .checkboxWrapper {
@@ -106,4 +111,13 @@
 
 .notice {
   max-width: 550px;
+
+  a {
+    text-decoration: none;
+    @include link-blue;
+  }
+}
+
+.externalLinkIcon {
+  margin-left: 4px;
 }

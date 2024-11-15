@@ -9,10 +9,12 @@ interface DropdownProps {
   menu: ReactNode;
   icon?: ReactNode;
   alignIcon?: 'start' | 'center' | 'end';
+  className?: string;
 }
 
 interface DropdownMenuProps {
   children: ReactNode;
+  className?: string;
   position?: 'top' | 'bottom';
 }
 
@@ -22,9 +24,9 @@ interface DropdownMenuItemProps {
   onClick?: () => void;
 }
 
-export const DropdownMenu = ({ children, position = 'bottom' }: DropdownMenuProps) => (
+export const DropdownMenu = ({ children, position = 'bottom', className }: DropdownMenuProps) => (
   <div
-    className={classNames(styles.dropdownMenu, {
+    className={classNames(styles.dropdownMenu, className, {
       [styles.top]: position === 'top',
       [styles.bottom]: position === 'bottom',
     })}
@@ -44,7 +46,7 @@ export const DropdownMenuItem = ({ children, className, onClick }: DropdownMenuI
   </div>
 );
 
-const Dropdown = ({ children, menu, icon, alignIcon = 'center' }: DropdownProps) => {
+const Dropdown = ({ children, menu, icon, alignIcon = 'center', className }: DropdownProps) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleOpen = () => setOpen(!open);
@@ -68,7 +70,7 @@ const Dropdown = ({ children, menu, icon, alignIcon = 'center' }: DropdownProps)
   }, []);
 
   return (
-    <div className={styles.dropdown} ref={dropdownRef}>
+    <div className={classNames(styles.dropdown, className)} ref={dropdownRef}>
       <div
         className={classNames(styles.dropdownButton, {
           [styles.alignStart]: alignIcon === 'start',

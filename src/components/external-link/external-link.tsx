@@ -1,6 +1,4 @@
-import classNames from 'classnames';
 import { ReactNode, useEffect } from 'react';
-import styles from './external-link.module.scss';
 
 interface Props {
   className?: string;
@@ -25,7 +23,7 @@ const ExternalLink = (props: Props) => {
   }, [href, props.href]);
 
   return (
-    <a href={href} className={classNames(className, styles.link)} target="_blank" rel="noopener noreferrer">
+    <a href={href} className={className} target="_blank" rel="noopener noreferrer">
       {children}
     </a>
   );
