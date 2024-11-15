@@ -1,39 +1,11 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
 .tooltip {
-  font-size: $text-small !important;
+  max-width: 200px;
 }
 
 .overlayWrapper {
-  padding: $space-sm;
-  max-width: $max-sm;
-}
-
-.tooltipChecklist {
-  .tooltipItem:not(:last-child) {
-    margin-bottom: $space-xs;
-  }
-}
-
-.tooltipItem {
-  display: flex;
-  align-items: center;
-
-  & > img {
-    height: 15px;
-    margin-top: -1px;
-    vertical-align: middle;
-  }
-
-  & > div {
-    margin-left: $space-sm;
-  }
-}
-
-.labelChecked {
-  color: $secondary-black-color;
-}
-
-.labelUnchecked {
-  color: $black-color;
+  @include font-body-15;
+  color: $color-base-light;
 }
