@@ -48,7 +48,7 @@ const Dashboard = () => {
       {!provider && (
         <>
           {/* Connect Wallet */}
-          <div className={styles.connectWalletBox}>
+          <div className={styles.connectWalletBox} data-cy="connect-wallet-staking">
             <div className={styles.connectWalletBoxContent}>
               <img src={images.infoCircle} alt="connect wallet info" />
               <div className={styles.connectWalletBoxText}>
@@ -81,7 +81,7 @@ const Dashboard = () => {
       {/* Staking Pool */}
       <p className={classNames(styles.dashboardHeader, provider && styles.extraTopSpacing)}>Staking Pool</p>
       <StakingPool />
-      <div className={styles.cardsWrapper}>
+      <div className={styles.cardsWrapper} data-cy="staking-cards">
         <Card
           header={
             <CardHeader>

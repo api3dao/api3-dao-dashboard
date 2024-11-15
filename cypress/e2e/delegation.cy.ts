@@ -5,7 +5,7 @@ describe('delegation', () => {
     cy.resetBlockchain().login();
 
     // Approve, deposit and stake
-    cy.findByText('+ Deposit').click();
+    cy.dataCy('staking-cards').findByRole('button', { name: 'Deposit' }).click();
     cy.get('#modal').find('input').type('200');
     cy.findByText('Approve').click();
     cy.findByText('Deposit and Stake').click();

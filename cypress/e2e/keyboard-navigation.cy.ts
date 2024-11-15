@@ -23,6 +23,9 @@ describe('keyboard navigation and accessibility', () => {
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Api3 Market').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Docs').filter(':visible').closest('a'));
 
+    pressTabAndAssertFocusOutline(() =>
+      cy.dataCy('connect-wallet-staking').findByRole('button', { name: 'Connect Wallet' })
+    );
     pressTabAndAssertFocusOutline(() => cy.findByText('About API3'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Error Reporting'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Github'));
@@ -36,7 +39,7 @@ describe('keyboard navigation and accessibility', () => {
     });
 
     it('uses focus lock (cannot tab outside modal)', () => {
-      cy.findByText('+ Deposit').click();
+      cy.findByText('Deposit').click();
 
       cy.get('#modal').find('input').should('have.focus');
       cy.get('#modal').find('input').type('123');
@@ -52,12 +55,12 @@ describe('keyboard navigation and accessibility', () => {
 
     it('can use keyboard to "press" the buttons', () => {
       // Can close the modal by pressing ESC
-      cy.findByText('+ Deposit').click();
+      cy.findByText('Deposit').click();
       cy.get('body').type('{esc}');
       cy.get('#modal').find('input').should('not.exist');
 
       // Can deposit by pressing ENTER when button has focus
-      cy.findByText('+ Deposit').click();
+      cy.findByText('Deposit').click();
       cy.get('#modal').find('input').type('123').tab(); // Tab over "Max" button
       pressTabAndAssertFocusOutline(() => cy.findByText('Approve'));
 
