@@ -1,9 +1,10 @@
 @import '../../styles/variables.module.scss';
 @import '../../styles/fonts.module.scss';
-@import '../../styles/link-styles.module.scss';
 @import './variants/primary.module.scss';
 @import './variants/secondary.module.scss';
 @import './variants/secondary-neutral.module.scss';
+@import './variants/link-blue.module.scss';
+@import './variants/menu-link-secondary.module.scss';
 
 .buttonWrapper {
   display: inline-block;
