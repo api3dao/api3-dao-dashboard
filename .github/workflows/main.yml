@@ -77,7 +77,8 @@ jobs:
       - name: Prepare DAO contracts
         run: yarn eth:prepare-dao-contracts-for-hardhat --github-actions
       - name: Bootstrap DAO contracts
-        run: cd dao-contracts && yarn bootstrap
+        run: |
+          cd dao-contracts && npx -y -p node@16 yarn bootstrap
       - name: Verify cypress
         run: yarn cypress verify
       - name: Cypress tests
@@ -97,7 +98,7 @@ jobs:
           timeout 60s bash -c 'until nc -z localhost 3000; do sleep 1; done'
           echo "Both services are ready"
           # Deploy contracts and run tests
-          yarn eth:deploy-dao-contracts-on-hardhat
+          npx -y -p node@16 yarn eth:deploy-dao-contracts-on-hardhat
           yarn cypress:run
       - name: Store artifacts
         uses: actions/upload-artifact@v4
