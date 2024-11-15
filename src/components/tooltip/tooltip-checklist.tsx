@@ -1,7 +1,8 @@
 import { ReactElement } from 'react';
 import Tooltip from './tooltip';
 import { images } from '../../utils';
-import styles from './tooltip.module.scss';
+import styles from './tooltip-checklist.module.scss';
+import classNames from 'classnames';
 
 interface Props {
   children: ReactElement;
@@ -13,20 +14,24 @@ interface Props {
 
 const TooltipChecklist = ({ children, items }: Props) => {
   const content = (
-    <div className={styles.tooltipChecklist}>
+    <ul className={styles.tooltipChecklist}>
       {items.map((item, i) => (
-        <div key={i} className={styles.tooltipItem}>
+        <li key={i} className={classNames(styles.checklistItem, { [styles.checked]: item.checked })}>
           <img
             src={item.checked ? images.checkboxFilled : images.checkboxEmpty}
             alt={item.checked ? 'checked' : 'unchecked'}
           />
-          <div className={item.checked ? styles.labelChecked : styles.labelUnchecked}>{item.label}</div>
-        </div>
+          <span>{item.label}</span>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 
-  return <Tooltip overlay={content}>{children}</Tooltip>;
+  return (
+    <Tooltip overlay={content} type="items">
+      {children}
+    </Tooltip>
+  );
 };
 
 export default TooltipChecklist;

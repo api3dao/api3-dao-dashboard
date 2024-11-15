@@ -1,11 +1,22 @@
 @import '../../styles/variables.module.scss';
 @import '../../styles/fonts.module.scss';
 
-.tooltip {
+.defaultTooltipType {
+  width: 100%;
   max-width: 200px;
+}
+
+.itemsTooltipType {
+  width: 100%;
+  max-width: 312px;
+
+  @media (min-width: $md) {
+    max-width: 392px;
+  }
 }
 
 .overlayWrapper {
   @include font-body-15;
   color: $color-base-light;
+  padding: 4px 6px;
 }
