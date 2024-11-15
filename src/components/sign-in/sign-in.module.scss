@@ -1,23 +1,94 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+
+.accountDropdown {
+  margin-top: 20px;
+
+  .accountDropdownMenu {
+    border-top: none;
+    box-shadow: none;
+    background-color: $color-light-ui;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .accountDropdownItem {
+    display: flex;
+    gap: 16px;
+    @include font-body-12;
+    color: $color-dark-blue-500;
+    padding: 16px 32px;
+    border: none;
+  }
+}
 
 .connectedStatus {
   display: flex;
   align-items: flex-start;
+
+  img {
+    margin: -20px -20px -20px -20px;
+  }
+}
+
+.connectButton {
+  width: calc(100% - 64px);
+  min-width: 165px;
+  max-width: 404px;
+  margin-top: 24px;
+
+  button {
+    width: 100%;
+  }
+
+  @media (min-width: $md) {
+    margin-top: 0;
+    max-width: 224px;
+  }
 }
 
 .connectedStatusInfo {
-  margin: 0 $space-md;
+  width: 128px;
+  margin: 0 8px;
+}
+
+.accountName {
+  color: $color-dark-blue-500;
+  @include font-body-6;
+}
+
+.connectedTo {
+  @include font-body-15;
+  color: $color-dark-blue-100;
 }
 
 .dark {
   color: $black-color;
+  width: unset;
+
+  .accountName {
+    color: $color-base-light;
+  }
+
+  .connectedTo {
+    @include font-body-12;
+    color: $color-dark-blue-25;
+  }
 }
 
 .mobileMenuButton {
   width: 100%;
-  button {
-    width: 100%;
-    color: $secondary-black-color;
+  color: $color-base-light;
+  background-color: $color-base-blue-ui;
+  border: none;
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  gap: 16px;
+  padding: 24px 40px;
+  @include font-body-9;
+
+  svg {
+    min-width: 24px;
+    min-height: 24px;
   }
 }
 
@@ -25,10 +96,10 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  margin: 0 8px;
 
   & > * {
-    margin-bottom: $space-lg;
+    margin-bottom: 16px;
   }
 
   & > *:last-child {
@@ -37,17 +108,11 @@
 }
 
 .hideSignInStatus {
-  @media (max-width: $max-sm) {
-    display: none;
-  }
-}
-
-.fullWidthMobile {
-  @media (max-width: $max-sm) {
-    width: 100%;
-    button {
-      width: 100%;
-    }
+  display: none;
+  @media (min-width: $md) {
+    display: block;
+    height: 96px;
+    padding-top: 24px;
   }
 }
 

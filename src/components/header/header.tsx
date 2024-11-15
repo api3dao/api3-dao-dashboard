@@ -10,7 +10,6 @@ const Header = ({ title, subtitle }: Props) => {
     <div className={styles.header}>
       {subtitle && <div className={styles.headerSubtitle}>{subtitle}</div>}
       <p className={styles.headerTitle}>{title}</p>
-      <p className={styles.headerLargeTitle}>{title}</p>
     </div>
   );
 };

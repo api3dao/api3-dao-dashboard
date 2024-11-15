@@ -2,13 +2,12 @@ import { ReactNode, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Navigation from '../navigation';
 import Header from '../header';
-import { ERROR_REPORTING_CONSENT_KEY_NAME, images, insertInBetween } from '../../utils';
+import { ERROR_REPORTING_CONSENT_KEY_NAME } from '../../utils';
 import styles from './layout.module.scss';
-import ExternalLink from '../external-link';
 import Button from '../button';
 import ErrorReportingNotice from './error-reporting-notice';
-import classNames from 'classnames';
 import { DesktopMenu } from '../menu';
+import ExternalLink from '../external-link';
 
 type Props = {
   children: ReactNode;
@@ -35,9 +34,8 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
     localStorage.getItem(ERROR_REPORTING_CONSENT_KEY_NAME) === null
   );
 
-  const links = [
+  const footerLinks = [
     { text: 'About API3', href: 'https://api3.org/' },
-    { text: 'Docs', href: 'https://dao-docs.api3.org/members/' },
     { text: 'Error Reporting', onClick: () => setErrorReportingNoticeOpen(true) },
     { text: 'Github', href: 'https://github.com/api3dao/api3-dao-dashboard' },
   ];
@@ -59,39 +57,24 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
             <ErrorReportingNotice onClose={() => setErrorReportingNoticeOpen(false)} />
           ) : (
             <div className={styles.footerContent}>
-              <div className={styles.linkSpacing}>
-                {insertInBetween(
-                  links.map((link) => {
-                    if (link.href)
-                      return (
-                        <ExternalLink href={link.href} className={styles.noUnderline} key={link.text}>
-                          {link.text}
-                        </ExternalLink>
-                      );
-                    else
-                      return (
-                        <Button
-                          key={link.text}
-                          type="text"
-                          className={classNames(styles.externalLinkButton, styles.noUnderline)}
-                          onClick={link.onClick}
-                        >
-                          {link.text}
-                        </Button>
-                      );
-                  }),
-                  (index) => (
-                    <span className={styles.linkSeparator} key={index}>
-                      |
-                    </span>
-                  )
-                )}
-              </div>
+              {footerLinks.map((link) =>
+                link.href ? (
+                  <ExternalLink href={link.href}>{link.text}</ExternalLink>
+                ) : (
+                  <Button
+                    key={link.text}
+                    type="menu-link-secondary"
+                    onClick={link.onClick}
+                    size="xs"
+                    md={{ size: 'sm' }}
+                  >
+                    {link.text}
+                  </Button>
+                )
+              )}
             </div>
           )}
         </footer>
-
-        <img className={styles.layoutTexture} src={images.texture} alt="texture background" />
       </div>
     </>
   );

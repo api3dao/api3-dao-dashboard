@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import { ERROR_REPORTING_CONSENT_KEY_NAME, images, isErrorReportingAllowed } from '../../../utils';
 import Button from '../../button';
-import ExternalLink from '../../external-link';
 import { triggerOnEnter } from '../../modal';
 import styles from './error-reporting-notice.module.scss';
+import ExternalLink from '../../external-link';
 
 interface WelcomeModalContentProps {
   onClose: () => void;
@@ -26,29 +26,31 @@ const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
     // NOTE: Not using focus lock, because that would prevent user from signing in
     <>
       <div data-cy="error-reporting" className={styles.wrapper} ref={errorReportingRef}>
-        <div className={styles.gradient}></div>
         <div className={styles.content}>
           <div className={styles.notice}>
             In order to provide the best services for you, we collect anonymized error data through{' '}
-            <b>
-              <ExternalLink href="https://sentry.io/">Sentry</ExternalLink>
-            </b>
-            . We do not gather IP address or user agent information.
+            <ExternalLink className={styles.dark} href="https://sentry.io/">
+              Sentry
+            </ExternalLink>
+            <img src={images.externalLink} alt="" className={styles.externalLinkIcon} />. We do not gather IP address or
+            user agent information.
           </div>
-          <div className={styles.checkboxWrapper} tabIndex={0} onKeyPress={triggerOnEnter(toggleCheckbox)}>
-            <input
-              type="checkbox"
-              id="errorReporting"
-              name="errorReporting"
-              checked={errorReportingEnabled}
-              onChange={toggleCheckbox}
-              tabIndex={-1}
-            />
-            <label htmlFor="errorReporting">Allow error reporting</label>
+          <div className={styles.buttons}>
+            <div className={styles.checkboxWrapper} tabIndex={0} onKeyPress={triggerOnEnter(toggleCheckbox)}>
+              <input
+                type="checkbox"
+                id="errorReporting"
+                name="errorReporting"
+                checked={errorReportingEnabled}
+                onChange={toggleCheckbox}
+                tabIndex={-1}
+              />
+              <label htmlFor="errorReporting">Allow error reporting</label>
+            </div>
+            <Button type="primary" theme="dark" onClick={onErrorReportingNoticeConfirm}>
+              Done
+            </Button>
           </div>
-          <Button type="secondary" onClick={onErrorReportingNoticeConfirm}>
-            Done
-          </Button>
         </div>
         <img
           className={styles.closeButton}
