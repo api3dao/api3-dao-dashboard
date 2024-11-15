@@ -16,7 +16,7 @@ const TooltipChecklist = ({ children, items }: Props) => {
   const content = (
     <ul className={styles.tooltipChecklist}>
       {items.map((item, i) => (
-        <li key={i} className={classNames(styles.checklistItem, { [styles.checked]: item.checked })}>
+        <li key={i} className={classNames(styles.checklistItem, { [styles.unchecked]: !item.checked })}>
           <img
             src={item.checked ? images.checkboxFilled : images.checkboxEmpty}
             alt={item.checked ? 'checked' : 'unchecked'}
