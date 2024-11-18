@@ -12,7 +12,7 @@
       "enabled": false
     },
     {
-      "matchPackageNames": ["@types/jest", "chalk"],
+      "matchPackageNames": ["@types/node", "@types/jest", "chalk"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     },
