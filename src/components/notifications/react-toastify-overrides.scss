@@ -34,7 +34,9 @@
 /** Classes for the displayed toast **/
 .Toastify__toast {
   background: linear-gradient(76.31deg, #f3f3f3 36.47%, #c3c4c3 99.02%);
-  box-shadow: 0px 9px 28px 8px rgba(0, 0, 0, 0.05), 0px 6px 16px rgba(0, 0, 0, 0.08),
+  box-shadow:
+    0px 9px 28px 8px rgba(0, 0, 0, 0.05),
+    0px 6px 16px rgba(0, 0, 0, 0.08),
     0px 3px 6px -4px rgba(0, 0, 0, 0.12);
   border-radius: 0;
   padding: 0;
