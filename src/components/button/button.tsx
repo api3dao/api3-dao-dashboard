@@ -37,28 +37,40 @@ const Button = ({
   const { width } = useWindowDimensions();
   const sizeClass = getSizeClass(width, size, { xs, sm, md, lg });
 
-  return (
-    <div className={classNames(styles.buttonWrapper, { [styles.disabled]: disabled }, className)}>
-      {href ? (
-        <a
-          href={href}
-          className={classNames(styles.button, styles[type], styles[theme], styles[sizeClass])}
-          {...(isExternal(href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-          {...rest}
-        >
-          {children}
-        </a>
-      ) : (
-        <button
-          className={classNames(styles.button, styles[type], styles[theme], styles[sizeClass])}
-          onClick={onClick}
-          disabled={disabled}
-          {...rest}
-        >
-          {children}
-        </button>
+  return href ? (
+    <a
+      href={href}
+      className={classNames(
+        'button',
+        styles.button,
+        styles[type],
+        styles[theme],
+        styles[sizeClass],
+        { [styles.disabled]: disabled },
+        className
       )}
-    </div>
+      {...(isExternal(href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      {...rest}
+    >
+      {children}
+    </a>
+  ) : (
+    <button
+      className={classNames(
+        'button',
+        styles.button,
+        styles[type],
+        styles[theme],
+        styles[sizeClass],
+        { [styles.disabled]: disabled },
+        className
+      )}
+      onClick={onClick}
+      disabled={disabled}
+      {...rest}
+    >
+      {children}
+    </button>
   );
 };
 

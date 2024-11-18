@@ -6,23 +6,20 @@
 @import './variants/link-blue.module.scss';
 @import './variants/menu-link-secondary.module.scss';
 
-.buttonWrapper {
-  display: inline-block;
-  &.disabled {
-    pointer-events: none;
-  }
-}
-
 .button {
   background-color: transparent;
   text-decoration: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   border-width: 1px;
   border-style: solid;
-  outline: none;
   cursor: pointer;
+  height: fit-content;
+
+  &.disabled {
+    pointer-events: none;
+  }
 
   &.primary {
     @include button-primary;
