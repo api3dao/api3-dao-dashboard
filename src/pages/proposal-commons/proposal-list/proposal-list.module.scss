@@ -1,4 +1,5 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
 
 .proposalItem {
   border-top: 1px solid $black-line-color;
@@ -129,11 +130,18 @@
 }
 
 .noProposals {
-  color: $tertiary-color;
+  display: flex;
+  flex-direction: column;
+  color: $color-dark-blue-400;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  margin: 15vh $space-md;
-  transform: translateY(-50%);
-  font-size: $text-small;
+  gap: 8px;
+  margin: 32px 0;
+  padding: 120px 0;
+  @include font-body-9;
+  border-top: 1px solid $color-dark-blue-10;
+  border-bottom: 1px solid $color-dark-blue-10;
 
   & > * {
     margin-right: $space-xs;
@@ -141,5 +149,15 @@
 
   & > *:last-child {
     margin-right: 0;
+  }
+}
+
+@media (min-width: $md) {
+  .noProposals {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0;
+    padding: 170px 0;
+    @include font-body-6;
   }
 }
