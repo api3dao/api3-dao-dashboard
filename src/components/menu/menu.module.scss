@@ -20,17 +20,41 @@
 
 .navLink {
   border-left: 2px solid transparent;
+
+  &:hover {
+    .menuItem {
+      color: $color-dark-blue-50;
+    }
+  }
+
+  &:active {
+    .menuItem {
+      color: $color-dark-blue-100;
+    }
+  }
 }
 
 .activeNavLink {
-  cursor: default;
   border-left: 2px solid $color-blue-500;
 
-  .menuItem,
-  .menuItemText,
-  .menuMobileItemText,
-  .menuMobileItem svg {
+  .menuItem {
     color: $color-blue-500;
+  }
+
+  &:hover {
+    border-left: 2px solid $color-blue-200;
+
+    .menuItem {
+      color: $color-blue-200;
+    }
+  }
+
+  &:active {
+    border-left: 2px solid $color-blue-700;
+
+    .menuItem {
+      color: $color-blue-700;
+    }
   }
 }
 
@@ -85,6 +109,14 @@
 
   img {
     padding: 4px;
+  }
+
+  &:hover {
+    color: $color-dark-blue-50;
+  }
+
+  &:active {
+    color: $color-dark-blue-100;
   }
 }
 
