@@ -3,6 +3,7 @@
 @import './variants/primary.module.scss';
 @import './variants/secondary.module.scss';
 @import './variants/secondary-neutral.module.scss';
+@import './variants/tertiary-color.module.scss';
 @import './variants/link-blue.module.scss';
 @import './variants/menu-link-secondary.module.scss';
 
@@ -31,6 +32,10 @@
 
   &.secondary-neutral {
     @include button-secondary-neutral;
+  }
+
+  &.tertiary-color {
+    @include button-tertiary-color;
   }
 
   &.link-blue {
