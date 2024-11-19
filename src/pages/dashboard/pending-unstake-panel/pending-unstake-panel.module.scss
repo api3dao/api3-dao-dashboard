@@ -2,12 +2,12 @@
 @import '../../../styles/fonts.module.scss';
 
 .pendingUnstakePanel {
-  padding-top: $space-md;
+  padding-top: 16px;
   border-top: 1px solid $color-dark-blue-10;
   box-sizing: border-box;
 
-  @media (min-width: $sm) {
-    padding: $space-lg $space-lg $space-md $space-lg;
+  @media (min-width: $md) {
+    padding: 24px 24px 8px 24px;
   }
 }
 
@@ -30,7 +30,7 @@
     color: $color-dark-blue-400;
   }
 
-  @media (min-width: $sm) {
+  @media (min-width: $md) {
     h5 {
       @include font-subtitle-3;
     }
@@ -50,25 +50,23 @@
   text-align: right;
   margin-right: 24px;
   width: 40%;
-
-  @media (min-width: $sm) and (max-width: $md) {
-    width: 60px;
-  }
 }
 
 .pendingUnstakeActions {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   gap: $space-md;
   margin-top: $space-lg;
   white-space: nowrap;
 
-  @media (min-width: $sm) and (max-width: $md) {
-    flex-direction: column-reverse;
+  * {
+    width: 100%;
+    max-width: 240px;
 
-    * {
-      width: 100%;
+    @media (min-width: $md) {
+      max-width: 264px;
     }
   }
 }
@@ -77,7 +75,7 @@
   display: flex;
   margin-left: 2px;
 
-  @media (min-width: $sm) {
+  @media (min-width: $md) {
     margin-left: 4px;
   }
 }

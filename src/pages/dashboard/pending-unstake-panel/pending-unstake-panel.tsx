@@ -107,11 +107,11 @@ const PendingUnstakePanel = (props: Props) => {
           </div>
         </div>
         <div className={styles.pendingUnstakeActions}>
-          <Button size="xs" type="secondary-neutral" onClick={handleUnstake} disabled={!canUnstake}>
-            Unstake
-          </Button>
           <Button size="xs" type="primary" onClick={handleUnstakeAndWithdraw} disabled={!canUnstakeAndWithdraw}>
             Unstake and Withdraw
+          </Button>
+          <Button size="xs" type="secondary-neutral" onClick={handleUnstake} disabled={!canUnstake}>
+            Unstake
           </Button>
         </div>
       </div>
