@@ -17,6 +17,7 @@ export interface Props extends BreakpointsProps {
     | 'tertiary-color'
     | 'link'
     | 'text'
+    | 'text-blue'
     | 'menu-link-secondary'
     | 'link-blue';
   size?: Size;

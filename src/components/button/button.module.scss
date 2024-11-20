@@ -6,6 +6,7 @@
 @import './variants/tertiary-color.module.scss';
 @import './variants/link-blue.module.scss';
 @import './variants/menu-link-secondary.module.scss';
+@import './variants/text-blue.module.scss';
 
 .button {
   background-color: transparent;
@@ -44,6 +45,10 @@
 
   &.menu-link-secondary {
     @include menu-link-secondary;
+  }
+
+  &.text-blue {
+    @include text-blue;
   }
 
   &.normal {
