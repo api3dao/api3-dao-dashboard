@@ -23,7 +23,7 @@ describe('delegation', () => {
     cy.get('#modal').find('input').type(ACCOUNTS[1]);
     cy.get('#modal').findByText('Delegate').click();
 
-    cy.dataCy('delegated-to').should('have.text', `Delegated to: ${abbrStr(ACCOUNTS[1])}`);
+    cy.dataCy('delegated-to').should('have.text', `Delegated to: ${ACCOUNTS[1]}`);
   });
 
   // TODO: implement proposal voting tests
