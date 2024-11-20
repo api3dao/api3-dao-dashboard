@@ -196,6 +196,7 @@ $gradient-base-blue-01: linear-gradient(223deg, rgba(26, 79, 222, 0.6) 0%, rgba(
       mask-composite: exclude;
       background: $gradient;
       border-radius: inherit;
+      pointer-events: none;
     }
   }
 }
