@@ -209,6 +209,15 @@
   letter-spacing: 1px;
 }
 
+@mixin font-heading-4 {
+  font-family: Poppins;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 110%; /* 44px */
+  letter-spacing: 1px;
+}
+
 @mixin font-heading-5 {
   font-family: Poppins;
   font-size: 36px;
@@ -321,6 +330,15 @@
   letter-spacing: -0.44px;
 }
 
+@mixin font-subtitle-6 {
+  font-family: Karla;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; /* 28.6px */
+  letter-spacing: -0.44px;
+}
+
 @mixin font-subtitle-8 {
   font-family: Karla;
   font-size: 20px;
@@ -382,4 +400,31 @@
   font-weight: 700;
   line-height: 100%; /* 14px */
   letter-spacing: 0.2px;
+}
+
+@mixin font-tagline-2 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 27px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-8 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 21px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-11 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 18px */
+  text-transform: uppercase;
 }

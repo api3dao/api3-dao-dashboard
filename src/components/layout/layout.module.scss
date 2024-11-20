@@ -1,6 +1,6 @@
 @import '../../styles/variables.module.scss';
 @import '../../styles/fonts.module.scss';
-@import '../../styles/link-styles.module.scss';
+@import '../button//variants/menu-link-secondary.module.scss';
 
 .layout {
   background: linear-gradient(334deg, #fafafa -0.91%, #ebf0ff 48.81%, #fafafa 99.52%);

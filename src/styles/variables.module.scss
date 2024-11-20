@@ -157,18 +157,46 @@ $gradient-medium-light: linear-gradient(
   #3c82ee 84%,
   #53a0d7 98%
 );
+$gradient-light: linear-gradient(180deg, #fafafa 0%, #f0f4ff 100%);
+$gradient-base-blue-01: linear-gradient(223deg, rgba(26, 79, 222, 0.6) 0%, rgba(26, 79, 222, 0.61) 100%),
+  conic-gradient(
+    from 110deg at 50% 47%,
+    rgba(30, 39, 57, 0.8) 0%,
+    rgba(250, 250, 250, 0.8) 5%,
+    rgba(30, 39, 57, 0.8) 9%,
+    rgba(250, 250, 250, 0.8) 13%,
+    rgba(30, 39, 57, 0.8) 20%,
+    rgba(250, 250, 250, 0.8) 25%,
+    rgba(30, 39, 57, 0.8) 30%,
+    rgba(250, 250, 250, 0.8) 36%,
+    rgba(30, 39, 57, 0.8) 41%,
+    rgba(250, 250, 250, 0.8) 45%,
+    rgba(30, 39, 57, 0.8) 50%,
+    rgba(250, 250, 250, 0.8) 55%,
+    rgba(30, 39, 57, 0.8) 58%,
+    rgba(250, 250, 250, 0.8) 62%,
+    rgba(30, 39, 57, 0.8) 65%,
+    rgba(250, 250, 250, 0.8) 69%,
+    rgba(30, 39, 57, 0.8) 77%,
+    rgba(250, 250, 250, 0.8) 83%,
+    rgba(30, 39, 57, 0.8) 90%,
+    rgba(250, 250, 250, 0.8) 96%,
+    rgba(30, 39, 57, 0.8) 100%
+  ),
+  linear-gradient(#fafafa 8%, #fafafa 40%, #d2dfff 62%, #ffffff 81%, rgba(245, 245, 245, 0.6) 100%);
 
 @mixin gradient-border($gradient) {
   @supports (mask-composite: exclude) {
     &:before {
       content: '';
       position: absolute;
-      inset: -1px -1px -1px -1px;
+      inset: -1px;
       padding: 1px;
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       mask-composite: exclude;
       background: $gradient;
       border-radius: inherit;
+      pointer-events: none;
     }
   }
 }

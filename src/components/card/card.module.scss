@@ -1,0 +1,44 @@
+@import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+
+.card {
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid $color-blue-25;
+  background: $gradient-light;
+  box-shadow: 0px 4px 4px 0px rgba(190, 210, 255, 0.2);
+  padding: $space-lg;
+  padding-bottom: $space-xl;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: $space-md;
+  margin-bottom: $space-xxl;
+
+  > h5 {
+    @include font-heading-9;
+  }
+
+  @media (min-width: $md) {
+    > h5 {
+      @include font-heading-7;
+    }
+  }
+}
+
+.contentFooter {
+  margin-top: $space-xl;
+  text-align: center;
+}
+
+.cardChildren {
+  margin-top: $space-lg;
+}
+
+.gradientBorder {
+  border: none;
+  @include gradient-border($gradient-base-blue-01);
+}

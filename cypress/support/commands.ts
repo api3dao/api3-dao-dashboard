@@ -65,7 +65,7 @@ Cypress.Commands.add('login', () => {
   });
 
   // Login
-  cy.findByRole('button', { name: 'Connect Wallet' }).click();
+  cy.findAllByRole('button', { name: 'Connect Wallet' }).first().click();
 
   // Web3 Modal
   cy.get('w3m-modal')
