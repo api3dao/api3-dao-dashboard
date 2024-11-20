@@ -6,10 +6,13 @@
   background: linear-gradient(334deg, #fafafa -0.91%, #ebf0ff 48.81%, #fafafa 99.52%);
   min-height: 100vh;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .content {
   display: flex;
+  flex-grow: 1;
 }
 
 .main {
