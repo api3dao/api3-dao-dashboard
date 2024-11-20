@@ -1,67 +1,101 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
-.borderedBoxesWrap {
+.cardsWrapper {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
-
-  & > * {
-    margin-right: $space-xxl;
-  }
-
-  & > *:last-child {
-    margin-right: 0;
-  }
-
-  @media (max-width: $max-md) {
-    flex-direction: column;
-    align-items: center;
-
-    & > * {
-      margin-right: 0;
-      margin-bottom: 100px;
-    }
-
-    & > *:last-child {
-      margin-bottom: 0;
-    }
-  }
-}
-
-.stakingBoxWrap {
+  box-sizing: border-box;
+  gap: $space-xl;
   width: 100%;
-  max-width: 420px;
-  & > * {
-    margin-bottom: $space-xl;
+
+  & > div {
+    width: 100%;
+    box-sizing: border-box;
   }
-  & > *:last-child {
-    margin-bottom: 0;
+
+  @media (min-width: $sm) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 32px;
+
+    & > div {
+      width: 50%;
+    }
+  }
+
+  @media (min-width: $md) {
+    padding-top: $space-xl;
+    gap: 64px;
   }
 }
 
-.borderedBoxContentTitle {
-  font-size: 14px;
-  line-height: 17px;
-  font-weight: 500;
-  color: $secondary-color;
-  text-transform: uppercase;
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  & > div {
+    text-align: center;
+  }
+}
+
+.cardHeaderButton {
+  display: flex;
+  align-items: center;
+  gap: $space-xs;
+}
+
+.cardContentTitle {
+  @include font-tagline-11;
+  color: $color-dark-blue-100;
+  margin-bottom: $space-xs;
+
+  @media (min-width: $md) {
+    @include font-tagline-8;
+  }
+}
+
+.cardContentValue {
+  @include font-heading-5;
+  color: $color-dark-blue-400;
+  line-height: 25px;
+
+  @media (min-width: $md) {
+    @include font-heading-4;
+    line-height: 28px;
+  }
 }
 
 .dashboardHeader {
-  font-size: $heading-5;
-  line-height: $lh-heading-5;
-  color: $green-color;
+  @include font-heading-9;
+  color: $color-dark-blue-100;
 
-  @media (max-width: $max-sm) {
-    font-size: $text-normal;
-    line-height: $lh-normal;
+  @media (min-width: $sm) {
+    @include font-heading-8;
+  }
+  @media (min-width: $md) {
+    @include font-heading-7;
+  }
+}
+
+.extraTopSpacing {
+  margin-top: $space-xl;
+
+  @media (min-width: $md) {
+    margin-top: 72px;
   }
 }
 
 .tutorialVideo {
   position: relative;
   padding-bottom: 56.25%; /* 16:9, for an aspect ratio of 1:1 change to this value to 100% */
-  margin: $space-xl 0;
+  margin: $space-lg 0 $space-xxl 0;
+
+  @media (min-width: $md) {
+    margin-bottom: 72px;
+  }
 
   iframe {
     position: absolute;
@@ -69,5 +103,83 @@
     left: 0;
     width: 100%;
     height: 100%;
+  }
+}
+
+.connectWalletBox {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+  color: $color-dark-blue-400;
+  padding: $space-lg 0;
+  margin: $space-xl 0;
+  border-top: 1px solid $color-dark-blue-10;
+  border-bottom: 1px solid $color-dark-blue-10;
+
+  @media (min-width: $sm) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: $space-xxxl 0;
+  }
+  @media (min-width: $md) {
+    margin: $space-xxl 0 72px 0;
+  }
+}
+
+.connectWalletBoxContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 40px;
+
+  & img {
+    width: 32px;
+    height: 32px;
+  }
+
+  @media (min-width: $sm) {
+    gap: $space-xl;
+    height: 54px;
+
+    & img {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+.connectWalletBoxText {
+  display: flex;
+  flex-direction: column;
+}
+
+.connectWalletBoxTitle {
+  @include font-body-10;
+
+  @media (min-width: $sm) {
+    @include font-body-8;
+  }
+  @media (min-width: $md) {
+    @include font-body-4;
+  }
+}
+
+.connectWalletBoxSubtitle {
+  @include font-body-12;
+
+  @media (min-width: $sm) {
+    @include font-body-9;
+  }
+  @media (min-width: $md) {
+    @include font-body-6;
+  }
+}
+
+.connectWalletBoxButton {
+  margin-left: 42px;
+
+  @media (min-width: $sm) {
+    margin-left: 0;
   }
 }
