@@ -1,0 +1,23 @@
+.rc-tooltip-placement-top .rc-tooltip-arrow,
+.rc-tooltip-placement-topLeft .rc-tooltip-arrow,
+.rc-tooltip-placement-topRight .rc-tooltip-arrow {
+  transform: translate(-5%, 4px);
+  margin-left: -6px;
+  border-width: 6px 6px 0;
+  border-top-color: #0c1143;
+}
+
+.rc-tooltip-placement-bottom .rc-tooltip-arrow,
+.rc-tooltip-placement-bottomLeft .rc-tooltip-arrow,
+.rc-tooltip-placement-bottomRight .rc-tooltip-arrow {
+  transform: translate(-5%, -4px);
+  margin-left: -6px;
+  border-width: 0 6px 6px;
+  border-bottom-color: #0c1143;
+}
+
+.rc-tooltip,
+.rc-tooltip-inner {
+  background-color: transparent;
+  border: none;
+}
