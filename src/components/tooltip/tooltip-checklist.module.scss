@@ -1,0 +1,33 @@
+@import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+
+.tooltipChecklist {
+  list-style-type: none;
+  padding: 4px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  @media (min-width: $md) {
+    padding: 8px 4px;
+  }
+}
+
+.checklistItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  > img {
+    transform: translateY(2px);
+  }
+
+  @media (min-width: $md) {
+    @include font-body-12;
+  }
+}
+
+.unchecked {
+  color: $color-gray-200;
+}
