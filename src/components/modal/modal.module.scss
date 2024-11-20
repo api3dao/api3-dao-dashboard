@@ -185,4 +185,12 @@
   justify-content: center;
   margin-top: 48px;
   flex-direction: column;
+  width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+  max-width: 510px;
+
+  @media (min-width: $sm) {
+    padding: 0;
+  }
 }
