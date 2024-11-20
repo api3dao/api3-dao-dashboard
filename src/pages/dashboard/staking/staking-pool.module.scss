@@ -1,133 +1,226 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
 
 .stakingPool {
   display: flex;
   align-items: center;
-  margin-top: $space-xxxl;
-  margin-bottom: 100px;
+  flex-direction: column;
+  margin-top: $space-xxl;
+  margin-bottom: 64px;
 
-  @media (max-width: $max-md) {
-    flex-direction: column;
-    margin-top: $space-xxl;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: $space-xxl;
+    margin-top: $space-xl;
+    margin-bottom: 64px;
+    height: 162px;
+  }
+
+  @media (min-width: $md) {
+    margin-bottom: 72px;
   }
 }
 
 .reverseDirectionWrap {
   display: flex;
+  flex-direction: column-reverse;
   justify-content: center;
   align-items: center;
   width: 100%;
 
-  @media (max-width: $max-md) {
-    flex-direction: column-reverse;
-  }
-}
-
-.sectionBase {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-
-  margin-right: $space-xxxl;
-  @media (max-width: $max-md) {
-    margin-right: unset;
+  @media (min-width: $sm) {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
   }
 }
 
 .firstSection {
-  @extend .sectionBase;
-  justify-content: stretch;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
-.secondSection {
-  @extend .sectionBase;
-  justify-content: center;
-
-  @media (max-width: $max-md) {
-    flex-direction: row;
-  }
-}
-
-.stakingTableRow {
-  height: 96px;
+.sectionRow {
+  height: 86px;
   display: flex;
   align-items: center;
-  padding: $space-md 0;
-  border-top: 1px solid $black-line-color;
+  padding: $space-md;
+  padding-right: 0;
   box-sizing: border-box;
-  justify-content: center;
+  gap: $space-xxl;
   width: 100%;
+  border-top: 1px solid $color-dark-blue-10;
 
-  // On "lg" resolution the text is "cluttered" because there is not enough height
-  @media (max-width: $max-lg) {
-    height: 120px;
+  &:nth-of-type(2) {
+    border-bottom: 1px solid $color-dark-blue-10;
   }
-  // On "md" resolution the layout changes to column and there is enough height
-  @media (max-width: $max-md) {
-    height: 96px;
+
+  @media (min-width: $sm) {
+    padding-left: 0;
+
+    &:nth-of-type(2) {
+      height: unset;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
   }
 }
 
 .firstSectionCell {
-  width: 50%;
-  padding: 0 $space-md;
-  box-sizing: border-box;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+}
 
-  &.rightAlign {
-    flex-direction: column;
-    text-align: right;
+.leftColumn {
+  text-align: right;
+}
+
+.rightColumn {
+  width: 100%;
+
+  & img {
+    margin-left: 4px;
+  }
+}
+
+.firstSectionLabel {
+  @include font-body-6;
+  text-wrap: pretty;
+  color: $color-dark-blue-100;
+
+  @media (min-width: $sm) {
+    @include font-body-9;
   }
 
-  @media (max-width: $max-xl) {
-    padding: 0 $space-xs;
+  @media (min-width: $md) {
+    @include font-body-6;
+  }
+}
+
+.firstSectionValue {
+  @include font-heading-4;
+  color: $color-dark-blue-400;
+  width: 120px; // Designs are saying 80px here, but they haven't accounted for the decimals
+
+  @media (min-width: $sm) {
+    @include font-heading-4;
+    width: 104px;
+  }
+
+  @media (min-width: $md) {
+    @include font-heading-3;
+    width: 168px;
+  }
+}
+
+.firstSectionValueSupplyGrowth {
+  @include font-heading-6; // Temporary, until we have the correct font size
+  color: $color-dark-blue-400;
+  // css below is from the designs, but it doesn't seem to be correct
+  // font-family: Inter;
+  // font-size: 40.5px;
+  // font-style: normal;
+  // font-weight: 600;
+  // line-height: 60px; /* 148.148% */
+
+  @media (min-width: $sm) {
+    @include font-heading-7; // Temporary
+  }
+
+  @media (min-width: $md) {
+    @include font-heading-6;
+  }
+}
+
+.secondSection {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 $space-xl $space-xs $space-xl;
+  border-bottom: 1px solid $color-dark-blue-10;
+
+  @media (min-width: $sm) {
+    flex-direction: column;
+    padding: 0;
+    border: none;
+  }
+}
+
+.secondSectionRow {
+  padding: 0;
+  margin: 0;
+  width: unset;
+  border: none;
+
+  &:nth-of-type(2) {
+    border: none;
   }
 }
 
 .secondSectionCell {
-  padding: 0 $space-md;
-  box-sizing: border-box;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
   flex-direction: column;
-  text-align: right;
-  flex: 1;
-  min-width: 110px;
+  gap: 4px;
+  height: 60px;
 
-  @media (max-width: $max-md) {
-    align-items: center;
+  @media (min-width: $sm) {
+    height: 86px;
+    align-items: flex-start;
+    box-sizing: border-box;
+    padding: 23px 32px 16px 0;
+    border-top: 1px solid $color-dark-blue-10;
+    border-bottom: 1px solid $color-dark-blue-10;
   }
 
-  @media (max-width: $max-xl) {
-    padding: 0 $space-xs;
+  @media screen and (min-width: $md) {
+    width: 220px;
   }
 }
 
-.secondSectionTitle {
-  font-size: $text-xsmall;
-  line-height: 18px;
-  color: $secondary-color;
-  font-weight: 500;
-  text-transform: uppercase;
+.secondSectionLabel {
+  @include font-tagline-11;
+  color: $color-dark-blue-100;
+
+  @media (min-width: $sm) {
+    @include font-body-13;
+  }
+}
+
+.secondSectionValue {
+  @include font-tagline-2;
+  color: $color-dark-blue-400;
+  text-align: center;
+
+  @media (min-width: $sm) {
+    @include font-body-8;
+  }
+
+  @media (min-width: $md) {
+    @include font-body-5;
+  }
+}
+
+.secondSectionCellTarget {
+  @media (min-width: $sm) {
+    padding-bottom: 0;
+    height: unset;
+    border: none;
+  }
 }
 
 .stakingRadialChart {
   display: flex;
+  margin-top: $space-xxl;
+  margin-bottom: 18px;
+  padding: 0 6px 10px 6px;
 
-  @media (max-width: $max-md) {
-    margin-top: $space-xl;
-    margin-bottom: $space-xl;
-  }
-}
-
-.stakingAnnualApy {
-  font-size: $heading-3;
-  line-height: $lh-heading-3;
-  font-weight: 600;
-
-  @media (max-width: $max-xl) {
-    font-size: $heading-4;
-    line-height: $lh-heading-4;
+  @media (min-width: $sm) {
+    margin: 0;
   }
 }

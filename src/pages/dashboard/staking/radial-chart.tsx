@@ -9,7 +9,7 @@ type Props = {
 
 const RadialChart = ({ completionPercent }: Props) => {
   const r = 73,
-    strokeWidth = 10,
+    strokeWidth = 8,
     side = r * 2 + strokeWidth * 2,
     center = r + strokeWidth;
 
@@ -19,12 +19,13 @@ const RadialChart = ({ completionPercent }: Props) => {
 
   return (
     <svg width={side} height={side}>
-      <circle cx={center} cy={center} r={r} stroke="#404141" strokeWidth={5} />
+      <circle cx={center} cy={center} r={r} stroke="#D1D5FD" strokeWidth={5} fill="none" />
 
       <path
         stroke="url(#gradient)"
         strokeWidth={strokeWidth}
         strokeLinecap="round"
+        fill="none"
         d={describeArc(center, center, r, 0, completionValue === 100 ? 359 : round((completionValue / 100) * 360))}
       />
 
@@ -33,8 +34,9 @@ const RadialChart = ({ completionPercent }: Props) => {
         y="45%"
         textAnchor="middle"
         dominantBaseline="middle"
-        fill="white"
-        fontSize={27}
+        fill="#1F267B"
+        fontSize={32}
+        fontWeight={500}
         children={completionText}
       />
 
@@ -43,15 +45,16 @@ const RadialChart = ({ completionPercent }: Props) => {
         y="62%"
         textAnchor="middle"
         dominantBaseline="middle"
-        fill="white"
-        children="OF TARGET MET"
+        fill="#455065"
         fontSize={12}
+        fontWeight={600}
+        children="OF TARGET MET"
       />
 
       <defs>
         <linearGradient id="gradient" x1="0%" x2="100%" y1="0%" y2="0%">
-          <stop offset="0%" stopColor="#7ce3cb" />
-          <stop offset="100%" stopColor="#7963b2" />
+          <stop offset="0%" stopColor="#1B39FF" />
+          <stop offset="100%" stopColor="#1B39FF" />
         </linearGradient>
       </defs>
     </svg>

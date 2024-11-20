@@ -10,12 +10,13 @@ type BreakpointsProps = { [key in BreakpointKeys]?: { size?: Size } };
 export interface Props extends BreakpointsProps {
   children: ReactNode;
   className?: string;
-  type?: 'primary' | 'secondary' | 'link' | 'text' | 'menu-link-secondary' | 'link-blue';
+  type?: 'primary' | 'secondary' | 'secondary-neutral' | 'link' | 'text' | 'menu-link-secondary' | 'link-blue';
   size?: Size;
   disabled?: boolean;
   href?: string;
   theme?: 'light' | 'dark';
   onClick?: () => void;
+  'data-testid'?: string;
 }
 
 const Button = ({
@@ -31,6 +32,7 @@ const Button = ({
   sm,
   md,
   lg,
+  ...rest
 }: Props) => {
   const { width } = useWindowDimensions();
   const sizeClass = getSizeClass(width, size, { xs, sm, md, lg });
@@ -42,6 +44,7 @@ const Button = ({
           href={href}
           className={classNames(styles.button, styles[type], styles[theme], styles[sizeClass])}
           {...(isExternal(href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          {...rest}
         >
           {children}
         </a>
@@ -50,6 +53,7 @@ const Button = ({
           className={classNames(styles.button, styles[type], styles[theme], styles[sizeClass])}
           onClick={onClick}
           disabled={disabled}
+          {...rest}
         >
           {children}
         </button>
