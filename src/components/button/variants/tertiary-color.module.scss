@@ -53,4 +53,24 @@
     color: $color-blue-25;
     border: 1px solid $color-blue-25;
   }
+
+  &.dark {
+    color: $color-blue-400;
+    border: $color-blue-400;
+
+    &:hover {
+      color: $color-blue-200;
+      border: $color-blue-200;
+    }
+
+    &:active {
+      color: $color-blue-500;
+      border: $color-blue-500;
+    }
+
+    &:disabled {
+      color: $color-blue-100;
+      border: $color-blue-100;
+    }
+  }
 }

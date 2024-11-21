@@ -63,7 +63,7 @@ const TokenAmountForm = (props: Props) => {
         {maxValue && (
           <div className={styles.tokenFormBalance}>
             Your balance:{' '}
-            <button className={styles.valueButton} onClick={handleSetMax}>
+            <button className={styles.valueButton} onClick={handleSetMax} tabIndex={-1}>
               {/* We don't round because we want to show all decimal digits for the maxValue field */}
               {formatApi3(maxValue)}
             </button>

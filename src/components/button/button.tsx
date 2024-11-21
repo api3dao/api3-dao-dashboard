@@ -50,7 +50,6 @@ const Button = ({
     <a
       href={href}
       className={classNames(
-        'button',
         styles.button,
         styles[type],
         styles[theme],
@@ -66,7 +65,6 @@ const Button = ({
   ) : (
     <button
       className={classNames(
-        'button',
         styles.button,
         styles[type],
         styles[theme],

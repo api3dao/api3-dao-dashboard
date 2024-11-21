@@ -45,7 +45,7 @@ export const ModalContent = (props: ModalProps) => {
         >
           {!hideCloseButton && (
             <div className={styles.closeButtonWrapper}>
-              <button onClick={onClose} onKeyDown={triggerOnEnter(onClose)}>
+              <button onClick={onClose} onKeyDown={triggerOnEnter(onClose)} data-testid="modal-close-button">
                 <CloseIcon />
                 <span className="sr-only">Close modal</span>
               </button>

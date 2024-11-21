@@ -102,7 +102,7 @@ const TokenDepositForm = (props: Props) => {
 
         <div className={styles.tokenFormBalance}>
           Your balance:{' '}
-          <button className={styles.valueButton} onClick={handleSetMax}>
+          <button className={styles.valueButton} onClick={handleSetMax} tabIndex={-1}>
             {walletBalance ? formatApi3(walletBalance) : UNKNOWN_NUMBER}
           </button>
         </div>

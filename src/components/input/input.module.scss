@@ -37,7 +37,7 @@
   }
 
   input {
-    min-width: 50px;
+    min-width: 30px;
     background-color: transparent;
     color: $color-dark-blue-400;
     border-width: 0;
@@ -68,8 +68,12 @@
     input {
       @include normal;
     }
+  }
 
-    @media (min-width: $sm) {
+  @media (min-width: $sm) {
+    min-width: 50px;
+
+    &:not(.normal):not(.large) {
       input {
         @include large;
       }
