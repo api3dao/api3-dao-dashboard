@@ -117,11 +117,12 @@ export const ModalHeader = ({ children, tooltipText, size }: ModalHeaderProps) =
 
 interface ModalFooterProps extends ModalSize {
   children?: React.ReactNode;
+  noMargin?: boolean;
 }
 
-export const ModalFooter = (props: ModalFooterProps) => {
-  if (!props.children) return null;
-  return <div className={styles.modalFooter}>{props.children}</div>;
+export const ModalFooter = ({ children, noMargin }: ModalFooterProps) => {
+  if (!children) return null;
+  return <div className={classNames(styles.modalFooter, { [styles.noMargin]: noMargin })}> {children}</div>;
 };
 
 export const triggerOnEnter =
