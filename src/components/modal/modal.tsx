@@ -85,17 +85,19 @@ type ModalHeaderProps =
       children: string;
       tooltipText?: null;
       size?: null;
+      noMargin?: boolean;
     }
   | {
       children: string;
       tooltipText: string;
       size: 'large';
+      noMargin?: boolean;
     };
 
-export const ModalHeader = ({ children, tooltipText, size }: ModalHeaderProps) => {
+export const ModalHeader = ({ children, tooltipText, size, noMargin = false }: ModalHeaderProps) => {
   if (size === 'large') {
     return (
-      <div className={classNames(styles.modalHeader, styles.modalHeaderLarge)}>
+      <div className={classNames(styles.modalHeader, styles.modalHeaderLarge, { [styles.noMargin]: noMargin })}>
         <h5>{children}</h5>
 
         <Tooltip overlay={tooltipText}>
@@ -109,7 +111,7 @@ export const ModalHeader = ({ children, tooltipText, size }: ModalHeaderProps) =
   }
 
   return (
-    <div className={classNames(styles.modalHeader, styles.modalHeaderNormal)}>
+    <div className={classNames(styles.modalHeader, styles.modalHeaderNormal, { [styles.noMargin]: noMargin })}>
       <h5>{children}</h5>
     </div>
   );
