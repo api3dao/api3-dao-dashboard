@@ -10,6 +10,7 @@ import { isUserRejection, formatApi3, parseApi3, messages, UNKNOWN_NUMBER } from
 import styles from './forms.module.scss';
 import UnstakeHelperText from './unstake-helper-text';
 import { go, goSync } from '@api3/promise-utils';
+import classNames from 'classnames';
 
 interface Props {
   allowance: BigNumber;
@@ -109,7 +110,7 @@ const TokenDepositForm = (props: Props) => {
       </div>
 
       <ModalFooter>
-        <div className={styles.tokenAmountFormActions}>
+        <div className={classNames(styles.tokenAmountFormActions, !approvalRequired && styles.columnReverse)}>
           {approvalRequired ? (
             <Button type="primary" size="sm" sm={{ size: 'lg' }} onClick={handleApprove}>
               Approve

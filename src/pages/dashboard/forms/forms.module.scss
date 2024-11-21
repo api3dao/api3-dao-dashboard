@@ -46,6 +46,10 @@
   width: 100%;
   box-sizing: border-box;
 
+  &.columnReverse {
+    flex-direction: column-reverse;
+  }
+
   > * {
     width: 100%;
   }
@@ -54,6 +58,10 @@
     flex-direction: row;
     gap: 32px;
     justify-content: center;
+
+    &.columnReverse {
+      flex-direction: row;
+    }
 
     > * {
       width: auto;
