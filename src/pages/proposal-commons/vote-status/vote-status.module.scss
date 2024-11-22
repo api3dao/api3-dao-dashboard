@@ -1,18 +1,16 @@
 @import '../../../styles/variables.module.scss';
 
 .status {
-  font-weight: 600;
-
   &.unvoted {
-    color: $secondary-color;
+    color: $color-dark-blue-100;
   }
 
   &.votedAgainst {
-    color: $pink-color;
+    color: $color-action-error-800;
   }
 
   &.votedFor {
-    color: $green-color;
+    color: $color-action-success-700;
   }
 }
 

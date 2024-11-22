@@ -149,11 +149,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         <div>
           <h4 className={styles.proposalDetailsTitle}>{proposal.metadata.title}</h4>
           <div className={styles.proposalTag}>
-            <Tag type={proposal.type}>
-              <span className={globalStyles.capitalize}>
-                #{proposal.voteId.toString()} {proposal.type}
-              </span>
-            </Tag>
+            <Tag type={proposal.type} id={`#${proposal.voteId.toString()}`} />
           </div>
         </div>
         <div className={styles.proposalDetailsTimer}>

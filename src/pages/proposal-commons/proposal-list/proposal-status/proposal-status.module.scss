@@ -2,23 +2,22 @@
 
 .proposalStatus {
   text-align: center;
-  font-weight: 600;
 }
 
 .failing {
-  color: $pink-color;
+  color: $color-action-error-800;
 }
 
 .passing {
-  color: $green-color;
+  color: $color-action-success-700;
 }
 
 .rejected {
-  color: $pink-color;
+  color: $color-action-error-800;
 }
 
 .executed {
-  color: $green-color;
+  color: $color-action-success-700;
 }
 
 .icon {
@@ -32,11 +31,8 @@
 }
 
 .execute {
-  .button {
-    padding: 0;
-  }
-
   button {
+    padding: 0;
     font-size: 18px;
     line-height: 28px;
   }
@@ -45,5 +41,4 @@
 .flex {
   display: flex;
   align-items: center;
-  justify-content: center;
 }

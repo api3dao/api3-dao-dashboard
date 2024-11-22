@@ -1,20 +1,20 @@
-import { ReactNode } from 'react';
 import classNames from 'classnames';
 import styles from './tag.module.scss';
 
 type Props = {
-  children: ReactNode;
+  id: string;
   type?: 'primary' | 'secondary';
 };
 
-const Tag = ({ children, type = 'primary' }: Props) => (
+const Tag = ({ id, type = 'primary' }: Props) => (
   <div
     className={classNames(styles.tag, {
       [styles.primary]: type === 'primary',
       [styles.secondary]: type === 'secondary',
     })}
   >
-    {children}
+    <span className={styles.proposalId}>{id}</span>
+    <span className={styles.proposalType}>{type}</span>
   </div>
 );
 

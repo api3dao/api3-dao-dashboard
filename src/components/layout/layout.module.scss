@@ -17,17 +17,21 @@
 
 .main {
   max-width: 468px;
+  width: 100%;
+  box-sizing: border-box;
   padding: 0 16px;
   margin: 0 auto;
   flex: 1;
 
   @media (min-width: $sm) {
     max-width: 640px;
+    padding: 0;
   }
 
   @media (min-width: $md) {
     max-width: 920px;
-    padding: 0 64px;
+    padding: 0 92px;
+    box-sizing: content-box;
     padding-bottom: 80px;
   }
 }

@@ -1,20 +1,28 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
 .tag {
-  display: inline-block;
-  font-size: $text-xsmall;
-  line-height: 14px;
-  font-weight: 500;
-  color: $primary-color;
-  padding: 6px $space-xs;
-  border-radius: 0 4px 4px 0;
-  border: 1px solid $secondary-border;
+  display: flex;
+  gap: 8px;
+  color: $color-dark-blue-400;
+  padding: 5px 10px;
+  border-radius: 0 10px 10px 0;
+  border: 1px solid $color-dark-blue-10;
+
+  .proposalId {
+    @include font-body-14;
+  }
+
+  .proposalType {
+    @include font-body-15;
+    text-transform: capitalize;
+  }
 
   &.primary {
-    background-color: $secondary-black-color;
+    background-color: $color-dark-blue-10;
   }
 
   &.secondary {
-    background-color: transparent;
+    background-color: $color-base-light;
   }
 }
