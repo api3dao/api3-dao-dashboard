@@ -19,6 +19,7 @@ export const NegativeVoteIcon = ({ large, fill }: IconProp) => (
   />
 );
 
+// TODO: Update the icon after the "check circle fill" is added as a react component
 export const PositiveVoteIcon = ({ large, fill }: IconProp) => (
   <img
     className={classNames(styles.voteIcon, { [styles.large]: large })}
@@ -84,9 +85,11 @@ const VoteSlider = (props: Props) => {
               [globalStyles.textNormal]: isLarge,
             })}
           >
-            <span>{formatPercentage(forPercentage)}</span>
+            <span className={classNames({ [styles.lost]: proposalRejected })}>{formatPercentage(forPercentage)}</span>
             {!isLarge && <VoteStatus voterState={voterState} wasDelegated={wasDelegated} />}
-            <span>{formatPercentage(againstPercentage)}</span>
+            <span className={classNames({ [styles.lost]: proposalApproved })}>
+              {formatPercentage(againstPercentage)}
+            </span>
           </div>
         </div>
         <NegativeVoteIcon large={isLarge} fill={proposalRejected} />

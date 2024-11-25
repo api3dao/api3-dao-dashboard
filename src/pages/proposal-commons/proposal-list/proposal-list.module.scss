@@ -60,6 +60,7 @@
   display: flex;
   align-items: center;
   @include font-body-14;
+  color: $color-dark-blue-100;
 
   &.mobile {
     margin-bottom: 4px;

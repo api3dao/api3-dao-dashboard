@@ -69,6 +69,10 @@ $border-radius: 100px;
   margin-top: 4px;
   @include font-body-14;
   color: $color-dark-blue-400;
+
+  .lost {
+    color: $color-dark-blue-50;
+  }
 }
 
 .voteIcon {
