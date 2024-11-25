@@ -1,53 +1,44 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
-.filterButton {
-  button {
-    padding: $space-sm !important;
-    text-decoration: none !important;
+h5 {
+  @include font-heading-9;
+  color: $color-dark-blue-100;
+
+  @media (min-width: $sm) {
+    @include font-heading-8;
+  }
+
+  @media (min-width: $md) {
+    @include font-heading-7;
   }
 }
 
-.active {
-  text-underline-offset: $space-xs;
-  text-decoration: underline;
-}
-
 .header {
-  margin-bottom: 80px;
+  margin-bottom: 32px;
 
   @media (min-width: $min-md) {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 64px;
   }
 }
 
-.treasury {
-  margin-top: -30px;
-}
-
-.borderBoxHeader {
+.proposalsHeader {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transform: translateY(-50%);
+  flex-direction: column;
+  gap: 16px;
+
+  @media (min-width: $sm) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 .radioButtons {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   flex-wrap: wrap;
-  margin-left: $space-md;
-
-  & > * {
-    margin-right: $space-lg;
-
-    @media (max-width: $max-md) {
-      margin-right: $space-md;
-    }
-  }
-
-  & > *:last-child {
-    margin-right: 0;
-  }
+  gap: 16px;
 }

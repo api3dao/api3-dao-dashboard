@@ -5,7 +5,6 @@ import { useQueryParams } from '../../utils';
 import { ProposalType } from '../../chain-data/state';
 import { historyProposalsSelector, OptionalProposalType } from '../../logic/proposals/selectors';
 import { useChainData } from '../../chain-data';
-import BorderedBox from '../../components/bordered-box/bordered-box';
 import RadioButton from '../../components/radio-button/radio-button';
 import ProposalList from '../proposal-commons/proposal-list';
 import styles from './history.module.scss';
@@ -50,31 +49,26 @@ const History = () => {
         <Header title="History"></Header>
       </div>
 
-      <BorderedBox
-        header={
-          <div className={styles.borderBoxHeader}>
-            <h5>Past Proposals</h5>
-            <div className={styles.radioButtons}>
-              <RadioButton
-                onChange={() => setCheckedPrimary(!checkedPrimary)}
-                label="Primary"
-                checked={checkedPrimary}
-                color="white"
-                type="checkbox"
-              />
-              <RadioButton
-                onChange={() => setCheckedSecondary(!checkedSecondary)}
-                label="Secondary"
-                checked={checkedSecondary}
-                color="white"
-                type="checkbox"
-              />
-            </div>
-          </div>
-        }
-        content={<ProposalList proposals={proposalsToShow} type="past" />}
-        noMobileBorders
-      />
+      <div className={styles.proposalsHeader}>
+        <h5>Past Proposals</h5>
+        <div className={styles.radioButtons}>
+          <RadioButton
+            onChange={() => setCheckedPrimary(!checkedPrimary)}
+            label="Primary"
+            checked={checkedPrimary}
+            color="white"
+            type="checkbox"
+          />
+          <RadioButton
+            onChange={() => setCheckedSecondary(!checkedSecondary)}
+            label="Secondary"
+            checked={checkedSecondary}
+            color="white"
+            type="checkbox"
+          />
+        </div>
+      </div>
+      <ProposalList proposals={proposalsToShow} type="past" />
     </BaseLayout>
   );
 };
