@@ -2,8 +2,7 @@ import { useState, ReactNode } from 'react';
 import { ProposalType } from '../../../chain-data';
 import Button from '../../../components/button';
 import RadioButton from '../../../components/radio-button/radio-button';
-import Input from '../../../components/input';
-import Textarea from '../../../components/textarea';
+import { TextareaInput } from '../../../components/input';
 import { Tooltip } from '../../../components/tooltip';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
 import {
@@ -125,12 +124,13 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="title">Title</label>}
           tooltip="Title of the proposal that will be displayed on the governance page."
         >
-          <Input
+          <TextareaInput
             id="title"
             placeholder="This will be used to identify the proposal."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            block
+            error={!!errors.title}
+            helperText={errors.title}
             autoFocus
           />
           {errors.title && <p className={styles.error}>{errors.title}</p>}
@@ -140,10 +140,13 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="description">Description</label>}
           tooltip="Description of the proposal that will be displayed with its details."
         >
-          <Textarea
+          <TextareaInput
             id="description"
+            multiline
             placeholder="While a description of your proposal can be typed text, it’s highly recommended to instead use a PDF hosted on IPFS and adding a link back to the forum where you posted your proposal for discussion."
             value={description}
+            error={!!errors.description}
+            helperText={errors.description}
             onChange={(e) => setDescription(e.target.value)}
           />
           {errors.description && <p className={styles.error}>{errors.description}</p>}
@@ -153,10 +156,12 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="target-address">Target Address</label>}
           tooltip="The address of the contract you want to be called when the proposal is executed."
         >
-          <Input
+          <TextareaInput
             id="target-address"
             placeholder="This is the address of the contract to call."
             value={targetAddress}
+            error={!!errors.targetAddress}
+            helperText={errors.targetAddress}
             onChange={(e) => setTargetAddress(e.target.value)}
             block
           />
@@ -167,10 +172,12 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="target-signature">Target Contract Signature</label>}
           tooltip={`The signature of the function at the target contract you want to have called (e.g. "transfer(address,uint256)").`}
         >
-          <Input
+          <TextareaInput
             id="target-signature"
             placeholder="The signature of the function to call."
             value={targetSignature}
+            error={!!errors.targetSignature}
+            helperText={errors.targetSignature}
             onChange={(e) => setTargetSignature(e.target.value)}
             block
           />
@@ -181,11 +188,13 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="target-value">Value (Wei)</label>}
           tooltip={`The amount of ETH you want to send along with the function call in Wei (use 0 unless the target function is "payable").`}
         >
-          <Input
+          <TextareaInput
             id="target-value"
             placeholder="0"
             type="number"
             value={targetValue}
+            error={!!errors.targetValue}
+            helperText={errors.targetValue}
             onChange={(e) => setTargetValue(e.target.value)}
             block
           />
@@ -196,10 +205,13 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="parameters">Parameters</label>}
           tooltip="The arguments that will be used to call the target function. Enter as a JSON array where the values are stringified."
         >
-          <Textarea
+          <TextareaInput
             id="parameters"
+            multiline
             placeholder="These are the arguments that will be used to satisfy the Target contract signature function."
             value={parameters}
+            error={!!errors.parameters}
+            helperText={errors.parameters}
             onChange={(e) => setParameters(e.target.value)}
           />
           {errors.parameters && <p className={styles.error}>{errors.parameters}</p>}

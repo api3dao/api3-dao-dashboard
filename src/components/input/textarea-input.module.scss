@@ -1,0 +1,130 @@
+@import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+
+.inputWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
+
+  &:focus-within {
+    border: 1px solid $color-dark-blue-25;
+  }
+}
+
+.input {
+  width: 100%;
+  background-color: transparent;
+
+  input,
+  textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 14px 16px;
+    box-sizing: border-box;
+    background-color: inherit;
+    color: $color-dark-blue-400;
+    overflow: auto;
+    @include font-body-12;
+
+    @media (min-width: $sm) {
+      @include font-body-9;
+    }
+
+    @media (min-width: $md) {
+      @include font-body-6;
+      padding: 18px 24px;
+    }
+
+    &::placeholder {
+      color: $color-dark-blue-50;
+    }
+  }
+
+  textarea {
+    min-height: 180px;
+    resize: vertical;
+  }
+
+  input:not([value='']),
+  textarea:not(:empty) {
+    padding-right: 38px;
+
+    @media (min-width: $md) {
+      padding-right: 46px;
+    }
+  }
+}
+
+.clearButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-dark-blue-300;
+  transition: opacity 0.2s;
+
+  &:disabled {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    transition: none;
+  }
+
+  @media (min-width: $sm) {
+    top: 18px;
+  }
+
+  @media (min-width: $md) {
+    top: 24px;
+    right: 24px;
+  }
+}
+
+.helperText {
+  @include font-body-15;
+  color: $color-dark-blue-400;
+
+  &.error {
+    color: $color-action-error-800;
+  }
+
+  @media (min-width: $sm) {
+    @include font-body-12;
+  }
+
+  @media (min-width: $md) {
+    @include font-body-9;
+  }
+}
+
+// removing input background color/text color for Chrome autocomplete
+.input {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    box-shadow: 0 0 0 30px #030303 inset !important;
+  }
+
+  input:-webkit-autofill {
+    -webkit-text-fill-color: #fff !important;
+  }
+}
