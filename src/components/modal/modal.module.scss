@@ -168,7 +168,13 @@
     }
 
     &Large {
-      max-width: 768px;
+      width: 620px;
+    }
+  }
+
+  @media (min-width: $md) {
+    &Large {
+      width: 768px;
     }
   }
 }

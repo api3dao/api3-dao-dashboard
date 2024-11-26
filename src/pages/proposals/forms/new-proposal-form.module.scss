@@ -21,7 +21,7 @@
 
   @media (min-width: $sm) {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     gap: 32px;
   }
 }
@@ -41,6 +41,7 @@
     min-width: 240px;
     justify-content: flex-end;
     align-items: center;
+    margin-top: 15px;
 
     svg {
       width: 24px;
@@ -57,6 +58,7 @@
 .proposalFormItemContent {
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .proposalTypeRadioButtons {
@@ -76,5 +78,29 @@
 }
 
 .marginTopMd {
-  margin-top: $space-md;
+  margin-top: 16px;
+}
+
+.noMargin {
+  margin: 0;
+}
+
+.newProposalModalFooter {
+  padding-bottom: 32px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  button {
+    width: 100%;
+    border-radius: 32px;
+  }
+
+  @media (min-width: $sm) {
+    padding-bottom: 0;
+
+    button {
+      width: auto;
+    }
+  }
 }

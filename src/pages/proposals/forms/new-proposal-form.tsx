@@ -22,11 +22,12 @@ interface ProposalFormItemProps {
   children: ReactNode;
   name: ReactNode | string;
   tooltip: string;
+  noMargin?: boolean;
 }
 
-const ProposalFormItem = ({ children, name, tooltip }: ProposalFormItemProps) => (
+const ProposalFormItem = ({ children, name, tooltip, noMargin = false }: ProposalFormItemProps) => (
   <div className={styles.proposalFormItem}>
-    <div className={styles.proposalFormItemName}>
+    <div className={classNames(styles.proposalFormItemName, { [styles.noMargin]: noMargin })}>
       {name}
       <Tooltip overlay={tooltip}>
         <InfoCircleIcon className={styles.infoIcon} />
@@ -109,6 +110,7 @@ const NewProposalForm = (props: Props) => {
         <ProposalFormItem
           name="Proposal type"
           tooltip="A primary-type proposal will be enacted by the primary agent of the DAO, and vice versa."
+          noMargin
         >
           <div className={styles.proposalTypeRadioButtons} role="radiogroup" aria-label="Proposal type">
             <RadioButton name="proposal-type" checked={type === 'primary'} onChange={() => setType('primary')}>
@@ -133,7 +135,6 @@ const NewProposalForm = (props: Props) => {
             helperText={errors.title}
             autoFocus
           />
-          {errors.title && <p className={styles.error}>{errors.title}</p>}
         </ProposalFormItem>
 
         <ProposalFormItem
@@ -149,7 +150,6 @@ const NewProposalForm = (props: Props) => {
             helperText={errors.description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          {errors.description && <p className={styles.error}>{errors.description}</p>}
         </ProposalFormItem>
 
         <ProposalFormItem
@@ -163,9 +163,7 @@ const NewProposalForm = (props: Props) => {
             error={!!errors.targetAddress}
             helperText={errors.targetAddress}
             onChange={(e) => setTargetAddress(e.target.value)}
-            block
           />
-          {errors.targetAddress && <p className={styles.error}>{errors.targetAddress}</p>}
         </ProposalFormItem>
 
         <ProposalFormItem
@@ -179,9 +177,7 @@ const NewProposalForm = (props: Props) => {
             error={!!errors.targetSignature}
             helperText={errors.targetSignature}
             onChange={(e) => setTargetSignature(e.target.value)}
-            block
           />
-          {errors.targetSignature && <p className={styles.error}>{errors.targetSignature}</p>}
         </ProposalFormItem>
 
         <ProposalFormItem
@@ -196,9 +192,7 @@ const NewProposalForm = (props: Props) => {
             error={!!errors.targetValue}
             helperText={errors.targetValue}
             onChange={(e) => setTargetValue(e.target.value)}
-            block
           />
-          {errors.targetValue && <p className={styles.error}>{errors.targetValue}</p>}
         </ProposalFormItem>
 
         <ProposalFormItem
@@ -214,34 +208,37 @@ const NewProposalForm = (props: Props) => {
             helperText={errors.parameters}
             onChange={(e) => setParameters(e.target.value)}
           />
-          {errors.parameters && <p className={styles.error}>{errors.parameters}</p>}
         </ProposalFormItem>
       </div>
 
       <ModalFooter size="large">
-        <Button
-          type="secondary"
-          size="large"
-          onClick={async () => {
-            const formData = {
-              type,
-              description,
-              targetAddress,
-              targetSignature,
-              targetValue,
-              parameters,
-              title,
-            };
+        <div className={styles.newProposalModalFooter}>
+          <Button
+            type="primary"
+            size="sm"
+            sm={{ size: 'large' }}
+            onClick={async () => {
+              const formData = {
+                type,
+                description,
+                targetAddress,
+                targetSignature,
+                targetValue,
+                parameters,
+                title,
+              };
 
-            const containsError = await validateForm(formData);
-            if (!containsError) {
-              onConfirm(formData);
-            }
-          }}
-        >
-          Create
-        </Button>
-        {errors.generic && <p className={classNames(styles.error, styles.marginTopMd)}>{errors.generic}</p>}
+              const containsError = await validateForm(formData);
+              if (!containsError) {
+                onConfirm(formData);
+              }
+            }}
+          >
+            Create
+          </Button>
+
+          {errors.generic && <p className={classNames(styles.error, styles.marginTopMd)}>{errors.generic}</p>}
+        </div>
       </ModalFooter>
     </>
   );
