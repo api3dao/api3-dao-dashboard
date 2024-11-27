@@ -24,26 +24,25 @@
 }
 
 .dropdownMenu {
-  background-color: $dropdown-bgd;
-  color: $primary-color;
+  background-color: $color-blue-10;
+  color: $color-dark-blue-50;
   min-width: 100%;
   position: absolute;
-  box-shadow: $dropdown-shadow;
   z-index: 20;
 
   &.top {
     bottom: 100%;
-    border-bottom: 1px solid $secondary-border;
   }
 
   &.bottom {
     top: 100%;
-    border-top: 1px solid $secondary-border;
   }
 }
 
 .dropdownIcon {
   & > img {
+    width: 20px;
+    height: 20px;
     transition: transform 250ms;
   }
 
@@ -55,8 +54,8 @@
 }
 
 .dropdownMenuItem {
-  padding: $space-xs;
-  border-bottom: 1px solid $dropdown-border-color;
+  padding: 8px 16px;
+  border-bottom: 1px solid $color-base-light;
 
   &.clickable {
     cursor: pointer;
