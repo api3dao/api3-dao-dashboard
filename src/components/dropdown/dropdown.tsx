@@ -83,7 +83,7 @@ const Dropdown = ({ children, menu, icon, alignIcon = 'center', className }: Dro
       >
         {children}
         <div className={classNames(styles.dropdownIcon, { [styles.open]: open })}>
-          {icon || <img src={images.dropdown} alt="dropdown icon" />}
+          {icon || <img src={images.arrowDropdown} alt="dropdown icon" />}
         </div>
       </div>
       {open && menu}

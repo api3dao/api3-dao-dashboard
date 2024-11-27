@@ -1,20 +1,62 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+
+.governanceHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 32px;
+}
 
 .proposalsHeader {
   display: flex;
+  flex-direction: column-reverse;
   justify-content: space-between;
-  margin-bottom: 2 * $space-xxl;
+  margin-top: 56px;
 
-  @media (max-width: $max-md) {
-    flex-direction: column-reverse;
-
-    & > *:last-child {
-      margin-bottom: $space-xxxl;
-    }
+  h5 {
+    @include font-heading-9;
+    color: $color-dark-blue-100;
+    margin-top: 40px;
   }
 }
 
-.checklistHelperText {
-  color: $secondary-black-color;
-  font-size: $text-xsmall;
+.newProposalButtonWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  .newProposalButton button {
+    width: 240px;
+  }
+}
+
+@media (min-width: $sm) {
+  .proposalsHeader {
+    flex-direction: row;
+    align-items: center;
+
+    h5 {
+      @include font-heading-8;
+      margin-top: 0;
+    }
+  }
+
+  .newProposalButtonWrapper .newProposalButton button {
+    width: 172px;
+  }
+}
+
+@media (min-width: $md) {
+  .governanceHeader {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .proposalsHeader {
+    h5 {
+      @include font-heading-7;
+    }
+  }
 }
