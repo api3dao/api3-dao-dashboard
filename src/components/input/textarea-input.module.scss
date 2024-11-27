@@ -21,6 +21,10 @@
   &:focus-within {
     border: 1px solid $color-dark-blue-25;
   }
+
+  &.error {
+    border: 1px solid $color-action-error-300;
+  }
 }
 
 .input {

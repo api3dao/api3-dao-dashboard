@@ -73,7 +73,7 @@ const InputWrapper = (props: InputWrapperProps) => {
 
   return (
     <div className={styles.inputWrapper}>
-      <div className={styles.container}>
+      <div className={classNames(styles.container, { [styles.error]: error })}>
         {children}
 
         <button className={styles.clearButton} disabled={!value} onClick={clearInput}>
