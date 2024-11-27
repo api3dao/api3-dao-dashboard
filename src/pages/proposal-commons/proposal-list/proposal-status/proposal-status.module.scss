@@ -1,4 +1,5 @@
 @import '../../../../styles/variables.module.scss';
+@import '../../../../styles/fonts.module.scss';
 
 .proposalStatus {
   text-align: center;
@@ -41,4 +42,26 @@
 .flex {
   display: flex;
   align-items: center;
+}
+
+.large {
+  @include font-subtitle-8;
+
+  &.flex {
+    justify-content: center;
+  }
+
+  .icon img {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (min-width: $md) {
+    @include font-subtitle-2;
+
+    .icon img {
+      width: 27px;
+      height: 27px;
+    }
+  }
 }
