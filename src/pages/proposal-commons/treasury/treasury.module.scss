@@ -1,45 +1,57 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
 
 .treasury {
-  max-width: 300px;
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin-top: 56px;
 
-  & > *:first-child {
-    padding-bottom: $space-xs;
-  }
   & > * {
-    border-bottom: 1px solid $black-line-color;
+    border-bottom: 1px solid $color-dark-blue-10;
   }
 }
 
-.label {
+.treasuryTitle {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  gap: 8px;
+  padding-bottom: 8px;
+  color: $color-dark-blue-100;
+  @include font-tagline-9;
 }
 
 .treasuryButton {
   flex: 1;
   display: flex;
   align-items: center;
-  padding: $space-xs 0;
+  padding: 8px 0;
 }
 
 .label {
-  color: $secondary-color;
+  color: $color-dark-blue-100;
   text-transform: capitalize;
+  @include font-body-14;
 }
 
 .treasuryMenuItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @include font-body-10;
+
+  .menuItemLabel {
+    color: $color-dark-blue-50;
+  }
+
+  .menuItemValue {
+    color: $color-dark-blue-100;
+  }
 }
 
-.copy {
-  margin-left: $space-sm;
+.etherScanLink {
+  margin-left: 8px;
   transition: transform 0.1s;
   &:hover {
     transform: scale(1.1);
@@ -48,4 +60,20 @@
 
 .dropdownLink {
   display: flex; // to properly draw box shadow when the link is focused
+}
+
+@media (min-width: $md) {
+  .treasury {
+    max-width: 308px;
+    margin-top: 0;
+  }
+
+  .treasuryTitle {
+    justify-content: end;
+    @include font-tagline-6;
+  }
+
+  .label {
+    @include font-body-11;
+  }
 }

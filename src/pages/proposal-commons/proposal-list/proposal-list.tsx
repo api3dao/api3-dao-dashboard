@@ -70,7 +70,9 @@ const ProposalList = (props: Props) => {
     return (
       <div className={styles.noProposals}>
         <span>You need to be connected to view proposals</span>
-        <ConnectButton type="link">Connect your wallet</ConnectButton>
+        <ConnectButton type="link-blue" size="sm" md={{ size: 'lg' }}>
+          Connect your wallet
+        </ConnectButton>
       </div>
     );
   } else if (!proposals) {
