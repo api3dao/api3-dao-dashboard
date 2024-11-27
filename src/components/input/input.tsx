@@ -2,7 +2,7 @@ import { ChangeEventHandler } from 'react';
 import classNames from 'classnames';
 import AutosizeInput from 'react-input-autosize';
 import NumberFormat from 'react-number-format';
-import styles from './autosize-input.module.scss';
+import styles from './input.module.scss';
 
 type Props = {
   onChange: ChangeEventHandler<HTMLInputElement>;
