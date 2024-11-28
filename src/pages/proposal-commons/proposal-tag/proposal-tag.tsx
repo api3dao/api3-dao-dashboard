@@ -1,12 +1,12 @@
 import classNames from 'classnames';
-import styles from './tag.module.scss';
+import styles from './proposal-tag.module.scss';
 
 type Props = {
   id: string;
   type?: 'primary' | 'secondary';
 };
 
-const Tag = ({ id, type = 'primary' }: Props) => (
+const ProposalTag = ({ id, type = 'primary' }: Props) => (
   <div
     className={classNames(styles.tag, {
       [styles.primary]: type === 'primary',
@@ -18,4 +18,4 @@ const Tag = ({ id, type = 'primary' }: Props) => (
   </div>
 );
 
-export default Tag;
+export default ProposalTag;

@@ -12,7 +12,7 @@ import Timer, { DATE_FORMAT } from '../../../components/timer';
 import ConnectButton from '../../../components/connect-button';
 import { Tooltip } from '../../../components/tooltip';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
-import Tag from '../../../components/tag';
+import ProposalTag from '../proposal-tag';
 import styles from './proposal-list.module.scss';
 import ProposalStatus from './proposal-status/proposal-status';
 
@@ -51,7 +51,7 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
       <div className={styles.proposalItemTag}>
         <Tooltip overlay={tooltipContent}>
           <span>
-            <Tag type={proposal.type} id={proposalId} />
+            <ProposalTag type={proposal.type} id={proposalId} />
           </span>
         </Tooltip>
       </div>
