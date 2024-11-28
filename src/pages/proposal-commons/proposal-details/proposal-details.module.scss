@@ -2,23 +2,21 @@
 @import '../../../styles/fonts.module.scss';
 
 .backBtn {
-  button {
-    color: $color-dark-blue-50;
-    text-decoration: none !important;
-    @include font-body-15;
+  color: $color-dark-blue-50;
+  text-decoration: none !important;
+  @include font-body-15;
+
+  img {
+    margin: 0 4px;
+  }
+
+  @media (min-width: $md) {
+    @include font-body-9;
 
     img {
-      margin: 0 4px;
-    }
-
-    @media (min-width: $md) {
-      @include font-body-9;
-
-      img {
-        margin: 0 12px;
-        width: 12px;
-        height: 12px;
-      }
+      margin: 0 12px;
+      width: 12px;
+      height: 12px;
     }
   }
 }

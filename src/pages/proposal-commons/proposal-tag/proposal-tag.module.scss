@@ -9,6 +9,7 @@
   padding: 5px 10px;
   border-radius: 0 10px 10px 0;
   border: 1px solid $color-dark-blue-10;
+  cursor: default;
 
   .proposalId {
     @include font-body-14;
