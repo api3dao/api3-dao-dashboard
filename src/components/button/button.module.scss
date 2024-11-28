@@ -3,26 +3,25 @@
 @import './variants/primary.module.scss';
 @import './variants/secondary.module.scss';
 @import './variants/secondary-neutral.module.scss';
+@import './variants/tertiary-color.module.scss';
 @import './variants/link-blue.module.scss';
 @import './variants/menu-link-secondary.module.scss';
-
-.buttonWrapper {
-  display: inline-block;
-  &.disabled {
-    pointer-events: none;
-  }
-}
+@import './variants/text-blue.module.scss';
 
 .button {
   background-color: transparent;
   text-decoration: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   border-width: 1px;
   border-style: solid;
-  outline: none;
   cursor: pointer;
+  height: fit-content;
+
+  &.disabled {
+    pointer-events: none;
+  }
 
   &.primary {
     @include button-primary;
@@ -36,12 +35,20 @@
     @include button-secondary-neutral;
   }
 
+  &.tertiary-color {
+    @include button-tertiary-color;
+  }
+
   &.link-blue {
     @include link-blue;
   }
 
   &.menu-link-secondary {
     @include menu-link-secondary;
+  }
+
+  &.text-blue {
+    @include text-blue;
   }
 
   &.normal {

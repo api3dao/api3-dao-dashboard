@@ -20,7 +20,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-html:has(.mobile-menu-open) {
+html:has(.mobile-menu-open),
+html:has(#modal-wrapper) {
   overflow: hidden;
 }
 
@@ -32,4 +33,16 @@ html:has(.mobile-menu-open) {
 
 .cursor-auto {
   cursor: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

@@ -4,10 +4,9 @@ import { Address, useDisconnect, useEnsName } from 'wagmi';
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import ConnectButton from '../connect-button';
-import { Modal as GenericModal } from '../../components/modal';
+import { Modal as GenericModal, ModalHeader } from '../../components/modal';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown';
 import styles from './sign-in.module.scss';
-import globalStyles from '../../styles/global-styles.module.scss';
 import { images } from '../../utils';
 import { SUPPORTED_NETWORKS, useProviderSubscriptions } from '../../contracts';
 import DisconnectIcon from './disconnect-icon';
@@ -97,26 +96,35 @@ const SignIn = ({ dark, position }: Props) => {
       )}
       {provider && <ConnectedStatus dark={dark} position={position} />}
       <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
-        <div className={globalStyles.textCenter}>
-          <img className={styles.unsupportedNetworkIcon} src={images.unsupportedNetwork} alt="network not supported" />
-          <h5>Unsupported chain!</h5>
+        <div className={styles.unsupportedModalContainer}>
+          <img
+            className={styles.unsupportedNetworkIcon}
+            src={images.exclamationTriangleFill}
+            alt="network not supported"
+          />
 
-          <p className={globalStyles.mtXl}>
-            Supported networks:{' '}
-            {supportedNetworks
-              .map((network) => <b>{network}</b>)
-              .map((Component, i) => (
-                <Fragment key={i}>
-                  {i !== 0 && ', '}
-                  {Component}
-                </Fragment>
-              ))}
-          </p>
-          <p className={globalStyles.mtXl}>
-            Current network: <b>{networkName}</b>
-          </p>
+          <ModalHeader noMargin>Unsupported chain!</ModalHeader>
 
-          <p className={globalStyles.mtXl}>Please connect your wallet to a supported network.</p>
+          <div className={styles.unsupportedModalContent}>
+            <div>
+              <p>
+                Supported networks:{' '}
+                {supportedNetworks
+                  .map((network) => <span>{network}</span>)
+                  .map((Component, i) => (
+                    <Fragment key={i}>
+                      {i !== 0 && ', '}
+                      {Component}
+                    </Fragment>
+                  ))}
+              </p>
+              <p>
+                Current network: <b>{networkName}</b>
+              </p>
+            </div>
+
+            <p>Please use your wallet and connect to one of the supported networks.</p>
+          </div>
         </div>
       </GenericModal>
     </>

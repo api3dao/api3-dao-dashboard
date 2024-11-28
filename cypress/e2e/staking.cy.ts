@@ -48,7 +48,7 @@ describe('staking', () => {
     cy.findByText('Initiate Unstake').click();
     cy.get('#modal').find('input').type('20');
     cy.findByText('Initiate Unstaking').click();
-    cy.findByText('Initiate Unstaking').click(); // confirm the unstake in the second modal
+    cy.findByText('Yes, Initiate Unstaking').click(); // confirm the unstake in the second modal
     cy.findByText('Pending API3 tokens unstaking').should('exist');
     // Assert balances
     cy.dataCy('balance').should('have.text', '480.0');
@@ -96,8 +96,8 @@ it.skip('user can unstake & withdraw', () => {
   // Schedule unstake
   cy.findByText('Initiate Unstake').click();
   cy.get('#modal').find('input').type('550');
-  cy.findByText('Initiate Unstaking').click();
-  cy.findByText('Initiate Unstaking').click(); // confirm the unstake in the second modal
+  cy.findByText('Yes, Initiate Unstaking').click();
+  cy.findByText('Yes, Initiate Unstaking').click(); // confirm the unstake in the second modal
   cy.findByText('Pending API3 tokens unstaking').should('exist');
   // Assert balances
   cy.dataCy('balance').should('have.text', '450.0');

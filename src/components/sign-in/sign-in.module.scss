@@ -116,6 +116,52 @@
   }
 }
 
+.unsupportedModalContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .unsupportedNetworkIcon {
-  margin: $space-lg;
+  margin-top: 80px;
+
+  @media (min-width: $sm) {
+    margin-top: 0;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.unsupportedModalContent {
+  padding-top: 16px;
+  color: $color-dark-blue-400;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  * {
+    text-wrap: pretty;
+  }
+
+  p {
+    @include font-body-9;
+  }
+
+  span {
+    @include font-body-7;
+  }
+
+  @media (min-width: $sm) {
+    p {
+      @include font-body-6;
+    }
+
+    span {
+      @include font-body-4;
+    }
+  }
 }

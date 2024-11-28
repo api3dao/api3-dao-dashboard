@@ -3,6 +3,7 @@ import { ModalFooter, ModalHeader } from '../../../components/modal';
 import Button from '../../../components/button';
 import styles from './forms.module.scss';
 import UnstakeHelperText from './unstake-helper-text';
+import classNames from 'classnames';
 
 interface Props {
   title: string;
@@ -22,13 +23,13 @@ const ConfirmUnstakeForm = (props: Props) => {
     <>
       <ModalHeader>{props.title}</ModalHeader>
 
-      <ModalFooter>
-        <div className={styles.tokenAmountFormActions}>
-          <Button type="text" onClick={onClose} className={styles.cancelButton}>
+      <ModalFooter noMargin>
+        <div className={classNames(styles.tokenAmountFormActions, styles.columnReverse)}>
+          <Button type="text-blue" size="sm" sm={{ size: 'lg' }} onClick={onClose} className={styles.cancelButton}>
             Cancel
           </Button>
-          <Button type="secondary" onClick={handleAction}>
-            Initiate Unstaking
+          <Button type="primary" size="sm" sm={{ size: 'lg' }} onClick={handleAction}>
+            Yes, Initiate Unstaking
           </Button>
         </div>
         <UnstakeHelperText type="extended" />

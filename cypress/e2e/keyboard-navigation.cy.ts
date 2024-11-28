@@ -44,11 +44,11 @@ describe('keyboard navigation and accessibility', () => {
 
       pressTabAndAssertFocusOutline(() => cy.findByText('Max'));
       pressTabAndAssertFocusOutline(() => cy.findByText('Approve'));
-      pressTabAndAssertFocusOutline(() => cy.get('#modal').find('img')); // Close icon
+      pressTabAndAssertFocusOutline(() => cy.get('#modal').findByTestId('modal-close-button'));
 
       // Focus is returned to the modal input (and it's text is selected)
       cy.tab().get('#modal').find('input').should('have.focus');
-      cy.get('#modal').find('img').click(); // Close the modal
+      cy.get('#modal').findByTestId('modal-close-button').click();
     });
 
     it('can use keyboard to "press" the buttons', () => {
