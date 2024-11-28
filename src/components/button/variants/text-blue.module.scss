@@ -1,0 +1,63 @@
+@import '../../../styles/fonts.module.scss';
+
+@mixin text-blue {
+  color: $color-blue-500;
+  height: 20px;
+  border: none;
+
+  &.xs {
+    padding: 0 16px;
+    border-radius: 24px;
+    height: 32px;
+    @include font-body-14;
+  }
+
+  &.sm {
+    padding: 0 20px;
+    border-radius: 24px;
+    height: 40px;
+    @include font-button-3;
+  }
+
+  &.md {
+    padding: 0 24px;
+    border-radius: 28px;
+    height: 48px;
+    @include font-button-2;
+  }
+
+  &.lg {
+    padding: 0 32px;
+    border-radius: 32px;
+    height: 56px;
+    @include font-button-1;
+  }
+
+  &:hover {
+    color: $color-blue-200;
+  }
+
+  &:active {
+    color: $color-blue-600;
+  }
+
+  &:disabled {
+    color: $color-blue-50;
+  }
+
+  &.dark {
+    color: $color-blue-100;
+
+    &:hover {
+      color: $color-blue-200;
+    }
+
+    &:active {
+      color: $color-blue-500;
+    }
+
+    &:disabled {
+      color: $color-dark-blue-100;
+    }
+  }
+}

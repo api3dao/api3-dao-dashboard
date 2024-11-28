@@ -1,8 +1,10 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
 .inputWrapper {
   display: inline-block;
   max-width: 100%;
+
   &.disabled {
     opacity: 0.4;
     pointer-events: none;
@@ -16,62 +18,67 @@
   }
 }
 
+@mixin normal {
+  @include font-heading-7;
+}
+
+@mixin large {
+  @include font-heading-4;
+}
+
 .input {
   display: inline-block;
   max-width: 100%;
-  overflow: hidden;
+
   &.textCenter {
     input {
       text-align: center;
     }
   }
+
   input {
-    min-width: 50px;
+    min-width: 30px;
     background-color: transparent;
-    color: $secondary-color;
-    font-weight: 500;
+    color: $color-dark-blue-400;
     border-width: 0;
     outline: none;
 
     &:focus {
-      box-shadow: none;
+      color: $color-dark-blue-400;
     }
-  }
 
-  input {
-    &:focus {
-      color: $primary-color;
-    }
     &::placeholder {
-      color: $tertiary-color;
+      color: $color-dark-blue-400;
     }
   }
 
   &.normal {
     input {
-      font-size: $text-small;
-      line-height: 24px;
-    }
-    & > div {
-      font-size: $text-small !important;
+      @include normal;
     }
   }
 
   &.large {
     input {
-      font-size: $text-xlarge;
-      line-height: 44px;
-    }
-    & > div {
-      font-size: $text-xlarge !important;
+      @include large;
     }
   }
-}
 
-.inputUnderline {
-  height: 1px;
-  width: 100%;
-  background-color: $secondary-border;
+  &:not(.normal):not(.large) {
+    input {
+      @include normal;
+    }
+  }
+
+  @media (min-width: $sm) {
+    min-width: 50px;
+
+    &:not(.normal):not(.large) {
+      input {
+        @include large;
+      }
+    }
+  }
 }
 
 // removing input background color/text color for Chrome autocomplete
