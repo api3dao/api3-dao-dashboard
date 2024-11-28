@@ -4,7 +4,6 @@ import { ModalFooter, ModalHeader } from '../../../components/modal';
 import Input from '../../../components/input';
 import Button from '../../../components/button';
 import { formatApi3, parseApi3, messages } from '../../../utils';
-import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
 import UnstakeHelperText from './unstake-helper-text';
 import { goSync } from '@api3/promise-utils';
@@ -51,18 +50,11 @@ const TokenAmountForm = (props: Props) => {
     <>
       <ModalHeader>{props.title}</ModalHeader>
 
-      <div className={globalStyles.textCenter}>
+      <div className={styles.formContent}>
         <div className={styles.inputWrapper}>
-          <Input
-            type="number"
-            autosize
-            value={inputValue}
-            onChange={(e) => onChange(e.target.value)}
-            size="large"
-            autoFocus
-          />
+          <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} autoFocus />
           {maxValue && (
-            <Button className={styles.maxButton} type="text" onClick={handleSetMax}>
+            <Button type="tertiary-color" onClick={handleSetMax} size="xs" sm={{ size: 'sm' }}>
               Max
             </Button>
           )}
@@ -71,17 +63,17 @@ const TokenAmountForm = (props: Props) => {
         {maxValue && (
           <div className={styles.tokenFormBalance}>
             Your balance:{' '}
-            <span className={globalStyles.pointer} onClick={handleSetMax}>
+            <button className={styles.valueButton} onClick={handleSetMax} tabIndex={-1}>
               {/* We don't round because we want to show all decimal digits for the maxValue field */}
               {formatApi3(maxValue)}
-            </span>
+            </button>
           </div>
         )}
       </div>
 
       <ModalFooter>
         <div className={styles.tokenAmountFormActions}>
-          <Button type="secondary" onClick={handleAction} disabled={!goParseApi3.success}>
+          <Button type="primary" size="sm" sm={{ size: 'lg' }} onClick={handleAction} disabled={!goParseApi3.success}>
             {action}
           </Button>
         </div>

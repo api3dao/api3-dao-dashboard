@@ -15,6 +15,8 @@ export const images = {
   connected: '/connected.svg',
   connectedDark: '/connected-dark.svg',
   disconnect: '/disconnect.svg',
+  dropdown: '/dropdown.svg',
+  exclamationTriangleFill: '/exclamation-triangle-fill.svg',
   error: '/error.svg',
   errorCircle: '/error-circle.svg',
   errorCircleFill: '/error-circle-fill.svg',
@@ -35,7 +37,6 @@ export const images = {
   votedAgainst: '/voted-against.svg',
   votedFor: '/voted-for.svg',
   warning: '/warning.svg',
-  unsupportedNetwork: '/unsupported-network.svg',
 };
 
 // We only want to 'preload' certain images that will definitely be displayed immediately.
