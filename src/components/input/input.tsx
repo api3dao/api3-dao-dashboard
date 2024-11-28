@@ -18,15 +18,7 @@ type Props = {
   allowNegative?: boolean;
 };
 
-const Input = ({
-  size = 'normal',
-  type = 'text',
-  block,
-  autosize,
-  disabled,
-  allowNegative,
-  ...componentProps
-}: Props) => {
+const Input = ({ size, type = 'text', block, autosize, disabled, allowNegative, ...componentProps }: Props) => {
   const CustomNumberInput = useCallback(
     (props: any) => {
       return (
@@ -80,12 +72,13 @@ const Input = ({
           customInput={AutosizeInput}
           allowNegative={allowNegative || false}
           decimalScale={18}
+          placeholderIsMinWidth
+          placeholder="00"
         />
       )}
       {type === 'number' && !autosize && (
         <NumberFormat {...componentProps} customInput={CustomNumberInput} decimalScale={18} />
       )}
-      <div className={styles.inputUnderline} />
     </div>
   );
 };
