@@ -2,7 +2,6 @@
 export const images = {
   api3DaoLogoDarkTheme: '/api3-dao-logo-dark-theme.svg',
   api3DaoLogoLightTheme: '/api3-dao-logo-light-theme.svg',
-  apiIcon: '/api-icon.svg',
   arrowDropdown: '/arrow-dropdown.svg',
   arrowLeft: '/arrow-left.svg',
   arrowRight: '/arrow-right.svg',
