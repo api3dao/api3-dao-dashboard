@@ -2,7 +2,7 @@ import { useState, ReactNode } from 'react';
 import { ProposalType } from '../../../chain-data';
 import Button from '../../../components/button';
 import RadioButton from '../../../components/radio-button/radio-button';
-import { TextareaInput } from '../../../components/input';
+import { Input, Textarea } from '../../../components/form';
 import { Tooltip } from '../../../components/tooltip';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
 import {
@@ -126,7 +126,7 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="title">Title</label>}
           tooltip="Title of the proposal that will be displayed on the governance page."
         >
-          <TextareaInput
+          <Input
             id="title"
             placeholder="This will be used to identify the proposal."
             value={title}
@@ -141,9 +141,8 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="description">Description</label>}
           tooltip="Description of the proposal that will be displayed with its details."
         >
-          <TextareaInput
+          <Textarea
             id="description"
-            multiline
             placeholder="While a description of your proposal can be typed text, it’s highly recommended to instead use a PDF hosted on IPFS and adding a link back to the forum where you posted your proposal for discussion."
             value={description}
             error={!!errors.description}
@@ -156,7 +155,7 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="target-address">Target Address</label>}
           tooltip="The address of the contract you want to be called when the proposal is executed."
         >
-          <TextareaInput
+          <Input
             id="target-address"
             placeholder="This is the address of the contract to call."
             value={targetAddress}
@@ -170,7 +169,7 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="target-signature">Target Contract Signature</label>}
           tooltip={`The signature of the function at the target contract you want to have called (e.g. "transfer(address,uint256)").`}
         >
-          <TextareaInput
+          <Input
             id="target-signature"
             placeholder="The signature of the function to call."
             value={targetSignature}
@@ -184,7 +183,7 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="target-value">Value (Wei)</label>}
           tooltip={`The amount of ETH you want to send along with the function call in Wei (use 0 unless the target function is "payable").`}
         >
-          <TextareaInput
+          <Input
             id="target-value"
             placeholder="0"
             type="number"
@@ -199,9 +198,8 @@ const NewProposalForm = (props: Props) => {
           name={<label htmlFor="parameters">Parameters</label>}
           tooltip="The arguments that will be used to call the target function. Enter as a JSON array where the values are stringified."
         >
-          <TextareaInput
+          <Textarea
             id="parameters"
-            multiline
             placeholder="These are the arguments that will be used to satisfy the Target contract signature function."
             value={parameters}
             error={!!errors.parameters}
