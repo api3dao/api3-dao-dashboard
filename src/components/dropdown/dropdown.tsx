@@ -10,6 +10,7 @@ interface DropdownProps {
   icon?: ReactNode;
   alignIcon?: 'start' | 'center' | 'end';
   className?: string;
+  openClassName?: string;
 }
 
 interface DropdownMenuProps {
@@ -46,7 +47,7 @@ export const DropdownMenuItem = ({ children, className, onClick }: DropdownMenuI
   </div>
 );
 
-const Dropdown = ({ children, menu, icon, alignIcon = 'center', className }: DropdownProps) => {
+const Dropdown = ({ children, menu, icon, alignIcon = 'center', className, openClassName }: DropdownProps) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleOpen = () => setOpen(!open);
@@ -70,7 +71,7 @@ const Dropdown = ({ children, menu, icon, alignIcon = 'center', className }: Dro
   }, []);
 
   return (
-    <div className={classNames(styles.dropdown, className)} ref={dropdownRef}>
+    <div className={classNames(styles.dropdown, open && openClassName, className)} ref={dropdownRef}>
       <div
         className={classNames(styles.dropdownButton, {
           [styles.alignStart]: alignIcon === 'start',
