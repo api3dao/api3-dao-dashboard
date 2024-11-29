@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import { useState } from 'react';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
-import Input from '../../../components/input';
+import { Input } from '../../../components/input';
 import Button from '../../../components/button';
 import { formatApi3, parseApi3, messages } from '../../../utils';
 import styles from './forms.module.scss';
@@ -52,7 +52,7 @@ const TokenAmountForm = (props: Props) => {
 
       <div className={styles.formContent}>
         <div className={styles.inputWrapper}>
-          <Input type="number" autosize value={inputValue} onChange={(e) => onChange(e.target.value)} autoFocus />
+          <Input type="number" value={inputValue} onChange={(e) => onChange(e.target.value)} autoFocus />
           {maxValue && (
             <Button type="tertiary-color" onClick={handleSetMax} size="xs" sm={{ size: 'sm' }}>
               Max

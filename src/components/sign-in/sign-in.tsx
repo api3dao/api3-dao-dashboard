@@ -53,6 +53,7 @@ const ConnectedStatus = ({ dark, position }: Props) => {
       ) : (
         <Dropdown
           className={styles.accountDropdown}
+          openClassName={styles.accountDropdownOpen}
           menu={
             <DropdownMenu position={dark ? 'top' : 'bottom'} className={styles.accountDropdownMenu}>
               <DropdownMenuItem className={styles.accountDropdownItem} onClick={handleDisconnect}>
