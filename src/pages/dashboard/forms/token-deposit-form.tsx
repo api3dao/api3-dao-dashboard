@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { MAX_ALLOWANCE, useApi3Pool, useApi3Token } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
-import Input from '../../../components/input';
+import { Input } from '../../../components/input';
 import Button from '../../../components/button';
 import { notifications } from '../../../components/notifications';
 import { isUserRejection, formatApi3, parseApi3, messages, UNKNOWN_NUMBER } from '../../../utils';
@@ -95,7 +95,7 @@ const TokenDepositForm = (props: Props) => {
 
       <div className={styles.formContent}>
         <div className={styles.inputWrapper}>
-          <Input type="number" autosize value={inputValue} onChange={(e) => setInputValue(e.target.value)} autoFocus />
+          <Input type="number" value={inputValue} onChange={(e) => setInputValue(e.target.value)} autoFocus />
           <Button type="tertiary-color" onClick={handleSetMax} size="xs" sm={{ size: 'sm' }}>
             Max
           </Button>
