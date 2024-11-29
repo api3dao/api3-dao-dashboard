@@ -108,6 +108,17 @@ $border-radius: 100px;
 
 .voteIcon {
   margin-top: 2px;
+  width: 14px;
+  height: 14px;
+  color: $color-dark-blue-25;
+
+  &.positive {
+    color: $color-action-success-600;
+  }
+
+  &.negative {
+    color: $color-action-error-600;
+  }
 }
 
 .large {

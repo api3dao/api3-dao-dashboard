@@ -1,22 +1,27 @@
 import classNames from 'classnames';
 import { ProposalStatus } from '../../../logic/proposals/selectors';
-import { images } from '../../../utils';
 import styles from './vote-slider.module.scss';
 import { VOTER_STATES } from '../../../chain-data';
 import VoteStatus from '../vote-status';
+import { CheckCircleFillIcon, CheckCircleIcon, ErrorCircleFillIcon, ErrorCircleIcon } from '../../../components/icons';
 
 interface IconProp {
   fill?: boolean;
 }
 
-export const NegativeVoteIcon = ({ fill }: IconProp) => (
-  <img className={styles.voteIcon} src={fill ? images.errorCircleFill : images.errorCircle} alt="rejected icon" />
-);
+export const NegativeVoteIcon = ({ fill }: IconProp) =>
+  fill ? (
+    <ErrorCircleFillIcon className={classNames(styles.voteIcon, styles.negative)} />
+  ) : (
+    <ErrorCircleIcon className={styles.voteIcon} />
+  );
 
-// TODO: Update the icon after the "check circle fill" is added as a react component
-export const PositiveVoteIcon = ({ fill }: IconProp) => (
-  <img className={styles.voteIcon} src={fill ? images.checkCircleFill : images.checkCircle} alt="passed icon" />
-);
+export const PositiveVoteIcon = ({ fill }: IconProp) =>
+  fill ? (
+    <CheckCircleFillIcon className={classNames(styles.voteIcon, styles.positive)} />
+  ) : (
+    <CheckCircleIcon className={styles.voteIcon} />
+  );
 
 const formatPercentage = (percentage: number) => `${percentage.toFixed(2)}%`;
 
