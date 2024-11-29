@@ -20,14 +20,13 @@ const VoteForm = (props: Props) => {
     <div className={styles.voteForm}>
       <h5>Vote on Proposal #{voteId}</h5>
       <div className={styles.voteFormContent}>
-        <div>
-          <RadioButton label={<h4>For</h4>} onChange={() => setChecked('for')} checked={isVotingFor} color="green" />
-          <RadioButton
-            label={<h4>Against</h4>}
-            onChange={() => setChecked('against')}
-            checked={!isVotingFor}
-            color="pink"
-          />
+        <div role="radiogroup" aria-label="Vote form">
+          <RadioButton name="vote-form" onChange={() => setChecked('for')} checked={isVotingFor}>
+            <h4>For</h4>
+          </RadioButton>
+          <RadioButton name="vote-form" onChange={() => setChecked('against')} checked={!isVotingFor}>
+            <h4>Against</h4>
+          </RadioButton>
         </div>
       </div>
       <Button type="secondary" size="large" onClick={() => onConfirm(checked)}>

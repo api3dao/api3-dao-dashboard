@@ -420,6 +420,15 @@
   text-transform: uppercase;
 }
 
+@mixin font-tagline-7 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 150%; /* 21px */
+  text-transform: uppercase;
+}
+
 @mixin font-tagline-8 {
   font-family: Karla;
   font-size: 14px;
@@ -435,6 +444,15 @@
   font-style: normal;
   font-weight: 600;
   line-height: 150%; /* 21px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-10 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 150%; /* 18px */
   text-transform: uppercase;
 }
 

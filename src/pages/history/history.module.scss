@@ -41,4 +41,24 @@ h5 {
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  label {
+    @include font-body-12;
+  }
+
+  @media (min-width: $md) {
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    label {
+      @include font-body-9;
+    }
+  }
 }
