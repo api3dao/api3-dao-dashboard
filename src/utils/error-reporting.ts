@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react';
 
 let initialised = false;
 export const initSentry = () => {
-  if (initialised) return;
+  if (initialised || !process.env.REACT_APP_SENTRY_DSN) return;
 
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
