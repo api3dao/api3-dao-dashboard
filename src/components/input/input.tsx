@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useCallback } from 'react';
+import { ChangeEventHandler } from 'react';
 import classNames from 'classnames';
 import AutosizeInput from 'react-input-autosize';
 import NumberFormat from 'react-number-format';
@@ -10,31 +10,14 @@ type Props = {
   size?: 'normal' | 'large';
   disabled?: boolean;
   type?: 'text' | 'number';
-  autosize?: boolean;
   placeholder?: string;
   id?: string;
   block?: boolean;
-  autoFocus?: boolean;
   allowNegative?: boolean;
+  autoFocus?: boolean;
 };
 
-const Input = ({ size, type = 'text', block, autosize, disabled, allowNegative, ...componentProps }: Props) => {
-  const CustomNumberInput = useCallback(
-    (props: any) => {
-      return (
-        <div
-          className={classNames(styles.input, {
-            [styles.large]: size === 'large',
-            [styles.normal]: size === 'normal',
-          })}
-        >
-          <input {...props} />
-        </div>
-      );
-    },
-    [size]
-  );
-
+const Input = ({ size, type = 'text', block, disabled, allowNegative, ...componentProps }: Props) => {
   return (
     <div
       className={classNames(styles.inputWrapper, {
@@ -42,17 +25,7 @@ const Input = ({ size, type = 'text', block, autosize, disabled, allowNegative, 
         [styles.block]: block,
       })}
     >
-      {type === 'text' && !autosize && (
-        <div
-          className={classNames(styles.input, {
-            [styles.large]: size === 'large',
-            [styles.normal]: size === 'normal',
-          })}
-        >
-          <input {...componentProps} />
-        </div>
-      )}
-      {type === 'text' && autosize && (
+      {type === 'text' && (
         <AutosizeInput
           className={classNames(styles.input, styles.textCenter, {
             [styles.large]: size === 'large',
@@ -62,7 +35,7 @@ const Input = ({ size, type = 'text', block, autosize, disabled, allowNegative, 
           placeholderIsMinWidth
         />
       )}
-      {type === 'number' && autosize && (
+      {type === 'number' && (
         <NumberFormat
           className={classNames(styles.input, styles.textCenter, {
             [styles.large]: size === 'large',
@@ -75,9 +48,6 @@ const Input = ({ size, type = 'text', block, autosize, disabled, allowNegative, 
           placeholderIsMinWidth
           placeholder="00"
         />
-      )}
-      {type === 'number' && !autosize && (
-        <NumberFormat {...componentProps} customInput={CustomNumberInput} decimalScale={18} />
       )}
     </div>
   );
