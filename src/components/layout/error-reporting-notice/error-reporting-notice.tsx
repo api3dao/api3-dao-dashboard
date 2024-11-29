@@ -7,6 +7,7 @@ import { links } from '../../../utils/links';
 import { ALLOW_ANALYTICS, ALLOW_ERROR_REPORTING, initAnalytics } from '../../../utils/analytics';
 import PrivacySettingsModal from '../privacy-settings-modal';
 import { CrossIcon } from '../../icons';
+import { initSentry } from '../../../utils/error-reporting';
 
 interface WelcomeModalContentProps {
   onShowNotice: (showNotice: boolean) => void;
@@ -27,7 +28,7 @@ const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
     }
 
     if (allowReporting) {
-      // initSentry(); // TBD later
+      initSentry();
     }
 
     onShowNotice(false);
