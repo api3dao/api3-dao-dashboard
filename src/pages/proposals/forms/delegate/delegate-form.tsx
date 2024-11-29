@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import classNames from 'classnames';
 import Button from '../../../../components/button';
-import Input from '../../../../components/input';
+import { Input } from '../../../../components/input';
 import { ModalFooter, ModalHeader } from '../../../../components/modal';
 import { useChainData } from '../../../../chain-data';
 import { useApi3Pool } from '../../../../contracts';
@@ -70,7 +70,6 @@ const DelegateVotesForm = (props: Props) => {
       <div className={globalStyles.textCenter}>
         <Input
           type="text"
-          autosize
           placeholder="Enter address or ENS name here"
           value={delegationAddress}
           onChange={(e) => {

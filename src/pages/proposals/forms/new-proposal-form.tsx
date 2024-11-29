@@ -2,8 +2,7 @@ import { useState, ReactNode } from 'react';
 import { ProposalType } from '../../../chain-data';
 import Button from '../../../components/button';
 import RadioButton from '../../../components/radio-button/radio-button';
-import Input from '../../../components/input';
-import Textarea from '../../../components/textarea';
+import { Input, Textarea } from '../../../components/form';
 import { Tooltip } from '../../../components/tooltip';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
 import {
@@ -13,27 +12,29 @@ import {
   METADATA_SCHEME_VERSION,
 } from '../../../logic/proposals/encoding';
 import { Api3Agent } from '../../../contracts';
-import { filterAlphanumerical, images } from '../../../utils';
+import { filterAlphanumerical } from '../../../utils';
 import styles from './new-proposal-form.module.scss';
-import globalStyles from '../../../styles/global-styles.module.scss';
 import classNames from 'classnames';
 import { providers } from 'ethers';
+import { InfoCircleIcon } from '../../../components/icons';
 
 interface ProposalFormItemProps {
   children: ReactNode;
   name: ReactNode | string;
   tooltip: string;
+  noMargin?: boolean;
 }
 
-const ProposalFormItem = ({ children, name, tooltip }: ProposalFormItemProps) => (
-  <div className={styles.newProposalFormItem}>
-    <div className={styles.newProposalFormName}>
+const ProposalFormItem = ({ children, name, tooltip, noMargin = false }: ProposalFormItemProps) => (
+  <div className={styles.proposalFormItem}>
+    <div className={classNames(styles.proposalFormItemName, { [styles.noMargin]: noMargin })}>
       {name}
       <Tooltip overlay={tooltip}>
-        <img src={images.help} alt="help" className={globalStyles.helpIcon} />
+        <InfoCircleIcon className={styles.infoIcon} />
       </Tooltip>
     </div>
-    <div className={styles.newProposalFormInput}>{children}</div>
+
+    <div className={styles.proposalFormItemContent}>{children}</div>
   </div>
 );
 
@@ -98,116 +99,144 @@ const NewProposalForm = (props: Props) => {
 
   return (
     <>
-      <ModalHeader>New Proposal</ModalHeader>
-
-      <ProposalFormItem
-        name="proposal type"
-        tooltip="A primary-type proposal will be enacted by the primary agent of the DAO, and vice versa."
+      <ModalHeader
+        size="large"
+        tooltipText="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc nec ultricies ultricies, nunc eros ultricies nunc, nec ultricies nunc eros nec ultricies."
       >
-        <div className={styles.newProposalFormRadioButtons}>
-          <RadioButton label="Primary" onChange={() => setType('primary')} checked={type === 'primary'} color="white" />
-          <RadioButton
-            label="Secondary"
-            onChange={() => setType('secondary')}
-            checked={type === 'secondary'}
-            color="white"
-          />
-        </div>
-      </ProposalFormItem>
+        New Proposal
+      </ModalHeader>
 
-      <ProposalFormItem
-        name={<label htmlFor="title">Title</label>}
-        tooltip="Title of the proposal that will be displayed on the governance page."
-      >
-        <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} block autoFocus />
-        {errors.title && <p className={styles.error}>{errors.title}</p>}
-      </ProposalFormItem>
-
-      <ProposalFormItem
-        name={<label htmlFor="description">Description</label>}
-        tooltip="Description of the proposal that will be displayed with its details."
-      >
-        <Textarea
-          id="description"
-          placeholder="Describe the proposal"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        {errors.description && <p className={styles.error}>{errors.description}</p>}
-      </ProposalFormItem>
-
-      <ProposalFormItem
-        name={<label htmlFor="target-address">Target Address</label>}
-        tooltip="The address of the contract you want to be called when the proposal is executed."
-      >
-        <Input id="target-address" value={targetAddress} onChange={(e) => setTargetAddress(e.target.value)} block />
-        {errors.targetAddress && <p className={styles.error}>{errors.targetAddress}</p>}
-      </ProposalFormItem>
-
-      <ProposalFormItem
-        name={<label htmlFor="target-signature">Target Contract Signature</label>}
-        tooltip={`The signature of the function at the target contract you want to have called (e.g. "transfer(address,uint256)").`}
-      >
-        <Input
-          id="target-signature"
-          value={targetSignature}
-          onChange={(e) => setTargetSignature(e.target.value)}
-          block
-        />
-        {errors.targetSignature && <p className={styles.error}>{errors.targetSignature}</p>}
-      </ProposalFormItem>
-
-      <ProposalFormItem
-        name={<label htmlFor="target-value">Value (Wei)</label>}
-        tooltip={`The amount of ETH you want to send along with the function call in Wei (use 0 unless the target function is "payable").`}
-      >
-        <Input
-          id="target-value"
-          type="number"
-          value={targetValue}
-          onChange={(e) => setTargetValue(e.target.value)}
-          block
-        />
-        {errors.targetValue && <p className={styles.error}>{errors.targetValue}</p>}
-      </ProposalFormItem>
-
-      <ProposalFormItem
-        name={<label htmlFor="parameters">Parameters</label>}
-        tooltip="The arguments that will be used to call the target function. Enter as a JSON array where the values are stringified."
-      >
-        <Textarea
-          id="parameters"
-          placeholder="Contract call parameters"
-          value={parameters}
-          onChange={(e) => setParameters(e.target.value)}
-        />
-        {errors.parameters && <p className={styles.error}>{errors.parameters}</p>}
-      </ProposalFormItem>
-
-      <ModalFooter>
-        <Button
-          type="secondary"
-          size="large"
-          onClick={async () => {
-            const formData = {
-              type,
-              description,
-              targetAddress,
-              targetSignature,
-              targetValue,
-              parameters,
-              title,
-            };
-
-            const containsError = await validateForm(formData);
-            if (!containsError) {
-              onConfirm(formData);
-            }
-          }}
+      <div className={styles.newProposalModalContent}>
+        <ProposalFormItem
+          name="Proposal type"
+          tooltip="A primary-type proposal will be enacted by the primary agent of the DAO, and vice versa."
+          noMargin
         >
-          Create
-        </Button>
-        {errors.generic && <p className={classNames(styles.error, styles.marginTopMd)}>{errors.generic}</p>}
+          <div className={styles.proposalTypeRadioButtons} role="radiogroup" aria-label="Proposal type">
+            <RadioButton name="proposal-type" checked={type === 'primary'} onChange={() => setType('primary')}>
+              Primary
+            </RadioButton>
+            <RadioButton name="proposal-type" checked={type === 'secondary'} onChange={() => setType('secondary')}>
+              Secondary
+            </RadioButton>
+          </div>
+        </ProposalFormItem>
+
+        <ProposalFormItem
+          name={<label htmlFor="title">Title</label>}
+          tooltip="Title of the proposal that will be displayed on the governance page."
+        >
+          <Input
+            id="title"
+            placeholder="This will be used to identify the proposal."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            error={!!errors.title}
+            helperText={errors.title}
+            autoFocus
+          />
+        </ProposalFormItem>
+
+        <ProposalFormItem
+          name={<label htmlFor="description">Description</label>}
+          tooltip="Description of the proposal that will be displayed with its details."
+        >
+          <Textarea
+            id="description"
+            placeholder="While a description of your proposal can be typed text, it’s highly recommended to instead use a PDF hosted on IPFS and adding a link back to the forum where you posted your proposal for discussion."
+            value={description}
+            error={!!errors.description}
+            helperText={errors.description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </ProposalFormItem>
+
+        <ProposalFormItem
+          name={<label htmlFor="target-address">Target Address</label>}
+          tooltip="The address of the contract you want to be called when the proposal is executed."
+        >
+          <Input
+            id="target-address"
+            placeholder="This is the address of the contract to call."
+            value={targetAddress}
+            error={!!errors.targetAddress}
+            helperText={errors.targetAddress}
+            onChange={(e) => setTargetAddress(e.target.value)}
+          />
+        </ProposalFormItem>
+
+        <ProposalFormItem
+          name={<label htmlFor="target-signature">Target Contract Signature</label>}
+          tooltip={`The signature of the function at the target contract you want to have called (e.g. "transfer(address,uint256)").`}
+        >
+          <Input
+            id="target-signature"
+            placeholder="The signature of the function to call."
+            value={targetSignature}
+            error={!!errors.targetSignature}
+            helperText={errors.targetSignature}
+            onChange={(e) => setTargetSignature(e.target.value)}
+          />
+        </ProposalFormItem>
+
+        <ProposalFormItem
+          name={<label htmlFor="target-value">Value (Wei)</label>}
+          tooltip={`The amount of ETH you want to send along with the function call in Wei (use 0 unless the target function is "payable").`}
+        >
+          <Input
+            id="target-value"
+            placeholder="0"
+            type="number"
+            value={targetValue}
+            error={!!errors.targetValue}
+            helperText={errors.targetValue}
+            onChange={(e) => setTargetValue(e.target.value)}
+          />
+        </ProposalFormItem>
+
+        <ProposalFormItem
+          name={<label htmlFor="parameters">Parameters</label>}
+          tooltip="The arguments that will be used to call the target function. Enter as a JSON array where the values are stringified."
+        >
+          <Textarea
+            id="parameters"
+            placeholder="These are the arguments that will be used to satisfy the Target contract signature function."
+            value={parameters}
+            error={!!errors.parameters}
+            helperText={errors.parameters}
+            onChange={(e) => setParameters(e.target.value)}
+          />
+        </ProposalFormItem>
+      </div>
+
+      <ModalFooter size="large">
+        <div className={styles.newProposalModalFooter}>
+          <Button
+            type="primary"
+            size="sm"
+            sm={{ size: 'large' }}
+            onClick={async () => {
+              const formData = {
+                type,
+                description,
+                targetAddress,
+                targetSignature,
+                targetValue,
+                parameters,
+                title,
+              };
+
+              const containsError = await validateForm(formData);
+              if (!containsError) {
+                onConfirm(formData);
+              }
+            }}
+          >
+            Create
+          </Button>
+
+          {errors.generic && <p className={classNames(styles.error, styles.marginTopMd)}>{errors.generic}</p>}
+        </div>
       </ModalFooter>
     </>
   );

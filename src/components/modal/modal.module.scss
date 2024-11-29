@@ -49,13 +49,6 @@
 
     &Large {
       padding: 120px 76px;
-      width: 100%;
-    }
-  }
-
-  @media (min-width: $md) {
-    &Large {
-      width: auto;
     }
   }
 }
@@ -165,10 +158,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 510px;
 
   @media (min-width: $sm) {
+    max-width: unset;
+
     &Normal {
       width: 510px;
+    }
+
+    &Large {
+      width: 620px;
     }
   }
 
