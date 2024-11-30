@@ -1,12 +1,18 @@
 @import '../../../styles/variables.module.scss';
 @import '../../../styles/fonts.module.scss';
 
-.proposalItem {
-  border-top: 1px solid $black-line-color;
-  padding-top: $space-md;
-  padding-bottom: $space-lg;
+.proposalsList {
+  margin-top: 32px;
+}
 
-  @media (min-width: $min-md) {
+.proposalItem {
+  border-top: 1px solid $color-dark-blue-10;
+  padding: 34px 0 40px 0;
+  max-width: 468px;
+
+  @media (min-width: $sm) {
+    padding: 18px 0 22px 0;
+    max-width: unset;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -14,41 +20,31 @@
 }
 
 .proposalItemWrapper {
-  max-width: calc(100% - 330px);
-  font-weight: 500;
-  padding-right: $space-xxxl;
-  box-sizing: border-box;
-
-  @media (max-width: $max-xl) {
-    max-width: calc(100% - 280px);
-    padding-right: $space-xl;
+  @media (min-width: $sm) {
+    max-width: 392px;
   }
 
-  @media (max-width: $max-md) {
-    max-width: none;
-    padding-right: 0;
+  @media (min-width: $md) {
+    max-width: 516px;
   }
 }
 
 .proposalItemTitle {
-  margin-bottom: $space-md;
+  margin-bottom: 8px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 
-  @media (max-width: $max-md) {
-    margin-bottom: $space-md;
-  }
-
   a {
-    color: $primary-color;
+    color: $color-dark-blue-400;
     text-decoration: none;
+    @include font-description-8;
   }
-}
 
-.proposalItemVoteId {
-  color: $tertiary-color;
-  margin-right: $space-xs;
+  @media (min-width: $md) {
+    padding-right: 16px;
+    margin-bottom: 4px;
+  }
 }
 
 .proposalItemVoterStates {
@@ -63,69 +59,58 @@
 .proposalItemBox {
   display: flex;
   align-items: center;
-  font-size: 12px;
-  line-height: 18px;
+  @include font-body-14;
+  color: $color-dark-blue-100;
 
   &.mobile {
-    margin-bottom: $space-xxs;
+    margin-bottom: 4px;
 
-    @media (min-width: $min-lg) {
+    @media (min-width: $md) {
       display: none;
     }
   }
 
   &.desktop {
-    min-width: 220px;
-    padding-right: $space-md;
-    box-sizing: border-box;
+    display: none;
 
-    @media (max-width: $max-xl) {
-      min-width: 210px;
-    }
+    @media (min-width: $md) {
+      display: flex;
+      width: 240px;
 
-    @media (max-width: $max-lg) {
-      display: none;
+      & > *:first-child {
+        width: 88px;
+        text-align: left;
+      }
     }
   }
 }
 
 .proposalItemTag {
-  margin-left: $space-md;
+  margin-left: 16px;
+  color: $color-dark-blue-400;
+  cursor: default;
 }
 
 .proposalVoteBar {
-  max-width: 330px;
-  width: 100%;
+  margin: 32px 40px 40px 40px;
   display: flex;
   align-items: center;
 
-  @media (max-width: $max-xl) {
-    max-width: 280px;
+  @media (min-width: $sm) {
+    margin: 0;
   }
 
-  @media (max-width: $max-md) {
-    max-width: none;
-    margin-top: $space-xl;
-  }
-
-  @media (min-width: $min-md) {
-    & > * {
-      margin-right: $space-lg;
-    }
-
-    & > *:last-child {
-      margin-right: 0;
-    }
+  @media (min-width: $md) {
+    margin-top: 20px;
   }
 }
 
 .proposalVoteArrow {
-  @media (max-width: $max-md) {
-    display: none;
-  }
+  display: none;
 
-  a {
+  @media (min-width: $md) {
     display: flex;
+    margin: -16px 0 0 28px;
   }
 }
 
