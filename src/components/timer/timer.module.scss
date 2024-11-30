@@ -1,10 +1,10 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
 .timer {
   display: inline-flex;
   align-items: center;
-  font-size: $text-xsmall;
-  font-weight: 500;
+  @include font-body-14;
 
   &.large {
     flex-direction: column;
@@ -56,29 +56,34 @@
   }
 }
 
+.status {
+  color: $color-dark-blue-100;
+}
+
+.timerNumber {
+  color: $color-dark-blue-400;
+}
+
+.timerColon {
+  margin: 0 4px;
+  color: $color-dark-blue-50;
+}
+
+.unit {
+  color: $color-dark-blue-50;
+}
+
 .timerContainer {
   display: flex;
   align-items: center;
-  margin: 0 $space-xxs;
+  margin-left: 4px;
 }
 
 .timerWrap {
   display: flex;
-  align-items: center;
-
-  & > * {
-    margin-right: $space-xxs;
-  }
-
-  & > *:last-child {
-    margin-right: 0;
-  }
+  gap: 4px;
 }
 
-.timerColon {
-  margin: 0 $space-xxs;
-}
-
-.grayOut {
-  color: rgba(255, 255, 255, 0.4);
+.timedOutNumber {
+  color: $color-dark-blue-50;
 }

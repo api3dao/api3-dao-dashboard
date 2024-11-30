@@ -1,0 +1,164 @@
+[
+  {
+    "0": {
+      "type": "BigNumber",
+      "hex": "0x69"
+    },
+    "1": "0x1251c6528e8EE095Cdb7cb6284860F3290756cdE",
+    "2": "2\u001ftransfer(address,uint256)\u001fIndependent monitoring team #6 - Dec 1st, 2024 - Feb 28th, 2025\u001fThe team provides development of the Centurion ecosystem which monitors dAPIs on supported chains as well as technical support for the API3 documentation.\n\nhttps://magenta-written-lemming-206.mypinata.cloud/ipfs/Qmc4q7sYVExuLSLFQz9mHdpHegmibsN7giPRJXzA1CoZb5",
+    "type": "secondary",
+    "voteId": {
+      "type": "BigNumber",
+      "hex": "0x69"
+    },
+    "creator": "0x1251c6528e8EE095Cdb7cb6284860F3290756cdE",
+    "metadata": {
+      "version": "2",
+      "targetSignature": "transfer(address,uint256)",
+      "title": "Independent monitoring team #6 - Dec 1st, 2024 - Feb 28th, 2025",
+      "description": "The team provides development of the Centurion ecosystem which monitors dAPIs on supported chains as well as technical support for the API3 documentation.\n\nhttps://magenta-written-lemming-206.mypinata.cloud/ipfs/Qmc4q7sYVExuLSLFQz9mHdpHegmibsN7giPRJXzA1CoZb5"
+    },
+    "open": true,
+    "startDate": "2024-11-19T23:03:59.000Z",
+    "supportRequired": 50,
+    "minAcceptQuorum": 15,
+    "votingPower": {
+      "type": "BigNumber",
+      "hex": "0x1acb427cba1a0a34910e11"
+    },
+    "deadline": "2024-12-26T23:03:59.000Z",
+    "startDateRaw": {
+      "type": "BigNumber",
+      "hex": "0x673d195f"
+    },
+    "script": "0x00000001556ecbb0311d350491ba0ec7e019c354d7723ce0000000e4b61d27f6000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000bd94c3f81cc8d5a993908270103639c8a0e9f0aa000000000000000000000000000000000000000000000000000000052041800000000000000000000000000000000000000000000000000000000000",
+    "userVotingPowerAt": {
+      "type": "BigNumber",
+      "hex": "0x00"
+    },
+    "delegateAt": null,
+    "delegateState": 0,
+    "voterState": 0,
+    "executed": false,
+    "yea": {
+      "type": "BigNumber",
+      "hex": "0x06881c252ae98757f77052"
+    },
+    "nay": {
+      "type": "BigNumber",
+      "hex": "0x016ee5dfa160531f3957c7"
+    },
+    "decodedEvmScript": {
+      "targetAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "value": {
+        "type": "BigNumber",
+        "hex": "0x00"
+      },
+      "parameters": ["0xBd94c3F81CC8d5a993908270103639C8a0E9F0aA", "22016000000"]
+    }
+  },
+  {
+    "type": "primary",
+    "voteId": {
+      "type": "BigNumber",
+      "hex": "0x0e"
+    },
+    "creator": "0x1cccb306a2BFADe9860A33689551B38cCC6eb66E",
+    "metadata": {
+      "version": "1",
+      "targetSignature": "transfer(address,uint256)",
+      "title": "DWF Labs Liquidity Enhancement Proposal",
+      "description": "https://gateway.pinata.cloud/ipfs/QmPEJ9GTp5xNSEn2kFsVMGFDD3wbhRZZnU22KUscEt32rx"
+    },
+    "open": true,
+    "startDate": "2024-11-11T15:39:35.000Z",
+    "supportRequired": 50,
+    "minAcceptQuorum": 50,
+    "votingPower": {
+      "type": "BigNumber",
+      "hex": "0x1be184a52dc19a43bbb18a"
+    },
+    "deadline": "2024-11-18T15:39:35.000Z",
+    "startDateRaw": {
+      "type": "BigNumber",
+      "hex": "0x66180437"
+    },
+    "script": "0x00000001d9f80bdb37e6bad114d747e60ce6d2aaf26704ae000000e4b61d27f60000000000000000000000000b38210ea11411557c13457d4da7dc6ea731b88a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000413f624710af8c637cd581311bd2b81cd7da5c3200000000000000000000000000000000000000000000d3c21bcecceda100000000000000000000000000000000000000000000000000000000000000",
+    "userVotingPowerAt": {
+      "type": "BigNumber",
+      "hex": "0x00"
+    },
+    "delegateAt": null,
+    "delegateState": 0,
+    "voterState": 1,
+    "executed": false,
+    "yea": {
+      "type": "BigNumber",
+      "hex": "0x0e2347359a77856c516a7c"
+    },
+    "nay": {
+      "type": "BigNumber",
+      "hex": "0x00"
+    },
+    "decodedEvmScript": {
+      "targetAddress": "0x0b38210ea11411557c13457D4dA7dC6ea731B88a",
+      "value": {
+        "type": "BigNumber",
+        "hex": "0x00"
+      },
+      "parameters": ["0x413f624710AF8C637Cd581311Bd2b81CD7da5C32", "1000000000000000000000000"]
+    }
+  },
+  {
+    "type": "secondary",
+    "voteId": {
+      "type": "BigNumber",
+      "hex": "0x10"
+    },
+    "creator": "0x01AD8A993cEa95C18447171a64D84d4eab275a98",
+    "metadata": {
+      "version": "1",
+      "targetSignature": "transfer(address,uint256)",
+      "title": "API3 API Integration Team Proposal",
+      "description": "https://ipfs.fleek.co/ipfs/bafybeicfx6fp6v75f3ukn5q64tm63eje22kw7xfhujsoqo2vr4plea3jpu\n\nhttps://forum.api3.org/t/secondary-proposal-12-api-integrations-team-november-2021-january-2022/780"
+    },
+    "open": true,
+    "startDate": "2021-11-26T14:37:37.000Z",
+    "supportRequired": 50,
+    "minAcceptQuorum": 15,
+    "votingPower": {
+      "type": "BigNumber",
+      "hex": "0x277ff928b8e6a7fe59d835"
+    },
+    "deadline": "2024-12-03T14:37:37.000Z",
+    "startDateRaw": {
+      "type": "BigNumber",
+      "hex": "0x61a0f131"
+    },
+    "script": "0x00000001556ecbb0311d350491ba0ec7e019c354d7723ce0000000e4b61d27f6000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000044a9059cbb0000000000000000000000002be5bd7f529974e197cfe70f2361971f65c12042000000000000000000000000000000000000000000000000000000084129d94000000000000000000000000000000000000000000000000000000000",
+    "userVotingPowerAt": {
+      "type": "BigNumber",
+      "hex": "0x00"
+    },
+    "delegateAt": null,
+    "delegateState": 0,
+    "voterState": 2,
+    "executed": false,
+    "yea": {
+      "type": "BigNumber",
+      "hex": "0x016ee5dfa160531f3957c7"
+    },
+    "nay": {
+      "type": "BigNumber",
+      "hex": "0x046ee5dfa160531f3957c7"
+    },
+    "decodedEvmScript": {
+      "targetAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "value": {
+        "type": "BigNumber",
+        "hex": "0x00"
+      },
+      "parameters": ["0x2BE5bd7f529974E197cFe70f2361971f65c12042", "35453000000"]
+    }
+  }
+]

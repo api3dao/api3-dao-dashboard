@@ -8,14 +8,24 @@ import VoteStatus from '../vote-status';
 
 interface IconProp {
   large?: boolean;
+  fill?: boolean;
 }
 
-export const NegativeVoteIcon = ({ large }: IconProp) => (
-  <img className={classNames(styles.voteIcon, { [styles.large]: large })} src={images.closePink} alt="rejected icon" />
+export const NegativeVoteIcon = ({ large, fill }: IconProp) => (
+  <img
+    className={classNames(styles.voteIcon, { [styles.large]: large })}
+    src={fill ? images.errorCircleFill : images.errorCircle}
+    alt="rejected icon"
+  />
 );
 
-export const PositiveVoteIcon = ({ large }: IconProp) => (
-  <img className={classNames(styles.voteIcon, { [styles.large]: large })} src={images.checkGreen} alt="passed icon" />
+// TODO: Update the icon after the "check circle fill" is added as a react component
+export const PositiveVoteIcon = ({ large, fill }: IconProp) => (
+  <img
+    className={classNames(styles.voteIcon, { [styles.large]: large })}
+    src={fill ? images.checkCircleFill : images.checkCircle}
+    alt="passed icon"
+  />
 );
 
 const formatPercentage = (percentage: number) => `${percentage.toFixed(2)}%`;
@@ -44,28 +54,28 @@ const VoteSlider = (props: Props) => {
   } = props;
 
   const isLarge = size === 'large';
+  const proposalApproved = !open && (proposalStatus === 'Execute' || proposalStatus === 'Executed');
+  const proposalRejected = !open && proposalStatus === 'Rejected';
 
   return (
     <>
       {isLarge && (
         <div className={styles.barNames}>
-          <p className={globalStyles.bold}>For</p>
-          <p className={globalStyles.bold}>Against</p>
+          <p>For</p>
+          <p>Against</p>
         </div>
       )}
       <div className={styles.voteSlider}>
-        <PositiveVoteIcon large={isLarge} />
+        <PositiveVoteIcon large={isLarge} fill={proposalApproved} />
         <div className={styles.barWrapper}>
           <div className={styles.bar}>
             <div className={styles.acceptanceQuorum} style={{ left: `${minAcceptanceQuorum}%` }}></div>
             <div
-              className={classNames(styles.for, { [styles.grayOut]: !open && proposalStatus === 'Rejected' })}
+              className={classNames(styles.for, { [styles.grayOut]: proposalRejected })}
               style={{ width: formatPercentage(forPercentage) }}
             ></div>
             <div
-              className={classNames(styles.against, {
-                [styles.grayOut]: !open && (proposalStatus === 'Execute' || proposalStatus === 'Executed'),
-              })}
+              className={classNames(styles.against, { [styles.grayOut]: proposalApproved })}
               style={{ width: formatPercentage(againstPercentage) }}
             ></div>
           </div>
@@ -75,12 +85,14 @@ const VoteSlider = (props: Props) => {
               [globalStyles.textNormal]: isLarge,
             })}
           >
-            <span className={globalStyles.secondaryColor}>{formatPercentage(forPercentage)}</span>
+            <span className={classNames({ [styles.lost]: proposalRejected })}>{formatPercentage(forPercentage)}</span>
             {!isLarge && <VoteStatus voterState={voterState} wasDelegated={wasDelegated} />}
-            <span className={globalStyles.secondaryColor}>{formatPercentage(againstPercentage)}</span>
+            <span className={classNames({ [styles.lost]: proposalApproved })}>
+              {formatPercentage(againstPercentage)}
+            </span>
           </div>
         </div>
-        <NegativeVoteIcon large={isLarge} />
+        <NegativeVoteIcon large={isLarge} fill={proposalRejected} />
       </div>
     </>
   );
