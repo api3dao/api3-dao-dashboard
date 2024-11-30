@@ -11,7 +11,7 @@ import VoteSlider from '../vote-slider/vote-slider';
 import VoteStatus from '../vote-status';
 import Timer from '../../../components/timer';
 import Button from '../../../components/button';
-import Tag from '../../../components/tag';
+import ProposalTag from '../proposal-tag';
 import { TooltipChecklist } from '../../../components/tooltip';
 import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting } from '../../../contracts';
@@ -149,11 +149,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         <div>
           <h4 className={styles.proposalDetailsTitle}>{proposal.metadata.title}</h4>
           <div className={styles.proposalTag}>
-            <Tag type={proposal.type}>
-              <span className={globalStyles.capitalize}>
-                #{proposal.voteId.toString()} {proposal.type}
-              </span>
-            </Tag>
+            <ProposalTag type={proposal.type} id={`#${proposal.voteId.toString()}`} />
           </div>
         </div>
         <div className={styles.proposalDetailsTimer}>

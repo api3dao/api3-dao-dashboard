@@ -38,13 +38,14 @@ const ProposalStatus = (props: Props) => {
     <div className={styles.flex}>
       {showIcon && (
         <span className={styles.icon}>
-          {proposalStatus === 'Rejected' && <NegativeVoteIcon large={large} />}
-          {proposalStatus === 'Executed' && <PositiveVoteIcon large={large} />}
+          {proposalStatus === 'Rejected' && <NegativeVoteIcon large={large} fill={true} />}
+          {proposalStatus === 'Executed' && <PositiveVoteIcon large={large} fill={true} />}
         </span>
       )}
       {proposalStatus === 'Execute' ? (
         <Button
-          type="text"
+          type="link-blue"
+          size="sm"
           className={styles.execute}
           onClick={async () => {
             if (!voting) return;

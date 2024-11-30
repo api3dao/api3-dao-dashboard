@@ -12,8 +12,7 @@ import Timer, { DATE_FORMAT } from '../../../components/timer';
 import ConnectButton from '../../../components/connect-button';
 import { Tooltip } from '../../../components/tooltip';
 import { voteSliderSelector } from '../../../logic/proposals/selectors';
-import Tag from '../../../components/tag';
-import globalStyles from '../../../styles/global-styles.module.scss';
+import ProposalTag from '../proposal-tag';
 import styles from './proposal-list.module.scss';
 import ProposalStatus from './proposal-status/proposal-status';
 
@@ -39,7 +38,7 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
       ? `Primary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`
       : `Secondary-type proposals need ${proposal.minAcceptQuorum}% quorum to pass`;
 
-  const proposalId = `#${voteIdFormat(proposal.voteId)} ${proposal.type}`;
+  const proposalId = `#${voteIdFormat(proposal.voteId)}`;
 
   return (
     <div
@@ -52,9 +51,7 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
       <div className={styles.proposalItemTag}>
         <Tooltip overlay={tooltipContent}>
           <span>
-            <Tag type={proposal.type}>
-              <span className={globalStyles.capitalize}>{proposalId}</span>
-            </Tag>
+            <ProposalTag type={proposal.type} id={proposalId} />
           </span>
         </Tooltip>
       </div>
@@ -63,9 +60,9 @@ const ProposalInfoState = ({ proposal, device }: ProposalProps) => {
 };
 
 const ProposalList = (props: Props) => {
-  const { proposals, type } = props;
-  const { provider } = useChainData();
+  const { type, proposals } = props;
 
+  const { provider } = useChainData();
   if (!provider) {
     return (
       <div className={styles.noProposals}>
@@ -82,13 +79,13 @@ const ProposalList = (props: Props) => {
     return <p className={styles.noProposals}>There are no {type} proposals</p>;
   } else {
     return (
-      <>
+      <div className={styles.proposalsList}>
         {proposals.map((proposal, index) => {
           const typeAndVoteId = encodeProposalTypeAndVoteId(proposal.type, voteIdFormat(proposal.voteId));
           const href = `/${proposal.open ? 'governance' : 'history'}/${typeAndVoteId}`;
           return <ProposalListItem key={typeAndVoteId} proposal={proposal} href={href} index={index} />;
         })}
-      </>
+      </div>
     );
   }
 };

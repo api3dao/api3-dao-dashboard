@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { getDays, getHours, getMinutes, getSeconds } from '../../utils/generic';
-import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './timer.module.scss';
 import { format } from 'date-fns';
 import { usePrevious } from '../../utils';
@@ -58,42 +57,38 @@ const Timer = (props: Props) => {
     }
   }, [previousDateDiff, dateDiff]);
 
-  const largeSize = size === 'large' ? `${styles.large}` : '';
   const status = dateDiff > 0 ? `Remaining${showDeadline ? '' : ':'}` : 'Ended';
   const formattedDeadline = `${dateDiff > 0 ? 'Ends on' : ''} ${formatDeadline(deadline)}`;
 
   return (
-    <div
-      className={classNames(styles.timer, largeSize, dateDiff === 0 ? styles.grayOut : globalStyles.primaryColor)}
-      data-testid="timer"
-    >
-      <div className={globalStyles.tertiaryColor}>{status}</div>
+    <div className={classNames(styles.timer, { [styles.large]: size === 'large' })} data-testid="timer">
+      <div className={styles.status}>{status}</div>
       <div className={styles.timerContainer}>
         <div className={styles.timerWrap}>
-          <div className={styles.timerNumber}>{countdown.days}</div>
-          <div className={globalStyles.tertiaryColor}>D</div>
+          <div className={dateDiff > 0 ? styles.timerNumber : styles.timedOutNumber}>{countdown.days}</div>
+          <div className={styles.unit}>D</div>
         </div>
         <div className={styles.timerColon}>:</div>
         <div className={styles.timerWrap}>
-          <div className={styles.timerNumber}>{countdown.hours}</div>
-          <div className={globalStyles.tertiaryColor}>HR</div>
+          <div className={dateDiff > 0 ? styles.timerNumber : styles.timedOutNumber}>{countdown.hours}</div>
+          <div className={styles.unit}>HR</div>
         </div>
         <div className={styles.timerColon}>:</div>
         <div className={`visual-test:invisible ${styles.timerWrap}`}>
-          <div className={styles.timerNumber}>{countdown.minutes}</div>
-          <div className={globalStyles.tertiaryColor}>MIN</div>
+          <div className={dateDiff > 0 ? styles.timerNumber : styles.timedOutNumber}>{countdown.minutes}</div>
+          <div className={styles.unit}>MIN</div>
         </div>
         {size === 'large' && (
           <>
             <div className={styles.timerColon}>:</div>
             <div className={`visual-test:invisible ${styles.timerWrap}`}>
-              <div className={styles.timerNumber}>{countdown.seconds}</div>
-              <div className={globalStyles.tertiaryColor}>SEC</div>
+              <div className={dateDiff > 0 ? styles.timerNumber : styles.timedOutNumber}>{countdown.seconds}</div>
+              <div className={styles.unit}>SEC</div>
             </div>
           </>
         )}
       </div>
-      {showDeadline && <div className={`visual-test:invisible ${globalStyles.tertiaryColor}`}>{formattedDeadline}</div>}
+      {showDeadline && <div className={`visual-test:invisible ${styles.status}`}>{formattedDeadline}</div>}
     </div>
   );
 };
