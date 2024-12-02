@@ -67,25 +67,28 @@ const DelegateVotesForm = (props: Props) => {
     <>
       <ModalHeader>Delegate my votes to:</ModalHeader>
 
-      <div className={globalStyles.textCenter}>
-        <Input
-          type="text"
-          placeholder="Enter address or ENS name here"
-          value={delegationAddress}
-          onChange={(e) => {
-            setDelegationAddress(e.target.value);
-            setError('');
-          }}
-          autoFocus
-        />
-
-        <div className={classNames(globalStyles.textNormal, styles.subtext)}>
-          You will not be able to vote on proposals while your votes are delegated. Your delegate can vote for you.
+      <div className={styles.delegateFormModalContent}>
+        <div className={styles.inputWrapper}>
+          <Input
+            type="text"
+            size="small"
+            placeholder="Enter address or ENS name here"
+            value={delegationAddress}
+            onChange={(e) => {
+              setDelegationAddress(e.target.value);
+              setError('');
+            }}
+            autoFocus
+          />
         </div>
+
+        <p className={styles.subtext}>
+          You will not be able to vote on proposals while your votes are delegated. Your delegate can vote for you.
+        </p>
       </div>
 
       <ModalFooter>
-        <Button type="secondary" size="large" onClick={onDelegate}>
+        <Button className={styles.delegateButton} type="primary" size="sm" sm={{ size: 'md' }} onClick={onDelegate}>
           Delegate
         </Button>
 
