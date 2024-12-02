@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef, useEffect } from 'react';
 
-interface Props extends ComponentPropsWithoutRef<'a'> {
+interface Props extends Omit<ComponentPropsWithoutRef<'a'>, 'target' | 'rel'> {
   href: string;
 }
 
