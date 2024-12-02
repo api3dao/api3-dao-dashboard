@@ -6,47 +6,50 @@ import styles from './input.module.scss';
 
 type Props = {
   onChange: ChangeEventHandler<HTMLInputElement>;
-  value: string;
-  size?: 'normal' | 'large';
+  value: string | undefined;
+  size?: 'normal' | 'small';
   disabled?: boolean;
   type?: 'text' | 'number';
   placeholder?: string;
   id?: string;
-  block?: boolean;
   allowNegative?: boolean;
   autoFocus?: boolean;
 };
 
-const Input = ({ size, type = 'text', block, disabled, allowNegative, ...componentProps }: Props) => {
+const Input = ({
+  size = 'normal',
+  type = 'text',
+  disabled,
+  allowNegative,
+  value = undefined,
+  placeholder,
+  ...componentProps
+}: Props) => {
   return (
     <div
       className={classNames(styles.inputWrapper, {
         [styles.disabled]: disabled,
-        [styles.block]: block,
       })}
     >
       {type === 'text' && (
         <AutosizeInput
-          className={classNames(styles.input, styles.textCenter, {
-            [styles.large]: size === 'large',
-            [styles.normal]: size === 'normal',
-          })}
+          className={classNames(styles.input, [styles[size]])}
           {...componentProps}
+          placeholder={placeholder}
           placeholderIsMinWidth
+          value={value}
         />
       )}
       {type === 'number' && (
         <NumberFormat
-          className={classNames(styles.input, styles.textCenter, {
-            [styles.large]: size === 'large',
-            [styles.normal]: size === 'normal',
-          })}
+          className={classNames(styles.input, [styles[size]])}
           {...componentProps}
-          customInput={AutosizeInput}
           allowNegative={allowNegative || false}
+          customInput={AutosizeInput}
           decimalScale={18}
+          placeholder={placeholder || '00'}
           placeholderIsMinWidth
-          placeholder="00"
+          value={value}
         />
       )}
     </div>
