@@ -18,11 +18,17 @@ const ChooseDelegateAction = (props: Props) => {
 
       <ModalFooter>
         <div className={styles.actions}>
-          <Button type="secondary" onClick={onUpdateDelegation} disabled={!canUpdateDelegation}>
+          <Button
+            type="secondary-neutral"
+            size="sm"
+            sm={{ size: 'lg' }}
+            onClick={onUpdateDelegation}
+            disabled={!canUpdateDelegation}
+          >
             Update delegation
           </Button>
 
-          <Button type="secondary" onClick={onUndelegate} disabled={!canUndelegate}>
+          <Button type="primary" size="sm" sm={{ size: 'lg' }} onClick={onUndelegate} disabled={!canUndelegate}>
             Undelegate
           </Button>
         </div>
