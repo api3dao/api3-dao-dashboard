@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { KeyboardEvent, MouseEvent, useState } from 'react';
 import { ALLOW_ANALYTICS, ALLOW_ERROR_REPORTING } from '../../../utils/analytics';
 import { Modal, ModalFooter, ModalHeader } from '../../modal';
 import styles from './privacy-settings-modal.module.scss';
@@ -24,6 +24,10 @@ const PrivacySettingsModal = (props: Props) => {
   const [allowReporting, setAllowReporting] = useState(() => storedErrorReportingFlag === 'true');
   const [allowAnalytics, setAllowAnalytics] = useState(() => storedAnalyticsFlag === 'true');
 
+  const handleEvent = (event: KeyboardEvent<HTMLAnchorElement> | MouseEvent<HTMLAnchorElement>) => {
+    event.stopPropagation();
+  };
+
   return (
     <Modal open={open} onClose={onCancel}>
       <ModalHeader>Privacy Settings</ModalHeader>
@@ -44,7 +48,9 @@ const PrivacySettingsModal = (props: Props) => {
           <div className={classNames(styles.checkboxContainer, { selected: allowReporting })}>
             <CheckBox checked={allowReporting} onChange={setAllowReporting} label="Allow error reporting">
               <div className={styles.sentryButton}>
-                <ExternalLink href={links.SENTRY}>Sentry</ExternalLink>{' '}
+                <ExternalLink href={links.SENTRY} onClick={handleEvent} onKeyDown={handleEvent}>
+                  Sentry
+                </ExternalLink>{' '}
                 <img src={images.externalLink} alt="" className={styles.externalLinkIcon} />
               </div>
               collects error data to improve the performance and reliability of our services, and helps us identify and
