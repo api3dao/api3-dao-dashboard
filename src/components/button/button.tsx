@@ -22,6 +22,7 @@ export interface Props extends BreakpointsProps {
     | 'link-blue';
   size?: Size;
   disabled?: boolean;
+  destructive?: boolean;
   href?: string;
   theme?: 'light' | 'dark';
   onClick?: () => void;
@@ -31,6 +32,7 @@ export interface Props extends BreakpointsProps {
 const Button = ({
   children,
   disabled,
+  destructive,
   type = 'primary',
   size = 'md',
   onClick,
@@ -55,6 +57,7 @@ const Button = ({
         styles[theme],
         styles[sizeClass],
         { [styles.disabled]: disabled },
+        { [styles.destructive]: destructive },
         className
       )}
       {...(isExternal(href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
@@ -70,6 +73,7 @@ const Button = ({
         styles[theme],
         styles[sizeClass],
         { [styles.disabled]: disabled },
+        { [styles.destructive]: destructive },
         className
       )}
       onClick={onClick}
