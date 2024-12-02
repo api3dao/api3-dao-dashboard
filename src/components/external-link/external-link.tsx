@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { KeyboardEvent, MouseEvent, ReactNode, useEffect } from 'react';
 
 interface Props {
   className?: string;
@@ -22,8 +22,19 @@ const ExternalLink = (props: Props) => {
     }
   }, [href, props.href]);
 
+  const handleEvent = (event: KeyboardEvent<HTMLAnchorElement> | MouseEvent<HTMLAnchorElement>) => {
+    event.stopPropagation();
+  };
+
   return (
-    <a href={href} className={className} target="_blank" rel="noopener noreferrer">
+    <a
+      href={href}
+      className={className}
+      target="_blank"
+      rel="noopener noreferrer"
+      onKeyDown={handleEvent}
+      onClick={handleEvent}
+    >
       {children}
     </a>
   );
