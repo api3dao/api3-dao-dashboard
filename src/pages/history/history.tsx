@@ -5,7 +5,6 @@ import { useQueryParams } from '../../utils';
 import { ProposalType } from '../../chain-data/state';
 import { historyProposalsSelector, OptionalProposalType } from '../../logic/proposals/selectors';
 import { useChainData } from '../../chain-data';
-import BorderedBox from '../../components/bordered-box/bordered-box';
 import RadioButton from '../../components/radio-button/radio-button';
 import ProposalList from '../proposal-commons/proposal-list';
 import styles from './history.module.scss';
@@ -50,27 +49,22 @@ const History = () => {
         <Header title="History"></Header>
       </div>
 
-      <BorderedBox
-        header={
-          <div className={styles.borderBoxHeader}>
-            <h5>Past Proposals</h5>
-            <div className={styles.radioButtons}>
-              <RadioButton type="checkbox" checked={checkedPrimary} onChange={() => setCheckedPrimary(!checkedPrimary)}>
-                Primary
-              </RadioButton>
-              <RadioButton
-                type="checkbox"
-                checked={checkedSecondary}
-                onChange={() => setCheckedSecondary(!checkedSecondary)}
-              >
-                Secondary
-              </RadioButton>
-            </div>
-          </div>
-        }
-        content={<ProposalList proposals={proposalsToShow} type="past" />}
-        noMobileBorders
-      />
+      <div className={styles.proposalsHeader}>
+        <h5>Past Proposals</h5>
+        <div className={styles.radioButtons}>
+          <RadioButton type="checkbox" checked={checkedPrimary} onChange={() => setCheckedPrimary(!checkedPrimary)}>
+            Primary
+          </RadioButton>
+          <RadioButton
+            type="checkbox"
+            checked={checkedSecondary}
+            onChange={() => setCheckedSecondary(!checkedSecondary)}
+          >
+            Secondary
+          </RadioButton>
+        </div>
+      </div>
+      <ProposalList proposals={proposalsToShow} type="past" />
     </BaseLayout>
   );
 };
