@@ -7,6 +7,7 @@
   align-items: center;
   user-select: none;
   cursor: pointer;
+  transition: color 0.2s ease;
 
   @include font-body-12;
   color: $color-dark-blue-50;
@@ -33,13 +34,32 @@
   }
 }
 
+.radioButtonLabelLarge {
+  @include font-heading-7;
+  padding-left: 40px;
+  height: auto;
+
+  &.warning {
+    color: $color-action-error-600;
+
+    &:hover:not(.checked) {
+      color: $color-action-error-400;
+    }
+  }
+
+  @media (min-width: $sm) {
+    @include font-heading-4;
+    padding-left: 40px;
+  }
+}
+
 .radioButtonInput {
   position: absolute;
   left: 0;
   opacity: 0;
 }
 
-.radioButtonCheckmark {
+.radioButtonIcon {
   position: absolute;
   left: 0;
   display: flex;
@@ -55,5 +75,12 @@
       width: 20px;
       height: 20px;
     }
+  }
+}
+
+.radioButtonCircle {
+  svg {
+    width: 27px;
+    height: 27px;
   }
 }
