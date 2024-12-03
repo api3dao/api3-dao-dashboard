@@ -1,10 +1,9 @@
 import { useApi3Pool } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
-import { images } from '../../../utils';
 import Button from '../../../components/button';
-import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './unstake-banner.module.scss';
 import { handleTransactionError } from '../../../utils';
+import { CheckCircleFillIcon } from '../../../components/icons';
 
 interface Props {
   canUnstakeAndWithdraw: boolean;
@@ -36,16 +35,20 @@ const UnstakeBanner = (props: Props) => {
   return (
     <div className={styles.unstakeBanner}>
       <div className={styles.unstakeBannerWrap}>
-        <img src={images.apiIcon} alt="API icon" />
-        <div>
-          <p className={globalStyles.bold}>Your tokens are ready to be unstaked.</p>
-        </div>
+        <CheckCircleFillIcon />
+        <div>Your tokens are ready to be unstaked.</div>
       </div>
       <div className={styles.buttonPanel}>
-        <Button type="link" onClick={handleUnstake}>
+        <Button type="link-gray" size="sm" md={{ size: 'md' }} onClick={handleUnstake}>
           Unstake
         </Button>
-        <Button onClick={handleUnstakeAndWithdraw} disabled={!canUnstakeAndWithdraw}>
+        <Button
+          type="link-blue"
+          size="sm"
+          md={{ size: 'md' }}
+          onClick={handleUnstakeAndWithdraw}
+          disabled={!canUnstakeAndWithdraw}
+        >
           Unstake and Withdraw
         </Button>
       </div>
