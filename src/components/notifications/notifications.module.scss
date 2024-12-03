@@ -1,4 +1,5 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
 /*
 * NOTE: Use these classes to style notification content.
@@ -11,7 +12,8 @@
   width: 100%;
   display: flex;
   align-items: flex-start;
-  padding: $space-lg;
+  gap: 6px;
+  padding: 32px;
   box-sizing: border-box;
 
   &.url {
@@ -21,14 +23,23 @@
 
 .notificationContent {
   flex: 1;
-  margin-left: $space-sm;
-  margin-top: $space-xxs;
+  @include font-body-8;
 }
 
 .closeButton {
   position: absolute;
-  top: $space-sm;
-  right: $space-sm;
+  top: 12px;
+  right: 12px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+
+    @media (min-width: $md) {
+      width: 24px;
+      height: 24px;
+    }
+  }
 }
 
 .notificationButton {
@@ -46,4 +57,49 @@
   display: flex;
   justify-content: flex-end;
   margin-top: $space-md;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+
+  &.success {
+    color: $color-action-success-500;
+  }
+
+  &.error {
+    color: $color-action-error-500;
+  }
+
+  &.warning {
+    color: $color-action-warning-500;
+  }
+
+  &.info {
+    color: $color-action-info-500;
+  }
+}
+
+.progressBarBackground {
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  bottom: 0;
+  left: 0;
+
+  &.success {
+    background-color: $color-action-success-500;
+  }
+
+  &.error {
+    background-color: $color-action-error-500;
+  }
+
+  &.warning {
+    background-color: $color-action-warning-500;
+  }
+
+  &.info {
+    background-color: $color-action-info-500;
+  }
 }

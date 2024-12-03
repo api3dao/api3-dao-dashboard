@@ -31,7 +31,8 @@ export const ETHERSCAN_HOSTS: { [chainId: string]: string } = {
 };
 
 export const getEtherscanTransactionUrl = (transaction: ethers.Transaction) => {
-  const host = ETHERSCAN_HOSTS[transaction.chainId.toString()];
+  // const host = ETHERSCAN_HOSTS[transaction.chainId.toString()];
+  const host = ETHERSCAN_HOSTS[1]; // Just for testing purposes
   if (!host) return;
 
   // For example: https://ropsten.etherscan.io/tx/0xe4394ea70b32486f59f92c5194c9083bd36c99f2f0c32cfc9bacce3486055d24
