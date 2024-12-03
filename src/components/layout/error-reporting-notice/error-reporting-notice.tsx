@@ -46,8 +46,8 @@ const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
             <ExternalLink className={styles.dark} href={links.SENTRY}>
               Sentry
             </ExternalLink>
-            <img src={images.externalLink} alt="" className={styles.externalLinkIcon} />. We do not gather IP address or
-            user agent information.
+            <img src={images.externalLink} alt="" className={styles.externalLinkIcon} /> and use analytics cookies to
+            improve our products.
           </div>
           <div className={styles.buttons}>
             <Button
