@@ -33,8 +33,10 @@ export const abbrStr = (str: string) => {
 export const EPOCH_LENGTH = 7 * 60 * 60 * 24; // in seconds
 
 export const closeErrorReportingNotice = () => {
-  cy.dataCy('error-reporting').findByText('Done').click();
-  cy.findByText('Done').should('not.exist');
+  cy.dataCy('error-reporting')
+    .findByRole('button', { name: /accept all/i })
+    .click();
+  cy.dataCy('error-reporting').should('not.exist');
 };
 
 export const HOME_PAGE = 'http://localhost:3000/#/';

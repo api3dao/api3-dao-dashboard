@@ -1,0 +1,80 @@
+@import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
+@import '../../button/variants/link-blue.module.scss';
+
+.privacySettingsModalContent {
+  display: flex;
+  flex-direction: column;
+
+  .privacyDescription {
+    margin-bottom: 40px;
+
+    > span {
+      @include font-body-9;
+      color: $color-dark-blue-400;
+      margin: 0;
+    }
+
+    .privacyPolicyButton {
+      @include link-blue;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .externalLinkIcon {
+      margin-left: 0.5ch;
+    }
+  }
+
+  .checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    .checkboxContainer {
+      .checkboxTextBlock {
+        gap: 8px;
+      }
+
+      .sentryButton {
+        display: inline-block;
+        margin-right: 0.5ch;
+
+        a {
+          @include link-blue;
+          @include font-link-3;
+          white-space: nowrap;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  @media (min-width: $sm) {
+    .privacyDescription {
+      margin-bottom: 40px;
+
+      > span {
+        @include font-body-6;
+      }
+    }
+
+    .checkboxes {
+      .checkboxContainer {
+        .sentryButton {
+          a {
+            @include font-link-2;
+          }
+        }
+      }
+    }
+  }
+}
+
+.saveSettingsButton {
+  width: 100%;
+
+  @media (min-width: $sm) {
+    width: auto;
+  }
+}
