@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { closeAll } from './notifications';
-import { ERROR_REPORTING_CONSENT_KEY_NAME } from '../../utils';
 import styles from './storage-full-notification.module.scss';
+import { ALLOW_ANALYTICS, ALLOW_ERROR_REPORTING } from '../../utils/analytics';
 
 export default function StorageFullNotification() {
   const [busy, setBusy] = useState(false);
@@ -18,10 +18,14 @@ export default function StorageFullNotification() {
           disabled={busy}
           onClick={() => {
             setBusy(true);
-            const errorReportingValue = window.localStorage.getItem(ERROR_REPORTING_CONSENT_KEY_NAME);
+            const errorReportingValue = window.localStorage.getItem(ALLOW_ERROR_REPORTING);
+            const analyticsValue = window.localStorage.getItem(ALLOW_ANALYTICS);
             window.localStorage.clear();
             if (errorReportingValue) {
-              window.localStorage.setItem(ERROR_REPORTING_CONSENT_KEY_NAME, errorReportingValue);
+              window.localStorage.setItem(ALLOW_ERROR_REPORTING, errorReportingValue);
+            }
+            if (analyticsValue) {
+              window.localStorage.setItem(ALLOW_ANALYTICS, analyticsValue);
             }
             window.location.reload();
           }}
