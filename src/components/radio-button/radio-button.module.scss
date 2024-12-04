@@ -1,7 +1,7 @@
 @import '../../styles/variables.module.scss';
 @import '../../styles/fonts.module.scss';
 
-.radioButtonLabel {
+.label {
   position: relative;
   display: flex;
   align-items: center;
@@ -34,7 +34,7 @@
   }
 }
 
-.radioButtonLabelLarge {
+.labelLarge {
   @include font-heading-7;
   padding-left: 40px;
   height: auto;
@@ -53,13 +53,13 @@
   }
 }
 
-.radioButtonInput {
+.input {
   position: absolute;
   left: 0;
   opacity: 0;
 }
 
-.radioButtonIcon {
+.icon {
   position: absolute;
   left: 0;
   display: flex;
@@ -78,7 +78,7 @@
   }
 }
 
-.radioButtonCircle {
+.iconLarge {
   svg {
     width: 27px;
     height: 27px;

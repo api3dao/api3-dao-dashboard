@@ -22,22 +22,15 @@ const RadioButton = (props: Props) => {
     return (
       <div role={type} aria-checked={checked} tabIndex={0} onKeyDown={triggerOnEnter(onChange)}>
         <label
-          className={classNames(styles.radioButtonLabel, styles.radioButtonLabelLarge, [styles[color]], {
+          className={classNames(styles.label, styles.labelLarge, [styles[color]], {
             [styles.checked]: checked,
           })}
         >
           {children}
 
-          <input
-            className={styles.radioButtonInput}
-            type={type}
-            name={name}
-            tabIndex={-1}
-            onChange={onChange}
-            checked={checked}
-          />
+          <input className={styles.input} type={type} name={name} tabIndex={-1} onChange={onChange} checked={checked} />
 
-          <span className={classNames(styles.radioButtonIcon, styles.radioButtonCircle, [styles[color]])}>
+          <span className={classNames(styles.icon, styles.iconLarge, [styles[color]])}>
             {checked ? <RadioButtonFillIcon /> : <RadioButtonIcon />}
           </span>
         </label>
@@ -47,19 +40,12 @@ const RadioButton = (props: Props) => {
 
   return (
     <div role={type} aria-checked={checked} tabIndex={0} onKeyDown={triggerOnEnter(onChange)}>
-      <label className={classNames(styles.radioButtonLabel, { [styles.checked]: checked })}>
+      <label className={classNames(styles.label, { [styles.checked]: checked })}>
         {children}
 
-        <input
-          className={styles.radioButtonInput}
-          type={type}
-          name={name}
-          tabIndex={-1}
-          onChange={onChange}
-          checked={checked}
-        />
+        <input className={styles.input} type={type} name={name} tabIndex={-1} onChange={onChange} checked={checked} />
 
-        <span className={styles.radioButtonIcon}>{checked ? <CheckCircleFillIcon /> : <CheckboxRadioIcon />}</span>
+        <span className={styles.icon}>{checked ? <CheckCircleFillIcon /> : <CheckboxRadioIcon />}</span>
       </label>
     </div>
   );
