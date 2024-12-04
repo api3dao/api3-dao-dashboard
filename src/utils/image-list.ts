@@ -27,6 +27,7 @@ export const images = {
   info: '/info.svg',
   infoCircle: '/info-circle.svg',
   notificationClose: '/notification-close.svg',
+  notFound: '/not-found.svg',
   success: '/success.svg',
   texture: '/texture.png',
   triangleBracketLeft: '/triangle-bracket-left.svg',

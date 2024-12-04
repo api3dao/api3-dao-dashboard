@@ -1,0 +1,70 @@
+@import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+
+.notFoundPageWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 48px;
+  height: 100%;
+  width: 100%;
+
+  img {
+    width: 100%;
+    max-width: 310px;
+  }
+
+  @media (min-width: $sm) {
+    gap: 64px;
+
+    img {
+      max-width: 460px;
+    }
+  }
+
+  @media (min-width: $md) {
+    img {
+      max-width: 620px;
+    }
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+
+  @media (min-width: $sm) {
+    gap: 32px;
+  }
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+  color: $color-dark-blue-100;
+
+  h1 {
+    @include font-heading-9;
+  }
+
+  p {
+    @include font-body-15;
+  }
+
+  @media (min-width: $sm) {
+    gap: 16px;
+
+    h1 {
+      @include font-heading-5;
+    }
+
+    p {
+      @include font-body-3;
+    }
+  }
+}
