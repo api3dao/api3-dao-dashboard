@@ -1,7 +1,7 @@
 import { BigNumber, utils } from 'ethers';
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
 import { useEnsName, Address } from 'wagmi';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
@@ -23,7 +23,6 @@ import ProposalStatus from '../proposal-list/proposal-status';
 import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
-import NotFoundPage from '../../not-found';
 import { handleTransactionError, images, messages, useScrollToTop } from '../../../utils';
 import ExternalLink from '../../../components/external-link';
 
@@ -79,9 +78,14 @@ interface RouterParameters {
 const ProposalDetailsPage = () => {
   useScrollToTop();
   const { typeAndVoteId } = useParams<RouterParameters>();
+  const { push } = useHistory();
   const decoded = useMemo(() => decodeProposalTypeAndVoteId(typeAndVoteId), [typeAndVoteId]);
 
-  if (!decoded) return <NotFoundPage />;
+  if (!decoded) {
+    push('/404');
+    return null;
+  }
+
   return <ProposalDetailsLayout {...decoded} />;
 };
 
