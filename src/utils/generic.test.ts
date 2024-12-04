@@ -1,4 +1,4 @@
-import { filterAlphanumerical, getDays, getHours, getMinutes, getSeconds, isErrorReportingAllowed } from './generic';
+import { filterAlphanumerical, getDays, getHours, getMinutes, getSeconds } from './generic';
 
 test('getDays', () => {
   const twelveDays = 1000 * 60 * 60 * 24 * 12;
@@ -36,12 +36,4 @@ test('filterAlphanumerical', () => {
   expect(filterAlphanumerical('\\test\\Red\\Bob-%./"FredNew')).toEqual('testRedBobFredNew');
   expect(filterAlphanumerical('')).toEqual('');
   expect(filterAlphanumerical(' \t\n')).toEqual('');
-});
-
-test('isErrorReportingAllowed', () => {
-  expect(isErrorReportingAllowed(null)).toBe(false);
-  expect(isErrorReportingAllowed('random-value')).toBe(false);
-  expect(isErrorReportingAllowed('false')).toBe(false);
-
-  expect(isErrorReportingAllowed('true')).toBe(true);
 });

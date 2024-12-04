@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import classNames from 'classnames';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { ModalFooter, ModalHeader } from '../../../../components/modal';
@@ -8,7 +7,6 @@ import { useApi3Pool } from '../../../../contracts';
 import { utils, constants } from 'ethers';
 import * as notifications from '../../../../components/notifications';
 import { messages } from '../../../../utils/messages';
-import globalStyles from '../../../../styles/global-styles.module.scss';
 import styles from './delegate.module.scss';
 import { handleTransactionError } from '../../../../utils';
 import { convertToAddressOrThrow } from '../../../../logic/proposals/encoding/ens-name';

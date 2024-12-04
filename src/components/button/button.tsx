@@ -19,7 +19,8 @@ export interface Props extends BreakpointsProps {
     | 'text'
     | 'text-blue'
     | 'menu-link-secondary'
-    | 'link-blue';
+    | 'link-blue'
+    | 'link-gray';
   size?: Size;
   disabled?: boolean;
   destructive?: boolean;
