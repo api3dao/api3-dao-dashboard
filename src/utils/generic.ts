@@ -34,9 +34,3 @@ export const getSeconds = (distance: number) => {
 export const UNKNOWN_NUMBER = '-';
 
 export const filterAlphanumerical = (value: string) => value.replace(/[^0-9a-zA-Z]/g, '');
-
-// Name of the localstorage key that will be used to remember whether the user allowed us to gather error reports
-export const ERROR_REPORTING_CONSENT_KEY_NAME = 'reportErrors';
-export const isErrorReportingAllowed = (localStorageValue: string | null) => {
-  return localStorageValue === Boolean(true).toString();
-};
