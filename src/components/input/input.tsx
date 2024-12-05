@@ -6,7 +6,7 @@ import styles from './input.module.scss';
 
 type Props = {
   onChange: ChangeEventHandler<HTMLInputElement>;
-  value: string | undefined;
+  value: string;
   size?: 'normal' | 'small';
   disabled?: boolean;
   type?: 'text' | 'number';
@@ -21,7 +21,7 @@ const Input = ({
   type = 'text',
   disabled,
   allowNegative,
-  value = undefined,
+  value,
   placeholder,
   ...componentProps
 }: Props) => {
