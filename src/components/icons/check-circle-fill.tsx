@@ -1,10 +1,10 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, useId } from 'react';
 
 export const CheckCircleFillIcon = (props: ComponentProps<'svg'>) => {
-  // Need to have unique id if we are using it multiple times
+  // Need to have unique id if we are using the icon multiple times
   // https://stackoverflow.com/questions/70985078/when-i-display-none-one-svg-another-independent-svg-gets-rendered-differen
-  const random = Math.random();
-  const maskId = `path-1-inside-1_${random}`;
+  const maskId = useId();
+
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" {...props}>
       <mask id={maskId} fill="white">
