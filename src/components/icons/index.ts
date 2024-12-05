@@ -1,6 +1,7 @@
 import { CheckCircleIcon } from './check-circle';
 import { CheckCircleFillIcon } from './check-circle-fill';
 import { CheckboxRadioIcon } from './checkbox-radio';
+import { CheckIcon } from './check';
 import { CloseIcon } from './close';
 import { CrossIcon } from './cross';
 import { ErrorCircleIcon } from './error-circle';
@@ -11,6 +12,7 @@ import { InfoCircleIcon } from './info-circle';
 export {
   CheckCircleIcon,
   CheckCircleFillIcon,
+  CheckIcon,
   CheckboxRadioIcon,
   CloseIcon,
   CrossIcon,

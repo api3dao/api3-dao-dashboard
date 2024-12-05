@@ -1,32 +1,37 @@
-import { ReactNode, useEffect } from 'react';
+import { ComponentPropsWithoutRef, useEffect } from 'react';
 
-interface Props {
-  className?: string;
+interface Props extends Omit<ComponentPropsWithoutRef<'a'>, 'target' | 'rel'> {
   href: string;
-  children: ReactNode;
 }
 
 const ExternalLink = (props: Props) => {
-  const { className, children } = props;
+  const { children, href: incomingHref, ...rest } = props;
 
-  let href = props.href.trim();
-  const urlRegex = /^https?:\/\//i; // Starts with https:// or http:// (case insensitive)
-  if (!urlRegex.test(href)) {
-    href = 'about:blank';
-  }
+  const href = cleanHref(incomingHref);
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && href === 'about:blank') {
       // eslint-disable-next-line no-console
-      console.warn(`An invalid URL has been provided: "${props.href}". Only https:// or http:// URLs are allowed.`);
+      console.warn(`An invalid URL has been provided: "${incomingHref}". Only https:// or http:// URLs are allowed.`);
     }
-  }, [href, props.href]);
+  }, [href, incomingHref]);
 
   return (
-    <a href={href} className={className} target="_blank" rel="noopener noreferrer">
+    <a target="_blank" rel="noopener noreferrer" href={href} {...rest}>
       {children}
     </a>
   );
+};
+
+const cleanHref = (href: string) => {
+  const urlRegex = /^https?:\/\//i; // Starts with https:// or http:// (case insensitive)
+  const trimmedHref = href.trim();
+
+  if (!urlRegex.test(trimmedHref)) {
+    return 'about:blank';
+  }
+
+  return trimmedHref;
 };
 
 export default ExternalLink;

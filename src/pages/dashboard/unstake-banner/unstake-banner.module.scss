@@ -1,44 +1,52 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
 
 .unstakeBanner {
   width: 100%;
   display: flex;
+  flex-direction: column;
+  gap: 16px;
   align-items: center;
   justify-content: space-between;
-  padding: $space-lg 0;
-  border-top: 1px solid rgba(124, 227, 203, 0.4);
-  border-bottom: 1px solid rgba(124, 227, 203, 0.4);
-  margin-bottom: 2 * $space-xl;
+  background: linear-gradient(180deg, #fafafa 0%, #f0f4ff 100%);
+  border-top: 1px solid $color-dark-blue-10;
+  border-bottom: 1px solid $color-dark-blue-10;
+  margin: 32px 0;
+  padding: 24px 16px;
 
-  @media (max-width: $max-md) {
-    flex-direction: column;
-
-    & > *:not(:last-child) {
-      margin-bottom: $space-lg;
-    }
+  @media (min-width: $sm) {
+    margin: 40px 0 72px 0;
+    padding: 24px;
+    flex-direction: row;
   }
 }
 
 .unstakeBannerWrap {
   display: flex;
   align-items: center;
-  margin-right: $space-lg;
 
-  @media (max-width: $max-sm) {
-    margin-right: 0;
-    margin-bottom: $space-md;
+  gap: 16px;
+  @include font-body-10;
+
+  & > svg {
+    color: $color-action-success-600;
+    width: 28px;
+    height: 28px;
   }
 
-  & > img {
-    margin-right: $space-lg;
+  @media (min-width: $md) {
+    @include font-body-4;
+    gap: 24px;
+
+    & > svg {
+      width: 36px;
+      height: 36px;
+    }
   }
 }
 
 .buttonPanel {
   display: flex;
   align-items: center;
-
-  & > *:not(:last-child) {
-    margin-right: $space-xxl;
-  }
+  gap: 32px;
 }
