@@ -1,6 +1,7 @@
 @mixin button-secondary {
   position: relative;
   color: $color-dark-blue-400;
+  background-color: $color-base-light;
   border: 1px solid transparent;
   @include gradient-border($gradient-soft-light);
 

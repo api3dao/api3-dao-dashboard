@@ -1,4 +1,5 @@
 @import '../../../../styles/variables.module.scss';
+@import '../../../../styles/fonts.module.scss';
 
 .proposalStatus {
   text-align: center;
@@ -25,20 +26,40 @@
   align-items: center;
   margin-right: $space-xs;
 
-  img {
+  svg {
     margin-top: 0;
   }
 }
 
 .execute {
-  button {
-    padding: 0;
-    font-size: 18px;
-    line-height: 28px;
-  }
+  padding: 0;
+  font-size: 18px;
+  line-height: 28px;
 }
 
 .flex {
   display: flex;
   align-items: center;
+}
+
+.large {
+  @include font-subtitle-8;
+
+  &.flex {
+    justify-content: center;
+  }
+
+  .icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (min-width: $md) {
+    @include font-subtitle-2;
+
+    .icon svg {
+      width: 27px;
+      height: 27px;
+    }
+  }
 }
