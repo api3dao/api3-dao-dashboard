@@ -1,5 +1,6 @@
 @import '../../../styles/variables.module.scss';
 @import '../../../styles/fonts.module.scss';
+@import '../../../components/button/variants/link-blue.module.scss';
 
 .newProposalModalContent {
   display: flex;
@@ -83,6 +84,30 @@
 
 .noMargin {
   margin: 0;
+}
+
+.helpLinkWrapper {
+  position: absolute;
+  right: 0;
+  top: 8px;
+
+  .helpLink {
+    padding-right: 4px;
+    text-decoration: none;
+    @include link-blue;
+    @include font-link-3;
+  }
+
+  @media (min-width: $sm) {
+    .helpLink {
+      @include font-link-1;
+    }
+
+    img {
+      width: 12px;
+      height: 12px;
+    }
+  }
 }
 
 .newProposalModalFooter {
