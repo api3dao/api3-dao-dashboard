@@ -13,14 +13,9 @@ type Props = {
   children: ReactNode;
   title: string;
   subtitle?: string;
-  hideHeader?: boolean;
 };
 
-const Layout = ({ children, title, subtitle, hideHeader = false }: Props) => {
-  if (hideHeader) {
-    return <BaseLayout title={title}>{children}</BaseLayout>;
-  }
-
+const Layout = ({ children, title, subtitle }: Props) => {
   return (
     <BaseLayout title={title}>
       <Header title={title} subtitle={subtitle} />

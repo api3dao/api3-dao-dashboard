@@ -1,11 +1,11 @@
-import Layout from '../../components/layout';
+import { BaseLayout } from '../../components/layout';
 import styles from './not-found.module.scss';
 import { images } from '../../utils';
 import Button from '../../components/button';
 
 const NotFoundPage = () => {
   return (
-    <Layout title="404 Not Found" hideHeader>
+    <BaseLayout title="404 Not Found">
       <div className={styles.wrapper}>
         <img src={images.notFound} alt="404" className={styles.image} />
 
@@ -20,7 +20,7 @@ const NotFoundPage = () => {
           </Button>
         </div>
       </div>
-    </Layout>
+    </BaseLayout>
   );
 };
 
