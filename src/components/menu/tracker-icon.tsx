@@ -1,6 +1,6 @@
 const TrackerIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clip-path="url(#clip0_9339_9642)">
+    <g clipPath="url(#clip0_9339_9642)">
       <path
         d="M16.4795 11.998C16.4795 14.4833 14.4648 16.498 11.9795 16.498C9.49421 16.498 7.47949 14.4833 7.47949 11.998C7.47949 9.51277 9.49421 7.49805 11.9795 7.49805C14.4648 7.49805 16.4795 9.51277 16.4795 11.998Z"
         stroke="currentColor"
