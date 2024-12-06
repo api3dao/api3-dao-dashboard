@@ -1,0 +1,36 @@
+@import '../../../styles/fonts.module.scss';
+
+@mixin link-gray {
+  color: $color-gray-700;
+  height: 20px;
+  border: none;
+
+  &.xs {
+    @include font-overline-2;
+  }
+
+  &.sm {
+    @include font-link-3;
+  }
+
+  &.md {
+    @include font-link-2;
+  }
+
+  &.lg {
+    height: 24px;
+    @include font-link-1;
+  }
+
+  &:hover {
+    color: $color-green-800;
+  }
+
+  &:active {
+    color: $color-green-700;
+  }
+
+  &:disabled {
+    color: $color-gray-400;
+  }
+}

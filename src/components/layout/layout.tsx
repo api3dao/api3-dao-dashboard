@@ -2,12 +2,12 @@ import { ReactNode, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Navigation from '../navigation';
 import Header from '../header';
-import { ERROR_REPORTING_CONSENT_KEY_NAME } from '../../utils';
 import styles from './layout.module.scss';
 import Button from '../button';
 import ErrorReportingNotice from './error-reporting-notice';
 import { DesktopMenu } from '../menu';
 import ExternalLink from '../external-link';
+import { ALLOW_ANALYTICS, ALLOW_ERROR_REPORTING } from '../../utils/analytics';
 
 type Props = {
   children: ReactNode;
@@ -35,13 +35,13 @@ interface BaseLayoutProps {
 }
 
 export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
-  const [errorReportingNoticeOpen, setErrorReportingNoticeOpen] = useState(
-    localStorage.getItem(ERROR_REPORTING_CONSENT_KEY_NAME) === null
+  const [showNotice, setShowNotice] = useState(
+    () => localStorage.getItem(ALLOW_ERROR_REPORTING) === null || localStorage.getItem(ALLOW_ANALYTICS) === null
   );
 
   const footerLinks = [
     { text: 'About API3', href: 'https://api3.org/' },
-    { text: 'Error Reporting', onClick: () => setErrorReportingNoticeOpen(true) },
+    { text: 'Error Reporting', onClick: () => setShowNotice(true) },
     { text: 'Github', href: 'https://github.com/api3dao/api3-dao-dashboard' },
   ];
 
@@ -58,8 +58,8 @@ export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
           <main className={styles.main}>{children}</main>
         </div>
         <footer className={styles.footer}>
-          {errorReportingNoticeOpen ? (
-            <ErrorReportingNotice onClose={() => setErrorReportingNoticeOpen(false)} />
+          {showNotice ? (
+            <ErrorReportingNotice onShowNotice={setShowNotice} />
           ) : (
             <div className={styles.footerContent}>
               {footerLinks.map((link) =>
