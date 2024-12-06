@@ -59,7 +59,9 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
             <div className={styles.footerContent}>
               {footerLinks.map((link) =>
                 link.href ? (
-                  <ExternalLink href={link.href}>{link.text}</ExternalLink>
+                  <ExternalLink href={link.href} key={link.text}>
+                    {link.text}
+                  </ExternalLink>
                 ) : (
                   <Button
                     key={link.text}

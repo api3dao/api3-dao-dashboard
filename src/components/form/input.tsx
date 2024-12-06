@@ -14,7 +14,7 @@ type Props = {
   onChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-const Input = ({ type = 'text', ...componentProps }: Props) => {
+const Input = ({ type = 'text', helperText, error, ...inputProps }: Props) => {
   const CustomNumberInput = useCallback((props: any) => {
     return (
       <div className={styles.input}>
@@ -25,16 +25,16 @@ const Input = ({ type = 'text', ...componentProps }: Props) => {
 
   if (type === 'number') {
     return (
-      <InputWrapper {...componentProps}>
-        <NumberFormat {...componentProps} customInput={CustomNumberInput} decimalScale={18} />
+      <InputWrapper {...inputProps} error={error} helperText={helperText}>
+        <NumberFormat {...inputProps} customInput={CustomNumberInput} decimalScale={18} />
       </InputWrapper>
     );
   }
 
   return (
-    <InputWrapper {...componentProps}>
+    <InputWrapper {...inputProps} error={error} helperText={helperText}>
       <div className={styles.input}>
-        <input {...componentProps} />
+        <input {...inputProps} />
       </div>
     </InputWrapper>
   );
