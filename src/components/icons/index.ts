@@ -8,6 +8,8 @@ import { ErrorCircleIcon } from './error-circle';
 import { ErrorCircleFillIcon } from './error-circle-fill';
 import { HelpOutlineIcon } from './help-outline';
 import { InfoCircleIcon } from './info-circle';
+import { InfoCircleFillIcon } from './info-circle-fill';
+import { WarningCircleFillIcon } from './warning-circle-fill';
 
 export {
   CheckCircleIcon,
@@ -20,4 +22,6 @@ export {
   ErrorCircleFillIcon,
   HelpOutlineIcon,
   InfoCircleIcon,
+  InfoCircleFillIcon,
+  WarningCircleFillIcon,
 };

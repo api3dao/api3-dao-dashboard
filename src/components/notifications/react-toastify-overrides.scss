@@ -13,14 +13,10 @@
 
 /** Used to define container behavior: width, position: fixed etc... **/
 .Toastify__toast-container {
-  width: 340px;
+  width: 328px;
 
-  @media (max-width: $max-sm) {
-    width: 240px;
-  }
-
-  @media only screen and (max-width: 480px) {
-    left: auto;
+  @media (min-width: $md) {
+    width: 480px;
   }
 }
 
@@ -33,14 +29,11 @@
 
 /** Classes for the displayed toast **/
 .Toastify__toast {
-  background: linear-gradient(76.31deg, #f3f3f3 36.47%, #c3c4c3 99.02%);
+  background-color: $color-dark-blue-700;
   box-shadow: 0px 9px 28px 8px rgba(0, 0, 0, 0.05), 0px 6px 16px rgba(0, 0, 0, 0.08),
     0px 3px 6px -4px rgba(0, 0, 0, 0.12);
-  border-radius: 0;
+  border-radius: 24px;
   padding: 0;
-  font-size: $text-small;
-  line-height: $lh-small;
-  color: $black-color;
 }
 
 .Toastify__toast-body {
@@ -49,41 +42,23 @@
 
 /** Classes for the progress bar **/
 .Toastify__progress-bar {
-  width: $space-xxs;
-  height: 100%;
-  transform-origin: bottom;
-}
-
-.Toastify__progress-bar--error {
-  background-color: transparent;
-  background: linear-gradient(0deg, #7ce3cb 0%, #7963b2 135%);
-}
-
-.Toastify__progress-bar--info {
-  background-color: $progressbar-info;
-}
-
-.Toastify__progress-bar--success {
-  background-color: $progressbar-success;
-}
-
-.Toastify__progress-bar--warning {
-  background-color: $progressbar-warning;
-}
-
-.Toastify__progress-bar--error {
-  background-color: $progressbar-error;
-}
-
-@keyframes Toastify__trackProgress {
-  0% {
-    transform: scaleY(1);
-  }
-  100% {
-    transform: scaleY(0);
-  }
+  width: 100%;
+  height: 5px;
+  right: 0;
+  left: unset;
+  background-color: $color-dark-blue-100 !important;
 }
 
 .Toastify__progress-bar--animated {
-  animation: Toastify__trackProgress linear 1 forwards;
+  animation: 10s progress-bar-animation linear 1 forwards !important;
+}
+
+@keyframes progress-bar-animation {
+  0% {
+    width: 0%;
+  }
+
+  100% {
+    width: 100%;
+  }
 }

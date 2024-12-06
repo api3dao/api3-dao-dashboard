@@ -42,7 +42,7 @@ const TokenDepositForm = (props: Props) => {
       setChainData('Save deposit approval', { transactions: [...transactions, { type: 'approve-deposit', tx }] });
     } else {
       if (isUserRejection(goResponse.error)) {
-        return notifications.info({ message: messages.TX_APPROVAL_REJECTED });
+        return notifications.error({ message: messages.TX_APPROVAL_REJECTED });
       }
       return setError(messages.TX_APPROVAL_ERROR);
     }
@@ -72,7 +72,7 @@ const TokenDepositForm = (props: Props) => {
       setChainData(`Save "${type}" transaction`, { transactions: [...transactions, { type, tx }] });
     } else {
       if (isUserRejection(goResponse.error)) {
-        return notifications.info({ message: messages.TX_DEPOSIT_REJECTED });
+        return notifications.error({ message: messages.TX_DEPOSIT_REJECTED });
       }
       return setError(messages.TX_DEPOSIT_ERROR);
     }
