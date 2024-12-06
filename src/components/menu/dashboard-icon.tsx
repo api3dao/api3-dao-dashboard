@@ -1,6 +1,6 @@
 const DashboardIcon = () => (
   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clip-path="url(#clip0_9339_9589)">
+    <g clipPath="url(#clip0_9339_9589)">
       <path
         d="M13.8407 3.46875H3.47168V13.8599H8.66724H13.8628V3.46875H13.8407Z"
         stroke="currentColor"

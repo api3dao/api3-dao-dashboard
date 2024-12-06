@@ -1,8 +1,8 @@
 const MarketIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clip-path="url(#clip0_9339_9683)">
-      <g clip-path="url(#clip1_9339_9683)">
-        <g clip-path="url(#clip2_9339_9683)">
+    <g clipPath="url(#clip0_9339_9683)">
+      <g clipPath="url(#clip1_9339_9683)">
+        <g clipPath="url(#clip2_9339_9683)">
           <rect x="6.87988" y="11.9512" width="10.2483" height="5.38304" stroke="currentColor" />
           <path d="M2.62598 9.5V21.3799H21.3756V9.5" stroke="currentColor" />
           <path
