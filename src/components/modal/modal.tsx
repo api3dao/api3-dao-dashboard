@@ -4,15 +4,13 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { useOnAccountOrNetworkChange } from '../../contracts';
 import styles from './modal.module.scss';
-import { CloseIcon, HelpOutlineIcon } from '../icons';
-import Button from '../button';
-import { Tooltip } from '../tooltip';
+import { CloseIcon } from '../icons';
 
-interface ModalSize {
-  size?: 'normal' | 'large';
-}
-interface ModalProps extends ModalSize {
+type ModalSize = 'normal' | 'large';
+
+interface ModalProps {
   children?: React.ReactNode;
+  size?: ModalSize;
   open: boolean;
   onClose: () => void;
   hideCloseButton?: true;
@@ -80,32 +78,17 @@ export const Modal = (props: ModalProps) => {
   return ReactDOM.createPortal(<ModalContent {...props} />, document.getElementById('modal')!);
 };
 
-type ModalHeaderProps =
-  | {
-      children: string;
-      tooltipText?: null;
-      size?: null;
-      noMargin?: boolean;
-    }
-  | {
-      children: string;
-      tooltipText: string;
-      size: 'large';
-      noMargin?: boolean;
-    };
+interface ModalHeaderProps {
+  children: string;
+  size?: ModalSize;
+  noMargin?: boolean;
+}
 
-export const ModalHeader = ({ children, tooltipText, size, noMargin = false }: ModalHeaderProps) => {
+export const ModalHeader = ({ children, size, noMargin = false }: ModalHeaderProps) => {
   if (size === 'large') {
     return (
       <div className={classNames(styles.modalHeader, styles.modalHeaderLarge, { [styles.noMargin]: noMargin })}>
         <h5>{children}</h5>
-
-        <Tooltip overlay={tooltipText}>
-          <Button type="link-blue" size="sm" sm={{ size: 'lg' }}>
-            <HelpOutlineIcon />
-            <span>Help</span>
-          </Button>
-        </Tooltip>
       </div>
     );
   }
@@ -117,7 +100,7 @@ export const ModalHeader = ({ children, tooltipText, size, noMargin = false }: M
   );
 };
 
-interface ModalFooterProps extends ModalSize {
+interface ModalFooterProps {
   children?: React.ReactNode;
   noMargin?: boolean;
 }
