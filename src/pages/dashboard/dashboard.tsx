@@ -59,12 +59,9 @@ const Dashboard = () => {
     notifications.error({ message: messages.FAILED_TO_LOAD_TREASURY_AND_DELEGATION, errorOrMessage: '' });
     notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: '' });
     notifications.error({ message: messages.FAILED_TO_LOAD_GENESIS_EPOCH, errorOrMessage: '' });
-  };
-
-  const showInfoToasts = () => {
-    notifications.info({ message: messages.TX_GENERIC_REJECTED });
-    notifications.info({ message: messages.TX_DEPOSIT_REJECTED });
-    notifications.info({ message: messages.TX_APPROVAL_REJECTED });
+    notifications.error({ message: messages.TX_GENERIC_REJECTED });
+    notifications.error({ message: messages.TX_DEPOSIT_REJECTED });
+    notifications.error({ message: messages.TX_APPROVAL_REJECTED });
   };
 
   const showTxErrorToasts = () => {
@@ -97,7 +94,7 @@ const Dashboard = () => {
         <Button
           type="secondary"
           size="sm"
-          onClick={() => notifications.success({ message: 'Transaction cancelled successfully' })}
+          onClick={() => notifications.success({ message: 'Success! Transaction cancelled' })}
         >
           Success
         </Button>
@@ -111,7 +108,7 @@ const Dashboard = () => {
         >
           Warning
         </Button>
-        <Button type="secondary" size="sm" onClick={showInfoToasts}>
+        <Button type="secondary" size="sm" onClick={() => notifications.success({ message: 'Info toast message' })}>
           Info
         </Button>
         <Button type="secondary" size="sm" onClick={showTxErrorToasts}>

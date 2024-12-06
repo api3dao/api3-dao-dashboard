@@ -36,7 +36,7 @@ interface ToastProps {
 }
 
 interface ErrorToastProps extends ToastProps {
-  errorOrMessage: Error | string;
+  errorOrMessage?: Error | string;
   sendToSentry?: boolean;
 }
 
