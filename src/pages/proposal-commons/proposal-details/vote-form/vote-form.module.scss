@@ -1,12 +1,30 @@
 @import '../../../../styles/variables.module.scss';
-
-.voteForm {
-  text-align: center;
-}
+@import '../../../../styles/fonts.module.scss';
 
 .voteFormContent {
-  margin-top: $space-xxxl;
-  margin-bottom: 2 * $space-xxl;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0;
+
+  @media (min-width: $sm) {
+    gap: 24px;
+    padding: 32px 0;
+  }
+}
+
+.voteFormFooter {
   display: flex;
   justify-content: center;
+  width: 100%;
+
+  > button {
+    width: 100%;
+  }
+
+  @media (min-width: $sm) {
+    > button {
+      width: auto;
+    }
+  }
 }
