@@ -9,7 +9,6 @@
   gap: 48px;
   height: 100%;
   width: 100%;
-  margin-top: -88px;
 
   img {
     width: 100%;
@@ -18,7 +17,6 @@
 
   @media (min-width: $sm) {
     gap: 64px;
-    margin-top: 0;
 
     img {
       max-width: 460px;
@@ -26,8 +24,6 @@
   }
 
   @media (min-width: $md) {
-    margin-top: 16px;
-
     img {
       max-width: 620px;
     }

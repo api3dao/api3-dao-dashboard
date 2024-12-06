@@ -5,7 +5,7 @@ import Button from '../../components/button';
 
 const NotFoundPage = () => {
   return (
-    <Layout title="">
+    <Layout title="404 Not Found" hideHeader>
       <div className={styles.wrapper}>
         <img src={images.notFound} alt="404" className={styles.image} />
 

@@ -13,11 +13,16 @@ type Props = {
   children: ReactNode;
   title: string;
   subtitle?: string;
+  hideHeader?: boolean;
 };
 
-const Layout = ({ children, title, subtitle }: Props) => {
+const Layout = ({ children, title, subtitle, hideHeader = false }: Props) => {
+  if (hideHeader) {
+    return <BaseLayout title={title}>{children}</BaseLayout>;
+  }
+
   return (
-    <BaseLayout subtitle={title}>
+    <BaseLayout title={title}>
       <Header title={title} subtitle={subtitle} />
       {children}
     </BaseLayout>
@@ -26,10 +31,10 @@ const Layout = ({ children, title, subtitle }: Props) => {
 
 interface BaseLayoutProps {
   children: ReactNode;
-  subtitle: string;
+  title: string;
 }
 
-export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
+export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
   const [errorReportingNoticeOpen, setErrorReportingNoticeOpen] = useState(
     localStorage.getItem(ERROR_REPORTING_CONSENT_KEY_NAME) === null
   );
@@ -43,7 +48,7 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
   return (
     <>
       <Helmet>
-        <title>{`API3 DAO | ${subtitle}`}</title>
+        <title>{`API3 DAO | ${title}`}</title>
       </Helmet>
 
       <div className={styles.layout}>
