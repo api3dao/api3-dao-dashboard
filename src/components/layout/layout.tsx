@@ -17,7 +17,7 @@ type Props = {
 
 const Layout = ({ children, title, subtitle }: Props) => {
   return (
-    <BaseLayout subtitle={title}>
+    <BaseLayout title={title}>
       <Header title={title} subtitle={subtitle} />
       {children}
     </BaseLayout>
@@ -26,10 +26,10 @@ const Layout = ({ children, title, subtitle }: Props) => {
 
 interface BaseLayoutProps {
   children: ReactNode;
-  subtitle: string;
+  title: string;
 }
 
-export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
+export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
   const [showNotice, setShowNotice] = useState(
     () => localStorage.getItem(ALLOW_ERROR_REPORTING) === null || localStorage.getItem(ALLOW_ANALYTICS) === null
   );
@@ -43,7 +43,7 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
   return (
     <>
       <Helmet>
-        <title>{`API3 DAO | ${subtitle}`}</title>
+        <title>{`API3 DAO | ${title}`}</title>
       </Helmet>
 
       <div className={styles.layout}>

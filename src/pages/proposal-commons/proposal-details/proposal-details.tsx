@@ -66,7 +66,7 @@ const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
 
   const proposal = proposalDetailsSelector(provider, proposals, type, voteId);
   return (
-    <BaseLayout subtitle={`Proposal ${voteId.toString()}`}>
+    <BaseLayout title={`Proposal ${voteId.toString()}`}>
       <ProposalDetailsContent proposal={proposal} />
     </BaseLayout>
   );
@@ -82,6 +82,7 @@ const ProposalDetailsPage = () => {
   const decoded = useMemo(() => decodeProposalTypeAndVoteId(typeAndVoteId), [typeAndVoteId]);
 
   if (!decoded) return <NotFoundPage />;
+
   return <ProposalDetailsLayout {...decoded} />;
 };
 

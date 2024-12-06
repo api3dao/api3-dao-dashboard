@@ -30,7 +30,7 @@ const ErrorBoundary: FallbackRender = (props) => {
   });
 
   return (
-    <BaseLayout subtitle="Unexpected error">
+    <BaseLayout title="Unexpected error">
       <div>An unexpected error has occurred. Please refresh the page and try again.</div>
     </BaseLayout>
   );
