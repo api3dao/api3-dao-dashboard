@@ -8,16 +8,20 @@ import { ErrorCircleIcon } from './error-circle';
 import { ErrorCircleFillIcon } from './error-circle-fill';
 import { HelpOutlineIcon } from './help-outline';
 import { InfoCircleIcon } from './info-circle';
+import { RadioButtonIcon } from './radio-button';
+import { RadioButtonFillIcon } from './radio-button-fill';
 
 export {
   CheckCircleIcon,
   CheckCircleFillIcon,
-  CheckIcon,
   CheckboxRadioIcon,
+  CheckIcon,
   CloseIcon,
   CrossIcon,
   ErrorCircleIcon,
   ErrorCircleFillIcon,
   HelpOutlineIcon,
   InfoCircleIcon,
+  RadioButtonIcon,
+  RadioButtonFillIcon,
 };

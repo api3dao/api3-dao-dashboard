@@ -1,12 +1,56 @@
 @import '../../../../styles/variables.module.scss';
+@import '../../../../styles/fonts.module.scss';
 
-.error {
-  margin-top: $space-xl;
-  color: $error-color;
+.delegateFormModalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
   text-align: center;
+  width: 100%;
+}
+
+.inputWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 6px 16px;
+  height: 50px;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  @media (min-width: $sm) {
+    padding: 24px 0 0 0;
+    height: 82px;
+  }
 }
 
 .subtext {
-  color: $tertiary-color;
-  margin-top: $space-xxxl;
+  @include font-body-15;
+  color: $color-dark-blue-400;
+  text-align: center;
+  padding: 0 24px;
+  text-wrap: pretty;
+
+  @media (min-width: $sm) {
+    @include font-body-9;
+    padding: 0;
+  }
+}
+
+.delegateButton {
+  width: 100%;
+
+  @media (min-width: $sm) {
+    width: auto;
+  }
+}
+
+.error {
+  @include font-body-15;
+  margin-top: 48px;
+  color: $color-action-error-800;
+  text-align: center;
+
+  @media (min-width: $sm) {
+    @include font-body-9;
+  }
 }

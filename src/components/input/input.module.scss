@@ -9,73 +9,61 @@
     opacity: 0.4;
     pointer-events: none;
   }
-  &.block {
-    width: 100%;
-    .input,
-    input {
-      width: 100%;
-    }
-  }
-}
-
-@mixin normal {
-  @include font-heading-7;
-}
-
-@mixin large {
-  @include font-heading-4;
 }
 
 .input {
   display: inline-block;
   max-width: 100%;
 
-  &.textCenter {
-    input {
-      text-align: center;
-    }
-  }
-
   input {
     min-width: 30px;
     background-color: transparent;
-    color: $color-dark-blue-400;
     border-width: 0;
     outline: none;
-
-    &:focus {
-      color: $color-dark-blue-400;
-    }
-
-    &::placeholder {
-      color: $color-dark-blue-400;
-    }
+    box-shadow: none;
+    text-align: center;
   }
 
   &.normal {
     input {
-      @include normal;
+      @include font-heading-7;
+      color: $color-dark-blue-400;
+
+      &:focus {
+        color: $color-dark-blue-400;
+      }
+
+      &::placeholder {
+        color: $color-dark-blue-400;
+      }
     }
-  }
 
-  &.large {
-    input {
-      @include large;
-    }
-  }
+    @media (min-width: $sm) {
+      min-width: 50px;
 
-  &:not(.normal):not(.large) {
-    input {
-      @include normal;
-    }
-  }
-
-  @media (min-width: $sm) {
-    min-width: 50px;
-
-    &:not(.normal):not(.large) {
       input {
-        @include large;
+        @include font-heading-4;
+      }
+    }
+  }
+
+  &.small {
+    input {
+      @include font-body-8;
+      color: $color-dark-blue-100;
+
+      &:focus {
+        color: $color-dark-blue-100;
+      }
+
+      &::placeholder {
+        color: $color-dark-blue-100;
+      }
+    }
+
+    @media (min-width: $sm) {
+      input {
+        @include font-body-2;
       }
     }
   }
