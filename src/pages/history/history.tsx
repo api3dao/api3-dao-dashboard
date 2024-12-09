@@ -44,7 +44,7 @@ const History = () => {
   }, [history, checkedPrimary, checkedSecondary]);
 
   return (
-    <BaseLayout subtitle="History">
+    <BaseLayout title="History">
       <div className={styles.header}>
         <Header title="History"></Header>
       </div>
