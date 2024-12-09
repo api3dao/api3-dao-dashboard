@@ -1,3 +1,11 @@
+@mixin font-body-2 {
+  font-family: Karla;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%; /* 30px */
+}
+
 @mixin font-body-3 {
   font-family: Karla;
   font-size: 20px;
