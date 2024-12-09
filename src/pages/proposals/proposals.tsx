@@ -22,11 +22,9 @@ import {
   votingPowerThresholdSelector,
 } from '../../logic/proposals/selectors';
 import Delegation from './delegation';
-import { Proposal, useChainData } from '../../chain-data';
+import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
 import { formatApi3, handleTransactionError, images, round } from '../../utils';
-import testProposals from './test-proposals.json';
-import { BigNumber } from 'ethers';
 import styles from './proposals.module.scss';
 
 const Proposals = () => {
@@ -44,34 +42,6 @@ const Proposals = () => {
 
   useActiveProposals();
   useTreasuryAndDelegation();
-
-  /** START: TESTING DATA FOR PROPOSAL LIST */
-
-  // const convertBigNumbersAndDates = (obj: any): any => {
-  //   if (Array.isArray(obj)) {
-  //     return obj.map(convertBigNumbersAndDates);
-  //   } else if (obj && typeof obj === 'object') {
-  //     return Object.keys(obj).reduce((acc, key) => {
-  //       const value = obj[key];
-  //       if (value && value.type === 'BigNumber' && value.hex) {
-  //         acc[key] = BigNumber.from(value.hex);
-  //       } else if (key === 'deadline' || key === 'startDate') {
-  //         acc[key] = new Date(value);
-  //       } else {
-  //         acc[key] = convertBigNumbersAndDates(value);
-  //       }
-  //       return acc;
-  //     }, {} as any);
-  //   }
-  //   return obj;
-  // };
-
-  // const convertToProposals = (data: any[]): Proposal[] => {
-  //   return data.map((item) => convertBigNumbersAndDates(item));
-  // };
-  // const sortedProposals = convertToProposals(testProposals);
-
-  /** END: TESTING DATA FOR PROPOSAL LIST */
 
   const sortedProposals = openProposalsSelector(proposals);
   const createNewProposal = canCreateNewProposalSelector(delegation, dashboardState, isGenesisEpoch);
