@@ -11,6 +11,16 @@ $border-radius: 100px;
 
   @media (min-width: $sm) {
     width: 224px;
+
+    &.large {
+      width: 544px;
+    }
+  }
+
+  @media (min-width: $md) {
+    &.large {
+      width: 660px;
+    }
   }
 }
 
@@ -23,7 +33,28 @@ $border-radius: 100px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 2 * $space-xl $space-sm;
+  @include font-body-10;
+  margin-bottom: 24px;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  @media (min-width: $sm) {
+    &.large {
+      width: 544px;
+    }
+  }
+
+  @media (min-width: $md) {
+    @include font-body-4;
+
+    &.large {
+      width: 660px;
+    }
+  }
 }
 
 .bar {
@@ -77,9 +108,39 @@ $border-radius: 100px;
 
 .voteIcon {
   margin-top: 2px;
+  width: 14px;
+  height: 14px;
+  color: $color-dark-blue-25;
 
-  &.large {
-    height: 16px;
-    margin-top: 1px;
+  &.positive {
+    color: $color-action-success-600;
+  }
+
+  &.negative {
+    color: $color-action-error-600;
+  }
+}
+
+.large {
+  .barWrapper {
+    margin: 0;
+  }
+
+  .voteInfo {
+    @include font-body-12;
+
+    @media (min-width: $md) {
+      @include font-body-6;
+    }
+  }
+
+  .voteIcon {
+    height: 18px;
+    width: 18px;
+
+    @media (min-width: $md) {
+      height: 20px;
+      width: 20px;
+    }
   }
 }
