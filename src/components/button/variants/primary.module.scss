@@ -3,6 +3,11 @@
   color: $color-base-light;
   border: none;
 
+  &.destructive {
+    color: $color-base-light;
+    background-color: $color-action-error-500;
+  }
+
   &.xxs {
     padding: 0 10px;
     border-radius: 24px;
@@ -49,6 +54,23 @@
   &:disabled {
     color: $color-blue-50;
     background-color: $color-blue-10;
+  }
+
+  &.destructive {
+    &:hover {
+      color: $color-base-light;
+      background-color: $color-action-error-700;
+    }
+
+    &:active {
+      color: $color-base-light;
+      background-color: $color-action-error-600;
+    }
+
+    &:disabled {
+      color: $color-action-error-50;
+      background-color: $color-action-error-200;
+    }
   }
 
   &.dark {
