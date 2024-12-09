@@ -1,10 +1,9 @@
 import { createContext, useState, useMemo, useContext, ReactNode } from 'react';
-import { initialSettableChainData, initialChainData, SettableChainData, Proposal } from './state';
+import { initialSettableChainData, initialChainData, SettableChainData } from './state';
 import { useAccount, useNetwork } from 'wagmi';
 import { getDaoAddresses, updateNetworkName } from '../contracts';
 import { useEthersProvider, useEthersSigner } from './adapters';
-import { BigNumber, ethers } from 'ethers';
-import testProposals from '../pages/proposals/test-proposals.json';
+import { ethers } from 'ethers';
 
 export const ChainDataContext = createContext(initialSettableChainData);
 
@@ -49,41 +48,6 @@ const ChainDataContextProvider = (props: { children: ReactNode }) => {
 
 export default ChainDataContextProvider;
 
-const convertBigNumbersAndDates = (obj: any): any => {
-  if (Array.isArray(obj)) {
-    return obj.map(convertBigNumbersAndDates);
-  } else if (obj && typeof obj === 'object') {
-    return Object.keys(obj).reduce((acc, key) => {
-      const value = obj[key];
-      if (value && value.type === 'BigNumber' && value.hex) {
-        acc[key] = BigNumber.from(value.hex);
-      } else if (key === 'deadline' || key === 'startDate') {
-        acc[key] = new Date(value);
-      } else {
-        acc[key] = convertBigNumbersAndDates(value);
-      }
-      return acc;
-    }, {} as any);
-  }
-  return obj;
-};
-
-const convertToProposals = (
-  data: any
-): { primary: { [key: string]: Proposal }; secondary: { [key: string]: Proposal } } => {
-  const convertSection = (section: { [key: string]: any }) => {
-    return Object.keys(section).reduce((acc, key) => {
-      acc[key] = convertBigNumbersAndDates(section[key]);
-      return acc;
-    }, {} as { [key: string]: Proposal });
-  };
-
-  return {
-    primary: convertSection(data.primary),
-    secondary: convertSection(data.secondary),
-  };
-};
-
 export const useChainData = () => {
   const data = useContext(ChainDataContext);
   const { provider, signer } = useContext(ProviderSignerContext) || {};
@@ -95,7 +59,6 @@ export const useChainData = () => {
     const networkName = updateNetworkName(chain?.network || '');
     return {
       ...data,
-      // proposals: convertToProposals(testProposals),
       isConnected: true,
       provider,
       signer,
