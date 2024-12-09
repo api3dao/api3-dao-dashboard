@@ -170,18 +170,53 @@
 .malicious {
   display: flex;
   align-items: flex-start;
-  background: $pink-color;
-  padding: 1.5rem 1.8rem;
-  border-radius: 3px;
-  margin-bottom: $space-xxl;
+  gap: 8px;
+  background: $color-action-error-10;
+  padding: 16px;
+  border-top: 1px solid $color-action-error-600;
+  border-bottom: 1px solid $color-action-error-600;
+  margin: 72px 0;
+
+  .warningText {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .warningTitle {
+    @include font-body-10;
+  }
+
+  .warningSubtitle {
+    @include font-body-12;
+  }
 
   svg {
-    display: none;
-    margin-top: 0.2ch;
-    margin-right: 0.5ch;
+    color: $color-action-error-600;
+    width: 18px;
+    height: 18px;
+  }
 
-    @media (min-width: $min-md) {
-      display: inline;
+  @media (min-width: $md) {
+    padding: 24px 32px;
+    margin: 64px 0;
+    justify-content: center;
+
+    .warningText {
+      flex-direction: row;
+      gap: 6px;
+    }
+
+    .warningTitle {
+      @include font-body-7;
+    }
+
+    .warningSubtitle {
+      @include font-body-9;
+    }
+
+    svg {
+      width: 22px;
+      height: 22px;
     }
   }
 }
