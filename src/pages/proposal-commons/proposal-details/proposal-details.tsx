@@ -13,14 +13,12 @@ import Timer from '../../../components/timer';
 import Button from '../../../components/button';
 import ProposalTag from '../proposal-tag';
 import { TooltipChecklist } from '../../../components/tooltip';
-import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndVoteId, isEvmScriptValid } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { useProposalById } from '../../../logic/proposals/hooks';
 import VoteForm from './vote-form/vote-form';
 import ProposalStatus from '../proposal-list/proposal-status';
-import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './proposal-details.module.scss';
 import { canVoteSelector } from '../../../logic/proposals/selectors';
 import NotFoundPage from '../../not-found';
@@ -66,7 +64,7 @@ const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
 
   const proposal = proposalDetailsSelector(provider, proposals, type, voteId);
   return (
-    <BaseLayout subtitle={`Proposal ${voteId.toString()}`}>
+    <BaseLayout title={`Proposal ${voteId.toString()}`}>
       <ProposalDetailsContent proposal={proposal} />
     </BaseLayout>
   );
@@ -82,6 +80,7 @@ const ProposalDetailsPage = () => {
   const decoded = useMemo(() => decodeProposalTypeAndVoteId(typeAndVoteId), [typeAndVoteId]);
 
   if (!decoded) return <NotFoundPage />;
+
   return <ProposalDetailsLayout {...decoded} />;
 };
 
@@ -113,7 +112,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
   const urlTargetAddress = getEtherscanAddressUrl(chainId, decodedEvmScript.targetAddress);
   const backButton = {
-    text: `Back to ${proposal.open ? 'Governance' : 'History'}`,
+    text: 'Back',
     url: proposal.open ? '/governance' : '/history',
   };
 
@@ -137,7 +136,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   return (
     <div>
       <div className={styles.proposalDetailsSubheader}>
-        <Link to={backButton.url} data-cy="api3-logo">
+        <Link to={backButton.url} data-cy="back-button">
           <Button type="text" className={styles.backBtn}>
             <img src={images.arrowLeft} alt="back" />
             {backButton.text}
@@ -170,12 +169,18 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
       <div className={styles.proposalDetailsVoteSection}>
         <VoteSlider {...voteSliderData} size="large" />
         <VoteStatus voterState={voteSliderData.voterState} wasDelegated={voteSliderData.wasDelegated} large />
-        <div>
-          <Button type="secondary" size="large" onClick={() => setVoteModalOpen(true)} disabled={!canVote}>
+        <div className={styles.voteButtonWrapper}>
+          <Button
+            type="secondary"
+            size="sm"
+            md={{ size: 'lg' }}
+            onClick={() => setVoteModalOpen(true)}
+            disabled={!canVote}
+          >
             Vote
           </Button>
           <TooltipChecklist items={canVoteChecklist}>
-            <img src={images.help} alt="voting help" className={globalStyles.helpIcon} />
+            <img src={images.helpOutline} alt="voting help" className={styles.helpIcon} />
           </TooltipChecklist>
         </div>
         {proposal.delegateAt && (
@@ -203,64 +208,54 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
           />
         </Modal>
       </div>
-      <BorderedBox
-        header={
-          <Header largeSpaces>
-            <h5>Summary</h5>
-          </Header>
-        }
-        content={
-          <div className={styles.proposalDetailsSummary}>
-            <pre className={classNames(styles.proposalDetailsItem, globalStyles.secondaryColor, styles.scrollX)}>
-              <ProposalDescription description={proposal.metadata.description} />
-            </pre>
 
-            <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Creator</p>
-              <p className={classNames(globalStyles.secondaryColor, styles.address)}>
-                {urlCreator ? (
-                  <ExternalLink className={styles.link} href={urlCreator}>
-                    <EnsName address={proposal.creator as Address} />
-                  </ExternalLink>
-                ) : (
-                  proposal.creator
-                )}
-              </p>
-            </div>
-            <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Target Address</p>
-              <p className={classNames(globalStyles.secondaryColor, styles.address)}>
-                {urlTargetAddress ? (
-                  <ExternalLink className={styles.link} href={urlTargetAddress}>
-                    <EnsName address={decodedEvmScript.targetAddress as Address} />
-                  </ExternalLink>
-                ) : (
-                  decodedEvmScript.targetAddress
-                )}
-              </p>
-            </div>
-            {proposal.metadata.targetSignature && (
-              <div className={styles.proposalDetailsItem}>
-                <p className={globalStyles.bold}>Target Contract Signature</p>
-                <p className={globalStyles.secondaryColor}>{proposal.metadata.targetSignature}</p>
-              </div>
+      <div className={styles.summary}>
+        <h5>Summary</h5>
+        <div className={classNames(styles.proposalDetailsItem)}>
+          <ProposalDescription description={proposal.metadata.description} />
+        </div>
+
+        <div className={styles.proposalDetailsItem}>
+          <p className={styles.label}>Creator</p>
+          <p className={styles.address}>
+            {urlCreator ? (
+              <ExternalLink className={styles.link} href={urlCreator}>
+                <EnsName address={proposal.creator as Address} />
+              </ExternalLink>
+            ) : (
+              proposal.creator
             )}
-            {decodedEvmScript.value.gt(0) && (
-              <div className={styles.proposalDetailsItem}>
-                <p className={globalStyles.bold}>Value (Wei)</p>
-                <p className={globalStyles.secondaryColor}>{decodedEvmScript.value.toString()}</p>
-              </div>
+          </p>
+        </div>
+        <div className={styles.proposalDetailsItem}>
+          <p className={styles.label}>Target Contract Address</p>
+          <p className={styles.address}>
+            {urlTargetAddress ? (
+              <ExternalLink className={styles.link} href={urlTargetAddress}>
+                <EnsName address={decodedEvmScript.targetAddress as Address} />
+              </ExternalLink>
+            ) : (
+              decodedEvmScript.targetAddress
             )}
-            <div className={styles.proposalDetailsItem}>
-              <p className={globalStyles.bold}>Parameters</p>
-              <div className={classNames(globalStyles.secondaryColor, styles.multiline)}>
-                <Parameters parameters={decodedEvmScript.parameters} />
-              </div>
-            </div>
+          </p>
+        </div>
+        {proposal.metadata.targetSignature && (
+          <div className={styles.proposalDetailsItem}>
+            <p className={styles.label}>Target Contract Signature</p>
+            <p>{proposal.metadata.targetSignature}</p>
           </div>
-        }
-        noMobileBorders
-      />
+        )}
+        {decodedEvmScript.value.gt(0) && (
+          <div className={styles.proposalDetailsItem}>
+            <p className={styles.label}>Value (Wei)</p>
+            <p>{decodedEvmScript.value.toString()}</p>
+          </div>
+        )}
+        <div className={styles.proposalDetailsItem}>
+          <p className={styles.label}>Parameters</p>
+          <Parameters parameters={decodedEvmScript.parameters} />
+        </div>
+      </div>
     </div>
   );
 };

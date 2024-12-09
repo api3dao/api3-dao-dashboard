@@ -1,32 +1,27 @@
 import classNames from 'classnames';
 import { ProposalStatus } from '../../../logic/proposals/selectors';
-import { images } from '../../../utils';
-import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './vote-slider.module.scss';
 import { VOTER_STATES } from '../../../chain-data';
 import VoteStatus from '../vote-status';
+import { CheckCircleFillIcon, CheckCircleIcon, ErrorCircleFillIcon, ErrorCircleIcon } from '../../../components/icons';
 
 interface IconProp {
-  large?: boolean;
   fill?: boolean;
 }
 
-export const NegativeVoteIcon = ({ large, fill }: IconProp) => (
-  <img
-    className={classNames(styles.voteIcon, { [styles.large]: large })}
-    src={fill ? images.errorCircleFill : images.errorCircle}
-    alt="rejected icon"
-  />
-);
+export const NegativeVoteIcon = ({ fill }: IconProp) =>
+  fill ? (
+    <ErrorCircleFillIcon className={classNames(styles.voteIcon, styles.negative)} />
+  ) : (
+    <ErrorCircleIcon className={styles.voteIcon} />
+  );
 
-// TODO: Update the icon after the "check circle fill" is added as a react component
-export const PositiveVoteIcon = ({ large, fill }: IconProp) => (
-  <img
-    className={classNames(styles.voteIcon, { [styles.large]: large })}
-    src={fill ? images.checkCircleFill : images.checkCircle}
-    alt="passed icon"
-  />
-);
+export const PositiveVoteIcon = ({ fill }: IconProp) =>
+  fill ? (
+    <CheckCircleFillIcon className={classNames(styles.voteIcon, styles.positive)} />
+  ) : (
+    <CheckCircleIcon className={styles.voteIcon} />
+  );
 
 const formatPercentage = (percentage: number) => `${percentage.toFixed(2)}%`;
 
@@ -60,13 +55,19 @@ const VoteSlider = (props: Props) => {
   return (
     <>
       {isLarge && (
-        <div className={styles.barNames}>
-          <p>For</p>
-          <p>Against</p>
+        <div className={classNames(styles.barNames, { [styles.large]: isLarge })}>
+          <div>
+            <PositiveVoteIcon fill={proposalApproved} />
+            For
+          </div>
+          <div>
+            Against
+            <NegativeVoteIcon fill={proposalRejected} />
+          </div>
         </div>
       )}
-      <div className={styles.voteSlider}>
-        <PositiveVoteIcon large={isLarge} fill={proposalApproved} />
+      <div className={classNames(styles.voteSlider, { [styles.large]: isLarge })}>
+        {!isLarge && <PositiveVoteIcon fill={proposalApproved} />}
         <div className={styles.barWrapper}>
           <div className={styles.bar}>
             <div className={styles.acceptanceQuorum} style={{ left: `${minAcceptanceQuorum}%` }}></div>
@@ -79,12 +80,7 @@ const VoteSlider = (props: Props) => {
               style={{ width: formatPercentage(againstPercentage) }}
             ></div>
           </div>
-          <div
-            className={classNames(styles.voteInfo, {
-              [globalStyles.textXSmall]: !isLarge,
-              [globalStyles.textNormal]: isLarge,
-            })}
-          >
+          <div className={styles.voteInfo}>
             <span className={classNames({ [styles.lost]: proposalRejected })}>{formatPercentage(forPercentage)}</span>
             {!isLarge && <VoteStatus voterState={voterState} wasDelegated={wasDelegated} />}
             <span className={classNames({ [styles.lost]: proposalApproved })}>
@@ -92,7 +88,7 @@ const VoteSlider = (props: Props) => {
             </span>
           </div>
         </div>
-        <NegativeVoteIcon large={isLarge} fill={proposalRejected} />
+        {!isLarge && <NegativeVoteIcon fill={proposalRejected} />}
       </div>
     </>
   );

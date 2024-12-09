@@ -275,7 +275,7 @@
   font-family: Poppins;
   font-size: 16px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 130%; /* 20.8px */
   letter-spacing: 0.16px;
 }
@@ -318,6 +318,15 @@
   font-style: normal;
   font-weight: 700;
   line-height: 170%; /* 17px */
+}
+
+@mixin font-subtitle-2 {
+  font-family: Karla;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%; /* 41.6px */
+  letter-spacing: -0.64px;
 }
 
 @mixin font-subtitle-3 {
@@ -469,6 +478,15 @@
   font-size: 12px;
   font-style: normal;
   font-weight: 700;
+  line-height: 150%; /* 18px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-12 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
   line-height: 150%; /* 18px */
   text-transform: uppercase;
 }

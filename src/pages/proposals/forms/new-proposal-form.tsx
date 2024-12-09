@@ -12,11 +12,12 @@ import {
   METADATA_SCHEME_VERSION,
 } from '../../../logic/proposals/encoding';
 import { Api3Agent } from '../../../contracts';
-import { filterAlphanumerical } from '../../../utils';
+import { filterAlphanumerical, images } from '../../../utils';
 import styles from './new-proposal-form.module.scss';
 import classNames from 'classnames';
 import { providers } from 'ethers';
 import { InfoCircleIcon } from '../../../components/icons';
+import ExternalLink from '../../../components/external-link';
 
 interface ProposalFormItemProps {
   children: ReactNode;
@@ -99,13 +100,17 @@ const NewProposalForm = (props: Props) => {
 
   return (
     <>
-      <ModalHeader
-        size="large"
-        tooltipText="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc nec ultricies ultricies, nunc eros ultricies nunc, nec ultricies nunc eros nec ultricies."
-      >
-        New Proposal
-      </ModalHeader>
-
+      <ModalHeader size="large">New Proposal</ModalHeader>
+      <div className={styles.helpLinkWrapper}>
+        <ExternalLink
+          type="link-blue"
+          href="https://dao-docs.api3.org/members/proposals.html"
+          className={styles.helpLink}
+        >
+          Help
+        </ExternalLink>
+        <img src={images.externalLink} alt="" />
+      </div>
       <div className={styles.newProposalModalContent}>
         <ProposalFormItem
           name="Proposal type"
@@ -209,7 +214,7 @@ const NewProposalForm = (props: Props) => {
         </ProposalFormItem>
       </div>
 
-      <ModalFooter size="large">
+      <ModalFooter>
         <div className={styles.newProposalModalFooter}>
           <Button
             type="primary"

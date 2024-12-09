@@ -11,11 +11,11 @@ type Props = {
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
 };
 
-const Textarea = (props: Props) => {
+const Textarea = ({ helperText, error, ...textAreaProps }: Props) => {
   return (
-    <InputWrapper {...props}>
+    <InputWrapper helperText={helperText} error={error} {...textAreaProps}>
       <div className={styles.input}>
-        <textarea className={styles.input} {...props} />
+        <textarea className={styles.input} {...textAreaProps} />
       </div>
     </InputWrapper>
   );
