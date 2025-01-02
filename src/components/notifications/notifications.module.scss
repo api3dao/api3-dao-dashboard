@@ -31,12 +31,12 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
-}
 
-.transactionButton {
-  display: flex;
-  gap: 4px;
-  padding: 0 !important;
+  .transactionButton {
+    display: flex;
+    gap: 4px;
+    padding: 0 !important;
+  }
 }
 
 .icon {

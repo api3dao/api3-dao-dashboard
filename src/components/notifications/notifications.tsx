@@ -80,6 +80,7 @@ const BASE_OPTIONS: ToastOptions = {
   closeButton: (props) => (
     <button className={styles.closeButton} onClick={props.closeToast}>
       <CrossIcon />
+      <span className="sr-only">Close</span>
     </button>
   ),
 };
