@@ -1,0 +1,63 @@
+@import '../../../styles/fonts.module.scss';
+
+@mixin text-gray {
+  color: $color-gray-300;
+  height: 20px;
+  border: none;
+
+  &.xs {
+    padding: 0 16px;
+    border-radius: 24px;
+    height: 32px;
+    @include font-body-14;
+  }
+
+  &.sm {
+    padding: 0 20px;
+    border-radius: 24px;
+    height: 40px;
+    @include font-button-3;
+  }
+
+  &.md {
+    padding: 0 24px;
+    border-radius: 28px;
+    height: 48px;
+    @include font-button-2;
+  }
+
+  &.lg {
+    padding: 0 32px;
+    border-radius: 32px;
+    height: 56px;
+    @include font-button-1;
+  }
+
+  &:hover {
+    color: $color-base-light;
+  }
+
+  &:active {
+    color: $color-gray-25;
+  }
+
+  &:disabled {
+    color: $color-gray-600;
+  }
+
+  &.dark {
+    color: $color-gray-600;
+
+    &:hover {
+      color: $color-gray-700;
+    }
+
+    &:active {
+      color: $color-gray-800;
+    }
+
+    &:disabled {
+      color: $color-gray-400;
+    }
+  }
+}
