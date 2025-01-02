@@ -15,7 +15,6 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
-import StorageFullNotification from './components/notifications/storage-full-notification';
 import { registerWeb3Modal, wagmiConfig } from './wallet-connect';
 import './styles/variables.module.scss';
 import { notifications } from './components/notifications';
@@ -113,17 +112,10 @@ window.localStorage.setItem = (key, value) => {
   try {
     setStorageItem(key, value);
   } catch (e) {
-    notifications.warning(
-      { message: <StorageFullNotification /> },
-      {
-        toastId: 'storage-warning',
-        bodyClassName: 'cursor-auto',
-        closeButton: false,
-        closeOnClick: false,
-        autoClose: false,
-        draggable: false,
-      }
-    );
+    notifications.warning({
+      message: 'We have detected that your local storage is full. Would you like to clear it and refresh the page?',
+      isClearStorage: true,
+    });
 
     throw e;
   }
