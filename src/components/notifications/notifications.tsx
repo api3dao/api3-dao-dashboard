@@ -17,7 +17,7 @@ import { ClearStorageButton } from './clear-storage-button';
 import 'react-toastify/dist/ReactToastify.css';
 import './react-toastify-overrides.scss';
 
-const THROTTLE_MS = 500;
+const THROTTLE_MS = 0;
 
 type ToastProps =
   | {

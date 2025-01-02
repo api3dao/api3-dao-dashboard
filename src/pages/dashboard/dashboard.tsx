@@ -3,7 +3,14 @@ import { useState } from 'react';
 import { useChainData } from '../../chain-data';
 import { useApi3Pool } from '../../contracts';
 import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
-import { formatAndRoundApi3, handleTransactionError, images, UNKNOWN_NUMBER } from '../../utils';
+import {
+  formatAndRoundApi3,
+  handleTransactionError,
+  images,
+  messages,
+  transactionMessages,
+  UNKNOWN_NUMBER,
+} from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
 import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout';
@@ -18,6 +25,7 @@ import styles from './dashboard.module.scss';
 import ConfirmUnstakeForm from './forms/confirm-unstake-form';
 import classNames from 'classnames';
 import ConnectButton from '../../components/connect-button';
+import { notifications } from '../../components/notifications';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
@@ -42,9 +50,84 @@ const Dashboard = () => {
   const canWithdraw = tokenBalances && tokenBalances.withdrawable.gt(0);
   const canInitiateUnstake = data && !pendingUnstake && data.userStaked.gt(0);
 
+  const showErrorToasts = () => {
+    notifications.error({ message: messages.FAILED_TO_LOAD_CHAIN_DATA, errorOrMessage: '' });
+    notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: '' });
+    notifications.error({ message: messages.FAILED_TO_LOAD_DELEGATE, errorOrMessage: '' });
+    notifications.error({ message: messages.FAILED_TO_LOAD_VESTING_DATA, errorOrMessage: '' });
+    notifications.error({ message: messages.FAILED_TO_LOAD_TREASURY_AND_DELEGATION, errorOrMessage: '' });
+    notifications.error({ message: messages.FAILED_TO_LOAD_PROPOSALS, errorOrMessage: '' });
+    notifications.error({ message: messages.FAILED_TO_LOAD_GENESIS_EPOCH, errorOrMessage: '' });
+    notifications.error({ message: messages.TX_GENERIC_REJECTED });
+    notifications.error({ message: messages.TX_DEPOSIT_REJECTED });
+    notifications.error({ message: messages.TX_APPROVAL_REJECTED });
+  };
+
+  const showTxErrorToasts = () => {
+    const url = 'https://ropsten.etherscan.io/tx/0xe4394ea70b32486f59f92c5194c9083bd36c99f2f0c32cfc9bacce3486055d24';
+    Object.values(transactionMessages).forEach((txMessage) => {
+      notifications.error({ url, message: txMessage.error, errorOrMessage: '' });
+    });
+  };
+
+  const showTxPendingToasts = () => {
+    const url = 'https://ropsten.etherscan.io/tx/0xe4394ea70b32486f59f92c5194c9083bd36c99f2f0c32cfc9bacce3486055d24';
+    Object.values(transactionMessages).forEach((txMessage) => {
+      notifications.info({ url, message: txMessage.start }, { autoClose: false, closeOnClick: false });
+    });
+  };
+
+  const showTxSuccessToasts = () => {
+    const url = 'https://ropsten.etherscan.io/tx/0xe4394ea70b32486f59f92c5194c9083bd36c99f2f0c32cfc9bacce3486055d24';
+    Object.values(transactionMessages).forEach((txMessage) => {
+      notifications.success({ url, message: txMessage.success });
+    });
+  };
+
   return (
     <Layout title="Staking">
       {pendingUnstake?.canUnstake && <UnstakeBanner canUnstakeAndWithdraw={pendingUnstake.canUnstakeAndWithdraw} />}
+      {/*********************** TESTING TOASTS *********************************/}
+      <div style={{ marginTop: '32px', display: 'flex', gap: '16px' }}>
+        <h1>Toast tester:</h1>
+        <Button
+          type="secondary"
+          size="sm"
+          onClick={() => notifications.success({ message: 'Success! Transaction cancelled' })}
+        >
+          Success
+        </Button>
+        <Button type="secondary" size="sm" onClick={showErrorToasts}>
+          Error
+        </Button>
+        <Button
+          type="secondary"
+          size="sm"
+          onClick={() =>
+            notifications.warning({
+              message:
+                'We have detected that your local storage is full. Would you like to clear it and refresh the page?',
+              isClearStorage: true,
+            })
+          }
+        >
+          Warning
+        </Button>
+        <Button type="secondary" size="sm" onClick={() => notifications.info({ message: 'Info toast message' })}>
+          Info
+        </Button>
+        <Button type="secondary" size="sm" onClick={showTxErrorToasts}>
+          Transaction error
+        </Button>
+        <Button type="secondary" size="sm" onClick={showTxSuccessToasts}>
+          Transaction success
+        </Button>
+        <Button type="secondary" size="sm" onClick={showTxPendingToasts}>
+          Transaction pending
+        </Button>
+      </div>
+      {/*********************** TESTING TOASTS *********************************/}
+
       {!provider && (
         <>
           {/* Connect Wallet */}
