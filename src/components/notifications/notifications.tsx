@@ -4,6 +4,7 @@ import { toast, Slide, ToastOptions } from 'react-toastify';
 import * as Sentry from '@sentry/browser';
 import Button from '../button';
 import styles from './notifications.module.scss';
+import { ReactNode } from 'react';
 import {
   CheckCircleFillIcon,
   CrossIcon,
@@ -12,7 +13,6 @@ import {
   InfoCircleFillIcon,
   WarningCircleFillIcon,
 } from '../icons';
-import { ClearStorageButton } from './clear-storage-button';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './react-toastify-overrides.scss';
@@ -21,12 +21,12 @@ const THROTTLE_MS = 0;
 
 type ToastProps =
   | {
-      isClearStorage?: never;
+      customAction?: never;
       message: string;
       url?: string;
     }
   | {
-      isClearStorage: true;
+      customAction: ReactNode;
       message: string;
       url?: never;
     };
@@ -48,7 +48,7 @@ const GenericIcon = (props: { type: Partial<ToastOptions['type']> }) => {
 };
 
 const CustomToast = (props: ToastProps & ToastOptions) => {
-  const { isClearStorage, message, type, url } = props;
+  const { customAction, message, type, url } = props;
 
   return (
     <div className={styles.notification}>
@@ -66,7 +66,7 @@ const CustomToast = (props: ToastProps & ToastOptions) => {
           </div>
         )}
 
-        {isClearStorage && <ClearStorageButton />}
+        {customAction}
       </div>
 
       <div className={styles.progressBarBackground} />
@@ -83,13 +83,6 @@ const BASE_OPTIONS: ToastOptions = {
       <span className="sr-only">Close</span>
     </button>
   ),
-};
-
-const CLEAR_STORAGE_OPTIONS: ToastOptions = {
-  toastId: 'storage-warning',
-  bodyClassName: 'cursor-auto',
-  closeOnClick: false,
-  draggable: false,
 };
 
 // NOTE: toasts are throttled to prevent duplicate notifications being displayed.
@@ -117,7 +110,6 @@ export const warning = throttle(
   (props: ToastProps, overrides?: ToastOptions) => {
     return toast.warning(<CustomToast {...props} type="warning" />, {
       ...BASE_OPTIONS,
-      ...(props.isClearStorage && CLEAR_STORAGE_OPTIONS),
       ...overrides,
     });
   },

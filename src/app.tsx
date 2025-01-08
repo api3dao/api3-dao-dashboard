@@ -18,6 +18,7 @@ import Vesting from './pages/vesting';
 import { registerWeb3Modal, wagmiConfig } from './wallet-connect';
 import './styles/variables.module.scss';
 import { notifications } from './components/notifications';
+import { ClearStorageButton } from './components/notifications/clear-storage-button';
 
 const ErrorBoundary: FallbackRender = (props) => {
   const { error } = props;
@@ -112,10 +113,20 @@ window.localStorage.setItem = (key, value) => {
   try {
     setStorageItem(key, value);
   } catch (e) {
-    notifications.warning({
-      message: 'We have detected that your local storage is full. Would you like to clear it and refresh the page?',
-      isClearStorage: true,
-    });
+    notifications.warning(
+      {
+        message: 'We have detected that your local storage is full. Would you like to clear it and refresh the page?',
+        customAction: <ClearStorageButton />,
+      },
+      {
+        toastId: 'storage-warning',
+        bodyClassName: 'cursor-auto',
+        closeOnClick: false,
+        draggable: false,
+        closeButton: false,
+        autoClose: false,
+      }
+    );
 
     throw e;
   }

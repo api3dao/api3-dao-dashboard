@@ -26,6 +26,7 @@ import ConfirmUnstakeForm from './forms/confirm-unstake-form';
 import classNames from 'classnames';
 import ConnectButton from '../../components/connect-button';
 import { notifications } from '../../components/notifications';
+import { ClearStorageButton } from '../../components/notifications/clear-storage-button';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
@@ -104,11 +105,21 @@ const Dashboard = () => {
           type="secondary"
           size="sm"
           onClick={() =>
-            notifications.warning({
-              message:
-                'We have detected that your local storage is full. Would you like to clear it and refresh the page?',
-              isClearStorage: true,
-            })
+            notifications.warning(
+              {
+                message:
+                  'We have detected that your local storage is full. Would you like to clear it and refresh the page?',
+                customAction: <ClearStorageButton />,
+              },
+              {
+                toastId: 'storage-warning',
+                bodyClassName: 'cursor-auto',
+                closeOnClick: false,
+                draggable: false,
+                closeButton: false,
+                autoClose: false,
+              }
+            )
           }
         >
           Warning
