@@ -105,18 +105,17 @@ const Dashboard = () => {
           type="secondary"
           size="sm"
           onClick={() =>
-            notifications.warning(
+            notifications.error(
               {
                 message:
                   'We have detected that your local storage is full. Would you like to clear it and refresh the page?',
                 customAction: <ClearStorageButton />,
               },
               {
-                toastId: 'storage-warning',
+                toastId: 'storage-error',
                 bodyClassName: 'cursor-auto',
                 closeOnClick: false,
                 draggable: false,
-                closeButton: false,
                 autoClose: false,
               }
             )

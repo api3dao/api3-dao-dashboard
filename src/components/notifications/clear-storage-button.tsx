@@ -28,13 +28,7 @@ export const ClearStorageButton = () => {
 
   return (
     <div className={styles.transactionButtonContainer}>
-      <Button
-        type="text-gray"
-        size="xs"
-        disabled={isClearing}
-        className={styles.transactionButton}
-        onClick={clearStorage}
-      >
+      <Button type="primary" size="xs" disabled={isClearing} onClick={clearStorage}>
         <span>{isClearing ? 'Clearing...' : 'Clear Storage'}</span>
       </Button>
     </div>
