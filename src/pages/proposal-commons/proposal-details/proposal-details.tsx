@@ -25,6 +25,7 @@ import NotFoundPage from '../../not-found';
 import { handleTransactionError, images, messages, useScrollToTop } from '../../../utils';
 import ExternalLink from '../../../components/external-link';
 import { ErrorCircleFillIcon } from '../../../components/icons';
+import { DisconnectedProposalPage } from './disconnected-proposal-page';
 
 interface ProposalDescriptionProps {
   description: string;
@@ -97,9 +98,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   const { transactions, setChainData } = useChainData();
   const voting = useApi3Voting();
 
-  // TODO: implement proper "not signed in" and "does not exist" pages
-  if (!voting || proposal === 'user not signed in')
-    return <>Please connect your wallet to see the proposal details...</>;
+  if (!voting || proposal === 'user not signed in') return <DisconnectedProposalPage />;
   if (proposal === 'does not exist') return <>Proposal with such id hasn't been created yet...</>;
 
   const { decodedEvmScript } = proposal;

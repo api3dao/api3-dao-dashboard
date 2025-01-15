@@ -32,6 +32,7 @@ export const images = {
   triangles: '/triangles.svg',
   votedAgainst: '/voted-against.svg',
   votedFor: '/voted-for.svg',
+  walletDisconnected: '/wallet-disconnected.svg',
   warning: '/warning.svg',
 };
 
