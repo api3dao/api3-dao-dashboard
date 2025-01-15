@@ -4,7 +4,8 @@
 .delegateFormModalContent {
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 24px;
+  margin-top: -24px;
   text-align: center;
   width: 100%;
 }
@@ -24,20 +25,30 @@
 }
 
 .subtext {
+  display: flex;
+  margin-top: 16px;
+  gap: 8px;
   @include font-body-15;
   color: $color-dark-blue-400;
-  text-align: center;
   padding: 0 24px;
   text-wrap: pretty;
 
+  svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: $color-action-warning-600;
+  }
+
   @media (min-width: $sm) {
-    @include font-body-9;
+    @include font-body-12;
     padding: 0;
   }
 }
 
 .delegateButton {
   width: 100%;
+  margin-top: -24px;
 
   @media (min-width: $sm) {
     width: auto;
