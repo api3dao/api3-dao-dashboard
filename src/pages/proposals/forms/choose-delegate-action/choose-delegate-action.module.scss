@@ -26,7 +26,6 @@
 
 .confirmationText {
   margin-top: 24px;
-  text-align: center;
   text-wrap: pretty;
   display: flex;
   align-items: center;
@@ -34,6 +33,7 @@
   @include font-body-15;
 
   svg {
+    flex-shrink: 0;
     width: 20px;
     height: 20px;
     margin-right: 8px;
