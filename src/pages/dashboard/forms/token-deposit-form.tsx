@@ -117,7 +117,7 @@ const TokenDepositForm = (props: Props) => {
             </Button>
           ) : (
             <Button
-              type="text-blue"
+              type="secondary-neutral"
               size="sm"
               sm={{ size: 'lg' }}
               onClick={handleDeposit('deposit-only')}

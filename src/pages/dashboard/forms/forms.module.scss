@@ -85,15 +85,24 @@
 }
 
 .tokenAmountFormHelperText {
+  display: flex;
+
+  svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    color: $color-action-warning-600;
+  }
+
   @include font-body-15;
   margin-top: 24px;
   color: $color-dark-blue-400;
-  text-align: center;
   padding: 0 24px;
   text-wrap: pretty;
 
   @media (min-width: $sm) {
-    @include font-body-9;
+    @include font-body-12;
     padding: 0;
   }
 }
