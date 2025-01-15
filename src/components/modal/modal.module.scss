@@ -44,7 +44,7 @@
     width: auto;
 
     &Normal {
-      padding: 120px 144px;
+      padding: 96px 136px;
     }
 
     &Large {
@@ -91,11 +91,11 @@
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
-  color: $color-dark-blue-400;
   margin-bottom: 48px;
 
   h5 {
     text-wrap: pretty;
+    color: $color-dark-blue-400;
   }
 
   &Normal {

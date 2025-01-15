@@ -1,3 +1,4 @@
+import { ExclamationTriangleFillIcon } from '../../../components/icons';
 import styles from './forms.module.scss';
 
 const messages = {
@@ -13,7 +14,12 @@ interface UnstakeHelperTextProps {
 const UnstakeHelperText = (props: UnstakeHelperTextProps) => {
   const { type } = props;
 
-  return <p className={styles.tokenAmountFormHelperText}>{messages[type]}</p>;
+  return (
+    <div className={styles.tokenAmountFormHelperText}>
+      <ExclamationTriangleFillIcon />
+      {messages[type]}
+    </div>
+  );
 };
 
 export default UnstakeHelperText;

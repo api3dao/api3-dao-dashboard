@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from '../../../../components/button';
 import { ModalFooter, ModalHeader } from '../../../../components/modal';
 import styles from './choose-delegate-action.module.scss';
+import { ExclamationTriangleFillIcon } from '../../../../components/icons';
 
 interface Props {
   onUpdateDelegation: () => void;
@@ -22,7 +23,7 @@ const ChooseDelegateAction = (props: Props) => {
 
         <ModalFooter>
           <div className={styles.actions}>
-            <Button type="secondary-neutral" size="sm" sm={{ size: 'lg' }} onClick={() => setConfirmationStep(false)}>
+            <Button type="text-blue" size="sm" sm={{ size: 'lg' }} onClick={() => setConfirmationStep(false)}>
               Cancel
             </Button>
 
@@ -31,7 +32,10 @@ const ChooseDelegateAction = (props: Props) => {
             </Button>
           </div>
 
-          <p className={styles.confirmationText}>Once altered, your delegation cannot be changed again for 7 days.</p>
+          <div className={styles.confirmationText}>
+            <ExclamationTriangleFillIcon />
+            Once altered, your delegation cannot be changed again for 7 days.
+          </div>
         </ModalFooter>
       </>
     );
