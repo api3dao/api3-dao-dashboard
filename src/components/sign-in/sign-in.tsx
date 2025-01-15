@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import classNames from 'classnames';
-import { Address, useDisconnect, useEnsName } from 'wagmi';
+import { Address, useDisconnect, useEnsName, useSwitchNetwork } from 'wagmi';
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
 import ConnectButton from '../connect-button';
@@ -10,6 +10,8 @@ import styles from './sign-in.module.scss';
 import { images } from '../../utils';
 import { SUPPORTED_NETWORKS, useProviderSubscriptions } from '../../contracts';
 import DisconnectIcon from './disconnect-icon';
+import Button from '../button';
+import { ExclamationTriangleFillIcon } from '../icons';
 
 type Props = {
   dark?: boolean;
@@ -73,7 +75,13 @@ const ConnectedStatus = ({ dark, position }: Props) => {
 
 const SignIn = ({ dark, position }: Props) => {
   const { provider, networkName } = useChainData();
+  const { disconnect } = useDisconnect();
+  const { switchNetwork } = useSwitchNetwork();
   useProviderSubscriptions();
+
+  const switchToMainnet = () => {
+    switchNetwork?.(1);
+  };
 
   const isSignedIn = !!provider;
   const supportedNetworks = SUPPORTED_NETWORKS.filter((name) => {
@@ -98,18 +106,15 @@ const SignIn = ({ dark, position }: Props) => {
       {provider && <ConnectedStatus dark={dark} position={position} />}
       <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
         <div className={styles.unsupportedModalContainer}>
-          <img
-            className={styles.unsupportedNetworkIcon}
-            src={images.exclamationTriangleFill}
-            alt="network not supported"
-          />
+          <ExclamationTriangleFillIcon className={styles.unsupportedNetworkIcon} />
 
           <ModalHeader noMargin>Unsupported chain!</ModalHeader>
 
           <div className={styles.unsupportedModalContent}>
+            <p>Use your wallet to connect to a supported chain</p>
             <div>
               <p>
-                Supported networks:{' '}
+                Supported chains:{' '}
                 {supportedNetworks
                   .map((network) => <span>{network}</span>)
                   .map((Component, i) => (
@@ -120,11 +125,17 @@ const SignIn = ({ dark, position }: Props) => {
                   ))}
               </p>
               <p>
-                Current network: <b>{networkName}</b>
+                Current chain: <b>{networkName}</b>
               </p>
+              <div className={styles.unsupportedModalButtons}>
+                <Button onClick={disconnect} type="text-blue" size="sm" sm={{ size: 'lg' }}>
+                  Disconnect Wallet
+                </Button>
+                <Button type="primary" size="sm" sm={{ size: 'lg' }} onClick={switchToMainnet}>
+                  Switch to Mainnet
+                </Button>
+              </div>
             </div>
-
-            <p>Please use your wallet and connect to one of the supported networks.</p>
           </div>
         </div>
       </GenericModal>

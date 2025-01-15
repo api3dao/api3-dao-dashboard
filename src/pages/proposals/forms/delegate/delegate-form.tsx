@@ -11,6 +11,7 @@ import styles from './delegate.module.scss';
 import { handleTransactionError } from '../../../../utils';
 import { convertToAddressOrThrow } from '../../../../logic/proposals/encoding/ens-name';
 import { go } from '@api3/promise-utils';
+import { ExclamationTriangleFillIcon } from '../../../../components/icons';
 
 interface Props {
   onClose: () => void;
@@ -79,17 +80,18 @@ const DelegateVotesForm = (props: Props) => {
             autoFocus
           />
         </div>
-
-        <p className={styles.subtext}>
-          You will not be able to vote on proposals while your votes are delegated. Your delegate can vote for you.
-        </p>
       </div>
 
       <ModalFooter>
-        <Button className={styles.delegateButton} type="primary" size="sm" sm={{ size: 'md' }} onClick={onDelegate}>
+        <Button className={styles.delegateButton} type="primary" size="sm" sm={{ size: 'lg' }} onClick={onDelegate}>
           Delegate
         </Button>
 
+        <div className={styles.subtext}>
+          <ExclamationTriangleFillIcon />
+          Once altered, your delegation cannot be changed again for 7 days. You will not be able to vote on proposals
+          while your votes are delegated. Your delegate can vote for you.
+        </div>
         {error && <p className={styles.error}>{error}</p>}
       </ModalFooter>
     </>
