@@ -48,7 +48,7 @@ const GenericIcon = (props: { type: Partial<ToastOptions['type']> }) => {
 };
 
 const CustomToast = (props: ToastProps & ToastOptions) => {
-  const { customAction, message, type, url } = props;
+  const { customAction, message, type, url, autoClose } = props;
 
   return (
     <div className={styles.notification}>
@@ -69,7 +69,11 @@ const CustomToast = (props: ToastProps & ToastOptions) => {
         {customAction}
       </div>
 
-      <div className={styles.progressBarBackground} />
+      <div
+        className={classNames(styles.progressBarBackground, {
+          [styles[`${type}`]]: autoClose === false,
+        })}
+      />
     </div>
   );
 };
@@ -89,7 +93,7 @@ const BASE_OPTIONS: ToastOptions = {
 // This can occur due to callbacks being fired multiple times in quick succession
 export const info = throttle(
   (props: ToastProps, overrides?: ToastOptions) => {
-    return toast.info(<CustomToast {...props} type="info" />, { ...BASE_OPTIONS, ...overrides });
+    return toast.info(<CustomToast {...props} {...overrides} type="info" />, { ...BASE_OPTIONS, ...overrides });
   },
   THROTTLE_MS,
   { trailing: false }
@@ -97,7 +101,7 @@ export const info = throttle(
 
 export const success = throttle(
   (props: ToastProps, overrides?: ToastOptions) => {
-    return toast.success(<CustomToast {...props} type="success" />, {
+    return toast.success(<CustomToast {...props} {...overrides} type="success" />, {
       ...BASE_OPTIONS,
       ...overrides,
     });
@@ -108,7 +112,7 @@ export const success = throttle(
 
 export const warning = throttle(
   (props: ToastProps, overrides?: ToastOptions) => {
-    return toast.warning(<CustomToast {...props} type="warning" />, {
+    return toast.warning(<CustomToast {...props} {...overrides} type="warning" />, {
       ...BASE_OPTIONS,
       ...overrides,
     });
@@ -131,7 +135,7 @@ export const error = throttle(
       console.error('[DEV: Caught error]:', errorOrMessage);
     }
 
-    return toast.error(<CustomToast {...other} type="error" />, { ...BASE_OPTIONS, ...overrides });
+    return toast.error(<CustomToast {...other} {...overrides} type="error" />, { ...BASE_OPTIONS, ...overrides });
   },
   THROTTLE_MS,
   { trailing: false }

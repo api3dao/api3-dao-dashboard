@@ -92,4 +92,20 @@
   left: 0;
   right: 0;
   background-color: $color-dark-blue-100;
+
+  &.success {
+    background-color: $color-action-success-500;
+  }
+
+  &.error {
+    background-color: $color-action-error-500;
+  }
+
+  &.warning {
+    background-color: $color-action-warning-500;
+  }
+
+  &.info {
+    background-color: $color-action-info-500;
+  }
 }
