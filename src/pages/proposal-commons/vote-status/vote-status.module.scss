@@ -15,19 +15,36 @@
   }
 }
 
+.votedByDelegate {
+  @include font-body-17;
+}
+
 .wrapperLarge {
   display: flex;
   justify-content: center;
-  align-items: center;
   margin: 14px 0 48px 0;
   @include font-body-11;
 
   @media (min-width: $md) {
     @include font-body-5;
   }
+
+  .votedByDelegate {
+    @include font-body-17;
+    text-align: left;
+
+    @media (min-width: $md) {
+      @include font-body-14;
+    }
+  }
 }
 
 .icon {
-  margin-right: $space-sm;
-  height: 25px;
+  margin-right: 6px;
+  height: 26px;
+
+  @media (min-width: $md) {
+    margin-right: 8px;
+    height: 30px;
+  }
 }
