@@ -45,7 +45,7 @@ const AppContent = () => {
     // Sentry.ErrorBoundary requires 'fallback' to be React component so we can't pass a string there
     <Router>
       <Sentry.ErrorBoundary fallback={(props) => <ErrorBoundary {...props} />}>
-        <ToastContainer pauseOnFocusLoss={false} autoClose={5000} closeOnClick />
+        <ToastContainer limit={3} pauseOnFocusLoss={false} autoClose={5000} closeOnClick />
 
         <Switch>
           <Route path="/governance/:typeAndVoteId" exact>
