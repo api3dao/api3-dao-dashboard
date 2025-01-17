@@ -15,7 +15,7 @@ const NotFoundPage = () => {
             <p>Let’s get you back to home.</p>
           </div>
 
-          <Button href="/" type="primary" className={styles.button} size="sm" sm={{ size: 'lg' }}>
+          <Button href="/" type="primary" className={styles.button} size="sm" md={{ size: 'lg' }}>
             Staking
           </Button>
         </div>
