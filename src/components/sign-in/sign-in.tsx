@@ -12,6 +12,7 @@ import { SUPPORTED_NETWORKS, useProviderSubscriptions } from '../../contracts';
 import DisconnectIcon from './disconnect-icon';
 import Button from '../button';
 import { ExclamationTriangleFillIcon } from '../icons';
+import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 
 type Props = {
   dark?: boolean;
@@ -77,6 +78,7 @@ const SignIn = ({ dark, position }: Props) => {
   const { provider, networkName } = useChainData();
   const { disconnect } = useDisconnect();
   const { switchNetwork } = useSwitchNetwork();
+  const { isDesktop } = useWindowDimensions();
   useProviderSubscriptions();
 
   const switchToMainnet = () => {
@@ -96,11 +98,11 @@ const SignIn = ({ dark, position }: Props) => {
       {!provider && (
         <ConnectButton
           type={dark ? 'primary' : 'secondary'}
-          size="sm"
+          size="xxs"
           md={{ size: 'md' }}
           className={styles.connectButton}
         >
-          Connect Wallet
+          <span className={styles.connectButtonLabel}>Connect {isDesktop ? 'Wallet' : ''}</span>
         </ConnectButton>
       )}
       {provider && <ConnectedStatus dark={dark} position={position} />}
