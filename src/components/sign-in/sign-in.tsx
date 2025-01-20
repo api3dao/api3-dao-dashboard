@@ -102,7 +102,7 @@ const SignIn = ({ dark, position }: Props) => {
           md={{ size: 'md' }}
           className={styles.connectButton}
         >
-          <span className={styles.connectButtonLabel}>Connect {isDesktop ? 'Wallet' : ''}</span>
+          <span className={styles.connectButtonLabel}>{isDesktop ? 'Connect Wallet' : 'Connect'}</span>
         </ConnectButton>
       )}
       {provider && <ConnectedStatus dark={dark} position={position} />}
