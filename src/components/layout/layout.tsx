@@ -9,7 +9,6 @@ import { DesktopMenu } from '../menu';
 import ExternalLink from '../external-link';
 import { ALLOW_ANALYTICS, ALLOW_ERROR_REPORTING } from '../../utils/analytics';
 import { links } from '../../utils/links';
-import { link } from 'fs';
 
 type Props = {
   children: ReactNode;
