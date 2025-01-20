@@ -8,6 +8,8 @@ import ErrorReportingNotice from './error-reporting-notice';
 import { DesktopMenu } from '../menu';
 import ExternalLink from '../external-link';
 import { ALLOW_ANALYTICS, ALLOW_ERROR_REPORTING } from '../../utils/analytics';
+import { links } from '../../utils/links';
+import { link } from 'fs';
 
 type Props = {
   children: ReactNode;
@@ -35,15 +37,15 @@ export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
   );
 
   const footerLinks = [
-    { text: 'Api3.org', href: 'https://api3.org/' },
+    { text: 'Api3.org', href: links.API3_ORG },
     { text: 'Error Reporting', onClick: () => setShowNotice(true) },
-    { text: 'Github', href: 'https://github.com/api3dao/api3-dao-dashboard' },
+    { text: 'Github', href: links.GITHUB },
   ];
 
   const footerLinksSecondRow = [
-    { text: 'Privacy Policy', href: 'https://api3.org/privacy-policy/' },
-    { text: 'Privacy and Cookies', href: 'https://api3.org/privacy-and-cookies/' },
-    { text: 'Terms and Conditions', href: 'https://api3.org/terms-and-conditions/' },
+    { text: 'Privacy Policy', href: links.PRIVACY_POLICY },
+    { text: 'Privacy and Cookies', href: links.PRIVACY_AND_COOKIES },
+    { text: 'Terms and Conditions', href: links.TERMS_AND_CONDITIONS },
   ];
 
   const actualYear = new Date().getFullYear();
