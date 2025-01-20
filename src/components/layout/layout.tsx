@@ -35,10 +35,18 @@ export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
   );
 
   const footerLinks = [
-    { text: 'About API3', href: 'https://api3.org/' },
+    { text: 'Api3.org', href: 'https://api3.org/' },
     { text: 'Error Reporting', onClick: () => setShowNotice(true) },
     { text: 'Github', href: 'https://github.com/api3dao/api3-dao-dashboard' },
   ];
+
+  const footerLinksSecondRow = [
+    { text: 'Privacy Policy', href: 'https://api3.org/privacy-policy/' },
+    { text: 'Privacy and Cookies', href: 'https://api3.org/privacy-and-cookies/' },
+    { text: 'Terms and Conditions', href: 'https://api3.org/terms-and-conditions/' },
+  ];
+
+  const actualYear = new Date().getFullYear();
 
   return (
     <>
@@ -56,24 +64,36 @@ export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
           {showNotice ? (
             <ErrorReportingNotice onShowNotice={setShowNotice} />
           ) : (
-            <div className={styles.footerContent}>
-              {footerLinks.map((link) =>
-                link.href ? (
-                  <ExternalLink href={link.href} key={link.text}>
-                    {link.text}
-                  </ExternalLink>
-                ) : (
-                  <Button
-                    key={link.text}
-                    type="menu-link-secondary"
-                    onClick={link.onClick}
-                    size="xs"
-                    md={{ size: 'sm' }}
-                  >
-                    {link.text}
-                  </Button>
-                )
-              )}
+            <div className={styles.footerRows}>
+              <div className={styles.footerFirstRow}>
+                {footerLinks.map((link) =>
+                  link.href ? (
+                    <ExternalLink href={link.href} key={link.text}>
+                      {link.text}
+                    </ExternalLink>
+                  ) : (
+                    <Button
+                      key={link.text}
+                      type="menu-link-secondary"
+                      onClick={link.onClick}
+                      size="xs"
+                      md={{ size: 'sm' }}
+                    >
+                      {link.text}
+                    </Button>
+                  )
+                )}
+              </div>
+              <div className={styles.footerSecondRow}>
+                <div className={styles.copyright}>&copy; {actualYear} API3 Foundation</div>
+                <div className={styles.privacyLinks}>
+                  {footerLinksSecondRow.map((link) => (
+                    <ExternalLink href={link.href} key={link.text}>
+                      {link.text}
+                    </ExternalLink>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </footer>
