@@ -13,7 +13,7 @@ describe('keyboard navigation and accessibility', () => {
 
     closeErrorReportingNotice();
     pressTabAndAssertFocusOutline(() => cy.dataCy('api3-logo'));
-    pressTabAndAssertFocusOutline(() => cy.findAllByText('Connect Wallet').filter(':visible'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('Connect Wallet').parent().filter(':visible'));
 
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Staking').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Governance').filter(':visible').closest('a'));

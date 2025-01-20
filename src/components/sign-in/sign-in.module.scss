@@ -41,18 +41,14 @@
 }
 
 .connectButton {
-  width: calc(100% - 64px);
-  min-width: 165px;
-  max-width: 404px;
-  margin-top: 24px;
+  white-space: nowrap;
 
-  button {
-    width: 100%;
-  }
+  .connectButtonLabel {
+    padding: 0 8px;
 
-  @media (min-width: $md) {
-    margin-top: 0;
-    max-width: 224px;
+    @media (min-width: $md) {
+      padding: 0 24px;
+    }
   }
 }
 
