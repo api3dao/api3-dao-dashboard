@@ -8,6 +8,7 @@ import ErrorReportingNotice from './error-reporting-notice';
 import { DesktopMenu } from '../menu';
 import ExternalLink from '../external-link';
 import { ALLOW_ANALYTICS, ALLOW_ERROR_REPORTING } from '../../utils/analytics';
+import { links } from '../../utils/links';
 
 type Props = {
   children: ReactNode;
@@ -35,10 +36,18 @@ export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
   );
 
   const footerLinks = [
-    { text: 'About API3', href: 'https://api3.org/' },
+    { text: 'Api3.org', href: links.API3_ORG },
     { text: 'Error Reporting', onClick: () => setShowNotice(true) },
-    { text: 'Github', href: 'https://github.com/api3dao/api3-dao-dashboard' },
+    { text: 'Github', href: links.GITHUB },
   ];
+
+  const footerLinksSecondRow = [
+    { text: 'Privacy Policy', href: links.PRIVACY_POLICY },
+    { text: 'Privacy and Cookies', href: links.PRIVACY_AND_COOKIES },
+    { text: 'Terms and Conditions', href: links.TERMS_AND_CONDITIONS },
+  ];
+
+  const actualYear = new Date().getFullYear();
 
   return (
     <>
@@ -56,24 +65,36 @@ export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
           {showNotice ? (
             <ErrorReportingNotice onShowNotice={setShowNotice} />
           ) : (
-            <div className={styles.footerContent}>
-              {footerLinks.map((link) =>
-                link.href ? (
-                  <ExternalLink href={link.href} key={link.text}>
-                    {link.text}
-                  </ExternalLink>
-                ) : (
-                  <Button
-                    key={link.text}
-                    type="menu-link-secondary"
-                    onClick={link.onClick}
-                    size="xs"
-                    md={{ size: 'sm' }}
-                  >
-                    {link.text}
-                  </Button>
-                )
-              )}
+            <div className={styles.footerRows}>
+              <div className={styles.footerFirstRow}>
+                {footerLinks.map((link) =>
+                  link.href ? (
+                    <ExternalLink href={link.href} key={link.text}>
+                      {link.text}
+                    </ExternalLink>
+                  ) : (
+                    <Button
+                      key={link.text}
+                      type="menu-link-secondary"
+                      onClick={link.onClick}
+                      size="xs"
+                      md={{ size: 'sm' }}
+                    >
+                      {link.text}
+                    </Button>
+                  )
+                )}
+              </div>
+              <div className={styles.footerSecondRow}>
+                <div className={styles.copyright}>&copy; {actualYear} API3 Foundation</div>
+                <div className={styles.privacyLinks}>
+                  {footerLinksSecondRow.map((link) => (
+                    <ExternalLink href={link.href} key={link.text}>
+                      {link.text}
+                    </ExternalLink>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </footer>

@@ -24,9 +24,12 @@ describe('keyboard navigation and accessibility', () => {
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Docs').filter(':visible').closest('a'));
 
     pressTabAndAssertFocusOutline(() => cy.findByTestId('connect-wallet-staking-btn'));
-    pressTabAndAssertFocusOutline(() => cy.findByText('About API3'));
+    pressTabAndAssertFocusOutline(() => cy.findByText('Api3.org'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Error Reporting'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Github'));
+    pressTabAndAssertFocusOutline(() => cy.findByText('Privacy Policy'));
+    pressTabAndAssertFocusOutline(() => cy.findByText('Privacy and Cookies'));
+    pressTabAndAssertFocusOutline(() => cy.findByText('Terms and Conditions'));
 
     pressTabAndAssertFocusOutline(() => cy.dataCy('api3-logo')); // Completes the TAB cycle
   });
