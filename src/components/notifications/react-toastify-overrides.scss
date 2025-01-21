@@ -11,81 +11,54 @@
  * components using the notifications.module.scss
  */
 
-/** Used to define container behavior: width, position: fixed etc... **/
+.Toastify__toast,
+.Toastify__toast-body,
 .Toastify__toast-container {
-  width: 340px;
+  border-radius: 24px;
+  padding: 0;
+}
 
-  @media (max-width: $max-sm) {
-    width: 240px;
-  }
+.Toastify__toast {
+  margin-bottom: 1rem;
+}
 
-  @media only screen and (max-width: 480px) {
-    left: auto;
+@media only screen and (min-width: 478px) {
+  .Toastify__toast-container {
+    width: 480px;
   }
 }
 
 /** Used to define the position of the ToastContainer **/
 .Toastify__toast-container--top-right {
-  @media only screen and (max-width: 480px) {
-    top: 1em;
-  }
+  top: 1em;
+  right: 1rem;
 }
 
 /** Classes for the displayed toast **/
 .Toastify__toast {
-  background: linear-gradient(76.31deg, #f3f3f3 36.47%, #c3c4c3 99.02%);
-  box-shadow:
-    0px 9px 28px 8px rgba(0, 0, 0, 0.05),
-    0px 6px 16px rgba(0, 0, 0, 0.08),
+  background-color: $color-dark-blue-700;
+  box-shadow: 0px 9px 28px 8px rgba(0, 0, 0, 0.05), 0px 6px 16px rgba(0, 0, 0, 0.08),
     0px 3px 6px -4px rgba(0, 0, 0, 0.12);
-  border-radius: 0;
-  padding: 0;
-  font-size: $text-small;
-  line-height: $lh-small;
-  color: $black-color;
-}
-
-.Toastify__toast-body {
-  padding: 0;
 }
 
 /** Classes for the progress bar **/
-.Toastify__progress-bar {
-  width: $space-xxs;
-  height: 100%;
-  transform-origin: bottom;
-}
-
-.Toastify__progress-bar--error {
-  background-color: transparent;
-  background: linear-gradient(0deg, #7ce3cb 0%, #7963b2 135%);
+.Toastify__progress-bar,
+.Toastify__progress-bar--bg {
+  height: 6px;
 }
 
 .Toastify__progress-bar--info {
-  background-color: $progressbar-info;
+  background-color: $color-action-info-500;
 }
 
 .Toastify__progress-bar--success {
-  background-color: $progressbar-success;
+  background-color: $color-action-success-500;
 }
 
 .Toastify__progress-bar--warning {
-  background-color: $progressbar-warning;
+  background-color: $color-action-warning-500;
 }
 
 .Toastify__progress-bar--error {
-  background-color: $progressbar-error;
-}
-
-@keyframes Toastify__trackProgress {
-  0% {
-    transform: scaleY(1);
-  }
-  100% {
-    transform: scaleY(0);
-  }
-}
-
-.Toastify__progress-bar--animated {
-  animation: Toastify__trackProgress linear 1 forwards;
+  background-color: $color-action-error-500;
 }

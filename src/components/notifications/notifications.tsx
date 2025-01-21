@@ -1,54 +1,79 @@
-import { ReactNode } from 'react';
 import throttle from 'lodash/throttle';
 import classNames from 'classnames';
 import { toast, Slide, ToastOptions } from 'react-toastify';
-import NotificationLinkButton from './notification-link-button';
-import { images } from '../../utils';
-import 'react-toastify/dist/ReactToastify.css';
-// Use these static classes to style react-toastify defaults
-import './react-toastify-overrides.scss';
-// Use these classes to style content
-import styles from './notifications.module.scss';
 import * as Sentry from '@sentry/browser';
+import Button from '../button';
+import styles from './notifications.module.scss';
+import { ReactNode } from 'react';
+import {
+  CheckCircleFillIcon,
+  CrossIcon,
+  ExclamationTriangleFillIcon,
+  ExternalLinkIcon,
+  InfoCircleFillIcon,
+  WarningCircleFillIcon,
+} from '../icons';
+
+import 'react-toastify/dist/ReactToastify.css';
+import './react-toastify-overrides.scss';
 
 const THROTTLE_MS = 500;
 
-interface CloseButtonProps {
-  closeToast: () => void;
-}
+type ToastProps =
+  | {
+      customAction?: never;
+      message: string;
+      url?: string;
+    }
+  | {
+      customAction: ReactNode;
+      message: string;
+      url?: never;
+    };
 
-export const CloseButton = ({ closeToast }: CloseButtonProps) => (
-  <div className={styles.closeButton} onClick={() => closeToast()}>
-    <img src={images.notificationClose} alt="notification close button" />
-  </div>
-);
-
-interface ToastProps {
-  message: ReactNode;
-  url?: string;
-}
-
-interface ErrorToastProps extends ToastProps {
-  errorOrMessage: Error | string;
+type ErrorToastProps = {
+  errorOrMessage?: Error | string;
   sendToSentry?: boolean;
-}
+} & ToastProps;
 
-interface ToastPropsWithType extends ToastProps {
-  type: 'info' | 'success' | 'warning' | 'error';
-}
+const GenericIcon = (props: { type: Partial<ToastOptions['type']> }) => {
+  const icons = {
+    info: <InfoCircleFillIcon className={classNames(styles.icon, styles.info)} />,
+    success: <CheckCircleFillIcon className={classNames(styles.icon, styles.success)} />,
+    error: <ExclamationTriangleFillIcon className={classNames(styles.icon, styles.error)} />,
+    warning: <WarningCircleFillIcon className={classNames(styles.icon, styles.warning)} />,
+  };
 
-const CustomToast = ({ message, type, url }: ToastPropsWithType) => {
+  return icons[props.type as keyof typeof icons];
+};
+
+const CustomToast = (props: ToastProps & ToastOptions) => {
+  const { customAction, message, type, url, autoClose } = props;
+
   return (
-    <div className={classNames(styles.notificationBody, { [styles.url]: url })}>
-      <img src={`/${type}.svg`} alt={`${type} icon`} />
+    <div className={styles.notification}>
+      <GenericIcon type={type} />
+
       <div className={styles.notificationContent}>
-        <div>{message}</div>
+        <span className={styles.notificationMessage}>{message}</span>
+
         {url && (
-          <div className={styles.notificationUrl}>
-            <NotificationLinkButton href={url}>View transaction</NotificationLinkButton>
+          <div className={styles.transactionButtonContainer}>
+            <Button type="text-gray" size="xs" className={styles.transactionButton} href={url}>
+              <span>View transaction</span>
+              <ExternalLinkIcon />
+            </Button>
           </div>
         )}
+
+        {customAction}
       </div>
+
+      <div
+        className={classNames(styles.progressBarBackground, {
+          [styles[`${type}`]]: autoClose === false,
+        })}
+      />
     </div>
   );
 };
@@ -56,15 +81,19 @@ const CustomToast = ({ message, type, url }: ToastPropsWithType) => {
 // https://fkhadra.github.io/react-toastify/api/toast
 const BASE_OPTIONS: ToastOptions = {
   transition: Slide,
-  closeButton: CloseButton,
-  hideProgressBar: false,
+  closeButton: (props) => (
+    <button className={styles.closeButton} onClick={props.closeToast}>
+      <CrossIcon />
+      <span className="sr-only">Close</span>
+    </button>
+  ),
 };
 
 // NOTE: toasts are throttled to prevent duplicate notifications being displayed.
 // This can occur due to callbacks being fired multiple times in quick succession
 export const info = throttle(
   (props: ToastProps, overrides?: ToastOptions) => {
-    return toast.info(<CustomToast {...props} type="info" />, { ...BASE_OPTIONS, ...overrides });
+    return toast.info(<CustomToast {...props} {...overrides} type="info" />, { ...BASE_OPTIONS, ...overrides });
   },
   THROTTLE_MS,
   { trailing: false }
@@ -72,7 +101,10 @@ export const info = throttle(
 
 export const success = throttle(
   (props: ToastProps, overrides?: ToastOptions) => {
-    return toast.info(<CustomToast {...props} type="success" />, { ...BASE_OPTIONS, ...overrides });
+    return toast.success(<CustomToast {...props} {...overrides} type="success" />, {
+      ...BASE_OPTIONS,
+      ...overrides,
+    });
   },
   THROTTLE_MS,
   { trailing: false }
@@ -80,7 +112,10 @@ export const success = throttle(
 
 export const warning = throttle(
   (props: ToastProps, overrides?: ToastOptions) => {
-    return toast.info(<CustomToast {...props} type="warning" />, { ...BASE_OPTIONS, ...overrides });
+    return toast.warning(<CustomToast {...props} {...overrides} type="warning" />, {
+      ...BASE_OPTIONS,
+      ...overrides,
+    });
   },
   THROTTLE_MS,
   { trailing: false }
@@ -100,7 +135,7 @@ export const error = throttle(
       console.error('[DEV: Caught error]:', errorOrMessage);
     }
 
-    return toast.info(<CustomToast {...other} type="error" />, { ...BASE_OPTIONS, ...overrides });
+    return toast.error(<CustomToast {...other} {...overrides} type="error" />, { ...BASE_OPTIONS, ...overrides });
   },
   THROTTLE_MS,
   { trailing: false }

@@ -45,6 +45,7 @@ const Dashboard = () => {
   return (
     <Layout title="Staking">
       {pendingUnstake?.canUnstake && <UnstakeBanner canUnstakeAndWithdraw={pendingUnstake.canUnstakeAndWithdraw} />}
+
       {!provider && (
         <>
           {/* Connect Wallet */}

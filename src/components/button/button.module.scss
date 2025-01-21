@@ -8,6 +8,7 @@
 @import './variants/link-gray.module.scss';
 @import './variants/menu-link-secondary.module.scss';
 @import './variants/text-blue.module.scss';
+@import './variants/text-gray.module.scss';
 
 .button {
   background-color: transparent;
@@ -54,6 +55,10 @@
 
   &.text-blue {
     @include text-blue;
+  }
+
+  &.text-gray {
+    @include text-gray;
   }
 
   &.normal {
