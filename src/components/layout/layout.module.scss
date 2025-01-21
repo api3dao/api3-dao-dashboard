@@ -41,11 +41,17 @@
   position: relative;
   align-items: center;
   justify-content: center;
-  height: 196px;
+  height: 244px;
 
-  &Content {
+  &Rows {
+    width: calc(100% - 32px);
+    max-width: 468px;
+  }
+
+  &FirstRow {
     display: flex;
-    padding-top: 44px;
+    padding: 44px 0 24px 0;
+    justify-content: center;
 
     a {
       display: flex;
@@ -76,22 +82,66 @@
       background: $gradient-medium-light;
     }
   }
+
+  &SecondRow {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 0 64px 0;
+    border-top: 1px solid $color-blue-25;
+    width: 100%;
+
+    .privacyLinks {
+      display: flex;
+      gap: 16px;
+    }
+
+    a {
+      text-decoration: none;
+      box-sizing: border-box;
+      @include font-overline-2;
+      @include menu-link-secondary;
+    }
+
+    .copyright {
+      @include font-body-18;
+      color: $color-dark-blue-50;
+    }
+  }
 }
 
 @media (min-width: $md) {
   .footer {
-    height: 140px;
+    height: 238px;
 
-    &Content {
-      padding-top: 64px;
+    &Rows {
+      width: calc(100% - 192px);
+      max-width: unset;
+    }
 
-      a {
-        @include font-body-15;
-      }
+    a,
+    .copyright {
+      @include font-body-15;
+    }
 
-      & > *,
+    &FirstRow {
+      padding: 64px 0 32px 0;
+
+      & > button,
       & > a {
-        padding: 0 40px;
+        padding: 0 40px !important;
+      }
+    }
+
+    &SecondRow {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 32px 0 64px 0;
+
+      .privacyLinks {
+        gap: 24px;
       }
     }
   }
