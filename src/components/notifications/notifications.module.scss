@@ -1,4 +1,5 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
 /*
 * NOTE: Use these classes to style notification content.
@@ -7,43 +8,104 @@
 * This would include styling for things like backgrounds and containers
 */
 
-.notificationBody {
-  width: 100%;
+.notification {
   display: flex;
   align-items: flex-start;
-  padding: $space-lg;
+  gap: 8px;
+  padding: 32px 28px 34px 28px;
   box-sizing: border-box;
-
-  &.url {
-    padding-bottom: $space-md;
-  }
 }
 
 .notificationContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   flex: 1;
-  margin-left: $space-sm;
-  margin-top: $space-xxs;
+
+  .notificationMessage {
+    @include font-body-8;
+  }
+}
+
+.transactionButtonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  .transactionButton {
+    display: flex;
+    gap: 4px;
+    padding: 0 !important;
+  }
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+
+  &.success {
+    color: $color-action-success-500;
+  }
+
+  &.error {
+    color: $color-action-error-500;
+  }
+
+  &.warning {
+    color: $color-action-warning-500;
+  }
+
+  &.info {
+    color: $color-action-info-500;
+  }
 }
 
 .closeButton {
   position: absolute;
-  top: $space-sm;
-  right: $space-sm;
+  top: 12px;
+  right: 12px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-gray-200);
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--color-base-light);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+
+    @media (min-width: $md) {
+      width: 24px;
+      height: 24px;
+    }
+  }
 }
 
-.notificationButton {
-  background-color: $black-color;
-  color: $primary-color;
-  padding: 6px 20px;
-  font-size: $text-xsmall;
-  line-height: 20px;
-  font-weight: 600;
-  border-radius: 16px;
-  text-decoration: none;
-}
+.progressBarBackground {
+  position: absolute;
+  height: 6px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $color-dark-blue-100;
 
-.notificationUrl {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: $space-md;
+  &.success {
+    background-color: $color-action-success-500;
+  }
+
+  &.error {
+    background-color: $color-action-error-500;
+  }
+
+  &.warning {
+    background-color: $color-action-warning-500;
+  }
+
+  &.info {
+    background-color: $color-action-info-500;
+  }
 }
