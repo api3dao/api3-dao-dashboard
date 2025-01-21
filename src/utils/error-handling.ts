@@ -13,7 +13,7 @@ export const handleTransactionError = async <T>(transaction: Promise<T>) => {
 
   if (!goTransaction.success) {
     if (isUserRejection(goTransaction.error)) {
-      notifications.info({ message: messages.TX_GENERIC_REJECTED });
+      notifications.error({ message: messages.TX_GENERIC_REJECTED });
       return;
     }
     notifications.error({ message: messages.TX_GENERIC_ERROR, errorOrMessage: goTransaction.error });

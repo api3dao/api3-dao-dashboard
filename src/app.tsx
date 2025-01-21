@@ -15,10 +15,10 @@ import NotFoundPage from './pages/not-found';
 import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
 import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
-import StorageFullNotification from './components/notifications/storage-full-notification';
 import { registerWeb3Modal, wagmiConfig } from './wallet-connect';
 import './styles/variables.module.scss';
 import { notifications } from './components/notifications';
+import { ClearStorageButton } from './components/notifications/clear-storage-button';
 
 const ErrorBoundary: FallbackRender = (props) => {
   const { error } = props;
@@ -45,7 +45,7 @@ const AppContent = () => {
     // Sentry.ErrorBoundary requires 'fallback' to be React component so we can't pass a string there
     <Router>
       <Sentry.ErrorBoundary fallback={(props) => <ErrorBoundary {...props} />}>
-        <ToastContainer />
+        <ToastContainer limit={3} pauseOnFocusLoss={false} autoClose={5000} closeOnClick />
 
         <Switch>
           <Route path="/governance/:typeAndVoteId" exact>
@@ -113,15 +113,17 @@ window.localStorage.setItem = (key, value) => {
   try {
     setStorageItem(key, value);
   } catch (e) {
-    notifications.warning(
-      { message: <StorageFullNotification /> },
+    notifications.error(
       {
-        toastId: 'storage-warning',
+        message: 'We have detected that your local storage is full. Would you like to clear it and refresh the page?',
+        customAction: <ClearStorageButton />,
+      },
+      {
+        toastId: 'storage-error',
         bodyClassName: 'cursor-auto',
-        closeButton: false,
         closeOnClick: false,
-        autoClose: false,
         draggable: false,
+        autoClose: false,
       }
     );
 
