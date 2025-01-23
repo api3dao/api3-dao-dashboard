@@ -60,38 +60,4 @@
   &.text-gray {
     @include text-gray;
   }
-
-  &.normal {
-    font-size: $text-small;
-    line-height: $lh-small;
-    padding: 17px $space-lg;
-
-    @media (max-width: $max-md) {
-      padding: $space-md;
-    }
-  }
-
-  &.large {
-    font-size: $text-normal;
-    line-height: 22px;
-    padding: 20px 44px;
-
-    @media (max-width: $max-md) {
-      font-size: $text-small;
-      padding: $space-md $space-xl;
-    }
-  }
-
-  &.link {
-    color: $link-color;
-    border: 0;
-    text-decoration: underline;
-    padding: 0;
-  }
-
-  &.text {
-    border: 0;
-    text-decoration: underline;
-    padding: 0;
-  }
 }
