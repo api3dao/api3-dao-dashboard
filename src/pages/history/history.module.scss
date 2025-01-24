@@ -17,9 +17,7 @@ h5 {
 .header {
   margin-bottom: 32px;
 
-  @media (min-width: $min-md) {
-    display: flex;
-    justify-content: space-between;
+  @media (min-width: $md) {
     margin-bottom: 64px;
   }
 }

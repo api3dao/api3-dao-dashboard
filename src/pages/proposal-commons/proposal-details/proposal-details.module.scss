@@ -111,12 +111,6 @@
   }
 }
 
-.address {
-  @media (max-width: $max-md) {
-    overflow-wrap: break-word;
-  }
-}
-
 .proposalDetailsItem {
   overflow-wrap: break-word;
   @include font-body-9;
