@@ -111,7 +111,6 @@ const Proposals = () => {
   };
 
   return (
-    // TODO: adjust top spacing on the title after Staking page is merged
     <Layout title="Governance">
       <div className={styles.governanceHeader}>
         <Delegation />
