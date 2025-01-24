@@ -103,30 +103,7 @@ $sm: 768px;
 $md: 1200px;
 $lg: 1600px;
 
-// TODO: Remove unused variables after rebranding
-$primary-color: #fff;
-$secondary-color: #c3c4c3;
-$tertiary-color: #878888;
-$link-color: #7ce3cb;
-$button-color: #f3f3f3;
-$secondary-black-color: #404141;
-$green-color: #7ce3cb;
-$violet-color: #7963b2;
-$pink-color: #d233f2;
-$black-color: #030303;
-$black-line-color: $secondary-black-color;
-$primary-border: linear-gradient(to left, $green-color, $violet-color);
-$secondary-border: $tertiary-color;
-$dropdown-bgd: #030303;
-$dropdown-border-color: rgba(#404141, 0.6);
-$dropdown-shadow: 0px 4px 8px rgba(148, 223, 203, 0.5);
-$tooltip-shadow: 0px 9px 28px 8px rgba(0, 0, 0, 0.05), 0px 3px 6px -4px rgba(0, 0, 0, 0.12);
-$error-color: $pink-color;
-$progressbar-info: #6699ff;
-$progressbar-success: #57d4a2;
-$progressbar-warning: #ffc53d;
-$progressbar-error: $pink-color;
-
+// GRADIENTS
 $gradient-soft-light: linear-gradient(
     rgba(91, 167, 245, 0.5) 0%,
     rgba(0, 15, 220, 0.5) 28%,

@@ -13,13 +13,12 @@ import { links } from '../../utils/links';
 type Props = {
   children: ReactNode;
   title: string;
-  subtitle?: string;
 };
 
-const Layout = ({ children, title, subtitle }: Props) => {
+const Layout = ({ children, title }: Props) => {
   return (
     <BaseLayout title={title}>
-      <Header title={title} subtitle={subtitle} />
+      <Header title={title} />
       {children}
     </BaseLayout>
   );

@@ -14,7 +14,7 @@ input {
 }
 
 :focus {
-  box-shadow: $primary-color 0 0 2.5px 1.5px;
+  box-shadow: $color-base-dark 0 0 2.5px 1.5px;
 
   // https://css-tricks.com/the-focus-visible-trick/
   &:not(:focus-visible) {
@@ -32,7 +32,6 @@ p {
 }
 
 a {
-  color: $secondary-color;
   border: 0;
   text-decoration: underline;
   padding: 0;
@@ -61,30 +60,6 @@ a {
 .textXSmall {
   font-size: 12px;
   line-height: 18px;
-}
-
-.primaryColor {
-  color: $primary-color;
-}
-
-.secondaryColor {
-  color: $secondary-color;
-}
-
-.tertiaryColor {
-  color: $tertiary-color;
-}
-
-.greenColor {
-  color: $green-color;
-}
-
-.pinkColor {
-  color: $pink-color;
-}
-
-.violetColor {
-  color: $violet-color;
 }
 
 .uppercase {
