@@ -4,7 +4,7 @@ import { closeErrorReportingNotice } from '../support/common';
 
 const pressTabAndAssertFocusOutline = (selector: () => Cypress.Chainable<any>) => {
   cy.tab();
-  selector().should('have.css', 'box-shadow', 'rgb(255, 255, 255) 0px 0px 2.5px 1.5px');
+  selector().should('have.css', 'box-shadow', 'rgb(3, 4, 18) 0px 0px 2.5px 1.5px');
 };
 
 describe('keyboard navigation and accessibility', () => {
