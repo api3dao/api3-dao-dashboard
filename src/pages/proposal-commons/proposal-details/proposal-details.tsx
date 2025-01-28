@@ -136,11 +136,9 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   return (
     <div>
       <div className={styles.proposalDetailsSubheader}>
-        <Link to={backButton.url} data-cy="back-button">
-          <Button type="text" className={styles.backBtn}>
-            <img src={images.arrowLeft} alt="back" />
-            {backButton.text}
-          </Button>
+        <Link to={backButton.url} className={styles.backBtn} data-cy="back-button">
+          <img src={images.arrowLeft} alt="back" />
+          {backButton.text}
         </Link>
       </div>
 
