@@ -111,7 +111,6 @@ const Proposals = () => {
   };
 
   return (
-    // TODO: adjust top spacing on the title after Staking page is merged
     <Layout title="Governance">
       <div className={styles.governanceHeader}>
         <Delegation />
@@ -121,7 +120,6 @@ const Proposals = () => {
       <div className={styles.proposalsHeader}>
         <h5>Active Proposals</h5>
         <div className={styles.newProposalButtonWrapper}>
-          {/* TODO: base-light background for secondary gradient button */}
           <Button
             type="secondary"
             onClick={() => setOpenNewProposalModal(true)}

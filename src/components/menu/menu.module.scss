@@ -70,11 +70,6 @@
 .menuItemText {
   padding-left: $space-xs;
   @include font-link-2;
-
-  @media (max-width: $max-lg) {
-    display: none;
-    padding-left: unset;
-  }
 }
 
 .externalLinksHeader {

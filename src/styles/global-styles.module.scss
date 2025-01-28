@@ -14,7 +14,7 @@ input {
 }
 
 :focus {
-  box-shadow: $primary-color 0 0 2.5px 1.5px;
+  box-shadow: $color-base-dark 0 0 2.5px 1.5px;
 
   // https://css-tricks.com/the-focus-visible-trick/
   &:not(:focus-visible) {
@@ -32,59 +32,9 @@ p {
 }
 
 a {
-  color: $secondary-color;
   border: 0;
   text-decoration: underline;
   padding: 0;
-}
-
-.textNormal {
-  font-size: 18px;
-  line-height: 28px;
-}
-
-.textLarge {
-  font-size: 27px;
-  line-height: 40px;
-}
-
-.textXLarge {
-  font-size: 40px;
-  line-height: 52px;
-}
-
-.textSmall {
-  font-size: 14px;
-  line-height: 17px;
-}
-
-.textXSmall {
-  font-size: 12px;
-  line-height: 18px;
-}
-
-.primaryColor {
-  color: $primary-color;
-}
-
-.secondaryColor {
-  color: $secondary-color;
-}
-
-.tertiaryColor {
-  color: $tertiary-color;
-}
-
-.greenColor {
-  color: $green-color;
-}
-
-.pinkColor {
-  color: $pink-color;
-}
-
-.violetColor {
-  color: $violet-color;
 }
 
 .uppercase {

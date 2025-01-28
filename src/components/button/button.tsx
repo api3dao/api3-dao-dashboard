@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import styles from './button.module.scss';
 import { BreakpointKeys, breakpoints, useWindowDimensions } from '../../hooks/use-window-dimensions';
 
-export type Size = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'normal' | 'large'; //TODO: remove normal and large after rebranding is done;
+export type Size = 'xxs' | 'xs' | 'sm' | 'md' | 'lg';
 
 type BreakpointsProps = { [key in BreakpointKeys]?: { size?: Size } };
 
@@ -15,8 +15,6 @@ export interface Props extends BreakpointsProps {
     | 'secondary'
     | 'secondary-neutral'
     | 'tertiary-color'
-    | 'link'
-    | 'text'
     | 'text-blue'
     | 'text-gray'
     | 'menu-link-secondary'

@@ -37,7 +37,6 @@ export const messages = {
   FAILED_TO_LOAD_VESTING_DATA: 'Failed to load vesting data. Please try again later.',
 };
 
-// TODO: these messages should change depending on the final designs
 export const transactionMessages: { [key in TransactionType]: PendingTransactionMessages } = {
   'approve-deposit': {
     start: 'Approving API3 token allowance...',
