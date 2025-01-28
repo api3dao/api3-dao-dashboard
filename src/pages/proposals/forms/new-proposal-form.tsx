@@ -219,7 +219,7 @@ const NewProposalForm = (props: Props) => {
           <Button
             type="primary"
             size="sm"
-            sm={{ size: 'large' }}
+            sm={{ size: 'lg' }}
             onClick={async () => {
               const formData = {
                 type,
