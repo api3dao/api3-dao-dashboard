@@ -91,7 +91,7 @@ const TokenDepositForm = (props: Props) => {
 
   return (
     <>
-      <ModalHeader>How many tokens would you like to deposit?</ModalHeader>
+      <ModalHeader>How many API3 tokens would you like to deposit?</ModalHeader>
 
       <div className={styles.formContent}>
         <div className={styles.inputWrapper}>
