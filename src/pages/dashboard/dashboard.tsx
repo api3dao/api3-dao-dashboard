@@ -192,7 +192,7 @@ const Dashboard = () => {
       )}
       <Modal open={openModal === 'withdraw'} onClose={closeModal}>
         <TokenAmountForm
-          title="How many tokens would you like to withdraw?"
+          title="How many API3 tokens would you like to withdraw?"
           action="Withdraw"
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
@@ -210,7 +210,7 @@ const Dashboard = () => {
       </Modal>
       <Modal open={openModal === 'stake'} onClose={closeModal}>
         <TokenAmountForm
-          title="How many tokens would you like to stake?"
+          title="How many API3 tokens would you like to stake?"
           action="Stake"
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
@@ -228,7 +228,7 @@ const Dashboard = () => {
       </Modal>
       <Modal open={openModal === 'unstake'} onClose={closeModal}>
         <TokenAmountForm
-          title="How many tokens would you like to unstake?"
+          title="How many API3 tokens would you like to unstake?"
           action="Initiate Unstaking"
           onConfirm={(value) => {
             // NOTE: We are explicitly not closing modal, because it triggers the confirmation modal
