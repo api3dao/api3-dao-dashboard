@@ -6,8 +6,6 @@ import classNames from 'classnames';
 import DashboardIcon from './dashboard-icon';
 import ProposalsIcon from './proposals-icon';
 import HistoryIcon from './history-icon';
-import TrackerIcon from './tracker-icon';
-import ForumIcon from './forum-icon';
 import MarketIcon from './market-icon';
 import DocsIcon from './docs-icon';
 import SignIn from '../sign-in/sign-in';
@@ -21,8 +19,6 @@ const MenuItems = [
 ];
 
 const ExternalLinks = [
-  { to: 'https://tracker.api3.org/', icon: TrackerIcon, text: 'Tracker' },
-  { to: 'https://forum.api3.org/', icon: ForumIcon, text: 'Forum' },
   { to: 'https://market.api3.org/', icon: MarketIcon, text: 'Api3 Market' },
   { to: 'https://docs.api3.org/', icon: DocsIcon, text: 'Docs' },
 ];
