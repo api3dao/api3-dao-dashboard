@@ -10,7 +10,6 @@ on:
       - main
       - production
       - dev
-      - rebrand
 
 jobs:
   documentation:

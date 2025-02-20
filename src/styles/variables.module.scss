@@ -169,7 +169,9 @@ $gradient-base-blue-01: linear-gradient(223deg, rgba(26, 79, 222, 0.6) 0%, rgba(
       position: absolute;
       inset: -1px;
       padding: 1px;
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
       mask-composite: exclude;
       background: $gradient;
       border-radius: inherit;
