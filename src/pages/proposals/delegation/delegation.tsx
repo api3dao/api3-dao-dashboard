@@ -50,8 +50,8 @@ const Delegation = () => {
               {delegation.delegateName
                 ? delegation.delegateName
                 : isMobile
-                ? abbrStr(delegation.delegate)
-                : delegation.delegate}
+                  ? abbrStr(delegation.delegate)
+                  : delegation.delegate}
             </span>
           </p>
           <Button
