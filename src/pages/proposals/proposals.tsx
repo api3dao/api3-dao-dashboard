@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import Button from '../../components/button';
 import Layout from '../../components/layout';
