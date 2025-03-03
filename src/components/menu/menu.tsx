@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import DashboardIcon from './dashboard-icon';
 import ProposalsIcon from './proposals-icon';
 import HistoryIcon from './history-icon';
-import MarketIcon from './market-icon';
 import DocsIcon from './docs-icon';
 import SignIn from '../sign-in/sign-in';
 import styles from './menu.module.scss';
