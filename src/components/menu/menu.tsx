@@ -18,10 +18,7 @@ const MenuItems = [
   { to: '/history', icon: HistoryIcon, text: 'History' },
 ];
 
-const ExternalLinks = [
-  { to: 'https://market.api3.org/', icon: MarketIcon, text: 'Api3 Market' },
-  { to: 'https://dao-docs.api3.org/', icon: DocsIcon, text: 'DAO Docs' },
-];
+const ExternalLinks = [{ to: 'https://dao-docs.api3.org/', icon: DocsIcon, text: 'DAO Docs' }];
 
 export const DesktopMenu = () => {
   const { pathname } = useLocation();
