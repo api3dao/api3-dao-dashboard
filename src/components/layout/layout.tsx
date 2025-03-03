@@ -2,24 +2,23 @@ import { ReactNode, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Navigation from '../navigation';
 import Header from '../header';
-import { ERROR_REPORTING_CONSENT_KEY_NAME, images, insertInBetween } from '../../utils';
 import styles from './layout.module.scss';
-import ExternalLink from '../external-link';
 import Button from '../button';
 import ErrorReportingNotice from './error-reporting-notice';
-import classNames from 'classnames';
 import { DesktopMenu } from '../menu';
+import ExternalLink from '../external-link';
+import { ALLOW_ANALYTICS, ALLOW_ERROR_REPORTING } from '../../utils/analytics';
+import { links } from '../../utils/links';
 
 type Props = {
   children: ReactNode;
   title: string;
-  subtitle?: string;
 };
 
-const Layout = ({ children, title, subtitle }: Props) => {
+const Layout = ({ children, title }: Props) => {
   return (
-    <BaseLayout subtitle={title}>
-      <Header title={title} subtitle={subtitle} />
+    <BaseLayout title={title}>
+      <Header title={title} />
       {children}
     </BaseLayout>
   );
@@ -27,25 +26,32 @@ const Layout = ({ children, title, subtitle }: Props) => {
 
 interface BaseLayoutProps {
   children: ReactNode;
-  subtitle: string;
+  title: string;
 }
 
-export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
-  const [errorReportingNoticeOpen, setErrorReportingNoticeOpen] = useState(
-    localStorage.getItem(ERROR_REPORTING_CONSENT_KEY_NAME) === null
+export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
+  const [showNotice, setShowNotice] = useState(
+    () => localStorage.getItem(ALLOW_ERROR_REPORTING) === null || localStorage.getItem(ALLOW_ANALYTICS) === null
   );
 
-  const links = [
-    { text: 'About API3', href: 'https://api3.org/' },
-    { text: 'Docs', href: 'https://dao-docs.api3.org/members/' },
-    { text: 'Error Reporting', onClick: () => setErrorReportingNoticeOpen(true) },
-    { text: 'Github', href: 'https://github.com/api3dao/api3-dao-dashboard' },
+  const footerLinks = [
+    { text: 'Api3.org', href: links.API3_ORG },
+    { text: 'Error Reporting', onClick: () => setShowNotice(true) },
+    { text: 'Github', href: links.GITHUB },
   ];
+
+  const footerLinksSecondRow = [
+    { text: 'Privacy Policy', href: links.PRIVACY_POLICY },
+    { text: 'Privacy and Cookies', href: links.PRIVACY_AND_COOKIES },
+    { text: 'Terms and Conditions', href: links.TERMS_AND_CONDITIONS },
+  ];
+
+  const actualYear = new Date().getFullYear();
 
   return (
     <>
       <Helmet>
-        <title>{`API3 DAO | ${subtitle}`}</title>
+        <title>{`API3 DAO | ${title}`}</title>
       </Helmet>
 
       <div className={styles.layout}>
@@ -55,43 +61,42 @@ export const BaseLayout = ({ children, subtitle }: BaseLayoutProps) => {
           <main className={styles.main}>{children}</main>
         </div>
         <footer className={styles.footer}>
-          {errorReportingNoticeOpen ? (
-            <ErrorReportingNotice onClose={() => setErrorReportingNoticeOpen(false)} />
+          {showNotice ? (
+            <ErrorReportingNotice onShowNotice={setShowNotice} />
           ) : (
-            <div className={styles.footerContent}>
-              <div className={styles.linkSpacing}>
-                {insertInBetween(
-                  links.map((link) => {
-                    if (link.href)
-                      return (
-                        <ExternalLink href={link.href} className={styles.noUnderline} key={link.text}>
-                          {link.text}
-                        </ExternalLink>
-                      );
-                    else
-                      return (
-                        <Button
-                          key={link.text}
-                          type="text"
-                          className={classNames(styles.externalLinkButton, styles.noUnderline)}
-                          onClick={link.onClick}
-                        >
-                          {link.text}
-                        </Button>
-                      );
-                  }),
-                  (index) => (
-                    <span className={styles.linkSeparator} key={index}>
-                      |
-                    </span>
+            <div className={styles.footerRows}>
+              <div className={styles.footerFirstRow}>
+                {footerLinks.map((link) =>
+                  link.href ? (
+                    <ExternalLink href={link.href} key={link.text}>
+                      {link.text}
+                    </ExternalLink>
+                  ) : (
+                    <Button
+                      key={link.text}
+                      type="menu-link-secondary"
+                      onClick={link.onClick}
+                      size="xs"
+                      md={{ size: 'sm' }}
+                    >
+                      {link.text}
+                    </Button>
                   )
                 )}
+              </div>
+              <div className={styles.footerSecondRow}>
+                <div className={styles.copyright}>&copy; {actualYear} API3 Foundation</div>
+                <div className={styles.privacyLinks}>
+                  {footerLinksSecondRow.map((link) => (
+                    <ExternalLink href={link.href} key={link.text}>
+                      {link.text}
+                    </ExternalLink>
+                  ))}
+                </div>
               </div>
             </div>
           )}
         </footer>
-
-        <img className={styles.layoutTexture} src={images.texture} alt="texture background" />
       </div>
     </>
   );

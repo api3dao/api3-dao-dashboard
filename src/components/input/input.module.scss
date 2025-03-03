@@ -1,77 +1,72 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
 .inputWrapper {
   display: inline-block;
   max-width: 100%;
+
   &.disabled {
     opacity: 0.4;
     pointer-events: none;
-  }
-  &.block {
-    width: 100%;
-    .input,
-    input {
-      width: 100%;
-    }
   }
 }
 
 .input {
   display: inline-block;
   max-width: 100%;
-  overflow: hidden;
-  &.textCenter {
-    input {
-      text-align: center;
-    }
-  }
+
   input {
-    min-width: 50px;
+    min-width: 30px;
     background-color: transparent;
-    color: $secondary-color;
-    font-weight: 500;
     border-width: 0;
     outline: none;
-
-    &:focus {
-      box-shadow: none;
-    }
-  }
-
-  input {
-    &:focus {
-      color: $primary-color;
-    }
-    &::placeholder {
-      color: $tertiary-color;
-    }
+    box-shadow: none;
+    text-align: center;
   }
 
   &.normal {
     input {
-      font-size: $text-small;
-      line-height: 24px;
+      @include font-heading-7;
+      color: $color-dark-blue-400;
+
+      &:focus {
+        color: $color-dark-blue-400;
+      }
+
+      &::placeholder {
+        color: $color-dark-blue-400;
+      }
     }
-    & > div {
-      font-size: $text-small !important;
+
+    @media (min-width: $sm) {
+      min-width: 50px;
+
+      input {
+        @include font-heading-4;
+      }
     }
   }
 
-  &.large {
+  &.small {
     input {
-      font-size: $text-xlarge;
-      line-height: 44px;
+      @include font-body-8;
+      color: $color-dark-blue-100;
+
+      &:focus {
+        color: $color-dark-blue-100;
+      }
+
+      &::placeholder {
+        color: $color-dark-blue-100;
+      }
     }
-    & > div {
-      font-size: $text-xlarge !important;
+
+    @media (min-width: $sm) {
+      input {
+        @include font-body-2;
+      }
     }
   }
-}
-
-.inputUnderline {
-  height: 1px;
-  width: 100%;
-  background-color: $secondary-border;
 }
 
 // removing input background color/text color for Chrome autocomplete

@@ -1,54 +1,131 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
+@import '../../../components/button/variants/link-blue.module.scss';
 
-.newProposalFormItem {
-  margin-bottom: $space-xxxl;
+.newProposalModalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  max-width: 650px;
 
-  @media (min-width: $min-md) {
-    display: flex;
+  @media (min-width: $md) {
+    max-width: unset;
+  }
+}
+
+.proposalFormItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+
+  @media (min-width: $sm) {
+    flex-direction: row;
     align-items: flex-start;
+    gap: 32px;
   }
 }
 
-.newProposalFormName {
-  font-size: $text-small;
-  line-height: 17px;
-  color: $secondary-color;
-  text-transform: uppercase;
-  font-weight: 500;
-  padding-right: $space-xl;
+.proposalFormItemName {
+  @include font-body-9;
+  color: $color-dark-blue-100;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 
-  @media (min-width: $min-md) {
-    width: 40%;
-    text-align: right;
-    margin-top: 6px;
+  svg {
+    color: $color-dark-blue-50;
   }
 
-  @media (max-width: $max-md) {
-    margin-bottom: $space-md;
-  }
-}
-
-.newProposalFormInput {
-  @media (min-width: $min-md) {
-    width: 60%;
-  }
-}
-
-.newProposalFormRadioButtons {
-  @media (min-width: $min-sm) {
-    display: flex;
+  @media (min-width: $sm) {
+    min-width: 240px;
+    justify-content: flex-end;
     align-items: center;
+    margin-top: 15px;
 
-    & > * {
-      width: 50%;
+    svg {
+      width: 24px;
+      height: 24px;
     }
+  }
+
+  @media (min-width: $md) {
+    @include font-description-6;
+    min-width: 280px;
+  }
+}
+
+.proposalFormItemContent {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.proposalTypeRadioButtons {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  margin-top: 10px;
+
+  @media (min-width: $sm) {
+    margin-top: 0;
   }
 }
 
 .error {
-  color: $error-color;
+  color: $color-action-error-600;
 }
 
 .marginTopMd {
-  margin-top: $space-md;
+  margin-top: 16px;
+}
+
+.noMargin {
+  margin: 0;
+}
+
+.helpLinkWrapper {
+  position: absolute;
+  right: 0;
+  top: 8px;
+
+  .helpLink {
+    padding-right: 4px;
+    text-decoration: none;
+    @include link-blue;
+    @include font-link-3;
+  }
+
+  @media (min-width: $sm) {
+    .helpLink {
+      @include font-link-1;
+    }
+
+    img {
+      width: 12px;
+      height: 12px;
+    }
+  }
+}
+
+.newProposalModalFooter {
+  padding-bottom: 32px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  button {
+    width: 100%;
+    border-radius: 32px;
+  }
+
+  @media (min-width: $sm) {
+    padding-bottom: 0;
+
+    button {
+      width: auto;
+    }
+  }
 }

@@ -12,12 +12,12 @@ import Button from '../../components/button';
 import { Tooltip } from '../../components/tooltip';
 import PendingUnstakePanel from './pending-unstake-panel/pending-unstake-panel';
 import StakingPool from './staking/staking-pool';
-import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
+import Card, { Header as CardHeader } from '../../components/card/card';
 import UnstakeBanner from './unstake-banner/unstake-banner';
-import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './dashboard.module.scss';
 import ConfirmUnstakeForm from './forms/confirm-unstake-form';
 import classNames from 'classnames';
+import ConnectButton from '../../components/connect-button';
 
 type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
 
@@ -45,8 +45,27 @@ const Dashboard = () => {
   return (
     <Layout title="Staking">
       {pendingUnstake?.canUnstake && <UnstakeBanner canUnstakeAndWithdraw={pendingUnstake.canUnstakeAndWithdraw} />}
+
       {!provider && (
         <>
+          {/* Connect Wallet */}
+          <div className={styles.connectWalletBox}>
+            <div className={styles.connectWalletBoxContent}>
+              <img src={images.infoCircle} alt="connect wallet info" />
+              <div className={styles.connectWalletBoxText}>
+                <span className={styles.connectWalletBoxTitle}>Connect your Wallet.</span>
+                <span className={styles.connectWalletBoxSubtitle}>Connect wallet to start operating</span>
+              </div>
+            </div>
+
+            <div className={styles.connectWalletBoxButton}>
+              <ConnectButton type="link-blue" size="sm" sm={{ size: 'md' }} data-testid="connect-wallet-staking-btn">
+                Connect Wallet
+              </ConnectButton>
+            </div>
+          </div>
+
+          {/* How This Works */}
           <p className={styles.dashboardHeader}>How This Works</p>
           <div className={styles.tutorialVideo}>
             <iframe
@@ -59,80 +78,101 @@ const Dashboard = () => {
           </div>
         </>
       )}
-      <p className={styles.dashboardHeader}>Staking Pool</p>
+
+      {/* Staking Pool */}
+      <p className={classNames(styles.dashboardHeader, provider && styles.extraTopSpacing)}>Staking Pool</p>
       <StakingPool />
-      <div className={styles.borderedBoxesWrap}>
-        <div className={styles.stakingBoxWrap} data-cy="balance-panel">
-          <BorderedBox
-            header={
-              <Header>
-                <h5>Balance</h5>
-                <Button onClick={() => setOpenModal('deposit')} disabled={!data}>
-                  + Deposit
+      <div className={styles.cardsWrapper}>
+        <Card
+          header={
+            <CardHeader>
+              <h5>Balance</h5>
+              <div className={styles.cardHeaderButton}>
+                <Button
+                  type="secondary"
+                  size="sm"
+                  onClick={() => setOpenModal('deposit')}
+                  disabled={!data}
+                  data-testid="staking-card-deposit-btn"
+                >
+                  Deposit
                 </Button>
-              </Header>
-            }
-            content={
-              <>
-                <div className={classNames(globalStyles.textCenter, globalStyles.mbLg)}>
-                  <p className={styles.borderedBoxContentTitle}>total</p>
-                  <p className={globalStyles.textXLarge} data-cy="balance">
-                    {tokenBalances ? formatAndRoundApi3(tokenBalances.userTotal) : UNKNOWN_NUMBER}
-                  </p>
-                </div>
-                <div className={globalStyles.textCenter}>
-                  <p className={styles.borderedBoxContentTitle}>withdrawable</p>
-                  <p className={globalStyles.textXLarge} data-cy="withdrawable">
-                    {tokenBalances ? formatAndRoundApi3(tokenBalances.withdrawable) : UNKNOWN_NUMBER}
-                  </p>
-                </div>
-              </>
-            }
-            footer={
-              <Button type="link" onClick={() => setOpenModal('withdraw')} disabled={!canWithdraw}>
-                Withdraw
-              </Button>
-            }
-          />
-        </div>
-        <div className={styles.stakingBoxWrap} data-cy="staking-panel">
-          <BorderedBox
-            header={
-              <Header>
-                <h5>Staking</h5>
-                <div>
-                  <Button onClick={() => setOpenModal('stake')} disabled={!canStake}>
-                    + Stake
-                  </Button>
-                  <Tooltip overlay="You need to deposit API3 tokens before staking">
-                    <img src={images.help} alt="new proposal help" className={globalStyles.helpIcon} />
-                  </Tooltip>
-                </div>
-              </Header>
-            }
-            content={
-              <>
-                <div className={classNames(globalStyles.textCenter, globalStyles.mbLg)}>
-                  <p className={styles.borderedBoxContentTitle}>staked</p>
-                  <p className={globalStyles.textXLarge} data-cy="staked">
-                    {data ? formatAndRoundApi3(data.userStaked) : UNKNOWN_NUMBER}
-                  </p>
-                </div>
-                <div className={globalStyles.textCenter}>
-                  <p className={styles.borderedBoxContentTitle}>unstaked</p>
-                  <p className={globalStyles.textXLarge} data-cy="unstaked">
-                    {data ? formatAndRoundApi3(data.userUnstaked) : UNKNOWN_NUMBER}
-                  </p>
-                </div>
-              </>
-            }
-            footer={
-              // TODO: In case there is a pending unstake there should be no button, just green arrow (see figma)
-              <Button type="link" onClick={() => setOpenModal('unstake')} disabled={!canInitiateUnstake}>
+              </div>
+            </CardHeader>
+          }
+          content={
+            <div className={styles.cardContent}>
+              <div>
+                <p className={styles.cardContentTitle}>total</p>
+                <p className={styles.cardContentValue} data-cy="balance">
+                  {tokenBalances ? formatAndRoundApi3(tokenBalances.userTotal) : UNKNOWN_NUMBER}
+                </p>
+              </div>
+              <div>
+                <p className={styles.cardContentTitle}>withdrawable</p>
+                <p className={styles.cardContentValue} data-cy="withdrawable">
+                  {tokenBalances ? formatAndRoundApi3(tokenBalances.withdrawable) : UNKNOWN_NUMBER}
+                </p>
+              </div>
+            </div>
+          }
+          contentFooter={
+            <Button type="secondary-neutral" size="xs" onClick={() => setOpenModal('withdraw')} disabled={!canWithdraw}>
+              Withdraw
+            </Button>
+          }
+        />
+
+        <Card
+          header={
+            <CardHeader>
+              <h5>Staking</h5>
+              <div className={styles.cardHeaderButton}>
+                <Tooltip overlay="You need to deposit API3 tokens before staking">
+                  <img src={images.helpOutline} alt="new proposal help" />
+                </Tooltip>
+                <Button
+                  type="secondary"
+                  size="sm"
+                  onClick={() => setOpenModal('stake')}
+                  disabled={!canStake}
+                  data-testid="staking-card-stake-btn"
+                >
+                  Stake
+                </Button>
+              </div>
+            </CardHeader>
+          }
+          content={
+            <div className={styles.cardContent}>
+              <div>
+                <p className={styles.cardContentTitle}>staked</p>
+                <p className={styles.cardContentValue} data-cy="staked">
+                  {data ? formatAndRoundApi3(data.userStaked) : UNKNOWN_NUMBER}
+                </p>
+              </div>
+              <div>
+                <p className={styles.cardContentTitle}>unstaked</p>
+                <p className={styles.cardContentValue} data-cy="unstaked">
+                  {data ? formatAndRoundApi3(data.userUnstaked) : UNKNOWN_NUMBER}
+                </p>
+              </div>
+            </div>
+          }
+          contentFooter={
+            !pendingUnstake && (
+              <Button
+                type="secondary-neutral"
+                size="xs"
+                onClick={() => setOpenModal('unstake')}
+                disabled={!canInitiateUnstake}
+              >
                 Initiate Unstake
               </Button>
-            }
-          />
+            )
+          }
+          gradientBorder={!!pendingUnstake}
+        >
           {pendingUnstake && (
             <PendingUnstakePanel
               amount={pendingUnstake.tokensAtUnstakeTime}
@@ -141,8 +181,10 @@ const Dashboard = () => {
               unstakeDate={pendingUnstake.unstakeDate}
             />
           )}
-        </div>
+        </Card>
       </div>
+
+      {/* Modals */}
       {data && (
         <Modal open={openModal === 'deposit'} onClose={closeModal}>
           <TokenDepositForm allowance={data.allowance} onClose={closeModal} walletBalance={data.userApi3Balance} />
@@ -150,7 +192,7 @@ const Dashboard = () => {
       )}
       <Modal open={openModal === 'withdraw'} onClose={closeModal}>
         <TokenAmountForm
-          title="How many tokens would you like to withdraw?"
+          title="How many API3 tokens would you like to withdraw?"
           action="Withdraw"
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
@@ -168,7 +210,7 @@ const Dashboard = () => {
       </Modal>
       <Modal open={openModal === 'stake'} onClose={closeModal}>
         <TokenAmountForm
-          title="How many tokens would you like to stake?"
+          title="How many API3 tokens would you like to stake?"
           action="Stake"
           onConfirm={async (parsedValue: BigNumber) => {
             if (!api3Pool) return;
@@ -186,7 +228,7 @@ const Dashboard = () => {
       </Modal>
       <Modal open={openModal === 'unstake'} onClose={closeModal}>
         <TokenAmountForm
-          title="How many tokens would you like to unstake?"
+          title="How many API3 tokens would you like to unstake?"
           action="Initiate Unstaking"
           onConfirm={(value) => {
             // NOTE: We are explicitly not closing modal, because it triggers the confirmation modal

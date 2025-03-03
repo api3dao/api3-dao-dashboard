@@ -1,4 +1,14 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
+
+.formContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
 
 .tokenAmountFormToken {
   font-weight: 500;
@@ -7,13 +17,56 @@
 }
 
 .tokenFormBalance {
-  margin-top: $space-xl;
+  @include font-body-11;
+  color: $color-dark-blue-100;
+  margin-top: 12px;
+  text-align: center;
+
+  @media (min-width: $sm) {
+    margin-top: 16px;
+  }
+}
+
+.valueButton {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  @include font-body-11;
+  color: inherit;
 }
 
 .tokenAmountFormActions {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
+
+  &.columnReverse {
+    flex-direction: column-reverse;
+  }
+
+  > * {
+    width: 100%;
+  }
+
+  @media (min-width: $sm) {
+    flex-direction: row;
+    gap: 32px;
+    justify-content: center;
+
+    &.columnReverse {
+      flex-direction: row;
+    }
+
+    > * {
+      width: auto;
+    }
+  }
 }
 
 .tokenAmountFormApprove {
@@ -21,29 +74,58 @@
 }
 
 .tokenAmountFormError {
-  margin-top: $space-xl;
-  color: $error-color;
+  @include font-body-15;
+  margin-top: 24px;
+  color: $color-action-error-800;
   text-align: center;
+
+  @media (min-width: $sm) {
+    @include font-body-9;
+  }
 }
 
 .tokenAmountFormHelperText {
-  margin-top: $space-xl;
-  color: $secondary-color;
-  text-align: center;
+  display: flex;
+
+  svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    color: $color-action-warning-600;
+  }
+
+  @include font-body-15;
+  margin-top: 24px;
+  color: $color-dark-blue-400;
+  padding: 0 24px;
+  text-wrap: pretty;
+
+  @media (min-width: $sm) {
+    @include font-body-12;
+    padding: 0;
+  }
 }
 
 .inputWrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-}
+  gap: 10px;
+  width: 100%;
+  flex-wrap: wrap;
 
-.maxButton {
-  button {
-    margin: 0 0 0 $space-sm;
+  & > :first-child {
+    overflow: hidden;
+    min-width: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
   }
-}
 
-.cancelButton {
-  margin-right: $space-lg;
+  @media (min-width: $sm) {
+    & > :first-child {
+      min-width: 25%;
+    }
+  }
 }

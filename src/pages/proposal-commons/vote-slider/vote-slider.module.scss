@@ -1,4 +1,5 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
 
 $border-radius: 100px;
 
@@ -7,19 +8,53 @@ $border-radius: 100px;
   align-items: flex-start;
   justify-content: center;
   flex: 1;
+
+  @media (min-width: $sm) {
+    width: 224px;
+
+    &.large {
+      width: 544px;
+    }
+  }
+
+  @media (min-width: $md) {
+    &.large {
+      width: 660px;
+    }
+  }
 }
 
 .barWrapper {
   flex: 1;
-  margin-left: $space-sm;
-  margin-right: $space-sm;
+  margin: 0 4px;
 }
 
 .barNames {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 2 * $space-xl $space-sm;
+  @include font-body-10;
+  margin-bottom: 24px;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  @media (min-width: $sm) {
+    &.large {
+      width: 544px;
+    }
+  }
+
+  @media (min-width: $md) {
+    @include font-body-4;
+
+    &.large {
+      width: 660px;
+    }
+  }
 }
 
 .bar {
@@ -28,7 +63,7 @@ $border-radius: 100px;
   width: 100%;
   display: flex;
   align-items: center;
-  border: 1px solid $black-line-color;
+  border: 1px solid $color-dark-blue-25;
   border-radius: $border-radius;
   padding: 0 2px;
   box-sizing: border-box;
@@ -39,39 +74,73 @@ $border-radius: 100px;
   display: flex;
   width: 1px;
   height: calc(100% - 6px);
-  background-color: $black-line-color;
+  background-color: $color-dark-blue-400;
 }
 
 .for {
   height: calc(100% - 4px);
   border-radius: $border-radius;
-  background: $green-color;
+  background-color: $color-action-success-500;
 }
 
 .against {
   height: calc(100% - 4px);
   border-radius: $border-radius;
-  background: $pink-color;
+  background-color: $color-action-error-600;
   margin-left: auto;
 }
 
 .grayOut {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: $color-gray-300;
 }
 
 .voteInfo {
   display: flex;
   justify-content: space-between;
-  margin-top: 6px;
-  font-weight: 500;
+  margin-top: 4px;
+  @include font-body-14;
+  color: $color-dark-blue-400;
+
+  .lost {
+    color: $color-dark-blue-50;
+  }
 }
 
 .voteIcon {
-  height: 8px;
-  margin-top: 5px;
+  margin-top: 2px;
+  width: 14px;
+  height: 14px;
+  color: $color-dark-blue-25;
 
-  &.large {
-    height: 16px;
-    margin-top: 1px;
+  &.positive {
+    color: $color-action-success-600;
+  }
+
+  &.negative {
+    color: $color-action-error-600;
+  }
+}
+
+.large {
+  .barWrapper {
+    margin: 0;
+  }
+
+  .voteInfo {
+    @include font-body-12;
+
+    @media (min-width: $md) {
+      @include font-body-6;
+    }
+  }
+
+  .voteIcon {
+    height: 18px;
+    width: 18px;
+
+    @media (min-width: $md) {
+      height: 20px;
+      width: 20px;
+    }
   }
 }

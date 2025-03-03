@@ -1,12 +1,4 @@
-import {
-  filterAlphanumerical,
-  getDays,
-  getHours,
-  getMinutes,
-  getSeconds,
-  insertInBetween,
-  isErrorReportingAllowed,
-} from './generic';
+import { filterAlphanumerical, getDays, getHours, getMinutes, getSeconds } from './generic';
 
 test('getDays', () => {
   const twelveDays = 1000 * 60 * 60 * 24 * 12;
@@ -44,25 +36,4 @@ test('filterAlphanumerical', () => {
   expect(filterAlphanumerical('\\test\\Red\\Bob-%./"FredNew')).toEqual('testRedBobFredNew');
   expect(filterAlphanumerical('')).toEqual('');
   expect(filterAlphanumerical(' \t\n')).toEqual('');
-});
-
-test('insertInBetween', () => {
-  const array = [1, 2, 3];
-  const joinLike: Array<string | number> = insertInBetween(array, '|'); // returns Array<string | number>
-  expect(joinLike).toEqual([1, '|', 2, '|', 3]);
-
-  const joinLikeFn: Array<string | number> = insertInBetween(array, () => '|'); // returns Array<string | number>
-  expect(joinLikeFn).toEqual([1, '|', 2, '|', 3]);
-
-  expect(insertInBetween([], '|')).toEqual([]);
-  expect(insertInBetween([1], '|')).toEqual([1]);
-  expect(insertInBetween([1, 2], undefined)).toEqual([1, undefined, 2]);
-});
-
-test('isErrorReportingAllowed', () => {
-  expect(isErrorReportingAllowed(null)).toBe(false);
-  expect(isErrorReportingAllowed('random-value')).toBe(false);
-  expect(isErrorReportingAllowed('false')).toBe(false);
-
-  expect(isErrorReportingAllowed('true')).toBe(true);
 });

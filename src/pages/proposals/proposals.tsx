@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Button from '../../components/button';
 import Layout from '../../components/layout';
 import { Modal } from '../../components/modal';
-import BorderedBox, { Header } from '../../components/bordered-box/bordered-box';
 import { TooltipChecklist } from '../../components/tooltip';
 import Treasury from '../proposal-commons/treasury';
 import { useApi3Token, useApi3Voting, useApi3AgentAddresses } from '../../contracts';
@@ -25,7 +24,6 @@ import Delegation from './delegation';
 import { useChainData } from '../../chain-data';
 import { useLoadDashboardData } from '../../logic/dashboard';
 import { formatApi3, handleTransactionError, images, round } from '../../utils';
-import globalStyles from '../../styles/global-styles.module.scss';
 import styles from './proposals.module.scss';
 
 const Proposals = () => {
@@ -66,7 +64,7 @@ const Proposals = () => {
         <>
           <div>You haven't created a proposal in the last 7 days.</div>
           {createNewProposal && !proposalCooldownOver && (
-            <div className={styles.checklistHelperText}>
+            <div>
               {createNewProposal.lastProposalDeltaInDays > 0
                 ? `Last proposal created ${createNewProposal.lastProposalDeltaInDays} days ago.`
                 : `Last proposal created less than 24 hours ago.`}
@@ -113,28 +111,30 @@ const Proposals = () => {
 
   return (
     <Layout title="Governance">
-      <div className={styles.proposalsHeader}>
+      <div className={styles.governanceHeader}>
         <Delegation />
         <Treasury />
       </div>
 
-      <BorderedBox
-        header={
-          <Header>
-            <h5>Active Proposals</h5>
-            <div>
-              <Button onClick={() => setOpenNewProposalModal(true)} size="large" disabled={!canCreateNewProposal}>
-                + New Proposal
-              </Button>
-              <TooltipChecklist items={newProposalChecklistItems}>
-                <img src={images.help} alt="new proposal help" className={globalStyles.helpIcon} />
-              </TooltipChecklist>
-            </div>
-          </Header>
-        }
-        content={<ProposalList proposals={sortedProposals} type="active" />}
-        noMobileBorders
-      />
+      <div className={styles.proposalsHeader}>
+        <h5>Active Proposals</h5>
+        <div className={styles.newProposalButtonWrapper}>
+          <Button
+            type="secondary"
+            onClick={() => setOpenNewProposalModal(true)}
+            size="sm"
+            disabled={!canCreateNewProposal}
+            className={styles.newProposalButton}
+          >
+            + New Proposal
+          </Button>
+          <TooltipChecklist items={newProposalChecklistItems}>
+            <img src={images.helpOutline} alt="new proposal help" />
+          </TooltipChecklist>
+        </div>
+      </div>
+      <ProposalList proposals={sortedProposals} type="active" />
+
       <Modal open={openNewProposalModal} onClose={() => setOpenNewProposalModal(false)} size="large">
         <NewProposalForm
           onClose={() => setOpenNewProposalModal(false)}

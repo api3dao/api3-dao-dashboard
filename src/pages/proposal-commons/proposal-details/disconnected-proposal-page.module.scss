@@ -1,0 +1,30 @@
+@import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  img {
+    width: 200px;
+    height: 160px;
+
+    @media (min-width: $sm) {
+      width: 400px;
+      height: 320px;
+    }
+  }
+
+  h1 {
+    @include font-heading-10;
+    color: $color-dark-blue-400;
+    text-align: center;
+    margin: 40px 0 24px 0;
+
+    @media (min-width: $sm) {
+      @include font-heading-7;
+      margin: 40px 0 24px 0;
+    }
+  }
+}

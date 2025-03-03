@@ -1,12 +1,10 @@
 import { BigNumber } from 'ethers';
 import { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import BorderedBox, { Header } from '../../../components/bordered-box/bordered-box';
 import Button from '../../../components/button';
 import { useApi3Pool } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
 import { formatAndRoundApi3, getDays, getHours, getMinutes, getSeconds } from '../../../utils';
-import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './pending-unstake-panel.module.scss';
 import { handleTransactionError } from '../../../utils';
 
@@ -77,55 +75,47 @@ const PendingUnstakePanel = (props: Props) => {
   };
 
   return (
-    <BorderedBox
-      header={
-        <Header alignCenter>
-          <p className={styles.pendingUnstakeTitle}>Pending API3 tokens unstaking</p>
-        </Header>
-      }
-      content={
-        <div className={styles.pendingUnstakeContent} data-cy="pending-unstake">
-          <div className={classNames(styles.pendingUnstakeRow, styles.amount)}>
-            <p className={styles.pendingUnstakeName}>Amount</p>
-            <h5 data-cy="amount">{formatAndRoundApi3(amount)}</h5>
-          </div>
-          <div className={classNames(styles.pendingUnstakeRow, { [globalStyles.tertiaryColor]: canUnstake })}>
-            <p className={styles.pendingUnstakeName}>Cooldown</p>
-            <div className={styles.pendingUnstakeCountdown}>
-              <div className={styles.pendingUnstakeCountdownItem}>
-                <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerDays}</p>
-                <p className={styles.shortcut}>D</p>
-              </div>
-              <div className={styles.colon}>:</div>
-              <div className={styles.pendingUnstakeCountdownItem}>
-                <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerHours}</p>
-                <p className={styles.shortcut}>HR</p>
-              </div>
-              <div className={styles.colon}>:</div>
-              <div className={styles.pendingUnstakeCountdownItem}>
-                <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerMinutes}</p>
-                <p className={styles.shortcut}>MIN</p>
-              </div>
-              <div className={styles.colon}>:</div>
-              <div className={styles.pendingUnstakeCountdownItem}>
-                <p className={classNames(globalStyles.textSmall, globalStyles.medium)}>{timerSeconds}</p>
-                <p className={styles.shortcut}>SEC</p>
-              </div>
+    <div className={styles.pendingUnstakePanel}>
+      <p className={styles.pendingUnstakeTitle}>Pending API3 tokens unstaking</p>
+      <div className={styles.pendingUnstakeContent} data-cy="pending-unstake">
+        <div className={classNames(styles.pendingUnstakeRow, styles.amount)}>
+          <p className={styles.pendingUnstakeName}>Amount</p>
+          <h5 data-cy="amount">{formatAndRoundApi3(amount)}</h5>
+        </div>
+        <div className={styles.pendingUnstakeRow}>
+          <p className={styles.pendingUnstakeName}>Cooldown</p>
+          <div className={styles.pendingUnstakeCountdown}>
+            <div className={styles.pendingUnstakeCountdownItem}>
+              <p>{timerDays}</p>
+              <p className={styles.shortcut}>D</p>
+            </div>
+            <div className={styles.colon}>:</div>
+            <div className={styles.pendingUnstakeCountdownItem}>
+              <p>{timerHours}</p>
+              <p className={styles.shortcut}>HR</p>
+            </div>
+            <div className={styles.colon}>:</div>
+            <div className={styles.pendingUnstakeCountdownItem}>
+              <p>{timerMinutes}</p>
+              <p className={styles.shortcut}>MIN</p>
+            </div>
+            <div className={styles.colon}>:</div>
+            <div className={styles.pendingUnstakeCountdownItem}>
+              <p>{timerSeconds}</p>
+              <p className={styles.shortcut}>SEC</p>
             </div>
           </div>
-          <div className={styles.pendingUnstakeActions}>
-            <Button type="link" onClick={handleUnstake} disabled={!canUnstake}>
-              Unstake
-            </Button>
-            <Button onClick={handleUnstakeAndWithdraw} disabled={!canUnstakeAndWithdraw}>
-              Unstake and Withdraw
-            </Button>
-          </div>
         </div>
-      }
-      borderColor="green"
-      borderBottom
-    />
+        <div className={styles.pendingUnstakeActions}>
+          <Button size="xs" type="primary" onClick={handleUnstakeAndWithdraw} disabled={!canUnstakeAndWithdraw}>
+            Unstake and Withdraw
+          </Button>
+          <Button size="xs" type="secondary-neutral" onClick={handleUnstake} disabled={!canUnstake}>
+            Unstake
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

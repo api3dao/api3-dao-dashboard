@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { abbrStr } from '../../../chain-data/helpers';
 import DelegateVotesForm from '../forms/delegate/delegate-form';
-import globalStyles from '../../../styles/global-styles.module.scss';
 import { useChainData } from '../../../chain-data';
 import Button from '../../../components/button';
 import { Modal } from '../../../components/modal';
@@ -12,12 +11,13 @@ import { handleTransactionError } from '../../../utils';
 import { images } from '../../../utils';
 import { TooltipChecklist } from '../../../components/tooltip';
 import styles from './delegation.module.scss';
-import classNames from 'classnames';
+import { useWindowDimensions } from '../../../hooks/use-window-dimensions';
 
 const Delegation = () => {
   // TODO: Retrieve only "userStaked" from the chain instead of loading all staking data (and remove useLoadDashboardData call)
   const { signer, delegation, dashboardState, setChainData, transactions } = useChainData();
   const api3Pool = useApi3Pool();
+  const { isMobile } = useWindowDimensions();
 
   const [openDelegationModal, setOpenDelegationModal] = useState(false);
   const [openChooseDelegateActionModal, setOpenChooseDelegateActionModal] = useState(false);
@@ -44,19 +44,28 @@ const Delegation = () => {
     <>
       {delegation?.delegate ? (
         <div>
-          <p className={classNames(globalStyles.secondaryColor, globalStyles.bold)} data-cy="delegated-to">
-            Delegated to: {delegation.delegateName ? delegation.delegateName : abbrStr(delegation.delegate)}
+          <p data-cy="delegated-to">
+            <span className={styles.delegatedTitle}>Delegated to: </span>
+            <span className={styles.delegatedAddress}>
+              {delegation.delegateName
+                ? delegation.delegateName
+                : isMobile
+                  ? abbrStr(delegation.delegate)
+                  : delegation.delegate}
+            </span>
           </p>
           <Button
-            className={styles.proposalsLink}
-            type="text"
+            className={styles.delegateButton}
+            type="link-blue"
+            size="sm"
+            md={{ size: 'lg' }}
             onClick={() => setOpenChooseDelegateActionModal(true)}
             disabled={!canDelegate && !canUndelegate}
           >
             Update delegation
           </Button>
           <TooltipChecklist items={delegateChecklistItems}>
-            <img src={images.help} alt="delegation help" className={globalStyles.helpIcon} />
+            <img src={images.helpOutline} alt="delegation help" className={styles.helpIcon} />
           </TooltipChecklist>
           <Modal open={openChooseDelegateActionModal} onClose={() => setOpenChooseDelegateActionModal(false)}>
             <ChooseDelegateAction
@@ -83,17 +92,19 @@ const Delegation = () => {
         </div>
       ) : (
         <div>
-          <p className={classNames(globalStyles.secondaryColor, globalStyles.bold)}>Undelegated</p>
+          <p className={styles.delegatedTitle}>Undelegated</p>
           <Button
-            className={styles.proposalsLink}
-            type="text"
+            className={styles.delegateButton}
+            type="link-blue"
+            size="sm"
+            md={{ size: 'lg' }}
             onClick={() => setOpenDelegationModal(true)}
             disabled={!canDelegate}
           >
             Delegate
           </Button>
           <TooltipChecklist items={delegateChecklistItems}>
-            <img src={images.help} alt="delegation help" className={globalStyles.helpIcon} />
+            <img src={images.helpOutline} alt="delegation help" className={styles.helpIcon} />
           </TooltipChecklist>
         </div>
       )}

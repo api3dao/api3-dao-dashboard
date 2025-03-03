@@ -1,80 +1,63 @@
 @import '../../styles/variables.module.scss';
-
-.buttonWrapper {
-  display: inline-block;
-  &.disabled {
-    opacity: 0.4;
-    pointer-events: none;
-  }
-
-  &:hover {
-    transform: scale(1.02);
-  }
-}
+@import '../../styles/fonts.module.scss';
+@import './variants/primary.module.scss';
+@import './variants/secondary.module.scss';
+@import './variants/secondary-neutral.module.scss';
+@import './variants/tertiary-color.module.scss';
+@import './variants/link-blue.module.scss';
+@import './variants/link-gray.module.scss';
+@import './variants/menu-link-secondary.module.scss';
+@import './variants/text-blue.module.scss';
+@import './variants/text-gray.module.scss';
 
 .button {
   background-color: transparent;
-  display: flex;
+  text-decoration: none;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: $button-color;
   border-width: 1px;
   border-style: solid;
-  outline: none;
   cursor: pointer;
+  height: fit-content;
+
+  &.disabled {
+    pointer-events: none;
+  }
 
   &.primary {
-    border-image-source: $primary-border;
-    border-image-slice: 1;
+    @include button-primary;
   }
 
   &.secondary {
-    border-color: $secondary-border;
+    @include button-secondary;
   }
 
-  &.normal {
-    font-size: $text-small;
-    line-height: $lh-small;
-    padding: 17px $space-lg;
-
-    @media (max-width: $max-md) {
-      padding: $space-md;
-    }
+  &.secondary-neutral {
+    @include button-secondary-neutral;
   }
 
-  &.large {
-    font-size: $text-normal;
-    line-height: 22px;
-    padding: 20px 44px;
-
-    @media (max-width: $max-md) {
-      font-size: $text-small;
-      padding: $space-md $space-xl;
-    }
+  &.tertiary-color {
+    @include button-tertiary-color;
   }
 
-  &.link {
-    color: $link-color;
-    border: 0;
-    text-decoration: underline;
-    padding: 0;
+  &.link-blue {
+    @include link-blue;
   }
 
-  &.text {
-    border: 0;
-    text-decoration: underline;
-    padding: 0;
+  &.link-gray {
+    @include link-gray;
   }
-}
 
-.buttonUnderline {
-  margin-top: $space-xxs;
-  height: 1px;
-  width: 100%;
-  &.primary {
-    background: linear-gradient(to left, $green-color, $violet-color);
+  &.menu-link-secondary {
+    @include menu-link-secondary;
   }
-  &.secondary {
-    background-color: $secondary-border;
+
+  &.text-blue {
+    @include text-blue;
+  }
+
+  &.text-gray {
+    @include text-gray;
   }
 }

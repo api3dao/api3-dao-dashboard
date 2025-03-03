@@ -1,0 +1,492 @@
+@mixin font-body-2 {
+  font-family: Karla;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%; /* 30px */
+}
+
+@mixin font-body-3 {
+  font-family: Karla;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 30px */
+}
+
+@mixin font-body-4 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 27px */
+}
+
+@mixin font-body-5 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%; /* 27px */
+}
+
+@mixin font-body-6 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 27px */
+}
+
+@mixin font-body-7 {
+  font-family: Karla;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%; /* 22.4px */
+}
+
+@mixin font-body-8 {
+  font-family: Karla;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 140%; /* 22.4px */
+}
+
+@mixin font-body-9 {
+  font-family: Karla;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 22.4px */
+}
+
+@mixin font-body-10 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%; /* 19.6px */
+}
+
+@mixin font-body-11 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 140%; /* 19.6px */
+}
+
+@mixin font-body-12 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 19.6px */
+}
+
+@mixin font-body-13 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%; /* 16.8px */
+}
+
+@mixin font-body-14 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 140%; /* 16.8px */
+}
+
+@mixin font-body-15 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 16.8px */
+}
+
+@mixin font-body-16 {
+  font-family: Karla;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%; /* 16.8px */
+}
+
+@mixin font-body-17 {
+  font-family: Karla;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 140%; /* 16.8px */
+}
+
+@mixin font-body-18 {
+  font-family: Karla;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 16.8px */
+}
+
+@mixin font-codeSnippet-1 {
+  font-family: 'Source Code Pro';
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%;
+}
+
+@mixin font-description-3 {
+  font-family: Karla;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 33px */
+}
+
+@mixin font-description-4 {
+  font-family: Karla;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 150%; /* 30px */
+}
+
+@mixin font-description-5 {
+  font-family: Karla;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 30px */
+}
+
+@mixin font-description-6 {
+  font-family: Karla;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 30px */
+}
+
+@mixin font-description-7 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 150%; /* 27px */
+}
+
+@mixin font-description-8 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 27px */
+}
+
+@mixin font-description-9 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; /* 23.4px */
+  letter-spacing: -0.5px;
+}
+
+@mixin font-heading-2 {
+  font-family: Poppins;
+  font-size: 56px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 110%; /* 61.6px */
+  letter-spacing: 1px;
+}
+
+@mixin font-heading-3 {
+  font-family: Poppins;
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 110%; /* 52.8px */
+  letter-spacing: 1px;
+}
+
+@mixin font-heading-4 {
+  font-family: Poppins;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 110%; /* 44px */
+  letter-spacing: 1px;
+}
+
+@mixin font-heading-5 {
+  font-family: Poppins;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%;
+  letter-spacing: 0.5px;
+}
+
+@mixin font-heading-6 {
+  font-family: Poppins;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%; /* 41.6px */
+  letter-spacing: 0.5px;
+}
+
+@mixin font-heading-7 {
+  font-family: Poppins;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%; /* 28.6px */
+  letter-spacing: 0.5px;
+}
+
+@mixin font-heading-8 {
+  font-family: Poppins;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%; /* 26px */
+  letter-spacing: 0.5px;
+}
+
+@mixin font-heading-9 {
+  font-family: Poppins;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%; /* 23.4px */
+  letter-spacing: 0.5px;
+}
+
+@mixin font-heading-10 {
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%; /* 20.8px */
+  letter-spacing: 0.16px;
+}
+
+@mixin font-link-1 {
+  font-family: Karla;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%; /* 22.4px */
+}
+
+@mixin font-link-2 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%; /* 19.6px */
+}
+
+@mixin font-link-3 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%; /* 16.8px */
+}
+
+@mixin font-overline-1 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 170%; /* 20.4px */
+}
+
+@mixin font-overline-2 {
+  font-family: Karla;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 170%; /* 17px */
+}
+
+@mixin font-subtitle-2 {
+  font-family: Karla;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%; /* 41.6px */
+  letter-spacing: -0.64px;
+}
+
+@mixin font-subtitle-3 {
+  font-family: Karla;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; /* 41.6px */
+  letter-spacing: -0.64px;
+}
+
+@mixin font-subtitle-5 {
+  font-family: Karla;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%; /* 28.6px */
+  letter-spacing: -0.44px;
+}
+
+@mixin font-subtitle-6 {
+  font-family: Karla;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; /* 28.6px */
+  letter-spacing: -0.44px;
+}
+
+@mixin font-subtitle-8 {
+  font-family: Karla;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 30px */
+  letter-spacing: -0.4px;
+}
+
+@mixin font-subtitle-9 {
+  font-family: Karla;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 30px */
+  letter-spacing: -0.4px;
+}
+
+@mixin font-subtitle-11 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%; /* 25.2px */
+  letter-spacing: -0.36px;
+}
+
+@mixin font-subtitle-12 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 140%; /* 25.2px */
+  letter-spacing: -0.36px;
+}
+
+@mixin font-button-1 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%; /* 18px */
+  letter-spacing: 0.3px;
+}
+
+@mixin font-button-2 {
+  font-family: Karla;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%; /* 16px */
+  letter-spacing: 0.3px;
+}
+
+@mixin font-button-3 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%; /* 14px */
+  letter-spacing: 0.2px;
+}
+
+@mixin font-tagline-2 {
+  font-family: Karla;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 27px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-6 {
+  font-family: Karla;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%; /* 24px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-7 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 150%; /* 21px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-8 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 21px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-9 {
+  font-family: Karla;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%; /* 21px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-10 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 150%; /* 18px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-11 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 18px */
+  text-transform: uppercase;
+}
+
+@mixin font-tagline-12 {
+  font-family: Karla;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%; /* 18px */
+  text-transform: uppercase;
+}

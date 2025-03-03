@@ -1,7 +1,32 @@
-@import '../../../styles//variables.module.scss';
+@import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
 
-.proposalsLink {
-  button._normal {
-    padding: 0;
+.delegatedTitle {
+  @include font-body-11;
+  color: $color-dark-blue-100;
+  margin-right: 8px;
+}
+
+.delegatedAddress {
+  @include font-body-12;
+  color: $color-dark-blue-400;
+}
+
+.delegateButton {
+  padding: 0;
+}
+
+.helpIcon {
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+@media (min-width: $md) {
+  .delegatedTitle {
+    @include font-body-7;
+  }
+
+  .delegatedAddress {
+    @include font-body-9;
   }
 }

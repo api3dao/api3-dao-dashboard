@@ -4,7 +4,7 @@ import { closeErrorReportingNotice } from '../support/common';
 
 const pressTabAndAssertFocusOutline = (selector: () => Cypress.Chainable<any>) => {
   cy.tab();
-  selector().should('have.css', 'box-shadow', 'rgb(255, 255, 255) 0px 0px 2.5px 1.5px');
+  selector().should('have.css', 'box-shadow', 'rgb(3, 4, 18) 0px 0px 2.5px 1.5px');
 };
 
 describe('keyboard navigation and accessibility', () => {
@@ -13,16 +13,20 @@ describe('keyboard navigation and accessibility', () => {
 
     closeErrorReportingNotice();
     pressTabAndAssertFocusOutline(() => cy.dataCy('api3-logo'));
-    pressTabAndAssertFocusOutline(() => cy.findAllByText('Connect Wallet').filter(':visible'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('Connect Wallet').parent().filter(':visible'));
 
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Staking').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Governance').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('History').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('DAO Docs').filter(':visible').closest('a'));
 
-    pressTabAndAssertFocusOutline(() => cy.findByText('About API3'));
-    pressTabAndAssertFocusOutline(() => cy.findByText('Docs'));
+    pressTabAndAssertFocusOutline(() => cy.findByTestId('connect-wallet-staking-btn'));
+    pressTabAndAssertFocusOutline(() => cy.findByText('Api3.org'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Error Reporting'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Github'));
+    pressTabAndAssertFocusOutline(() => cy.findByText('Privacy Policy'));
+    pressTabAndAssertFocusOutline(() => cy.findByText('Privacy and Cookies'));
+    pressTabAndAssertFocusOutline(() => cy.findByText('Terms and Conditions'));
 
     pressTabAndAssertFocusOutline(() => cy.dataCy('api3-logo')); // Completes the TAB cycle
   });
@@ -33,28 +37,28 @@ describe('keyboard navigation and accessibility', () => {
     });
 
     it('uses focus lock (cannot tab outside modal)', () => {
-      cy.findByText('+ Deposit').click();
+      cy.findByText('Deposit').click();
 
       cy.get('#modal').find('input').should('have.focus');
       cy.get('#modal').find('input').type('123');
 
       pressTabAndAssertFocusOutline(() => cy.findByText('Max'));
       pressTabAndAssertFocusOutline(() => cy.findByText('Approve'));
-      pressTabAndAssertFocusOutline(() => cy.get('#modal').find('img')); // Close icon
+      pressTabAndAssertFocusOutline(() => cy.get('#modal').findByTestId('modal-close-button'));
 
       // Focus is returned to the modal input (and it's text is selected)
       cy.tab().get('#modal').find('input').should('have.focus');
-      cy.get('#modal').find('img').click(); // Close the modal
+      cy.get('#modal').findByTestId('modal-close-button').click();
     });
 
     it('can use keyboard to "press" the buttons', () => {
       // Can close the modal by pressing ESC
-      cy.findByText('+ Deposit').click();
+      cy.findByText('Deposit').click();
       cy.get('body').type('{esc}');
       cy.get('#modal').find('input').should('not.exist');
 
       // Can deposit by pressing ENTER when button has focus
-      cy.findByText('+ Deposit').click();
+      cy.findByText('Deposit').click();
       cy.get('#modal').find('input').type('123').tab(); // Tab over "Max" button
       pressTabAndAssertFocusOutline(() => cy.findByText('Approve'));
 

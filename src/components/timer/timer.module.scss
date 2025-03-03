@@ -1,84 +1,99 @@
 @import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
 
 .timer {
   display: inline-flex;
   align-items: center;
-  font-size: $text-xsmall;
-  font-weight: 500;
+  @include font-body-14;
 
   &.large {
     flex-direction: column;
-
-    @media (min-width: $min-md) {
-      align-items: flex-end;
-    }
-
-    @media (max-width: $max-md) {
-      align-items: flex-start;
-    }
-
-    @media (max-width: $max-xs) {
-      display: block;
-    }
+    align-items: flex-start;
 
     .timerContainer {
-      border-top: 1px solid $secondary-black-color;
-      border-bottom: 1px solid $secondary-black-color;
-      padding-top: $space-xs;
-      padding-bottom: 2px;
-      margin-top: $space-xxs;
-      margin-right: 0;
-      margin-left: 0;
-
-      @media (max-width: $max-xs) {
-        justify-content: center;
-      }
+      width: 100%;
+      justify-content: center;
+      border-top: 1px solid $color-dark-blue-10;
+      border-bottom: 1px solid $color-dark-blue-10;
+      padding: 8px 0 12px 0;
+      margin: 8px 0;
     }
 
+    .status {
+      margin-left: 8px;
+    }
+
+    .unit {
+      @include font-body-17;
+    }
+
+    .timedOutNumber,
     .timerNumber {
-      font-size: $text-large;
+      @include font-heading-10;
+      padding: 4px 0;
     }
 
     .timerWrap {
-      min-width: 35px;
+      min-width: 40px;
       flex-direction: column;
+      gap: 0px;
       margin: 0;
-
-      & > * {
-        margin-right: 0;
-      }
+      align-items: center;
     }
 
     .timerColon {
-      font-size: $text-large;
-      margin: 0 $space-xs;
+      @include font-heading-10;
+      margin: 0 4px;
+    }
+
+    @media (min-width: $md) {
+      align-items: flex-end;
+
+      .timedOutNumber,
+      .timerNumber {
+        @include font-heading-7;
+      }
+
+      .unit {
+        @include font-tagline-12;
+      }
+
+      .timerColon {
+        @include font-heading-7;
+        margin: 0 8px;
+      }
     }
   }
+}
+
+.status {
+  color: $color-dark-blue-100;
+}
+
+.timerNumber {
+  color: $color-dark-blue-400;
+}
+
+.timerColon {
+  margin: 0 4px;
+  color: $color-dark-blue-50;
+}
+
+.unit {
+  color: $color-dark-blue-50;
 }
 
 .timerContainer {
   display: flex;
   align-items: center;
-  margin: 0 $space-xxs;
+  margin-left: 4px;
 }
 
 .timerWrap {
   display: flex;
-  align-items: center;
-
-  & > * {
-    margin-right: $space-xxs;
-  }
-
-  & > *:last-child {
-    margin-right: 0;
-  }
+  gap: 4px;
 }
 
-.timerColon {
-  margin: 0 $space-xxs;
-}
-
-.grayOut {
-  color: rgba(255, 255, 255, 0.4);
+.timedOutNumber {
+  color: $color-dark-blue-50;
 }

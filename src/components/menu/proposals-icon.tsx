@@ -1,31 +1,23 @@
 const ProposalsIcon = () => (
-  <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clipPath="url(#clip0)">
-      <path
-        d="M28.7437 26.2949L24.979 20.4768H7.09668V3.02222H28.7437V26.2949Z"
-        stroke="currentColor"
-        strokeMiterlimit="10"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M4.55533 6.80396H2.39062"
-        stroke="currentColor"
-        strokeMiterlimit="10"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M23.0024 23.0949V25.2282H6.15533L2.39062 30.0767V6.80396"
-        stroke="currentColor"
-        strokeMiterlimit="10"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clipPath="url(#clip0_9339_9603)">
+      <g clipPath="url(#clip1_9339_9603)">
+        <path
+          d="M28.5 22.3671H29.125V23.876L28.0581 22.809L28.5 22.3671ZM28.5 3.48828V2.86328H29.125V3.48828H28.5ZM9.5 16.8748V17.4998H8.875V16.8748H9.5ZM23.0078 16.8748V16.2498H23.2667L23.4497 16.4328L23.0078 16.8748ZM9.5 3.48828H8.875V2.86328H9.5V3.48828ZM27.875 22.3671V3.48828H29.125V22.3671H27.875ZM10.125 12.5041V16.8748H8.875V12.5041H10.125ZM9.5 16.2498H23.0078V17.4998H9.5V16.2498ZM23.4497 16.4328L28.9419 21.9252L28.0581 22.809L22.5658 17.3167L23.4497 16.4328ZM28.5 4.11328H9.5V2.86328H28.5V4.11328ZM8.875 12.5041V3.48828H10.125V12.5041H8.875Z"
+          fill="currentColor"
+        />
+        <path
+          d="M3.5 28.5112H2.875V30.0225L3.94244 28.9527L3.5 28.5112ZM3.5 9.58984V8.96484H2.875V9.58984H3.5ZM22.5 23.0065V23.6315H23.125V23.0065H22.5ZM8.99223 23.0065V22.3815H8.73293L8.54979 22.5651L8.99223 23.0065ZM4.125 28.5112V9.58984H2.875V28.5112H4.125ZM3.5 10.2148H9.43479V8.96484H3.5V10.2148ZM21.875 16.876V23.0065H23.125V16.876H21.875ZM22.5 22.3815H8.99223V23.6315H22.5V22.3815ZM8.54979 22.5651L3.05756 28.0698L3.94244 28.9527L9.43467 23.448L8.54979 22.5651Z"
+          fill="currentColor"
+        />
+      </g>
     </g>
     <defs>
-      <clipPath id="clip0">
-        <rect width="27.2941" height="28.0242" fill="white" transform="translate(1.91992 2.53735)" />
+      <clipPath id="clip0_9339_9603">
+        <rect width="32" height="32" fill="white" />
+      </clipPath>
+      <clipPath id="clip1_9339_9603">
+        <rect width="32" height="32" rx="2" fill="white" />
       </clipPath>
     </defs>
   </svg>

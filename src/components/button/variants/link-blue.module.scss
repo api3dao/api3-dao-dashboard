@@ -1,0 +1,52 @@
+@import '../../../styles/fonts.module.scss';
+
+@mixin link-blue {
+  color: $color-blue-500;
+  height: 20px;
+  border: none;
+
+  &.xs {
+    @include font-overline-2;
+  }
+
+  &.sm {
+    @include font-link-3;
+  }
+
+  &.md {
+    @include font-link-2;
+  }
+
+  &.lg {
+    height: 24px;
+    @include font-link-1;
+  }
+
+  &:hover {
+    color: $color-gray-600;
+  }
+
+  &:active {
+    color: $color-blue-600;
+  }
+
+  &:disabled {
+    color: $color-blue-100;
+  }
+
+  &.dark {
+    color: $color-blue-50;
+
+    &:hover {
+      color: $color-base-light;
+    }
+
+    &:active {
+      color: $color-blue-400;
+    }
+
+    &:disabled {
+      color: $color-dark-blue-100;
+    }
+  }
+}

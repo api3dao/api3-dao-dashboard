@@ -2,11 +2,11 @@ import { PendingTransactionMessages, TransactionType } from '../chain-data';
 
 export const messages = {
   // Transaction messages
-  TX_APPROVAL_REJECTED: 'API3 token approval transaction rejected.',
+  TX_APPROVAL_REJECTED: 'Rejected transaction to approve API3 tokens',
   TX_APPROVAL_ERROR: 'Failed to approve API3 token allowance. Please try again.',
-  TX_DEPOSIT_REJECTED: 'API3 token deposit transaction rejected.',
+  TX_DEPOSIT_REJECTED: 'Rejected transaction to deposit API3 tokens',
   TX_DEPOSIT_ERROR: 'Failed to deposit API3 tokens. Please try again.',
-  TX_GENERIC_REJECTED: 'Transaction rejected.',
+  TX_GENERIC_REJECTED: 'Rejected transaction',
   TX_GENERIC_ERROR: 'An error has occurred. Please try again.',
 
   // Validation messages
@@ -37,12 +37,11 @@ export const messages = {
   FAILED_TO_LOAD_VESTING_DATA: 'Failed to load vesting data. Please try again later.',
 };
 
-// TODO: these messages should change depending on the final designs
 export const transactionMessages: { [key in TransactionType]: PendingTransactionMessages } = {
   'approve-deposit': {
     start: 'Approving API3 token allowance...',
     success: 'Success! API3 token allowance approved.',
-    error: 'API3 token allowance failed.',
+    error: 'Failed to approve API3 tokens for deposit. Please try again later.',
   },
   'deposit-only': {
     start: 'Depositing API3 tokens...',

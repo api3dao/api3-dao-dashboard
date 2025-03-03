@@ -1,22 +1,31 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
 
 .backBtn {
-  button {
-    color: $secondary-color;
-    text-decoration: none !important;
+  color: $color-dark-blue-50;
+  text-decoration: none !important;
+  @include font-body-15;
+
+  img {
+    margin: 0 4px;
+  }
+
+  @media (min-width: $md) {
+    @include font-body-9;
+
+    img {
+      margin: 0 12px;
+      width: 12px;
+      height: 12px;
+    }
   }
 }
 
 .proposalDetailsSubheader {
   display: flex;
   align-items: center;
-  margin-bottom: $space-xs;
-  & > * {
-    margin-right: $space-md;
-  }
-  & > *:last-child {
-    margin-right: 0;
-  }
+  margin-bottom: 16px;
+  margin-top: 40px;
 }
 
 .scrollX {
@@ -24,31 +33,34 @@
 }
 
 .proposalDetailsHeader {
-  margin-bottom: $space-lg;
+  margin-bottom: 64px;
 
-  @media (min-width: $min-md) {
+  @media (min-width: $md) {
     display: flex;
     justify-content: space-between;
   }
 }
 
 .proposalDetailsTitle {
-  font-size: $heading-4;
-  line-height: $lh-heading-4;
-  font-weight: 600;
-  margin-right: $space-xl;
-  margin-bottom: $space-lg;
+  @include font-heading-7;
+  margin-bottom: 12px;
 
-  @media (max-width: $max-md) {
-    font-size: $heading-5;
-    line-height: $lh-heading-5;
-    margin-right: 0;
+  @media (min-width: $sm) {
+    @include font-heading-6;
+    margin-top: 24px;
+  }
+
+  @media (min-width: $md) {
+    @include font-heading-4;
+    margin-right: 24px;
   }
 }
 
 .proposalTag {
-  @media (max-width: $max-md) {
-    margin-bottom: $space-xl;
+  margin-bottom: 32px;
+
+  @media (min-width: $md) {
+    margin-bottom: 0;
   }
 }
 
@@ -56,84 +68,149 @@
   display: flex;
   flex-direction: column;
 
-  @media (min-width: $min-md) {
+  @media (min-width: $md) {
     align-items: flex-end;
   }
 }
 
 .proposalDetailsVoteSection {
   text-align: center;
-  margin: $space-lg 2 * $space-xxl 2 * $space-xl;
+  margin: 24px 32px;
 
-  & > *:last-child {
-    margin-top: $space-xl;
+  button {
+    width: 110px;
   }
 
-  @media (max-width: $max-md) {
-    margin-right: 0;
-    margin-left: 0;
+  @media (min-width: $sm) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-}
 
-.proposalDetailsSummary {
-  margin: 0 2 * $space-xl 2 * $space-xl;
-
-  @media (max-width: $max-md) {
-    font-size: $text-small;
-    line-height: $lh-small;
-    margin: 0 0 $space-xxl;
+  @media (min-width: $md) {
+    button {
+      width: 150px;
+    }
   }
 }
 
-.address {
-  @media (max-width: $max-md) {
-    overflow-wrap: break-word;
+.summary {
+  margin: 80px 0 40px 0;
+
+  h5 {
+    @include font-heading-9;
+    margin-bottom: 32px;
+
+    @media (min-width: $sm) {
+      @include font-heading-8;
+    }
+
+    @media (min-width: $md) {
+      @include font-heading-7;
+    }
   }
 }
 
 .proposalDetailsItem {
-  margin-top: $space-xl;
-  & > * {
-    margin-bottom: $space-xxs;
-  }
-  & > *:last-child {
-    margin-bottom: 0;
+  overflow-wrap: break-word;
+  @include font-body-9;
+
+  @media (min-width: $md) {
+    @include font-body-6;
   }
 }
 
-.multiline {
-  white-space: pre-wrap;
+.label {
+  @include font-body-7;
+  color: $color-dark-blue-50;
+  margin-top: 24px;
+
+  @media (min-width: $md) {
+    margin-top: 32px;
+  }
 }
 
 .voteButtonHelperText {
-  color: $error-color;
-  font-size: $text-small;
-  margin-top: $space-md;
+  color: $color-action-error-800;
+  margin-top: 16px;
 }
 
 .link {
-  font-size: $text-normal;
+  color: $color-dark-blue-500;
+}
 
-  @media (max-width: $max-md) {
-    font-size: $text-small;
+.voteButtonWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 24px; //offset for the help icon on the right
+
+  @media (min-width: $md) {
+    padding-left: 28px;
+  }
+}
+
+.helpIcon {
+  margin-left: 8px;
+  width: 16px;
+  height: 16px;
+
+  @media (min-width: $md) {
+    width: 20px;
+    height: 20px;
   }
 }
 
 .malicious {
   display: flex;
   align-items: flex-start;
-  background: $pink-color;
-  padding: 1.5rem 1.8rem;
-  border-radius: 3px;
-  margin-bottom: $space-xxl;
+  gap: 8px;
+  background: $color-action-error-10;
+  padding: 16px;
+  border-top: 1px solid $color-action-error-600;
+  border-bottom: 1px solid $color-action-error-600;
+  margin: 72px 0;
+
+  .warningText {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .warningTitle {
+    @include font-body-10;
+  }
+
+  .warningSubtitle {
+    @include font-body-12;
+  }
 
   svg {
-    display: none;
-    margin-top: 0.2ch;
-    margin-right: 0.5ch;
+    color: $color-action-error-600;
+    width: 18px;
+    height: 18px;
+  }
 
-    @media (min-width: $min-md) {
-      display: inline;
+  @media (min-width: $md) {
+    padding: 24px 32px;
+    margin: 64px 0;
+    justify-content: center;
+
+    .warningText {
+      flex-direction: row;
+      gap: 6px;
+    }
+
+    .warningTitle {
+      @include font-body-7;
+    }
+
+    .warningSubtitle {
+      @include font-body-9;
+    }
+
+    svg {
+      width: 22px;
+      height: 22px;
     }
   }
 }

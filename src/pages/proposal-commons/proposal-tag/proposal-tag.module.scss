@@ -1,0 +1,30 @@
+@import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
+
+.tag {
+  display: flex;
+  width: fit-content;
+  gap: 8px;
+  color: $color-dark-blue-400;
+  padding: 5px 10px;
+  border-radius: 0 10px 10px 0;
+  border: 1px solid $color-dark-blue-10;
+  cursor: default;
+
+  .proposalId {
+    @include font-body-14;
+  }
+
+  .proposalType {
+    @include font-body-15;
+    text-transform: capitalize;
+  }
+
+  &.primary {
+    background-color: $color-blue-10;
+  }
+
+  &.secondary {
+    background-color: $color-base-light;
+  }
+}

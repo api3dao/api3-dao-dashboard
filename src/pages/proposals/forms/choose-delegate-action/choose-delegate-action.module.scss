@@ -1,7 +1,46 @@
 @import '../../../../styles/variables.module.scss';
+@import '../../../../styles/fonts.module.scss';
 
 .actions {
-  & > * {
-    margin: 0 $space-sm;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 24px;
+  margin-top: -48px;
+
+  &,
+  > button {
+    width: 100%;
+  }
+
+  @media (min-width: $sm) {
+    flex-direction: row;
+    justify-content: center;
+    gap: 32px;
+    margin-top: -48px;
+
+    > button {
+      width: auto;
+    }
+  }
+}
+
+.confirmationText {
+  margin-top: 24px;
+  text-wrap: pretty;
+  display: flex;
+  align-items: center;
+  color: $color-dark-blue-400;
+  @include font-body-15;
+
+  svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    color: $color-action-warning-600;
+  }
+
+  @media (min-width: $sm) {
+    @include font-body-12;
   }
 }

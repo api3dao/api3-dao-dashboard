@@ -14,7 +14,7 @@ input {
 }
 
 :focus {
-  box-shadow: $primary-color 0 0 2.5px 1.5px;
+  box-shadow: $color-base-dark 0 0 2.5px 1.5px;
 
   // https://css-tricks.com/the-focus-visible-trick/
   &:not(:focus-visible) {
@@ -31,90 +31,10 @@ p {
   margin: 0;
 }
 
-h1 {
-  font-size: 136px;
-  line-height: 164px;
-  font-weight: 600;
-}
-
-h2 {
-  font-size: 91px;
-  line-height: 104px;
-  font-weight: 600;
-}
-
-h3 {
-  font-size: 50px;
-  line-height: 60px;
-  font-weight: 600;
-}
-
-h4 {
-  font-size: 40px;
-  line-height: 52px;
-  font-weight: 600;
-}
-
-h5 {
-  font-size: 27px;
-  line-height: 35px;
-  font-weight: 300;
-}
-
 a {
-  color: $secondary-color;
   border: 0;
   text-decoration: underline;
   padding: 0;
-}
-
-.textNormal {
-  font-size: 18px;
-  line-height: 28px;
-}
-
-.textLarge {
-  font-size: 27px;
-  line-height: 40px;
-}
-
-.textXLarge {
-  font-size: 40px;
-  line-height: 52px;
-}
-
-.textSmall {
-  font-size: 14px;
-  line-height: 17px;
-}
-
-.textXSmall {
-  font-size: 12px;
-  line-height: 18px;
-}
-
-.primaryColor {
-  color: $primary-color;
-}
-
-.secondaryColor {
-  color: $secondary-color;
-}
-
-.tertiaryColor {
-  color: $tertiary-color;
-}
-
-.greenColor {
-  color: $green-color;
-}
-
-.pinkColor {
-  color: $pink-color;
-}
-
-.violetColor {
-  color: $violet-color;
 }
 
 .uppercase {

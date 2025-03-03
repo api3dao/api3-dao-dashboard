@@ -9,11 +9,6 @@ interface Props {
   large?: true;
 }
 
-export const formatVoteStatus = (voterState: keyof typeof VOTER_STATES, wasDelegated: boolean) => {
-  if (VOTER_STATES[voterState] === 'Unvoted') return 'Unvoted';
-  return [VOTER_STATES[voterState], wasDelegated && '(by delegate)'].filter(Boolean).join(' ');
-};
-
 const VoteStatus = (props: Props) => {
   const { voterState, wasDelegated, large } = props;
 
@@ -33,7 +28,10 @@ const VoteStatus = (props: Props) => {
           [styles.votedFor]: VOTER_STATES[voterState] === 'Voted For',
         })}
       >
-        {formatVoteStatus(voterState, wasDelegated)}
+        {VOTER_STATES[voterState]}
+        {VOTER_STATES[voterState] !== 'Unvoted' && wasDelegated && (
+          <div className={styles.votedByDelegate}>(by delegate)</div>
+        )}
       </span>
     </div>
   );

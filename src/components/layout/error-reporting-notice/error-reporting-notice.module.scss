@@ -1,4 +1,6 @@
 @import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
+@import '../../button/variants/link-blue.module.scss';
 @import '../layout.module.scss';
 
 .wrapper {
@@ -8,102 +10,93 @@
   position: fixed;
   width: 100%;
   bottom: 0;
-  height: 120px;
-  background: $black-color;
+  background: $color-dark-blue-700;
+  align-items: center;
 
-  @media (max-width: $max-lg) {
-    height: 120px;
-  }
-
-  @media (max-width: $max-md) {
-    height: 230px;
-  }
-
-  @media (max-width: $max-sm) {
-    height: 300px;
-  }
-}
-
-.gradient {
-  background: linear-gradient(76.31deg, #7ce3cb 2.01%, #7963b2 99.02%);
-  height: 4px;
-}
-
-.closeButton {
-  z-index: 1;
-  height: 16px;
-  align-self: flex-end;
-  margin: 20px 16px;
-  position: absolute;
-  color: $secondary-color;
-  cursor: pointer;
-  transition: transform 0.35s;
-
-  &:hover {
-    transform: scale(1.2);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: $gradient-medium-light;
   }
 }
 
 .content {
-  padding: 0 15vw;
+  padding: 64px 24px 32px 24px;
   display: flex;
-  font-size: $text-small;
   align-items: center;
   justify-content: space-around;
+  gap: 24px;
   flex: 1;
+  flex-direction: column;
+  @include font-body-15;
+  color: $color-gray-200;
 
-  @media (max-width: $max-sm) {
-    flex-direction: column;
-  }
-
-  & > *:not(:last-child) {
-    margin-right: $space-md;
+  @media (min-width: $md) {
+    flex-direction: row;
+    gap: 80px;
+    padding: 24px 0;
+    max-width: 948px;
+    @include font-body-12;
   }
 }
 
-.checkboxWrapper {
-  min-width: 160px; // Make sure the checkbox and its label are on a single line
-  display: flex;
-  align-items: center;
-
-  label {
-    cursor: pointer;
-  }
-
-  input {
-    $size: 16px;
-
-    width: $size;
-    height: $size;
-    margin-right: $space-xs;
-    appearance: none;
-    border: none;
-    border-radius: 4px;
-    outline: none;
-    transition-duration: 0.3s;
-    background-color: $secondary-black-color;
-    cursor: pointer;
-  }
-
-  input:checked {
-    background-color: $green-color;
-  }
-
-  input:checked::before {
-    content: '\2713';
-    text-align: center;
-    color: $secondary-black-color;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
-
-  input:active {
-    border: 2px solid $secondary-black-color;
-  }
+.externalLinkIcon {
+  margin-left: 4px;
 }
 
 .notice {
   max-width: 550px;
+
+  a {
+    text-decoration: none;
+    @include link-blue;
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  .manageSettingsButton {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  @media (min-width: $md) {
+    width: auto;
+    gap: 32px;
+  }
+}
+
+.closeButton {
+  z-index: 1;
+  align-self: flex-end;
+  margin: 20px 24px;
+  position: absolute;
+  color: $color-base-light;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+  background: none;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    color: $color-blue-25;
+  }
+
+  @media (min-width: $md) {
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
 }

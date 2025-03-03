@@ -18,7 +18,7 @@ export const updateImmutablyCurried =
     updateImmutably(state, updateCb);
 
 export const abbrStr = (str: string) => {
-  return str.substr(0, 9) + '...' + str.substr(str.length - 4, str.length);
+  return str.substring(0, 5) + '...' + str.substring(str.length - 4, str.length);
 };
 
 export interface PendingTransactionMessages {
@@ -54,7 +54,7 @@ export const displayPendingTransaction = async (
     // The user "cancelled" the transaction. i.e. it was resent with the same
     // nonce, but higher gas price, value as 0 and data as 0x
     if (ethersError.cancelled) {
-      return notifications.success({ message: 'Transaction cancelled successfully' });
+      return notifications.success({ message: 'Success! Transaction cancelled' });
     }
 
     // The user "sped up" their transaction by resending it with a higher gas price

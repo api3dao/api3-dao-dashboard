@@ -1,16 +1,18 @@
 import { Fragment } from 'react';
 import classNames from 'classnames';
-import { Address, useDisconnect, useEnsName } from 'wagmi';
+import { Address, useDisconnect, useEnsName, useSwitchNetwork } from 'wagmi';
 import { useChainData } from '../../chain-data';
 import { abbrStr } from '../../chain-data/helpers';
-import Button from '../../components/button';
 import ConnectButton from '../connect-button';
-import { Modal as GenericModal } from '../../components/modal';
+import { Modal as GenericModal, ModalHeader } from '../../components/modal';
 import Dropdown, { DropdownMenu, DropdownMenuItem } from '../../components/dropdown';
 import styles from './sign-in.module.scss';
-import globalStyles from '../../styles/global-styles.module.scss';
 import { images } from '../../utils';
 import { SUPPORTED_NETWORKS, useProviderSubscriptions } from '../../contracts';
+import DisconnectIcon from './disconnect-icon';
+import Button from '../button';
+import { ExclamationTriangleFillIcon } from '../icons';
+import { useWindowDimensions } from '../../hooks/use-window-dimensions';
 
 type Props = {
   dark?: boolean;
@@ -29,8 +31,10 @@ const ConnectedStatus = ({ dark, position }: Props) => {
     <div className={styles.connectedStatus} data-cy="connected-status">
       <img src={dark ? images.connectedDark : images.connected} alt="connected icon" />
       <div className={classNames(styles.connectedStatusInfo, { [styles.dark]: dark })}>
-        <p data-cy="account">{userAccountName ? userAccountName : abbrStr(userAccount)}</p>
-        <p className={globalStyles.textXSmall}>Connected to {networkName}</p>
+        <p data-cy="account" className={styles.accountName}>
+          {userAccountName ? userAccountName : abbrStr(userAccount)}
+        </p>
+        <p className={styles.connectedTo}>Connected to {networkName}</p>
       </div>
     </div>
   );
@@ -45,22 +49,22 @@ const ConnectedStatus = ({ dark, position }: Props) => {
       {position === 'mobileMenu' ? (
         <>
           {connectedContent}
-          <Button
-            type="secondary"
-            onClick={handleDisconnect}
-            className={classNames({ [styles.mobileMenuButton]: position === 'mobileMenu' })}
-          >
-            Disconnect Wallet
-          </Button>
+          <button onClick={handleDisconnect} className={styles.mobileMenuButton}>
+            <DisconnectIcon /> Disconnect
+          </button>
         </>
       ) : (
         <Dropdown
+          className={styles.accountDropdown}
+          openClassName={styles.accountDropdownOpen}
           menu={
-            <DropdownMenu position={dark ? 'top' : 'bottom'}>
-              <DropdownMenuItem onClick={handleDisconnect}>Disconnect Wallet</DropdownMenuItem>
+            <DropdownMenu position={dark ? 'top' : 'bottom'} className={styles.accountDropdownMenu}>
+              <DropdownMenuItem className={styles.accountDropdownItem} onClick={handleDisconnect}>
+                <DisconnectIcon /> Disconnect
+              </DropdownMenuItem>
             </DropdownMenu>
           }
-          icon={<img src={dark ? images.arrowDropdownDark : images.arrowDropdown} alt="dropdown icon" />}
+          icon={<img src={images.arrowDropdown} alt="dropdown icon" />}
           alignIcon="start"
         >
           {connectedContent}
@@ -72,7 +76,14 @@ const ConnectedStatus = ({ dark, position }: Props) => {
 
 const SignIn = ({ dark, position }: Props) => {
   const { provider, networkName } = useChainData();
+  const { disconnect } = useDisconnect();
+  const { switchNetwork } = useSwitchNetwork();
+  const { isDesktop } = useWindowDimensions();
   useProviderSubscriptions();
+
+  const switchToMainnet = () => {
+    switchNetwork?.(1);
+  };
 
   const isSignedIn = !!provider;
   const supportedNetworks = SUPPORTED_NETWORKS.filter((name) => {
@@ -86,37 +97,48 @@ const SignIn = ({ dark, position }: Props) => {
     <>
       {!provider && (
         <ConnectButton
-          type={dark ? 'secondary' : 'primary'}
-          className={classNames({
-            [styles.mobileMenuButton]: dark,
-            [styles.fullWidthMobile]: position === 'navigation',
-          })}
+          type={dark ? 'primary' : 'secondary'}
+          size="xxs"
+          md={{ size: 'md' }}
+          className={styles.connectButton}
         >
-          Connect Wallet
+          <span className={styles.connectButtonLabel}>{isDesktop ? 'Connect Wallet' : 'Connect'}</span>
         </ConnectButton>
       )}
       {provider && <ConnectedStatus dark={dark} position={position} />}
       <GenericModal open={!isSupportedNetwork} onClose={() => {}} hideCloseButton>
-        <div className={globalStyles.textCenter}>
-          <img className={styles.unsupportedNetworkIcon} src={images.unsupportedNetwork} alt="network not supported" />
-          <h5>Unsupported chain!</h5>
+        <div className={styles.unsupportedModalContainer}>
+          <ExclamationTriangleFillIcon className={styles.unsupportedNetworkIcon} />
 
-          <p className={globalStyles.mtXl}>
-            Supported networks:{' '}
-            {supportedNetworks
-              .map((network) => <b>{network}</b>)
-              .map((Component, i) => (
-                <Fragment key={i}>
-                  {i !== 0 && ', '}
-                  {Component}
-                </Fragment>
-              ))}
-          </p>
-          <p className={globalStyles.mtXl}>
-            Current network: <b>{networkName}</b>
-          </p>
+          <ModalHeader noMargin>Unsupported chain!</ModalHeader>
 
-          <p className={globalStyles.mtXl}>Please connect your wallet to a supported network.</p>
+          <div className={styles.unsupportedModalContent}>
+            <p>Use your wallet to connect to a supported chain</p>
+            <div>
+              <p>
+                Supported chains:{' '}
+                {supportedNetworks
+                  .map((network) => <span>{network}</span>)
+                  .map((Component, i) => (
+                    <Fragment key={i}>
+                      {i !== 0 && ', '}
+                      {Component}
+                    </Fragment>
+                  ))}
+              </p>
+              <p>
+                Current chain: <b>{networkName}</b>
+              </p>
+              <div className={styles.unsupportedModalButtons}>
+                <Button onClick={disconnect} type="text-blue" size="sm" sm={{ size: 'lg' }}>
+                  Disconnect Wallet
+                </Button>
+                <Button type="primary" size="sm" sm={{ size: 'lg' }} onClick={switchToMainnet}>
+                  Switch to Mainnet
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </GenericModal>
     </>

@@ -60,12 +60,12 @@ Cypress.Commands.add('login', () => {
     // We can't use dataCy directly, because if the element is not present cypress will fail the test
     if (res.find('[data-cy=connected-status]:visible').length !== 0) {
       cy.dataCy('connected-status').filter(':visible').click();
-      cy.findAllByText('Disconnect Wallet').filter(':visible').click();
+      cy.findAllByText('Disconnect').filter(':visible').click();
     }
   });
 
   // Login
-  cy.findByRole('button', { name: 'Connect Wallet' }).click();
+  cy.findAllByRole('button', { name: 'Connect Wallet' }).first().click();
 
   // Web3 Modal
   cy.get('w3m-modal')

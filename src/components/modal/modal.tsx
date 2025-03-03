@@ -3,20 +3,22 @@ import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { useOnAccountOrNetworkChange } from '../../contracts';
-import { images } from '../../utils';
 import styles from './modal.module.scss';
+import { CloseIcon } from '../icons';
+
+type ModalSize = 'normal' | 'large';
 
 interface ModalProps {
   children?: React.ReactNode;
+  size?: ModalSize;
   open: boolean;
   onClose: () => void;
   hideCloseButton?: true;
-  size?: 'small' | 'medium' | 'large';
   closeOnAccountChange?: false;
 }
 
 export const ModalContent = (props: ModalProps) => {
-  const { onClose, hideCloseButton = false, children, size = 'medium' } = props;
+  const { onClose, hideCloseButton = false, children, size = 'normal' } = props;
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -32,23 +34,28 @@ export const ModalContent = (props: ModalProps) => {
 
   return (
     <FocusLock>
-      <div className={styles.modalWrapper}>
+      <div id="modal-wrapper" className={styles.modalWrapper}>
         <div
-          className={classNames(styles.modalBody, {
-            [styles.small]: size === 'small',
-            [styles.medium]: size === 'medium',
-            [styles.large]: size === 'large',
+          className={classNames(styles.modal, {
+            [styles.modalNormal]: size === 'normal',
+            [styles.modalLarge]: size === 'large',
           })}
         >
-          <div className={styles.modal}>
-            <img
-              className={classNames(styles.closeButton, { [styles.hidden]: hideCloseButton })}
-              onClick={onClose}
-              src={images.close}
-              alt="close icon"
-              tabIndex={0}
-              onKeyPress={triggerOnEnter(onClose)}
-            />
+          {!hideCloseButton && (
+            <div className={styles.closeButtonWrapper}>
+              <button onClick={onClose} onKeyDown={triggerOnEnter(onClose)} data-testid="modal-close-button">
+                <CloseIcon />
+                <span className="sr-only">Close modal</span>
+              </button>
+            </div>
+          )}
+
+          <div
+            className={classNames(styles.modalContent, {
+              [styles.modalContentNormal]: size === 'normal',
+              [styles.modalContentLarge]: size === 'large',
+            })}
+          >
             {children}
           </div>
         </div>
@@ -72,21 +79,35 @@ export const Modal = (props: ModalProps) => {
 };
 
 interface ModalHeaderProps {
-  children?: React.ReactNode;
+  children: string;
+  size?: ModalSize;
+  noMargin?: boolean;
 }
 
-export const ModalHeader = (props: ModalHeaderProps) => {
-  if (!props.children) return null;
-  return <h5 className={styles.modalHeader}>{props.children}</h5>;
+export const ModalHeader = ({ children, size, noMargin = false }: ModalHeaderProps) => {
+  if (size === 'large') {
+    return (
+      <div className={classNames(styles.modalHeader, styles.modalHeaderLarge, { [styles.noMargin]: noMargin })}>
+        <h5>{children}</h5>
+      </div>
+    );
+  }
+
+  return (
+    <div className={classNames(styles.modalHeader, styles.modalHeaderNormal, { [styles.noMargin]: noMargin })}>
+      <h5>{children}</h5>
+    </div>
+  );
 };
 
 interface ModalFooterProps {
   children?: React.ReactNode;
+  noMargin?: boolean;
 }
 
-export const ModalFooter = (props: ModalFooterProps) => {
-  if (!props.children) return null;
-  return <div className={styles.modalFooter}>{props.children}</div>;
+export const ModalFooter = ({ children, noMargin }: ModalFooterProps) => {
+  if (!children) return null;
+  return <div className={classNames(styles.modalFooter, { [styles.noMargin]: noMargin })}> {children}</div>;
 };
 
 export const triggerOnEnter =

@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { MAX_ALLOWANCE, useApi3Pool, useApi3Token } from '../../../contracts';
 import { useChainData } from '../../../chain-data';
 import { ModalFooter, ModalHeader } from '../../../components/modal';
-import Input from '../../../components/input';
+import { Input } from '../../../components/input';
 import Button from '../../../components/button';
 import { notifications } from '../../../components/notifications';
 import { isUserRejection, formatApi3, parseApi3, messages, UNKNOWN_NUMBER } from '../../../utils';
-import globalStyles from '../../../styles/global-styles.module.scss';
 import styles from './forms.module.scss';
 import UnstakeHelperText from './unstake-helper-text';
 import { go, goSync } from '@api3/promise-utils';
+import classNames from 'classnames';
 
 interface Props {
   allowance: BigNumber;
@@ -42,7 +42,7 @@ const TokenDepositForm = (props: Props) => {
       setChainData('Save deposit approval', { transactions: [...transactions, { type: 'approve-deposit', tx }] });
     } else {
       if (isUserRejection(goResponse.error)) {
-        return notifications.info({ message: messages.TX_APPROVAL_REJECTED });
+        return notifications.error({ message: messages.TX_APPROVAL_REJECTED });
       }
       return setError(messages.TX_APPROVAL_ERROR);
     }
@@ -72,7 +72,7 @@ const TokenDepositForm = (props: Props) => {
       setChainData(`Save "${type}" transaction`, { transactions: [...transactions, { type, tx }] });
     } else {
       if (isUserRejection(goResponse.error)) {
-        return notifications.info({ message: messages.TX_DEPOSIT_REJECTED });
+        return notifications.error({ message: messages.TX_DEPOSIT_REJECTED });
       }
       return setError(messages.TX_DEPOSIT_ERROR);
     }
@@ -91,41 +91,35 @@ const TokenDepositForm = (props: Props) => {
 
   return (
     <>
-      <ModalHeader>How many tokens would you like to deposit?</ModalHeader>
+      <ModalHeader>How many API3 tokens would you like to deposit?</ModalHeader>
 
-      <div className={globalStyles.textCenter}>
+      <div className={styles.formContent}>
         <div className={styles.inputWrapper}>
-          <Input
-            type="number"
-            autosize
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            size="large"
-            autoFocus
-          />
-          <Button className={styles.maxButton} type="text" onClick={handleSetMax} size="normal">
+          <Input type="number" value={inputValue} onChange={(e) => setInputValue(e.target.value)} autoFocus />
+          <Button type="tertiary-color" onClick={handleSetMax} size="xs" sm={{ size: 'sm' }}>
             Max
           </Button>
         </div>
 
         <div className={styles.tokenFormBalance}>
           Your balance:{' '}
-          <span className={globalStyles.pointer} onClick={handleSetMax}>
+          <button className={styles.valueButton} onClick={handleSetMax} tabIndex={-1}>
             {walletBalance ? formatApi3(walletBalance) : UNKNOWN_NUMBER}
-          </span>
+          </button>
         </div>
       </div>
 
       <ModalFooter>
-        <div className={styles.tokenAmountFormActions}>
+        <div className={classNames(styles.tokenAmountFormActions, !approvalRequired && styles.columnReverse)}>
           {approvalRequired ? (
-            <Button type="secondary" onClick={handleApprove} className={styles.tokenAmountFormApprove}>
+            <Button type="primary" size="sm" sm={{ size: 'lg' }} onClick={handleApprove}>
               Approve
             </Button>
           ) : (
             <Button
-              type="link"
-              className={styles.tokenAmountFormApprove}
+              type="secondary-neutral"
+              size="sm"
+              sm={{ size: 'lg' }}
               onClick={handleDeposit('deposit-only')}
               disabled={!canDeposit}
             >
@@ -133,7 +127,13 @@ const TokenDepositForm = (props: Props) => {
             </Button>
           )}
 
-          <Button type="secondary" onClick={handleDeposit('deposit-and-stake')} disabled={!canDeposit}>
+          <Button
+            type="primary"
+            size="sm"
+            sm={{ size: 'lg' }}
+            onClick={handleDeposit('deposit-and-stake')}
+            disabled={!canDeposit}
+          >
             Deposit and Stake
           </Button>
         </div>

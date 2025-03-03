@@ -1,64 +1,74 @@
-import { useRef, useState } from 'react';
-import { ERROR_REPORTING_CONSENT_KEY_NAME, images, isErrorReportingAllowed } from '../../../utils';
+import { useState } from 'react';
+import { images } from '../../../utils';
 import Button from '../../button';
-import ExternalLink from '../../external-link';
-import { triggerOnEnter } from '../../modal';
 import styles from './error-reporting-notice.module.scss';
+import ExternalLink from '../../external-link';
+import { links } from '../../../utils/links';
+import { ALLOW_ANALYTICS, ALLOW_ERROR_REPORTING, initAnalytics } from '../../../utils/analytics';
+import PrivacySettingsModal from '../privacy-settings-modal';
+import { CrossIcon } from '../../icons';
+import { initSentry } from '../../../utils/error-reporting';
 
 interface WelcomeModalContentProps {
-  onClose: () => void;
+  onShowNotice: (showNotice: boolean) => void;
 }
 
 const ErrorReportingNotice = (props: WelcomeModalContentProps) => {
-  const { onClose } = props;
-  const defaultReportingValue = localStorage.getItem(ERROR_REPORTING_CONSENT_KEY_NAME);
-  const [errorReportingEnabled, setErrorReportingEnabled] = useState(
-    defaultReportingValue === null || isErrorReportingAllowed(defaultReportingValue)
-  );
-  const onErrorReportingNoticeConfirm = () => {
-    localStorage.setItem(ERROR_REPORTING_CONSENT_KEY_NAME, errorReportingEnabled.toString());
-    onClose();
+  const { onShowNotice } = props;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSubmit = (allowAnalytics: boolean, allowReporting: boolean) => {
+    localStorage.setItem(ALLOW_ERROR_REPORTING, allowReporting.toString());
+    localStorage.setItem(ALLOW_ANALYTICS, allowAnalytics.toString());
+
+    if (allowAnalytics) {
+      initAnalytics();
+      (window as any).clarity?.('consent');
+    }
+
+    if (allowReporting) {
+      initSentry();
+    }
+
+    onShowNotice(false);
+    setIsModalOpen(false);
   };
-  const errorReportingRef = useRef<HTMLInputElement>(null);
-  const toggleCheckbox = () => setErrorReportingEnabled((checked) => !checked);
 
   return (
-    // NOTE: Not using focus lock, because that would prevent user from signing in
     <>
-      <div data-cy="error-reporting" className={styles.wrapper} ref={errorReportingRef}>
-        <div className={styles.gradient}></div>
+      <PrivacySettingsModal open={isModalOpen} onCancel={() => setIsModalOpen(false)} onSubmit={handleSubmit} />
+
+      <div data-cy="error-reporting" className={styles.wrapper}>
         <div className={styles.content}>
           <div className={styles.notice}>
             In order to provide the best services for you, we collect anonymized error data through{' '}
-            <b>
-              <ExternalLink href="https://sentry.io/">Sentry</ExternalLink>
-            </b>
-            . We do not gather IP address or user agent information.
+            <ExternalLink className={styles.dark} href={links.SENTRY}>
+              Sentry
+            </ExternalLink>
+            <img src={images.externalLink} alt="" className={styles.externalLinkIcon} /> and use analytics cookies to
+            improve our products.
           </div>
-          <div className={styles.checkboxWrapper} tabIndex={0} onKeyPress={triggerOnEnter(toggleCheckbox)}>
-            <input
-              type="checkbox"
-              id="errorReporting"
-              name="errorReporting"
-              checked={errorReportingEnabled}
-              onChange={toggleCheckbox}
-              tabIndex={-1}
-            />
-            <label htmlFor="errorReporting">Allow error reporting</label>
+          <div className={styles.buttons}>
+            <Button
+              className={styles.manageSettingsButton}
+              type="text-blue"
+              size="sm"
+              theme="dark"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Manage Settings
+            </Button>
+            <Button type="primary" size="sm" theme="dark" onClick={() => handleSubmit(true, true)}>
+              Accept All
+            </Button>
           </div>
-          <Button type="secondary" onClick={onErrorReportingNoticeConfirm}>
-            Done
-          </Button>
         </div>
-        <img
-          className={styles.closeButton}
-          onClick={onErrorReportingNoticeConfirm}
-          src={images.close}
-          alt="confirm and close icon"
-          tabIndex={0}
-          // This is not a regular "modal" and shouldn't be closed with ESC
-          onKeyPress={triggerOnEnter(onErrorReportingNoticeConfirm)}
-        />
+
+        <button className={styles.closeButton} onClick={() => onShowNotice(false)}>
+          <CrossIcon />
+          <span className="sr-only">Close</span>
+        </button>
       </div>
     </>
   );

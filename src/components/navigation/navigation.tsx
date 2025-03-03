@@ -7,13 +7,13 @@ import styles from './navigation.module.scss';
 const Navigation = () => {
   return (
     <div className={styles.navigation}>
-      <div className={styles.navigationMenu}>
-        <Link to="/" data-cy="api3-logo">
-          <img src={images.api3LogoWhite} alt="logo" height="36" width="116" />
-        </Link>
+      <Link to="/" data-cy="api3-logo">
+        <img src={images.api3DaoLogoLightTheme} alt="logo" className={styles.api3DaoLogo} />
+      </Link>
+      <div className={styles.right}>
+        <SignIn position="navigation" />
         <MobileMenu />
       </div>
-      <SignIn position="navigation" />
     </div>
   );
 };
