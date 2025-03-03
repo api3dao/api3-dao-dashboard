@@ -20,7 +20,7 @@ const MenuItems = [
 
 const ExternalLinks = [
   { to: 'https://market.api3.org/', icon: MarketIcon, text: 'Api3 Market' },
-  { to: 'https://docs.api3.org/', icon: DocsIcon, text: 'Docs' },
+  { to: 'https://dao-docs.api3.org/', icon: DocsIcon, text: 'DAO Docs' },
 ];
 
 export const DesktopMenu = () => {
