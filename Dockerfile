@@ -1,4 +1,4 @@
-# This Dockerfile builds a mainnet version for API3 DAO dashboard
+# This Dockerfile builds a mainnet version for Api3 DAO dashboard
 
 FROM node:16-alpine as builder
 ARG REACT_APP_MAINNET_PROVIDER_URL
