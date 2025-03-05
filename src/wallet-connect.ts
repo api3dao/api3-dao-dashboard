@@ -25,10 +25,10 @@ const chainInfos = [
 
 // The metadata is used by WalletConnect to display the app information in the user Wallet.
 const metadata = {
-  name: 'API3 DAO',
-  description: 'Decentralized APIs for Web 3.0', // Taken from API3 whitepaper.
+  name: 'Api3 DAO',
+  description: 'Decentralized APIs for Web 3.0', // Taken from Api3 whitepaper.
   url: window.location.origin, // The URL is deployment specific.
-  icons: ['https://avatars.githubusercontent.com/u/69474416'], // Taken from API3 GitHub. The icon is a bit cut, but still looks good. Using the page favicon (window.location.origin + '/favicon.ico') does not work.
+  icons: ['https://avatars.githubusercontent.com/u/69474416'], // Taken from Api3 GitHub. The icon is a bit cut, but still looks good. Using the page favicon (window.location.origin + '/favicon.ico') does not work.
 };
 
 const { chains, publicClient } = configureChains(

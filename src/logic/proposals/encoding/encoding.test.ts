@@ -387,7 +387,7 @@ describe('isEvmScriptValid', () => {
       const metadata = {
         description: 'https://ipfs.fleek.co/ipfs/bafybeicfguu3bfhk3fyz5zn5wlujpksqxsaokse37674fhylouvsqnwd2m',
         targetSignature: 'transfer(address,uint256)',
-        title: 'API3 DAO BD-API Team Proposal',
+        title: 'Api3 DAO BD-API Team Proposal',
         version,
       };
       const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);
@@ -420,7 +420,7 @@ describe('isEvmScriptValid', () => {
       const metadata = {
         description: 'https://ipfs.fleek.co/ipfs/bafybeicfguu3bfhk3fyz5zn5wlujpksqxsaokse37674fhylouvsqnwd2m',
         targetSignature: 'transfer(address,int32)',
-        title: 'API3 DAO BD-API Team Proposal',
+        title: 'Api3 DAO BD-API Team Proposal',
         version,
       };
       const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);
@@ -449,7 +449,7 @@ describe('isEvmScriptValid', () => {
       const metadata = {
         description: 'https://ipfs.fleek.co/ipfs/bafybeicfguu3bfhk3fyz5zn5wlujpksqxsaokse37674fhylouvsqnwd2m',
         targetSignature: 'transfer(address,uint256)',
-        title: 'API3 DAO BD-API Team Proposal',
+        title: 'Api3 DAO BD-API Team Proposal',
         version,
       };
 
@@ -474,7 +474,7 @@ describe('isEvmScriptValid', () => {
         const metadata = {
           description: 'https://ipfs.fleek.co/ipfs/bafybeicfguu3bfhk3fyz5zn5wlujpksqxsaokse37674fhylouvsqnwd2m',
           targetSignature: 'transfer(address,uint256)',
-          title: 'API3 DAO BD-API Team Proposal',
+          title: 'Api3 DAO BD-API Team Proposal',
           version,
         };
         const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);
@@ -511,7 +511,7 @@ describe('isEvmScriptValid', () => {
         const metadata = {
           description: 'https://ipfs.fleek.co/ipfs/bafybeicfguu3bfhk3fyz5zn5wlujpksqxsaokse37674fhylouvsqnwd2m',
           targetSignature: 'transfer(address,int32)',
-          title: 'API3 DAO BD-API Team Proposal',
+          title: 'Api3 DAO BD-API Team Proposal',
           version,
         };
         const decodedEvmScript = await decodeEvmScript(mockedProvider, script, metadata);

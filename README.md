@@ -11,11 +11,11 @@ You can find development instructions in a separate [dev-README](./dev-README.md
 
 ## Running the dashboard on Mainnet in a Docker container
 
-The decentralized approach to being a DAO member is to run API3 dashboard on your local machine. For that you will just
+The decentralized approach to being a DAO member is to run Api3 dashboard on your local machine. For that you will just
 need `docker` and, optionally, `git`.
 
 There are two approaches to running the dashboard locally. The first involves using the prebuilt Docker image, while the
-second involves building the image from source. In either case, the end result is a API3 dashboard running on port 7770
+second involves building the image from source. In either case, the end result is a Api3 dashboard running on port 7770
 of your localhost where it is safe to connect your wallet.
 
 Currently, it's only possible to build the Docker image on a UNIX-like OS. If you use Windows, you can use WSL2.
@@ -83,7 +83,7 @@ dashboard and what our ENS record is pointing towards.
 
 ## Error Monitoring
 
-Please note that the API3 core team tracks application errors on test and production environments using
+Please note that the Api3 core team tracks application errors on test and production environments using
 [Sentry](https://sentry.io). This is solely used to fix errors and improve the experience of our users.
 
 **NOTE: No identifying user information is collected**
