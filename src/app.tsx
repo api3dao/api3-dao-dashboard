@@ -85,7 +85,7 @@ const App = () => {
         <HelmetProvider>
           {/* Helmet children can be overridden in components lower down the tree */}
           <Helmet>
-            <title>API3 DAO</title>
+            <title>Api3 DAO</title>
             {/* Preload any important images here */}
             {/* https://web.dev/preload-responsive-images/ */}
             {(Object.keys(images) as Array<keyof typeof images>).map((image) => {
