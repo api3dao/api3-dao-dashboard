@@ -106,7 +106,7 @@
     "hardhat": "^2.19.4",
     "http-browserify": "^1.7.0",
     "https-browserify": "^1.0.0",
-    "husky": "^8.0.3",
+    "husky": "^9.1.7",
     "lint-staged": "^13.3.0",
     "os-browserify": "^0.3.0",
     "prettier": "^3.3.3",
