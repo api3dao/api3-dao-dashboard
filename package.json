@@ -24,7 +24,7 @@
     "prepare": "husky install",
     "send-to-account": "cd hardhat && npx hardhat send-to-account --address",
     "create-proposal": "cd hardhat && npx hardhat create-proposal",
-    "upload-build-to-pinata": "node dev-scripts/upload-build-to-pinata.js",
+    "upload-build-to-pinata": "node dev-scripts/upload-build-to-pinata.mjs",
     "start": "BROWSER=none react-app-rewired start",
     "test:watch": "react-app-rewired test",
     "test": "react-app-rewired test --watchAll=false",
