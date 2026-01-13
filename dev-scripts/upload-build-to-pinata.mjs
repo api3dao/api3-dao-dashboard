@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const uploadBuildToPinata = async () => {
-  const FOLDER_PATH = '../build';
+  const FOLDER_PATH = './build';
   const formData = new FormData();
   const folderName = path.basename(FOLDER_PATH);
 
