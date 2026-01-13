@@ -6,6 +6,18 @@ const uploadBuildToPinata = async () => {
   const formData = new FormData();
   const folderName = path.basename(FOLDER_PATH);
 
+  const currentVersion = parseInt(process.versions.node.split('.')[0], 10);
+  if (currentVersion < 22) {
+    console.error(`❌ Error: Node.js version 22+ is required. You are running ${process.version}.`);
+    process.exit(1);
+  }
+
+  if (!fs.existsSync(FOLDER_PATH)) {
+    console.error(`❌ Error: Build folder not found at path: "${path.resolve(FOLDER_PATH)}"`);
+    console.error('Please run your build command (e.g., "npm run build") before deploying.');
+    process.exit(1);
+  }
+
   const files = await fs.promises.readdir(FOLDER_PATH, {
     recursive: true,
     withFileTypes: true,
