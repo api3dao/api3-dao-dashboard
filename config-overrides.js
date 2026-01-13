@@ -5,6 +5,11 @@ const { isEqual } = require('lodash');
 module.exports = {
   webpack(config, env) {
     if (env === 'production') {
+      // -----------------------------------------------------------
+      // Force disable source mop to simplify deterministic verification of CID IPFS hash
+      // -----------------------------------------------------------
+      config.devtool = false;
+
       // Webpack produces a single JS bundle with the default configuration (for the initial non-async chunk),
       // so we specify "chunks: all" and provide a cache group to generate more bundles
       config.optimization.splitChunks = {
