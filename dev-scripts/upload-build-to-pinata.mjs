@@ -1,9 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const FOLDER_PATH = './build';
-
-const pinDirectoryToPinata = async () => {
+const uploadBuildToPinata = async () => {
+  const FOLDER_PATH = '../build';
   const formData = new FormData();
   const folderName = path.basename(FOLDER_PATH);
 
@@ -51,4 +50,4 @@ const pinDirectoryToPinata = async () => {
   console.info(result);
 };
 
-pinDirectoryToPinata().catch(console.error);
+uploadBuildToPinata().catch(console.error);
