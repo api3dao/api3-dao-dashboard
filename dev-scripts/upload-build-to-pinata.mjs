@@ -1,11 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const uploadBuildToPinata = async () => {
-  const FOLDER_PATH = './build';
-  const formData = new FormData();
-  const folderName = path.basename(FOLDER_PATH);
+const FOLDER_PATH = './build';
 
+const uploadBuildToPinata = async () => {
   const currentVersion = parseInt(process.versions.node.split('.')[0], 10);
   if (currentVersion < 22) {
     console.error(`❌ Error: Node.js version 22+ is required. You are running ${process.version}.`);
@@ -18,12 +16,19 @@ const uploadBuildToPinata = async () => {
     process.exit(1);
   }
 
+  if (!process.env.PINATA_JWT) {
+    console.error('❌ Error: PINATA_JWT environment variable is not set.');
+    process.exit(1);
+  }
+
   const files = await fs.promises.readdir(FOLDER_PATH, {
     recursive: true,
     withFileTypes: true,
   });
 
   console.info(`Found ${files.length} items. Preparing upload...`);
+  const formData = new FormData();
+  const folderName = path.basename(FOLDER_PATH);
   for (const file of files) {
     if (file.isFile()) {
       const fullPath = path.join(file.parentPath, file.name);
