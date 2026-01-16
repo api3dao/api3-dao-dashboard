@@ -46,13 +46,13 @@ docker run --rm --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
 
 ## Verifying the IPFS CID
 
-We're using Pinata to upload the dashboard to IPFS. To avoid trusting Pinata with not-tempering with the uploaded files,
-one can also build the app locally and compare its CID with the CID of IPFS deployment.
+We're using Pinata to upload the dashboard to IPFS. To avoid trusting Pinata not to temper with the uploaded files, one
+can also build the app locally and compare its CID with the CID of the IPFS deployment.
 
 To verify the CID, use the following instructions:
 
-1. (Optional) Clone the fresh version of repository
-2. Run `git checkout production` to checkout the production branch (assuming the verification is for the production)
+1. (Optional) Clone a fresh version of the repository
+2. Run `git checkout production` to check out the production branch (assuming the verification is for production)
 3. Run `yarn` to install the latest dependencies
 4. Populate `.env.production.local` with production secrets
 5. Run `yarn build` to create a fresh production build
@@ -62,9 +62,9 @@ To verify the CID, use the following instructions:
 ### CIDv0 vs CIDv1
 
 If the expected hash looks like `bafy...` (shown on ENS) and locally it looks like `Qm...` (as uploaded by Pinata) that
-is because of a difference between CIDv0 and CIDv1. Refer to
-[CID version documentation](https://docs.ipfs.tech/concepts/content-addressing/#cid-versions) for details. To convert
-CID from v0 to v1 use :
+is because of a difference between CIDv0 and CIDv1. Refer to the
+[CID version documentation](https://docs.ipfs.tech/concepts/content-addressing/#cid-versions) for details. To convert a
+CID from v0 to v1 use:
 
 ```
 docker run --rm ipfs/kubo cid format -v 1 -b base32 <CID_V0>
