@@ -33,35 +33,36 @@ network, adapt the configuration to your needs.
 
 ## Hosting
 
-We use [Fleek](https://fleek.co/) to host the application on IPFS. The hosting workflow works like this:
+We use [Pinata](https://pinata.cloud/) to deploy the application on IPFS.
 
-<!-- markdown-link-check-disable -->
-
-- Every PR against `main` branch will be deployed by Github Actions (as preview deployment) and you can find the IPFS
-  hash in the "fleek deploy check" details in the PR status checks panel.
-- The current version of app in `main` branch will be deployed as staging on the following URL:
-  https://api3-dao-dashboard-staging.on.fleek.co/. The app will be redeployed after every merged request automatically.
-- Every push to `production` branch will trigger a production deploy. The production can be found on this URL:
-https://api3-dao-dashboard.on.fleek.co/.
-<!-- markdown-link-check-enable-->
-
-On Fleek, we are using [environment variables](https://create-react-app.dev/docs/adding-custom-environment-variables/),
-specifically `REACT_APP_NODE_ENV` to specify the environment. Possible values `development`, `staging` and `production`.
+Currently, there are no preview builds.
 
 ### Updating the production deployment
 
-All you need to do is push the code to `production` branch. Most of the times you just want to copy what's on `main`
-branch:
+All you need to do is push the code to the `production` branch. The simplest way is to open a PR from the `main` branch
+and merge. Afterwards, proceed to create a manual IPFS deployment. Full process:
 
-1. `git checkout production`
-2. `git merge main`
-3. `git push`
+1. Open a PR from `main` to `production`, wait for CI to pass and merge
+2. Run `git checkout production` to checkout the production branch locally
+3. Run `git pull` to pull the latest changes
+4. Populate `.env.production.local` with production secrets
+5. Make sure to use Node version 18
+6. Run `yarn` to install the latest dependencies
+7. Run `yarn build` to create the production build
+8. Switch the Node version to at least 22
+9. Run `PINATA_JWT=<JWT> yarn upload-build-to-pinata` to upload the build folder to Pinata
+10. Run docker `run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive /build` to verify the CID hash
+    of the build folder with the deployed hash on Pinata
+11. Verify the uploaded page by clicking on the uploaded "build" (differentiated by CID if there are multiple) and make
+    sure it loads - the fonts may look strange, but that's only because of security policies defined by the Pinata
+    preview site and they will work without issues when used via ENS
+12. Refer to "Updating the name servers" section below to update the ENS name
 
-### Updating the name servers
+#### Updating the name servers
 
 The primary way to access the DAO dashboard is through the `api3.eth` ENS name, which points directly to the IPFS hash.
-Then, the user can either connect to mainnet on their Metamask (or use a browser which supports resolving .eth domains)
-and visit `api3.eth/`.
+Then, the user can either use the `https://api3.eth.limo` or connect to mainnet on their Metamask (or use a browser
+which supports resolving .eth domains) and visit `api3.eth/`.
 
 After pushing to the production branch, [verify the Fleek build](./README.md#verifying-the-fleek-build). Then,
 [point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
