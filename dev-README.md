@@ -64,5 +64,5 @@ The primary way to access the DAO dashboard is through the `api3.eth` ENS name, 
 Then, the user can either use `https://api3.eth.limo` or connect to mainnet on their MetaMask (or use a browser which
 supports resolving .eth domains) and visit `api3.eth/`.
 
-After pushing to the production branch, [verify the Fleek build](./README.md#verifying-the-fleek-build). Then,
+After pushing to the production branch, [verify the IPFS CID](./README.md#verifying-the-ipfs-cid). Then,
 [point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
