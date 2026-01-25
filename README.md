@@ -11,11 +11,11 @@ You can find development instructions in a separate [dev-README](./dev-README.md
 
 ## Running the dashboard on Mainnet in a Docker container
 
-The decentralized approach to being a DAO member is to run API3 dashboard on your local machine. For that you will just
+The decentralized approach to being a DAO member is to run Api3 dashboard on your local machine. For that you will just
 need `docker` and, optionally, `git`.
 
 There are two approaches to running the dashboard locally. The first involves using the prebuilt Docker image, while the
-second involves building the image from source. In either case, the end result is a API3 dashboard running on port 7770
+second involves building the image from source. In either case, the end result is a Api3 dashboard running on port 7770
 of your localhost where it is safe to connect your wallet.
 
 Currently, it's only possible to build the Docker image on a UNIX-like OS. If you use Windows, you can use WSL2.
@@ -44,46 +44,35 @@ docker build --build-arg="REACT_APP_MAINNET_PROVIDER_URL=..." --tag api3-dao-das
 docker run --rm --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
 ```
 
-## Verifying the Fleek build
+## Verifying the IPFS CID
 
-We're using Fleek to build and deploy the dashboard. To avoid trusting Fleek with build and deployments, one can also
-build the app locally and compare its hash with the hash of IPFS deployment.
+We're using Pinata to upload the dashboard to IPFS. To avoid trusting Pinata not to temper with the uploaded files, one
+can also build the app locally and compare its CID with the CID of the IPFS deployment.
 
-To do so, first create a `docker-compose.yml` as explained
-[here](https://docs.fleek.co/hosting/site-deployment/#testing-deployments-locally) in this repo. See the Fleek
-configuration for the values in the `environment` field.
+To verify the CID, use the following instructions:
 
-```yml
-version: '3.7'
-services:
-  verdaccio:
-    container_name: verdaccio
-    image: verdaccio/verdaccio
-    ports:
-      - '4873:4873'
+1. (Optional) Clone a fresh version of the repository
+2. Run `git checkout production` to check out the production branch (assuming the verification is for production)
+3. Run `yarn` to install the latest dependencies
+4. Populate `.env.production.local` with production secrets
+5. Run `yarn build` to create a fresh production build
+6. Run `docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive /build` to obtain the CIDv0
+7. To obtain the corresponding CID in v1 follow the section below
 
-  app:
-    image: fleek/create-react-app:node-18
-    command: sh -c 'npm set registry http://verdaccio:4873 && yarn && yarn build'
-    working_dir: /workspace/build
-    environment:
-      - REACT_APP_NODE_ENV=...
-      - REACT_APP_SENTRY_DSN=...
-      - REACT_APP_MAINNET_PROVIDER_URL=...
-      - REACT_APP_PROJECT_ID=...
-    volumes:
-      - './:/workspace'
+### CIDv0 vs CIDv1
+
+If the expected hash looks like `bafy...` (shown on ENS) and locally it looks like `Qm...` (as uploaded by Pinata) that
+is because of a difference between CIDv0 and CIDv1. Refer to the
+[CID version documentation](https://docs.ipfs.tech/concepts/content-addressing/#cid-versions) for details. To convert a
+CID from v0 to v1 use:
+
 ```
-
-and run `docker-compose run --rm app`, which will create a `./build` directory.
-
-Then, (after installing IPFS Kubo) run `sudo ipfs add --only-hash --recursive ./build` to get the hash of the build
-(`sudo` because `build` will likely be owned by root). This should be the same as the IPFS hash as the one on the Fleek
-dashboard and what our ENS record is pointing towards.
+docker run --rm ipfs/kubo cid format -v 1 -b base32 <CID_V0>
+```
 
 ## Error Monitoring
 
-Please note that the API3 core team tracks application errors on test and production environments using
+Please note that the Api3 core team tracks application errors on test and production environments using
 [Sentry](https://sentry.io). This is solely used to fix errors and improve the experience of our users.
 
 **NOTE: No identifying user information is collected**

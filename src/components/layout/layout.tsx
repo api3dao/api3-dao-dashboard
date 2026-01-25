@@ -51,7 +51,7 @@ export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
   return (
     <>
       <Helmet>
-        <title>{`API3 DAO | ${title}`}</title>
+        <title>{`Api3 DAO | ${title}`}</title>
       </Helmet>
 
       <div className={styles.layout}>
