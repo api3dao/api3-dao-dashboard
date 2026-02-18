@@ -23,7 +23,7 @@ const main = async () => {
   const daoContractsDir = join(rootDir, 'dao-contracts');
   await execAndLog(`cd ${daoContractsDir} && git checkout ${commitSha}`, DEBUG);
 
-  // NOTE: Calling `yarn bootstrap` doesn't work when executed using `exec` when runing as part of github actions
+  // NOTE: Calling `yarn bootstrap` doesn't work when executed using `exec` when running as part of github actions
   const isGithubActions = process.argv[2] === '--github-actions';
   if (isGithubActions) return;
 
