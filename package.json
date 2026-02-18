@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
+  "packageManager": "pnpm@10.26.2",
   "engines": {
     "pnpm": "^10.26.2"
   },
