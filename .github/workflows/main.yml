@@ -53,24 +53,9 @@ jobs:
         with:
           node-version: 22
           cache: 'pnpm'
-      - name: Cache node modules
-        uses: actions/cache@v4
-        id: node-modules-cache
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: modules-${{ hashFiles('**/pnpm-lock.yaml') }}
-      - name: Cache cypress
-        id: cypress-cache
-        uses: actions/cache@v4
-        with:
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
-          path: ~/.cache/Cypress
-          restore-keys: ${{ runner.os }}-cypress-
       - name: Install Dependencies
         run: |
-          pnpm install --frozen-lockfile
+          pnpm install
           pnpm cypress install
       - name: Increase file watcher limit
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p

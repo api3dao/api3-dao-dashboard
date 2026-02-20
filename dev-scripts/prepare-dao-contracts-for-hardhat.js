@@ -30,7 +30,7 @@ const main = async () => {
   await execAndLog(`cd ${daoContractsDir} && find ./packages -name "package-lock.json" -type f -delete`, DEBUG);
 
   // Install dependencies
-  // NOTE: We need to use npm, because yarn doesn't work reliably for some reason
+  // NOTE: We need to use npm
   await execAndLog(`cd ${daoContractsDir} && npm run bootstrap`, DEBUG);
 };
 
