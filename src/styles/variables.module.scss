@@ -104,7 +104,8 @@ $md: 1200px;
 $lg: 1600px;
 
 // GRADIENTS
-$gradient-soft-light: linear-gradient(
+$gradient-soft-light:
+  linear-gradient(
     rgba(91, 167, 245, 0.5) 0%,
     rgba(0, 15, 220, 0.5) 28%,
     rgba(255, 255, 255, 0.4) 64%,
@@ -135,7 +136,8 @@ $gradient-medium-light: linear-gradient(
   #53a0d7 98%
 );
 $gradient-light: linear-gradient(180deg, #fafafa 0%, #f0f4ff 100%);
-$gradient-base-blue-01: linear-gradient(223deg, rgba(26, 79, 222, 0.6) 0%, rgba(26, 79, 222, 0.61) 100%),
+$gradient-base-blue-01:
+  linear-gradient(223deg, rgba(26, 79, 222, 0.6) 0%, rgba(26, 79, 222, 0.61) 100%),
   conic-gradient(
     from 110deg at 50% 47%,
     rgba(30, 39, 57, 0.8) 0%,

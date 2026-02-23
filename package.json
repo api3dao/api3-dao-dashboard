@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
+  "packageManager": "pnpm@10.26.2",
+  "engines": {
+    "pnpm": "^10.26.2"
+  },
   "scripts": {
     "build": "react-app-rewired build",
-    "ci:cypress": "yarn start-test \"yarn concurrently 'yarn eth:node' 'yarn ci:start'\" '8545|3000' 'yarn eth:deploy-dao-contracts-on-hardhat && yarn cypress:run'",
-    "ci:start": "FORCE_COLOR=true yarn start | cat",
+    "ci:cypress": "pnpm start-test \"pnpm concurrently 'pnpm eth:node' 'pnpm ci:start'\" '8545|3000' 'pnpm eth:deploy-dao-contracts-on-hardhat && pnpm cypress:run'",
+    "ci:start": "FORCE_COLOR=true pnpm start | cat",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "eject": "react-scripts eject",
@@ -16,11 +20,11 @@
     "eth:run-script": "cd hardhat && npx hardhat run",
     "fix-dev-issues": "node dev-scripts/copy-localhost-data.js && node dev-scripts/generate-typechain-artifacts.js && node dev-scripts/scss-ts-hack.js",
     "lint:fix": "eslint --fix --ext js,ts,tsx src dev-scripts",
-    "lint": "yarn prettier:check && eslint --ext js,ts,tsx src dev-scripts",
+    "lint": "pnpm prettier:check && eslint --ext js,ts,tsx src dev-scripts",
     "prettier:check": "prettier --check ./**/*.{js,ts,tsx,json,css,scss,md}",
     "prettier": "prettier --write ./**/*.{js,ts,tsx,json,css,scss,md}",
-    "postinstall": "yarn fix-dev-issues",
-    "postuninstall": "yarn fix-dev-issues",
+    "postinstall": "pnpm fix-dev-issues",
+    "postuninstall": "pnpm fix-dev-issues",
     "prepare": "husky install",
     "send-to-account": "cd hardhat && npx hardhat send-to-account --address",
     "create-proposal": "cd hardhat && npx hardhat create-proposal",
@@ -34,7 +38,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "yarn lint && yarn tsc"
+      "pre-push": "pnpm lint && pnpm tsc"
     }
   },
   "lint-staged": {
@@ -124,13 +128,15 @@
     "typescript-plugin-css-modules": "^5.0.2",
     "url": "^0.11.3"
   },
-  "resolutions": {
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "@types/jest": "^27.5.2",
-    "@types/react": "^18.3.12",
-    "jest-regex-util": "^27.5.1",
-    "jest-watcher": "^27.5.1",
-    "jest-worker": "^27.5.1"
+  "pnpm": {
+    "overrides": {
+      "@typescript-eslint/eslint-plugin": "^6.21.0",
+      "@typescript-eslint/parser": "^6.21.0",
+      "@types/jest": "^27.5.2",
+      "@types/react": "^18.3.12",
+      "jest-regex-util": "^27.5.1",
+      "jest-watcher": "^27.5.1",
+      "jest-worker": "^27.5.1"
+    }
   }
 }

@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone api3-dao-dashboard
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Check hyperlinks
         uses: gaurav-nelson/github-action-markdown-link-check@v1
 
@@ -24,64 +24,60 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone api3-dao-dashboard
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 16
-          cache: 'yarn'
+          node-version: 22
+          cache: 'pnpm'
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install
       - name: Lint
-        run: yarn lint
+        run: pnpm lint
       - name: Compile
-        run: yarn tsc
+        run: pnpm tsc
       - name: Test
-        run: yarn test
+        run: pnpm test
 
   cypress:
     runs-on: ubuntu-latest
     steps:
       - name: Clone api3-dao-dashboard
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 16
-          cache: 'yarn'
-      - name: Cache node modules
-        uses: actions/cache@v4
-        id: node-modules-cache
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: modules-${{ hashFiles('**/yarn.lock') }}
-      - name: Cache cypress
-        id: cypress-cache
-        uses: actions/cache@v4
-        with:
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/yarn.lock') }}
-          path: ~/.cache/Cypress
-          restore-keys: ${{ runner.os }}-cypress-
+          node-version: 22
+          cache: 'pnpm'
       - name: Install Dependencies
-        # We add the additional cypress install to handle the common Missing Binary issue: https://docs.cypress.io/guides/continuous-integration/introduction#Missing-binary
         run: |
-          yarn install --frozen-lockfile
-          yarn cypress install
+          pnpm install
+          pnpm cypress install
       - name: Increase file watcher limit
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - name: Prepare DAO contracts
-        run: yarn eth:prepare-dao-contracts-for-hardhat --github-actions
+        run: pnpm eth:prepare-dao-contracts-for-hardhat --github-actions
+      - name: Use Node 16 for DAO contracts
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
       - name: Bootstrap DAO contracts
-        run: cd dao-contracts && yarn bootstrap
+        run: cd dao-contracts && npm run bootstrap
+      - name: Restore Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Cypress tests
         env:
           REACT_APP_NODE_ENV: development
           REACT_APP_PROJECT_ID: e7e6e90622ec8e65c4d02e829a68529a
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
           REACT_APP_MAINNET_PROVIDER_URL: ${{ secrets.REACT_APP_MAINNET_PROVIDER_URL }}
-        run: yarn percy exec -- -- yarn ci:cypress
+        run: pnpm percy exec -- pnpm ci:cypress
         timeout-minutes: 60
       - name: Store artifacts
         uses: actions/upload-artifact@v4

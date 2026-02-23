@@ -23,7 +23,6 @@ const main = async () => {
   const daoContractsDir = join(rootDir, 'dao-contracts');
   await execAndLog(`cd ${daoContractsDir} && git checkout ${commitSha}`, DEBUG);
 
-  // NOTE: Calling `yarn bootstrap` doesn't work when executed using `exec` when runing as part of github actions
   const isGithubActions = process.argv[2] === '--github-actions';
   if (isGithubActions) return;
 
@@ -31,7 +30,7 @@ const main = async () => {
   await execAndLog(`cd ${daoContractsDir} && find ./packages -name "package-lock.json" -type f -delete`, DEBUG);
 
   // Install dependencies
-  // NOTE: We need to use npm, because yarn doesn't work reliably for some reason
+  // NOTE: We need to use npm
   await execAndLog(`cd ${daoContractsDir} && npm run bootstrap`, DEBUG);
 };
 

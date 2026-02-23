@@ -14,7 +14,7 @@ const main = async () => {
 
   // Deploy the contracts locally on hardhat node. Assumes the contracts are already compiled
   const daoPackage = join(rootDir, 'dao-contracts/packages/dao');
-  const { stdout } = await execAndLog(`cd ${daoPackage} && yarn deploy:rpc`, DEBUG);
+  const { stdout } = await execAndLog(`cd ${daoPackage} && pnpm deploy:rpc`, DEBUG);
 
   // Write the deployed contracts to the localhost-dao.json file
   const contracts = stdout.split('DEPLOYED ADDRESSES:')[1].trim();
