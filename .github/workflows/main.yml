@@ -30,7 +30,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 22.22.0
           cache: 'pnpm'
       - name: Install Dependencies
         run: pnpm install
@@ -51,7 +51,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 22.22.0
           cache: 'pnpm'
       - name: Install Dependencies
         run: |
@@ -70,7 +70,7 @@ jobs:
       - name: Restore Node 22
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 22.22.0
       - name: Cypress tests
         env:
           REACT_APP_NODE_ENV: development
