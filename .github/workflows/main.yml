@@ -62,13 +62,13 @@ jobs:
       - name: Prepare DAO contracts
         run: pnpm eth:prepare-dao-contracts-for-hardhat --github-actions
       - name: Use Node 16 for DAO contracts
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 16
       - name: Bootstrap DAO contracts
         run: cd dao-contracts && npm run bootstrap
       - name: Restore Node 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
       - name: Cypress tests
