@@ -8,7 +8,7 @@ overrides:
   '@typescript-eslint/eslint-plugin': ^6.21.0
   '@typescript-eslint/parser': ^6.21.0
   '@types/jest': ^27.5.2
-  '@types/react': ^18.3.12
+  '@types/react': ^18.3.28
   jest-regex-util: ^27.5.1
   jest-watcher: ^27.5.1
   jest-worker: ^27.5.1
@@ -118,7 +118,7 @@ importers:
         specifier: ^16.11.7
         version: 16.18.126
       '@types/react':
-        specifier: ^18.3.12
+        specifier: ^18.3.28
         version: 18.3.28
       '@types/react-dom':
         specifier: ^18.2.18
@@ -2006,7 +2006,7 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       '@testing-library/dom': ^10.0.0
-      '@types/react': ^18.3.12
+      '@types/react': ^18.3.28
       '@types/react-dom': ^18.0.0 || ^19.0.0
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -2189,7 +2189,7 @@ packages:
   '@types/react-dom@18.3.7':
     resolution: {integrity: sha512-MEe3UeoENYVFXzoXEWsvcpg6ZvlrFNlOQ7EOsvhI3CfAXwzPfO8Qwuxd40nepsYKqyyVQnTdEfv68q91yLcKrQ==}
     peerDependencies:
-      '@types/react': ^18.3.12
+      '@types/react': ^18.3.28
 
   '@types/react-input-autosize@2.2.4':
     resolution: {integrity: sha512-7O028jRZHZo3mj63h3HSvB0WpvPXNWN86sajHTi0+CtjA4Ym+DFzO9RzrSbfFURe5ZWsq6P72xk7MInI6aGWJA==}
@@ -6732,7 +6732,7 @@ packages:
   react-focus-lock@2.13.7:
     resolution: {integrity: sha512-20lpZHEQrXPb+pp1tzd4ULL6DyO5D2KnR0G69tTDdydrmNhU7pdFmbQUYVyHUgp+xN29IuFR0PVuhOmvaZL9Og==}
     peerDependencies:
-      '@types/react': ^18.3.12
+      '@types/react': ^18.3.28
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
@@ -7927,7 +7927,7 @@ packages:
     resolution: {integrity: sha512-jQL3lRnocaFtu3V00JToYz/4QkNWswxijDaCVNZRiRTO3HQDLsdu1ZtmIUvV4yPp+rvWm5j0y0TG/S61cuijTg==}
     engines: {node: '>=10'}
     peerDependencies:
-      '@types/react': ^18.3.12
+      '@types/react': ^18.3.28
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
@@ -7937,7 +7937,7 @@ packages:
     resolution: {integrity: sha512-Fedw0aZvkhynoPYlA5WXrMCAMm+nSWdZt6lzJQ7Ok8S6Q+VsHmHpRWndVRJ8Be0ZbkfPc5LRYH+5XrzXcEeLRQ==}
     engines: {node: '>=10'}
     peerDependencies:
-      '@types/react': ^18.3.12
+      '@types/react': ^18.3.28
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
@@ -7988,7 +7988,7 @@ packages:
     resolution: {integrity: sha512-1XfIxnUXzyswPAPXo1P3Pdx2mq/pIqZICkWN60Hby0d9Iqb+MEIpqgYVlbflvHdrp2YR/q3jyKWRPJJ100yxaw==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
-      '@types/react': ^18.3.12
+      '@types/react': ^18.3.28
       react: '>=16.8'
     peerDependenciesMeta:
       '@types/react':
@@ -8409,7 +8409,7 @@ packages:
     resolution: {integrity: sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
-      '@types/react': ^18.3.12
+      '@types/react': ^18.3.28
       immer: '>=9.0.6'
       react: '>=16.8'
     peerDependenciesMeta:
