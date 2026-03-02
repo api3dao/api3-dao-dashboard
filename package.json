@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
-  "packageManager": "pnpm@10.26.2",
+  "packageManager": "pnpm@10.30.3",
   "engines": {
     "node": ">=20",
-    "pnpm": "^10.26.2"
+    "pnpm": "^10.30.3"
   },
   "scripts": {
     "build": "react-app-rewired build",
