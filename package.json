@@ -106,7 +106,7 @@
     "cypress": "^15.11.0",
     "cypress-plugin-tab": "^1.0.5",
     "dotenv": "^17.3.1",
-    "hardhat": "^2.19.4",
+    "hardhat": "^3.1.12",
     "http-browserify": "^1.7.0",
     "https-browserify": "^1.0.0",
     "husky": "^8.0.3",
