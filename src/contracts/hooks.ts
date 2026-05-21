@@ -10,6 +10,19 @@ import {
   TimelockManager__factory as TimelockManagerFactory,
 } from './artifacts/factories';
 import { initialChainData } from '../chain-data/state';
+import { goSync } from '@api3/promise-utils';
+
+// @web3modal's EIP6963Connector stores the RDNS of the connected wallet under `wagmi.connectedRdns` so it can
+// reconnect to the same wallet on reload. We read it directly because the connector itself reports its name as the
+// generic 'EIP6963' regardless of which wallet was selected, and the wallet info is otherwise kept in a private field.
+const getConnectedEip6963Rdns = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  const result = goSync(() => {
+    const raw = window.localStorage.getItem('wagmi.connectedRdns');
+    return raw ? (JSON.parse(raw) as string) : null;
+  });
+  return result.success ? result.data : null;
+};
 
 const useContractReader = () => {
   const { contracts, provider, signer } = useChainData();
@@ -19,15 +32,16 @@ const useContractReader = () => {
    * Please note the following:
    * 1. When connected via non-browser wallets (like via Wallet Connect), loading contract data fails when the smart
    *    contract was constructed with a signer.
-   * 2. Data loads a considerable amount faster when the provider of the browser wallet is used. Web3Modal supports
-   *    EIP6963 which can be used to detect multiple in-browser wallets.
+   * 2. Data loads a considerable amount faster when the provider of the browser wallet is used.
    *
-   * The "MetaMask" connector name is probably not needed anymore after Web3Modal supports EIP6963, but this likely
-   * depends on the version of MM browser wallet. We keep it to be sure we are compatible with the previous version of
-   * DAO dashboard.
+   * We restrict the signer-based read path to MetaMask (either via its legacy connector name, or via the EIP6963
+   * connector when the connected wallet's RDNS is `io.metamask`). Other wallets that connect through EIP6963 (notably
+   * Rabby) have RPC backends that often restrict eth_getLogs, so we route their reads through our configured RPC.
+   * See: https://github.com/api3dao/api3-dao-dashboard/issues/582
    */
-  const isBrowserWallet = connector?.name === 'EIP6963' || connector?.name === 'MetaMask';
-  const reader = isBrowserWallet ? signer : provider;
+  const isMetaMask =
+    connector?.name === 'MetaMask' || (connector?.name === 'EIP6963' && getConnectedEip6963Rdns() === 'io.metamask');
+  const reader = isMetaMask ? signer : provider;
   return {
     contracts,
     reader,
