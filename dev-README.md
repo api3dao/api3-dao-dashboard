@@ -63,11 +63,11 @@ Then, the user can either use `https://api3.eth.limo` or connect to mainnet on t
 supports resolving .eth domains) and visit `api3.eth/`. How this works is
 [documented on IPFS](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
 
-Assuming you have a CID (v0 or v1) and access to the api3.eth owner wallet, you can update the `api3.eth` to the new
-version by following these steps:
+Assuming you have a v1 CID (`ipfs://bafy...`) and access to the api3.eth owner wallet, you can update the `api3.eth` to
+the new version by following these steps:
 
 1. Connect to the ENS application with the owner wallet of the api3.eth domain.
-2. Go to api3.eth "Records" page and edit the "Content Hash". The value will look like `ipfs://bafy...` (CID version 0).
-3. Change the value to the new CID. It's OK to change the Content Hash to CID v1 - ENS will handle the conversion under
-   the hood.
+2. Go to api3.eth "Records" page and edit the "Content Hash".
+3. Change the value to the new CID. Note, that the ENS app will also handle CID v0 and convert under the hood, but it's
+   better to use the CID v1 directly.
 4. Execute the TX. Note that it may take a bit of time until `https://api3.eth.limo` is updated.
