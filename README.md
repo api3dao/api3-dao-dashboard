@@ -53,9 +53,9 @@ To verify the CID, use the following instructions:
 
 1. (Optional) Clone a fresh version of the repository
 2. Run `git checkout production` to check out the production branch (assuming the verification is for production)
-3. Run `yarn` to install the latest dependencies
+3. Run `pnpm install` to install the latest dependencies
 4. Populate `.env.production.local` with production secrets
-5. Run `yarn build` to create a fresh production build
+5. Run `pnpm build` to create a fresh production build
 6. Run `docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive /build` to obtain the CIDv0
 7. To obtain the corresponding CID in v1 follow the section below
 
