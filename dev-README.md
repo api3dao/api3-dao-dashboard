@@ -46,23 +46,28 @@ and merge. Afterwards, proceed to create a manual IPFS deployment. Full process:
 2. Run `git checkout production` to check out the production branch locally
 3. Run `git pull` to pull the latest changes
 4. Populate `.env.production.local` with production secrets
-5. Make sure to use Node version 18
-6. Run `pnpm install` to install the latest dependencies
-7. Run `pnpm build` to create the production build
-8. Switch the Node version to at least 22
-9. Run `PINATA_JWT=<JWT> pnpm upload-build-to-pinata` to upload the build folder to Pinata
-10. Run `docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive /build` to verify the CID hash
-    of the build folder with the deployed hash on Pinata
-11. Verify the uploaded page by clicking on the uploaded "build" row on the UI (differentiated by CID if there are
-    multiple) and make sure it loads - the fonts may look strange, but that's only because of security policies defined
-    by the Pinata preview site and they will work without issues when used via ENS
-12. Refer to the "Updating the name servers" section below to update the ENS name
+5. Run `pnpm install` to install the latest dependencies
+6. Run `pnpm build` to create the production build
+7. Run `PINATA_JWT=<JWT> pnpm upload-build-to-pinata` to upload the build folder to Pinata
+8. Run `docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive /build` to verify the CID hash of
+   the build folder with the deployed hash on Pinata
+9. Verify the uploaded page by clicking on the uploaded "build" row on the UI (differentiated by CID if there are
+   multiple) and make sure it loads - the fonts may look strange, but that's only because of security policies defined
+   by the Pinata preview site and they will work without issues when used via ENS
+10. Refer to the "Updating the name servers" section below to update the ENS name
 
 #### Updating the name servers
 
 The primary way to access the DAO dashboard is through the `api3.eth` ENS name, which points directly to the IPFS hash.
 Then, the user can either use `https://api3.eth.limo` or connect to mainnet on their MetaMask (or use a browser which
-supports resolving .eth domains) and visit `api3.eth/`.
+supports resolving .eth domains) and visit `api3.eth/`. How this works is
+[documented on IPFS](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
 
-After pushing to the production branch, [verify the IPFS CID](./README.md#verifying-the-ipfs-cid). Then,
-[point `api3.eth` to the new CID](https://docs.ipfs.io/how-to/websites-on-ipfs/link-a-domain/#ethereum-naming-service-ens).
+Assuming you have a v1 CID (`ipfs://bafy...`) and access to the api3.eth owner wallet, you can update the `api3.eth` to
+the new version by following these steps:
+
+1. Connect to the ENS application with the owner wallet of the api3.eth domain.
+2. Go to api3.eth "Records" page and edit the "Content Hash".
+3. Change the value to the new CID. Note, that the ENS app will also handle CID v0 and convert under the hood, but it's
+   better to use the CID v1 directly.
+4. Execute the TX. Note that it may take a bit of time until `https://api3.eth.limo` is updated.

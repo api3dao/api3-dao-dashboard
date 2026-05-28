@@ -5,8 +5,8 @@ const FOLDER_PATH = './build';
 
 const uploadBuildToPinata = async () => {
   const currentVersion = parseInt(process.versions.node.split('.')[0], 10);
-  if (currentVersion < 22) {
-    console.error(`❌ Error: Node.js version 22+ is required. You are running ${process.version}.`);
+  if (currentVersion < 24) {
+    console.error(`❌ Error: Node.js version 24+ is required. You are running ${process.version}.`);
     process.exit(1);
   }
 
