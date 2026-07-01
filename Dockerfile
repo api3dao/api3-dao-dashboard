@@ -1,6 +1,6 @@
 # This Dockerfile builds a mainnet version for Api3 DAO dashboard
 
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 ARG REACT_APP_MAINNET_PROVIDER_URL
 # The mainnet provider URL is required at build time
 ENV REACT_APP_MAINNET_PROVIDER_URL=$REACT_APP_MAINNET_PROVIDER_URL

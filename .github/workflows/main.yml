@@ -30,7 +30,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: 'pnpm'
       - name: Install Dependencies
         run: pnpm install
@@ -51,7 +51,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: 'pnpm'
       - name: Install Dependencies
         run: |
@@ -67,10 +67,10 @@ jobs:
           node-version: 16
       - name: Bootstrap DAO contracts
         run: cd dao-contracts && npm run bootstrap
-      - name: Restore Node 22
+      - name: Restore to newer version of Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
       - name: Cypress tests
         env:
           REACT_APP_NODE_ENV: development
