@@ -18,7 +18,7 @@ import { BigNumber } from 'ethers';
 import { notifications } from '../../../components/notifications';
 import { openProposalIdsSelector, proposalDetailsSelector } from '../selectors';
 import { CHUNKS_SIZE, StartVoteProposal, VOTING_APP_IDS } from './commons';
-import { go } from '@api3/promise-utils';
+import { go } from '@api3/commons';
 
 const fetchStartVoteEventsForActiveProposals = async (votingApp: Api3Voting, openVoteIds: BigNumber[]) => {
   const startVoteFilter = votingApp.filters.StartVote(null, null, null);

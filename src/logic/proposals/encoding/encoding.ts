@@ -16,7 +16,7 @@
  * @see EVM script layout:
  *      https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
  */
-import { go, GoResult, goSync, fail, success } from '@api3/promise-utils';
+import { go, GoResult, goSync, fail, success } from '@api3/commons';
 import { BigNumber, providers, utils } from 'ethers';
 import range from 'lodash/range';
 import { DecodedEvmScript, Proposal, ProposalMetadata } from '../../../chain-data';

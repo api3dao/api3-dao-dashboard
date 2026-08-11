@@ -1,4 +1,4 @@
-import { go } from '@api3/promise-utils';
+import { go } from '@api3/commons';
 import { providers, utils } from 'ethers';
 
 /**

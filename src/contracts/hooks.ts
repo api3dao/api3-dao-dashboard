@@ -10,7 +10,7 @@ import {
   TimelockManager__factory as TimelockManagerFactory,
 } from './artifacts/factories';
 import { initialChainData } from '../chain-data/state';
-import { goSync } from '@api3/promise-utils';
+import { goSync } from '@api3/commons';
 
 // @web3modal's EIP6963Connector stores the RDNS of the connected wallet under `wagmi.connectedRdns` so it can
 // reconnect to the same wallet on reload. We read it directly because the connector itself reports its name as the

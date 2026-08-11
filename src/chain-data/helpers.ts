@@ -2,7 +2,7 @@ import produce from 'immer';
 import { ethers, providers } from 'ethers';
 import { notifications } from '../components/notifications';
 import { getEtherscanTransactionUrl } from '../contracts';
-import { go } from '@api3/promise-utils';
+import { go } from '@api3/commons';
 
 export const updateImmutably = <T>(state: T, updateCb: (immutableState: T) => void) => {
   // NOTE: This needs to be written in a function like this, to make sure `produce` doesn't return anything.

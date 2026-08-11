@@ -9,7 +9,7 @@ import { notifications } from '../../../components/notifications';
 import { isUserRejection, formatApi3, parseApi3, messages, UNKNOWN_NUMBER } from '../../../utils';
 import styles from './forms.module.scss';
 import UnstakeHelperText from './unstake-helper-text';
-import { go, goSync } from '@api3/promise-utils';
+import { go, goSync } from '@api3/commons';
 import classNames from 'classnames';
 
 interface Props {
