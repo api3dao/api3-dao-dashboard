@@ -42,7 +42,7 @@ jobs:
         env:
           PINATA_CID: ${{ steps.upload.outputs.cid }}
         run: |
-          LOCAL_CID=$(docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive --quieter /build)
+          LOCAL_CID=$(docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive --quieter /build | tail -n 1)
           echo "Pinata CID: $PINATA_CID"
           echo "Local CID:  $LOCAL_CID"
           # Both CIDs are v0 ("Qm...")
@@ -50,7 +50,7 @@ jobs:
             echo "::error::CID mismatch between the Pinata upload and the local build"
             exit 1
           fi
-          CID_V1=$(docker run --rm ipfs/kubo cid format -v 1 -b base32 "$PINATA_CID")
+          CID_V1=$(docker run --rm ipfs/kubo cid format -v 1 -b base32 "$PINATA_CID" | tail -n 1)
           {
             echo "## IPFS deployment"
             echo ""
