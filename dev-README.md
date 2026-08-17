@@ -44,9 +44,10 @@ The upload to Pinata happens automatically in CI. Full process:
 1. Open a PR from `main` to `production`, wait for CI to pass and merge
 2. The merge triggers the "Deploy to IPFS" GitHub Actions workflow, which builds the app, uploads the build folder to
    Pinata and verifies that the CID reported by Pinata matches the CID of the build computed locally in CI
-3. Open the workflow run summary, which shows the deployed CID (in both v0 and v1 form) and a preview URL
-4. Verify that the preview loads - the fonts may look strange, but that's only because of security policies defined by
-   the gateway and they will work without issues when used via ENS
+3. Open the workflow run summary, which shows the deployed CID (in both v0 and v1 form)
+4. Verify the upload at https://app.pinata.cloud/ipfs/files. There should be an entry for the CID. Click the "build"
+   link and make sure it loads - the fonts may look strange, but that's only because of security policies defined by the
+   gateway and they will work without issues when used via ENS
 5. Refer to the "Updating the name servers" section below to update the ENS name
 
 The workflow can also be re-run manually from the GitHub Actions UI.
@@ -63,8 +64,6 @@ If CI is unavailable, you can upload the build manually:
 6. Run `PINATA_JWT=<JWT> pnpm upload-build-to-pinata` to upload the build folder to Pinata
 7. Run `docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive /build` to verify the CID hash of
    the build folder with the deployed hash on Pinata
-8. Verify the upload at https://app.pinata.cloud/ipfs/files. There should be an entry for the CID. Click the "build"
-   link and make sure it loads.
 
 #### Updating the name servers
 

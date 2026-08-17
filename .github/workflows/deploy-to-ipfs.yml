@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: ${{ github.ref_name == 'production' && 'production' || 'preview' }}
-      url: ${{ format('https://{0}/ipfs/{1}', vars.PINATA_GATEWAY_DOMAIN, steps.verify.outputs.cid-v1) }}
     steps:
       - name: Clone api3-dao-dashboard
         uses: actions/checkout@v6
@@ -42,10 +41,8 @@ jobs:
           PINATA_JWT: ${{ secrets.PINATA_JWT }}
         run: pnpm upload-build-to-pinata
       - name: Verify CID
-        id: verify
         env:
           PINATA_CID: ${{ steps.upload.outputs.cid }}
-          PINATA_GATEWAY_DOMAIN: ${{ vars.PINATA_GATEWAY_DOMAIN }}
         run: |
           LOCAL_CID=$(docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive --quieter /build | tail -n 1)
           echo "Pinata CID: $PINATA_CID"
@@ -56,7 +53,6 @@ jobs:
             exit 1
           fi
           CID_V1=$(docker run --rm ipfs/kubo cid format -v 1 -b base32 "$PINATA_CID" | tail -n 1)
-          echo "cid-v1=$CID_V1" >> "$GITHUB_OUTPUT"
           {
             echo "## Deployed successfully"
             echo ""
@@ -66,5 +62,4 @@ jobs:
             echo "| **Status:** | ✅ Deploy successful! |"
             echo "| **CID (v0):** | \`$PINATA_CID\` |"
             echo "| **CID (v1):** | \`$CID_V1\` |"
-            echo "| **Preview URL:** | https://$PINATA_GATEWAY_DOMAIN/ipfs/$CID_V1 |"
           } >> "$GITHUB_STEP_SUMMARY"
