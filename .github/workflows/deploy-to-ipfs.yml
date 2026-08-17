@@ -1,0 +1,62 @@
+name: Deploy to IPFS
+
+on:
+  push:
+    branches:
+      # TODO: Swap to "production" before merging
+      - ci-pinata-upload
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-to-ipfs
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone api3-dao-dashboard
+        uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'pnpm'
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Build
+        env:
+          REACT_APP_NODE_ENV: production
+          REACT_APP_PROJECT_ID: 8bddccf51318f114759f31306090233e
+          REACT_APP_SENTRY_DSN: ${{ secrets.REACT_APP_SENTRY_DSN }}
+          REACT_APP_MAINNET_PROVIDER_URL: ${{ secrets.REACT_APP_MAINNET_PROVIDER_URL }}
+        run: pnpm build
+      - name: Upload to Pinata
+        id: upload
+        env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+        run: pnpm upload-build-to-pinata
+      - name: Verify CID
+        env:
+          PINATA_CID: ${{ steps.upload.outputs.cid }}
+        run: |
+          LOCAL_CID=$(docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive --quieter /build)
+          echo "Pinata CID: $PINATA_CID"
+          echo "Local CID:  $LOCAL_CID"
+          # Both CIDs are v0 ("Qm...")
+          if [ "$LOCAL_CID" != "$PINATA_CID" ]; then
+            echo "::error::CID mismatch between the Pinata upload and the local build"
+            exit 1
+          fi
+          CID_V1=$(docker run --rm ipfs/kubo cid format -v 1 -b base32 "$PINATA_CID")
+          {
+            echo "## IPFS deployment"
+            echo ""
+            echo "CID (v0): \`$PINATA_CID\`"
+            echo ""
+            echo "CID (v1): \`$CID_V1\`"
+            echo ""
+            echo "Use the v1 CID to update the api3.eth ENS content hash (see dev-README.md)."
+          } >> "$GITHUB_STEP_SUMMARY"
