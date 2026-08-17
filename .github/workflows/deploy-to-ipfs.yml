@@ -14,6 +14,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name == 'production' && 'production' || 'preview' }}
+      url: ${{ format('https://{0}.ipfs.dweb.link', steps.verify.outputs.cid-v1) }}
     steps:
       - name: Clone api3-dao-dashboard
         uses: actions/checkout@v6
@@ -39,6 +42,7 @@ jobs:
           PINATA_JWT: ${{ secrets.PINATA_JWT }}
         run: pnpm upload-build-to-pinata
       - name: Verify CID
+        id: verify
         env:
           PINATA_CID: ${{ steps.upload.outputs.cid }}
         run: |
@@ -51,12 +55,15 @@ jobs:
             exit 1
           fi
           CID_V1=$(docker run --rm ipfs/kubo cid format -v 1 -b base32 "$PINATA_CID" | tail -n 1)
+          echo "cid-v1=$CID_V1" >> "$GITHUB_OUTPUT"
           {
-            echo "## IPFS deployment"
+            echo "## Deployed successfully"
             echo ""
-            echo "CID (v0): \`$PINATA_CID\`"
-            echo ""
-            echo "CID (v1): \`$CID_V1\`"
-            echo ""
-            echo "Use the v1 CID to update the api3.eth ENS content hash (see dev-README.md)."
+            echo "|  |  |"
+            echo "| --- | --- |"
+            echo "| **Latest commit:** | \`${GITHUB_SHA::7}\` |"
+            echo "| **Status:** | ✅ Deploy successful! |"
+            echo "| **CID (v0):** | \`$PINATA_CID\` |"
+            echo "| **CID (v1):** | \`$CID_V1\` |"
+            echo "| **Preview URL:** | https://$CID_V1.ipfs.dweb.link |"
           } >> "$GITHUB_STEP_SUMMARY"
