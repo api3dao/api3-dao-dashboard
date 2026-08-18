@@ -1,44 +1,8 @@
 {
-  "extends": ["config:base", "docker:disable"],
-  "packageRules": [
-    {
-      "matchDepTypes": ["dependencies"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
-    },
-    {
-      "extends": ["monorepo:jest"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
-    },
-    {
-      "matchPackageNames": ["@types/node", "@types/jest", "chalk"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
-    },
-    {
-      "matchPackageNames": ["api3-dao"],
-      "enabled": false
-    },
-    {
-      "matchDepTypes": ["dependencies"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "schedule": ["before 2am on monday"],
-      "groupName": "dependencies (non-major)",
-      "groupSlug": "dependencies"
-    },
-    {
-      "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "schedule": ["before 2am on monday"],
-      "groupName": "devDependencies (non-major)",
-      "groupSlug": "dev-dependencies"
-    }
-  ],
-  "ignoreDeps": ["api3-dao"],
-  "rangeStrategy": "bump",
-  "lockFileMaintenance": {
-    "enabled": true
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["local>api3dao/renovate-config"],
+  "major": {
+    "dependencyDashboardApproval": true
   },
-  "dependencyDashboard": false
+  "ignoreDeps": ["api3-dao"]
 }
