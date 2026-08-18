@@ -6,7 +6,7 @@ ARG REACT_APP_MAINNET_PROVIDER_URL
 ENV REACT_APP_MAINNET_PROVIDER_URL=$REACT_APP_MAINNET_PROVIDER_URL
 # The Wallet Connect project ID is required at build time, and it is OK to hardcode because the project ID
 # is discoverable when using the dApp.
-ENV REACT_APP_PROJECT_ID=0b2e430162b0e6c93619b3d65cf90d4e
+ENV REACT_APP_PROJECT_ID=8bddccf51318f114759f31306090233e
 RUN apk add --update --no-cache git $([ $(arch) == "aarch64" ] && echo "python3 make g++")
 RUN corepack enable && corepack prepare pnpm@11.19.0 --activate
 WORKDIR /usr/src/app
