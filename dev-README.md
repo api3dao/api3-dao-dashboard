@@ -52,6 +52,19 @@ The upload to Pinata happens automatically in CI. Full process:
 
 The workflow can also be re-run manually from the GitHub Actions UI.
 
+#### Pinata API key
+
+The workflow authenticates with the `PINATA_JWT` secret, defined on the `production` GitHub environment (not as a plain
+repository secret, because the deploy job runs in that environment).
+
+When creating the key at https://app.pinata.cloud/developers/api-keys, keep "Admin" off and grant only the legacy
+`pinFileToIPFS` endpoint. `dev-scripts/upload-build-to-pinata.mjs` posts to the legacy
+`https://api.pinata.cloud/pinning/pinFileToIPFS` endpoint, so none of the "V3 Resources" permissions apply - leave them
+all at "None". The CID verification step computes the hash locally with `ipfs/kubo`, so no read access is needed either.
+
+Pinata shows three values once the key is created. Only the JWT is used - the API Key and API Secret are for the older
+`pinata_api_key` / `pinata_secret_api_key` header authentication, which nothing in this repo uses.
+
 #### Manual upload (fallback)
 
 If CI is unavailable, you can upload the build manually:
