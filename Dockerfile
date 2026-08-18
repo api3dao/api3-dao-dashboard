@@ -8,7 +8,7 @@ ENV REACT_APP_MAINNET_PROVIDER_URL=$REACT_APP_MAINNET_PROVIDER_URL
 # is discoverable when using the dApp.
 ENV REACT_APP_PROJECT_ID=8bddccf51318f114759f31306090233e
 RUN apk add --update --no-cache git $([ $(arch) == "aarch64" ] && echo "python3 make g++")
-RUN corepack enable && corepack prepare pnpm@10.26.2 --activate
+RUN corepack enable && corepack prepare pnpm@11.19.0 --activate
 WORKDIR /usr/src/app
 ADD . .
 RUN pnpm install --frozen-lockfile

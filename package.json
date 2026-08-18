@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
-  "packageManager": "pnpm@10.26.2",
+  "packageManager": "pnpm@11.19.0",
   "engines": {
     "node": ">=20",
-    "pnpm": "^10.26.2"
+    "pnpm": "^11.19.0"
   },
   "scripts": {
     "build": "react-app-rewired build",
@@ -125,16 +125,5 @@
     "typescript": "5.3.3",
     "typescript-plugin-css-modules": "^5.0.2",
     "url": "^0.11.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "@typescript-eslint/eslint-plugin": "^6.21.0",
-      "@typescript-eslint/parser": "^6.21.0",
-      "@types/jest": "^27.5.2",
-      "@types/react": "^18.3.12",
-      "jest-regex-util": "^27.5.1",
-      "jest-watcher": "^27.5.1",
-      "jest-worker": "^27.5.1"
-    }
   }
 }
