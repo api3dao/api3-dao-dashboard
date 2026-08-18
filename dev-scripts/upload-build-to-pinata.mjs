@@ -65,6 +65,14 @@ const uploadBuildToPinata = async () => {
   const result = await response.json();
   console.info('✅ Success!');
   console.info(result);
+
+  // Expose the CID to later workflow steps when running in GitHub Actions
+  if (process.env.GITHUB_OUTPUT) {
+    await fs.promises.appendFile(process.env.GITHUB_OUTPUT, `cid=${result.IpfsHash}\n`);
+  }
 };
 
-uploadBuildToPinata().catch(console.error);
+uploadBuildToPinata().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
