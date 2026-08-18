@@ -10,72 +10,35 @@ import {
   TimelockManager__factory as TimelockManagerFactory,
 } from './artifacts/factories';
 import { initialChainData } from '../chain-data/state';
-import { goSync } from '@api3/commons';
-
-// @web3modal's EIP6963Connector stores the RDNS of the connected wallet under `wagmi.connectedRdns` so it can
-// reconnect to the same wallet on reload. We read it directly because the connector itself reports its name as the
-// generic 'EIP6963' regardless of which wallet was selected, and the wallet info is otherwise kept in a private field.
-const getConnectedEip6963Rdns = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  const result = goSync(() => {
-    const raw = window.localStorage.getItem('wagmi.connectedRdns');
-    return raw ? (JSON.parse(raw) as string) : null;
-  });
-  return result.success ? result.data : null;
-};
-
-const useContractReader = () => {
-  const { contracts, provider, signer } = useChainData();
-  const { connector } = useAccount();
-
-  /*
-   * Please note the following:
-   * 1. When connected via non-browser wallets (like via Wallet Connect), loading contract data fails when the smart
-   *    contract was constructed with a signer.
-   * 2. Data loads a considerable amount faster when the provider of the browser wallet is used.
-   *
-   * We restrict the signer-based read path to MetaMask (either via its legacy connector name, or via the EIP6963
-   * connector when the connected wallet's RDNS is `io.metamask`). Other wallets that connect through EIP6963 (notably
-   * Rabby) have RPC backends that often restrict eth_getLogs, so we route their reads through our configured RPC.
-   * See: https://github.com/api3dao/api3-dao-dashboard/issues/582
-   */
-  const isMetaMask =
-    connector?.name === 'MetaMask' || (connector?.name === 'EIP6963' && getConnectedEip6963Rdns() === 'io.metamask');
-  const reader = isMetaMask ? signer : provider;
-  return {
-    contracts,
-    reader,
-  };
-};
 
 export const useApi3Pool = () => {
-  const { contracts, reader } = useContractReader();
+  const { contracts, provider } = useChainData();
 
   return useMemo(() => {
-    if (!contracts || !reader) return null;
-    return Api3PoolFactory.connect(contracts.api3Pool, reader);
-  }, [reader, contracts]);
+    if (!contracts || !provider) return null;
+    return Api3PoolFactory.connect(contracts.api3Pool, provider);
+  }, [provider, contracts]);
 };
 
 export const useApi3Token = () => {
-  const { contracts, reader } = useContractReader();
+  const { contracts, provider } = useChainData();
 
   return useMemo(() => {
-    if (!contracts || !reader) return null;
-    return Api3TokenFactory.connect(contracts.api3Token, reader);
-  }, [reader, contracts]);
+    if (!contracts || !provider) return null;
+    return Api3TokenFactory.connect(contracts.api3Token, provider);
+  }, [provider, contracts]);
 };
 
 export const useApi3Voting = () => {
-  const { contracts, reader } = useContractReader();
+  const { contracts, provider } = useChainData();
 
   return useMemo(() => {
-    if (!contracts || !reader) return null;
+    if (!contracts || !provider) return null;
     return {
-      primary: Api3VotingFactory.connect(contracts.votingAppPrimary, reader),
-      secondary: Api3VotingFactory.connect(contracts.votingAppSecondary, reader),
+      primary: Api3VotingFactory.connect(contracts.votingAppPrimary, provider),
+      secondary: Api3VotingFactory.connect(contracts.votingAppSecondary, provider),
     };
-  }, [reader, contracts]);
+  }, [provider, contracts]);
 };
 
 export interface Api3Agent {
@@ -96,23 +59,23 @@ export const useApi3AgentAddresses = (): Api3Agent | null => {
 };
 
 export const useConvenience = () => {
-  const { contracts, reader } = useContractReader();
+  const { contracts, provider } = useChainData();
 
   return useMemo(() => {
-    if (!contracts || !reader) return null;
+    if (!contracts || !provider) return null;
 
-    return ConvenienceFactory.connect(contracts.convenience, reader);
-  }, [reader, contracts]);
+    return ConvenienceFactory.connect(contracts.convenience, provider);
+  }, [provider, contracts]);
 };
 
 export const useTimelockManager = () => {
-  const { contracts, reader } = useContractReader();
+  const { contracts, provider } = useChainData();
 
   return useMemo(() => {
-    if (!contracts || !reader) return null;
+    if (!contracts || !provider) return null;
 
-    return TimelockManagerFactory.connect(contracts.timelockManager, reader);
-  }, [reader, contracts]);
+    return TimelockManagerFactory.connect(contracts.timelockManager, provider);
+  }, [provider, contracts]);
 };
 
 export const useProviderSubscriptions = () => {
