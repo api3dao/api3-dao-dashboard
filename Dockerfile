@@ -1,12 +1,12 @@
 # This Dockerfile builds a mainnet version for Api3 DAO dashboard
 
 FROM node:24-alpine AS builder
-ARG REACT_APP_MAINNET_PROVIDER_URL
+ARG VITE_MAINNET_PROVIDER_URL
 # The mainnet provider URL is required at build time
-ENV REACT_APP_MAINNET_PROVIDER_URL=$REACT_APP_MAINNET_PROVIDER_URL
+ENV VITE_MAINNET_PROVIDER_URL=$VITE_MAINNET_PROVIDER_URL
 # The Wallet Connect project ID is required at build time, and it is OK to hardcode because the project ID
 # is discoverable when using the dApp.
-ENV REACT_APP_PROJECT_ID=8bddccf51318f114759f31306090233e
+ENV VITE_PROJECT_ID=8bddccf51318f114759f31306090233e
 RUN apk add --update --no-cache git $([ $(arch) == "aarch64" ] && echo "python3 make g++")
 RUN corepack enable && corepack prepare pnpm@11.19.0 --activate
 WORKDIR /usr/src/app

@@ -10,7 +10,7 @@ const ExternalLink = (props: Props) => {
   const href = cleanHref(incomingHref);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && href === 'about:blank') {
+    if (import.meta.env.DEV && href === 'about:blank') {
       // eslint-disable-next-line no-console
       console.warn(`An invalid URL has been provided: "${incomingHref}". Only https:// or http:// URLs are allowed.`);
     }

@@ -129,7 +129,7 @@ export const error = throttle(
       else Sentry.captureException(errorOrMessage);
     }
 
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       // Prefixing the error message with ad-hoc string for better backwards search
       // eslint-disable-next-line no-console
       console.error('[DEV: Caught error]:', errorOrMessage);

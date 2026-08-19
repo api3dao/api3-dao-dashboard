@@ -73,10 +73,10 @@ jobs:
           node-version: 24
       - name: Cypress tests
         env:
-          REACT_APP_NODE_ENV: development
-          REACT_APP_PROJECT_ID: 8bddccf51318f114759f31306090233e
+          VITE_NODE_ENV: development
+          VITE_PROJECT_ID: 8bddccf51318f114759f31306090233e
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-          REACT_APP_MAINNET_PROVIDER_URL: ${{ secrets.REACT_APP_MAINNET_PROVIDER_URL }}
+          VITE_MAINNET_PROVIDER_URL: ${{ secrets.VITE_MAINNET_PROVIDER_URL }}
         run: pnpm percy exec -- pnpm ci:cypress
         timeout-minutes: 60
       - name: Store artifacts

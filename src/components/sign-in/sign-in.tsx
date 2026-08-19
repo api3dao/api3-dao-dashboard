@@ -88,7 +88,7 @@ const SignIn = ({ dark, position }: Props) => {
   const isSignedIn = !!provider;
   const supportedNetworks = SUPPORTED_NETWORKS.filter((name) => {
     // Disable localhost network on non-development environment
-    if (process.env.REACT_APP_NODE_ENV !== 'development' && name === 'hardhat') return false;
+    if (import.meta.env.VITE_NODE_ENV !== 'development' && name === 'hardhat') return false;
     else return true;
   });
   const isSupportedNetwork = !isSignedIn || supportedNetworks.includes(networkName);

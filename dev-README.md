@@ -13,7 +13,7 @@ implemented and its security. All developer oriented instructions can be found h
 4. (Optional) Modify the pool contract `EPOCH_LENGTH` variable from `1 weeks` to `1 minutes` to speed up testing. You
    can find this constant inside `dao-contracts/packages/pool/contracts/StateUtils.sol`
 5. `pnpm eth:deploy-dao-contracts-on-hardhat` - to deploy the contracts locally
-6. Copy the `.env.example` to `.env`. Make sure that `REACT_APP_NODE_ENV` is set to `development`
+6. Copy the `.env.example` to `.env`. Make sure that `VITE_NODE_ENV` is set to `development`
 7. `pnpm start` - to start the application on localhost on port 3000
 8. `pnpm send-to-account <address> --ether 5 --tokens 100` to send some ETH and tokens to your account
 

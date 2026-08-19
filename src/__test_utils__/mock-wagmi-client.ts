@@ -2,7 +2,7 @@
  * Note: https://github.com/tmm/testing-wagmi/tree/main/test was used as the starting point for this code
  */
 import { createConfig, CreateConfigParameters, WalletClient } from 'wagmi';
-import { MockConnector } from 'wagmi/dist/connectors/mock';
+import { MockConnector } from 'wagmi/connectors/mock';
 import { hardhat } from 'wagmi/chains';
 import { createPublicClient, createWalletClient, http } from 'viem';
 

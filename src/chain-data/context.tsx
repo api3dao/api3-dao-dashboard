@@ -25,7 +25,7 @@ const ChainDataContextProvider = (props: { children: ReactNode }) => {
         const newChainData = typeof dataOrCallback === 'function' ? dataOrCallback(oldChainData) : dataOrCallback;
         const updatedChainData = { ...oldChainData, ...newChainData };
 
-        if (process.env.NODE_ENV === 'development') {
+        if (import.meta.env.DEV) {
           console.group(reason);
           // eslint-disable-next-line no-console
           console.info(updatedChainData);
