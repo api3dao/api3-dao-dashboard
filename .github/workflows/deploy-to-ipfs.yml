@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - production
-      - pinata-groups
   workflow_dispatch:
 
 concurrency:
@@ -38,7 +37,7 @@ jobs:
       - name: Upload to Pinata
         id: upload
         env:
-          PINATA_JWT: ${{ secrets.TEST_PINATA_JWT }}
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
         run: pnpm upload-build-to-pinata
       - name: Verify CID
         env:
