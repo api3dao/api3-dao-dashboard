@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -42,10 +43,12 @@ const uploadBuildToPinata = async () => {
     }
   }
 
+  // Use the short commit hash as the upload name (matches the deploy summary in GitHub Actions)
+  const commitHash = process.env.GITHUB_SHA || execSync('git rev-parse HEAD').toString().trim();
   formData.append(
     'pinataMetadata',
     JSON.stringify({
-      name: folderName,
+      name: commitHash.slice(0, 7),
     })
   );
 
