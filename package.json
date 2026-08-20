@@ -20,8 +20,8 @@
     "fix-dev-issues": "node dev-scripts/copy-localhost-data.js && node dev-scripts/generate-typechain-artifacts.js",
     "lint:fix": "eslint --fix --ext js,ts,tsx src dev-scripts vite.config.mts",
     "lint": "pnpm prettier:check && eslint --ext js,ts,tsx src dev-scripts vite.config.mts",
-    "prettier:check": "prettier --check ./**/*.{js,mts,ts,tsx,json,css,scss,md}",
-    "prettier": "prettier --write ./**/*.{js,mts,ts,tsx,json,css,scss,md}",
+    "prettier:check": "prettier --check ./**/*.{js,mts,ts,tsx,json,css,scss,md,html}",
+    "prettier": "prettier --write ./**/*.{js,mts,ts,tsx,json,css,scss,md,html}",
     "postinstall": "pnpm fix-dev-issues",
     "postuninstall": "pnpm fix-dev-issues",
     "prepare": "husky install",
@@ -29,25 +29,15 @@
     "create-proposal": "cd hardhat && npx hardhat create-proposal",
     "upload-build-to-pinata": "node dev-scripts/upload-build-to-pinata.mjs",
     "start": "vite",
+    "preview": "vite preview",
     "test:watch": "vitest",
     "test": "vitest run",
     "tsc:watch": "tsc --project tsconfig.json --watch",
     "tsc": "tsc --project tsconfig.json"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "pnpm lint && pnpm tsc"
-    }
-  },
-  "lint-staged": {
-    "./**/*.{js,jsx,mts,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
-    ]
-  },
   "browserslist": {
     "production": [
-      ">0.2%",
+      ">0.2% and supports bigint",
       "not ie <= 99",
       "not android <= 4.4.4",
       "not dead",

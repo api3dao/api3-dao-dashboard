@@ -8,21 +8,21 @@ import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 
-const envProjectId = import.meta.env.VITE_PROJECT_ID;
-const envMainnetProviderUrl = import.meta.env.VITE_MAINNET_PROVIDER_URL;
+const projectId = import.meta.env.VITE_PROJECT_ID;
+const mainnetProviderUrl = import.meta.env.VITE_MAINNET_PROVIDER_URL;
 
-if (!envProjectId) {
+if (!projectId) {
   throw new Error('Missing VITE_PROJECT_ID env variable');
 }
 
-if (!envMainnetProviderUrl) {
+if (!mainnetProviderUrl) {
   throw new Error('Missing VITE_MAINNET_PROVIDER_URL env variable');
 }
 
-export const projectId = envProjectId;
+export { projectId };
 
 const chainInfos = [
-  { chain: mainnet, rpcUrl: envMainnetProviderUrl },
+  { chain: mainnet, rpcUrl: mainnetProviderUrl },
   { chain: hardhat, rpcUrl: 'http://localhost:8545' },
 ];
 
