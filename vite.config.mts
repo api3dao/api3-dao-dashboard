@@ -19,7 +19,7 @@ export default defineConfig({
     }),
   ],
   server: {
-    // Cypress and the "ci:cypress" script expect the dev server on port 3000
+    host: true,
     port: 3000,
     strictPort: true,
   },
