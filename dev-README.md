@@ -39,22 +39,44 @@ Currently, there are no preview builds.
 
 ### Updating the production deployment
 
-All you need to do is push the code to the `production` branch. The simplest way is to open a PR from the `main` branch
-and merge. Afterwards, proceed to create a manual IPFS deployment. Full process:
+The upload to Pinata happens automatically in CI. Full process:
 
 1. Open a PR from `main` to `production`, wait for CI to pass and merge
-2. Run `git checkout production` to check out the production branch locally
-3. Run `git pull` to pull the latest changes
-4. Populate `.env.production.local` with production secrets
-5. Run `pnpm install` to install the latest dependencies
-6. Run `pnpm build` to create the production build
-7. Run `PINATA_JWT=<JWT> pnpm upload-build-to-pinata` to upload the build folder to Pinata
-8. Run `docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive /build` to verify the CID hash of
+2. The merge triggers the "Deploy to IPFS" GitHub Actions workflow, which builds the app, uploads the build folder to
+   Pinata and verifies that the CID reported by Pinata matches the CID of the build computed locally in CI
+3. Open the workflow run summary, which shows the deployed CID (in both v0 and v1 form)
+4. Verify the upload at https://app.pinata.cloud/ipfs/files. There should be an entry for the CID. Click the "build"
+   link and make sure it loads - the fonts may look strange, but that's only because of security policies defined by the
+   gateway and they will work without issues when used via ENS
+5. Refer to the "Updating the name servers" section below to update the ENS name
+
+The workflow can also be re-run manually from the GitHub Actions UI.
+
+#### Pinata API key
+
+The workflow authenticates with the `PINATA_JWT` secret, defined on the `production` GitHub environment (not as a plain
+repository secret, because the deploy job runs in that environment).
+
+When creating the key at https://app.pinata.cloud/developers/api-keys, keep "Admin" off and grant only the legacy
+`pinFileToIPFS` endpoint. `dev-scripts/upload-build-to-pinata.mjs` posts to the legacy
+`https://api.pinata.cloud/pinning/pinFileToIPFS` endpoint, so none of the "V3 Resources" permissions apply - leave them
+all at "None". The CID verification step computes the hash locally with `ipfs/kubo`, so no read access is needed either.
+
+Pinata shows three values once the key is created. Only the JWT is used - the API Key and API Secret are for the older
+`pinata_api_key` / `pinata_secret_api_key` header authentication, which nothing in this repo uses.
+
+#### Manual upload (fallback)
+
+If CI is unavailable, you can upload the build manually:
+
+1. Run `git checkout production` to check out the production branch locally
+2. Run `git pull` to pull the latest changes
+3. Populate `.env.production.local` with production secrets
+4. Run `pnpm install` to install the latest dependencies
+5. Run `pnpm build` to create the production build
+6. Run `PINATA_JWT=<JWT> pnpm upload-build-to-pinata` to upload the build folder to Pinata
+7. Run `docker run --rm -v "$(pwd)/build:/build" ipfs/kubo add --only-hash --recursive /build` to verify the CID hash of
    the build folder with the deployed hash on Pinata
-9. Verify the uploaded page by clicking on the uploaded "build" row on the UI (differentiated by CID if there are
-   multiple) and make sure it loads - the fonts may look strange, but that's only because of security policies defined
-   by the Pinata preview site and they will work without issues when used via ENS
-10. Refer to the "Updating the name servers" section below to update the ENS name
 
 #### Updating the name servers
 
