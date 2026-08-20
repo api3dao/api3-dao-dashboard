@@ -1,4 +1,4 @@
-import { assertGoError, assertGoSuccess } from '@api3/promise-utils';
+import { assertGoError, assertGoSuccess } from '@api3/commons';
 import { constants, providers, BigNumber } from 'ethers';
 import { EncodedEvmScriptError } from '.';
 import { updateImmutably } from '../../../chain-data';
