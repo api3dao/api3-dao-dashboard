@@ -7,7 +7,7 @@ import { notifications } from '../../../components/notifications';
 import { messages } from '../../../utils/messages';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 import { isZeroAddress } from '../../../contracts';
-import { go } from '@api3/promise-utils';
+import { go } from '@api3/commons';
 
 interface DynamicVotingData {
   id: BigNumber;

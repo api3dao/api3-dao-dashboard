@@ -6,7 +6,7 @@ import Button from '../../../components/button';
 import { formatApi3, parseApi3, messages } from '../../../utils';
 import styles from './forms.module.scss';
 import UnstakeHelperText from './unstake-helper-text';
-import { goSync } from '@api3/promise-utils';
+import { goSync } from '@api3/commons';
 
 interface Props {
   title: string;

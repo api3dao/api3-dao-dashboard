@@ -6,7 +6,7 @@ import { isZeroAddress } from '../../contracts';
 import * as notifications from '../../components/notifications';
 import { messages } from '../../utils/messages';
 import { convertToEnsName } from '../proposals/encoding/ens-name';
-import { go, assertGoSuccess } from '@api3/promise-utils';
+import { go, assertGoSuccess } from '@api3/commons';
 
 export const useTreasuryAndDelegation = () => {
   const { setChainData, userAccount, proposals, provider } = useChainData();

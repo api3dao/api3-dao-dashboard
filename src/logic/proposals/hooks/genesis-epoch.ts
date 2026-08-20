@@ -3,7 +3,7 @@ import { useChainData } from '../../../chain-data';
 import { useApi3Pool, usePossibleChainDataUpdate } from '../../../contracts';
 import { notifications } from '../../../components/notifications';
 import { messages } from '../../../utils';
-import { go } from '@api3/promise-utils';
+import { go } from '@api3/commons';
 
 /**
  * Hook which loads the isGenesisEpoch boolean from the Api3Pool contract. Creating a

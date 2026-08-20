@@ -29,6 +29,13 @@ module.exports = {
       };
     }
 
+    // React-scripts does not support ".cjs" files. Its babel rule for node_modules code only
+    // matches ".js" and ".mjs". Widening the babel rule to include ".cjs" fixes the problem.
+    // See: https://github.com/facebook/create-react-app/issues/12700
+    const oneOf = config.module.rules.find((rule) => rule.oneOf).oneOf;
+    const dependenciesBabelRule = oneOf.find((rule) => String(rule.test) === String(/\.(js|mjs)$/));
+    dependenciesBabelRule.test = /\.(js|mjs|cjs)$/;
+
     // See: https://www.alchemy.com/blog/how-to-polyfill-node-core-modules-in-webpack-5
     config.resolve.fallback = {
       ...config.resolve.fallback,
