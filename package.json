@@ -104,7 +104,7 @@
     "chalk": "^4.1.2",
     "concurrently": "^7.6.0",
     "cypress": "^15.11.0",
-    "cypress-plugin-tab": "^1.0.5",
+    "cypress-plugin-tab": "^2.0.0",
     "dotenv": "^17.3.1",
     "hardhat": "^2.19.4",
     "http-browserify": "^1.7.0",
