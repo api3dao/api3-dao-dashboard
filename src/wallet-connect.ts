@@ -2,7 +2,7 @@ import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { EIP6963Connector } from '@web3modal/wagmi';
 import { configureChains, createConfig } from 'wagmi';
 import { mainnet, hardhat } from 'wagmi/chains';
-import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';

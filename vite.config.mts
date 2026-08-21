@@ -6,8 +6,7 @@ import browserslistToEsbuild from 'browserslist-to-esbuild';
 import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
-  // Use relative asset URLs so the app works when served from an IPFS gateway path (previously "homepage": "." in
-  // package.json).
+  // Use relative asset URLs so the app works when served from an IPFS gateway path.
   base: './',
   plugins: [
     react(),
@@ -37,25 +36,28 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
-    // Force disable source maps to simplify deterministic verification of CID IPFS hash
+    // Disable source maps to simplify deterministic verification of CID IPFS hash
     sourcemap: false,
     target: browserslistToEsbuild(),
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks(id) {
-          // The "(?<!node_modules.*)" regex ignores nested copies of packages, so that they're bundled with their
-          // issuer. See: https://github.com/vercel/next.js/pull/9012
-          if (/(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) {
-            return 'framework';
-          }
-          if (/(?<!node_modules.*)[\\/]node_modules[\\/](@ethersproject|bn\.js|aes-js)[\\/]/.test(id)) {
-            return 'core-web3';
-          }
-          // The @web3modal package spawns too many async chunks, so we bundle it (and WalletConnect, which it pulls
-          // in) into a single chunk (previously webpack LimitChunkCountPlugin in config-overrides.js).
-          if (/[\\/]node_modules[\\/](@web3modal|@walletconnect)[\\/]/.test(id)) {
-            return 'web3modal';
-          }
+        codeSplitting: {
+          groups: [
+            {
+              name: 'framework',
+              test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+            },
+            {
+              name: 'core-web3',
+              test: /[\\/]node_modules[\\/](@ethersproject|bn\.js|aes-js)[\\/]/,
+            },
+            // The @web3modal package spawns too many async chunks, so we bundle it (and WalletConnect, which it pulls
+            // in) into a single chunk (previously webpack LimitChunkCountPlugin in config-overrides.js).
+            {
+              name: 'web3modal',
+              test: /[\\/]node_modules[\\/](@web3modal|@walletconnect)[\\/]/,
+            },
+          ],
         },
       },
     },

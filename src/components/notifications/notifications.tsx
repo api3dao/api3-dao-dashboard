@@ -1,7 +1,7 @@
 import throttle from 'lodash/throttle';
 import classNames from 'classnames';
 import { toast, Slide, ToastOptions } from 'react-toastify';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import Button from '../button';
 import styles from './notifications.module.scss';
 import { ReactNode } from 'react';
