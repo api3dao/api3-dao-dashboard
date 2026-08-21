@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - production
+      - migrate-vite
   workflow_dispatch:
 
 concurrency:
@@ -29,15 +30,15 @@ jobs:
         run: pnpm install
       - name: Build
         env:
-          REACT_APP_NODE_ENV: production
-          REACT_APP_PROJECT_ID: 8bddccf51318f114759f31306090233e
-          REACT_APP_SENTRY_DSN: ${{ secrets.REACT_APP_SENTRY_DSN }}
-          REACT_APP_MAINNET_PROVIDER_URL: ${{ secrets.REACT_APP_MAINNET_PROVIDER_URL }}
+          VITE_NODE_ENV: production
+          VITE_PROJECT_ID: 8bddccf51318f114759f31306090233e
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          VITE_MAINNET_PROVIDER_URL: ${{ secrets.VITE_MAINNET_PROVIDER_URL }}
         run: pnpm build
       - name: Upload to Pinata
         id: upload
         env:
-          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+          PINATA_JWT: ${{ secrets.TEST_PINATA_JWT }}
         run: pnpm upload-build-to-pinata
       - name: Verify CID
         env:

@@ -2,24 +2,27 @@ import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { EIP6963Connector } from '@web3modal/wagmi';
 import { configureChains, createConfig } from 'wagmi';
 import { mainnet, hardhat } from 'wagmi/chains';
-import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 
-if (!process.env.REACT_APP_PROJECT_ID) {
-  throw new Error('Missing REACT_APP_PROJECT_ID env variable');
+const projectId = import.meta.env.VITE_PROJECT_ID;
+const mainnetProviderUrl = import.meta.env.VITE_MAINNET_PROVIDER_URL;
+
+if (!projectId) {
+  throw new Error('Missing VITE_PROJECT_ID env variable');
 }
 
-if (!process.env.REACT_APP_MAINNET_PROVIDER_URL) {
-  throw new Error('Missing REACT_APP_MAINNET_PROVIDER_URL env variable');
+if (!mainnetProviderUrl) {
+  throw new Error('Missing VITE_MAINNET_PROVIDER_URL env variable');
 }
 
-export const projectId = process.env.REACT_APP_PROJECT_ID;
+export { projectId };
 
 const chainInfos = [
-  { chain: mainnet, rpcUrl: process.env.REACT_APP_MAINNET_PROVIDER_URL },
+  { chain: mainnet, rpcUrl: mainnetProviderUrl },
   { chain: hardhat, rpcUrl: 'http://localhost:8545' },
 ];
 

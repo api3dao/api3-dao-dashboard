@@ -3,5 +3,12 @@
   "rules": {
     "prefer-const": "error",
     "no-console": ["error", { "allow": ["group", "groupEnd"] }]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.mts"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": { "sourceType": "module", "ecmaVersion": 2022 }
+    }
+  ]
 }

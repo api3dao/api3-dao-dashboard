@@ -4,7 +4,7 @@ export const ALLOW_ANALYTICS = 'allow-analytics';
 export const canReportErrors = () => localStorage.getItem(ALLOW_ERROR_REPORTING) === 'true';
 export const canUseAnalytics = () => localStorage.getItem(ALLOW_ANALYTICS) === 'true';
 
-const gtmId = process.env.VITE_APP_GTM_ID || '';
+const gtmId = import.meta.env.VITE_GTM_ID || '';
 
 let initialised = false;
 export const initAnalytics = () => {

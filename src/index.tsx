@@ -5,7 +5,7 @@ import { mockLocalhostWeb3Provider } from './chain-data';
 import { canReportErrors, canUseAnalytics, initAnalytics } from './utils/analytics';
 import { initSentry } from './utils/error-reporting';
 
-if (process.env.REACT_APP_NODE_ENV === 'development' && (window as any).ethereum === undefined) {
+if (import.meta.env.VITE_NODE_ENV === 'development' && (window as any).ethereum === undefined) {
   mockLocalhostWeb3Provider(window);
 }
 
