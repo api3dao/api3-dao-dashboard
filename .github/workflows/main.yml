@@ -75,7 +75,7 @@ jobs:
           VITE_PROJECT_ID: 8bddccf51318f114759f31306090233e
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
           VITE_MAINNET_PROVIDER_URL: ${{ secrets.VITE_MAINNET_PROVIDER_URL }}
-        run: pnpm percy exec -- pnpm ci:cypress
+        run: pnpm percy exec -- pnpm ci:test:e2e
         timeout-minutes: 60
       - name: Store artifacts
         uses: actions/upload-artifact@v7
