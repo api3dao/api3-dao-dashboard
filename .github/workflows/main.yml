@@ -57,8 +57,6 @@ jobs:
         run: |
           pnpm install
           pnpm cypress install
-      - name: Increase file watcher limit
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - name: Prepare DAO contracts
         run: pnpm eth:prepare-dao-contracts-for-hardhat --github-actions
       - name: Use Node 16 for DAO contracts

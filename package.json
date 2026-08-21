@@ -10,7 +10,7 @@
   "scripts": {
     "build": "vite build",
     "ci:cypress": "pnpm start-test \"pnpm concurrently 'pnpm eth:node' 'pnpm ci:start'\" '8545|3000' 'pnpm eth:deploy-dao-contracts-on-hardhat && pnpm cypress:run'",
-    "ci:start": "FORCE_COLOR=true pnpm start | cat",
+    "ci:start": "pnpm build && pnpm preview",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "eth:deploy-dao-contracts-on-hardhat": "node dev-scripts/deploy-dao-contracts-on-hardhat.js",

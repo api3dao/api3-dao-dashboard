@@ -22,6 +22,13 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
   },
+  // The CI e2e tests run against the production build, so we use the same port as the dev server
+  // to keep things simple.
+  preview: {
+    host: true,
+    port: 3000,
+    strictPort: true,
+  },
   css: {
     postcss: {
       plugins: [autoprefixer()],
