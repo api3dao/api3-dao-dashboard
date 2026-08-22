@@ -122,6 +122,9 @@ importers:
       '@types/react-router-dom':
         specifier: ^5.3.3
         version: 5.3.3
+      '@typescript-eslint/parser':
+        specifier: ^6.21.0
+        version: 6.21.0(eslint@8.57.1(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       '@vitejs/plugin-react':
         specifier: ^6.0.5
         version: 6.0.5(vite@8.2.0(@types/node@16.18.126)(jiti@1.21.7)(less@4.5.1)(sass@1.97.3)(stylus@0.62.0(supports-color@8.1.1))(terser@5.46.0)(yaml@2.8.2))
