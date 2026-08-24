@@ -1,4 +1,3 @@
-// <reference types="vitest/config">
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
@@ -10,8 +9,7 @@ export default defineConfig({
   base: './',
   plugins: [
     react(),
-    // Some transitive web3 dependencies (WalletConnect, Coinbase wallet SDK, ethers v5) expect Node globals and
-    // builtins in the browser (previously webpack "resolve.fallback" and ProvidePlugin in config-overrides.js).
+    // Some web3 dependencies expect Node globals and builtins in the browser.
     nodePolyfills({
       include: ['buffer', 'events', 'http', 'https', 'os', 'process', 'stream', 'util'],
       globals: { Buffer: true, global: true, process: true },
