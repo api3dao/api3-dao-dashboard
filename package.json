@@ -103,7 +103,6 @@
     "hardhat": "^2.19.4",
     "husky": "^8.0.3",
     "jsdom": "^30.0.1",
-    "lint-staged": "^16.2.7",
     "prettier": "^3.3.3",
     "sass": "^1.69.7",
     "start-server-and-test": "^2.0.8",
