@@ -1,7 +1,7 @@
 import { BigNumber, utils } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useEnsName, Address } from 'wagmi';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';

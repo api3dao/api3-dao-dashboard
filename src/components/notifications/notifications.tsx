@@ -1,7 +1,7 @@
 import throttle from 'lodash/throttle';
 import classNames from 'classnames';
 import { toast, Slide, ToastOptions } from 'react-toastify';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import Button from '../button';
 import styles from './notifications.module.scss';
 import { ReactNode } from 'react';
@@ -129,7 +129,7 @@ export const error = throttle(
       else Sentry.captureException(errorOrMessage);
     }
 
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       // Prefixing the error message with ad-hoc string for better backwards search
       // eslint-disable-next-line no-console
       console.error('[DEV: Caught error]:', errorOrMessage);

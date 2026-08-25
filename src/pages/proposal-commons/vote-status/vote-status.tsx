@@ -17,7 +17,7 @@ const VoteStatus = (props: Props) => {
       {large && VOTER_STATES[voterState] !== 'Unvoted' && (
         <img
           className={styles.icon}
-          src={`${VOTER_STATES[voterState] === 'Voted For' ? '/voted-for.svg' : '/voted-against.svg'}`}
+          src={`${VOTER_STATES[voterState] === 'Voted For' ? './voted-for.svg' : './voted-against.svg'}`}
           alt="voter state icon"
         />
       )}
