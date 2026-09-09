@@ -48,7 +48,7 @@ The upload to Pinata happens automatically in CI. Full process:
 4. Verify the upload at https://app.pinata.cloud/ipfs/files. There should be an entry for the CID. Click the "build"
    link and make sure it loads - the fonts may look strange, but that's only because of security policies defined by the
    gateway and they will work without issues when used via ENS
-5. Refer to the "Updating the name servers" section below to update the ENS name
+5. Refer to the "Updating the name servers" section below to update the ENS name and the dao.api3.org redirect
 
 The workflow can also be re-run manually from the GitHub Actions UI.
 
@@ -93,3 +93,10 @@ the new version by following these steps:
 3. Change the value to the new CID. Note, that the ENS app will also handle CID v0 and convert under the hood, but it's
    better to use the CID v1 directly.
 4. Execute the TX. Note that it may take a bit of time until `https://api3.eth.limo` is updated.
+
+#### Updating dao.api3.org
+
+1. Log in to Cloudflare and open `Page Rules`.
+2. Find the entry for `dao.api3.org`.
+3. Replace the CID in the target URL with the new v1 CID, keeping the rest of the URL as it is.
+4. Confirm with `curl -sI https://dao.api3.org`, whose `location` header must show the new CID.
