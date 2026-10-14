@@ -14,14 +14,6 @@ h5 {
   }
 }
 
-.header {
-  margin-bottom: 32px;
-
-  @media (min-width: $md) {
-    margin-bottom: 64px;
-  }
-}
-
 .proposalsHeader {
   display: flex;
   flex-direction: column;

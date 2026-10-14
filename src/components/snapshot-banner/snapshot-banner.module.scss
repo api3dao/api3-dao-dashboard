@@ -1,0 +1,87 @@
+@import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: $space-lg;
+  color: $color-dark-blue-400;
+  padding: $space-lg 0;
+  margin: $space-xl 0;
+  border-top: 1px solid $color-dark-blue-10;
+  border-bottom: 1px solid $color-dark-blue-10;
+
+  @media (min-width: $sm) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: $space-xxxl 0;
+  }
+  @media (min-width: $md) {
+    margin: $space-xxl 0 72px 0;
+  }
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  & img {
+    width: 32px;
+    height: 32px;
+  }
+
+  @media (min-width: $sm) {
+    gap: $space-xl;
+
+    & img {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  @include font-body-10;
+
+  @media (min-width: $sm) {
+    @include font-body-8;
+  }
+  @media (min-width: $md) {
+    @include font-body-4;
+  }
+}
+
+.subtitle {
+  @include font-body-12;
+
+  @media (min-width: $sm) {
+    @include font-body-9;
+  }
+  @media (min-width: $md) {
+    @include font-body-6;
+  }
+}
+
+.linkContainer {
+  flex-shrink: 0;
+  margin-left: 48px;
+
+  @media (min-width: $sm) {
+    margin-left: 0;
+  }
+}
+
+.link {
+  gap: 6px;
+
+  & svg {
+    color: $color-blue-25;
+  }
+}

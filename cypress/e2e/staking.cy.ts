@@ -1,25 +1,14 @@
 /// <reference path="../support/e2e.d.ts" />
 
-import { EPOCH_LENGTH } from '../support/common';
+import { depositAndStake, EPOCH_LENGTH } from '../support/common';
 
 describe('staking', () => {
-  before('login, deposit and stake', () => {
-    cy.resetBlockchain().login();
+  before('deposit, stake and login', () => {
+    cy.resetBlockchain();
+    depositAndStake('500', '100');
+    cy.login();
 
-    // Approve and deposit
-    cy.findByTestId('staking-card-deposit-btn').click();
-    cy.get('#modal').find('input').type('500');
-    cy.findByText('Approve').click();
-    cy.findByText('Deposit').should('be.visible');
-    cy.get('#modal').findByRole('button', { name: 'Deposit' }).should('be.visible');
-    cy.percySnapshot('Staking: Deposit modal');
-    cy.get('#modal').findByRole('button', { name: 'Deposit' }).click();
     cy.dataCy('balance').should('have.text', '500.0');
-
-    // Stake
-    cy.findByTestId('staking-card-stake-btn').click();
-    cy.get('#modal').find('input').type('100');
-    cy.get('#modal').findByRole('button', { name: 'Stake' }).click();
     cy.dataCy('unstaked').should('have.text', '400.0');
     cy.dataCy('withdrawable').should('have.text', '400.0');
     cy.dataCy('staked').should('have.text', '100.0');
@@ -29,16 +18,11 @@ describe('staking', () => {
     cy.createChainSnapshot('user-staked');
   });
 
-  it('can deposit and stake', () => {
+  it('cannot deposit or stake', () => {
     cy.useChainSnapshot('user-staked');
 
-    cy.findByTestId('staking-card-deposit-btn').click();
-    cy.get('#modal').find('input').type('200');
-    cy.findByText('Deposit and Stake').click();
-
-    // Assert balances
-    cy.dataCy('balance').should('have.text', '700.0');
-    cy.dataCy('staked').should('have.text', '300.0');
+    cy.findByTestId('staking-card-deposit-btn').should('be.disabled');
+    cy.findByTestId('staking-card-stake-btn').should('be.disabled');
   });
 
   it('user can unstake', () => {
@@ -84,13 +68,10 @@ describe('staking', () => {
 });
 
 it.skip('user can unstake & withdraw', () => {
-  cy.resetBlockchain().login();
+  cy.resetBlockchain();
+  depositAndStake('1000', '1000');
+  cy.login();
 
-  // Approve and deposit
-  cy.findByTestId('staking-card-deposit-btn').click();
-  cy.get('#modal').find('input').type('1000');
-  cy.findByText('Approve').click();
-  cy.findByText('Deposit and Stake').click();
   cy.dataCy('balance').should('have.text', '1,000.0');
 
   // Schedule unstake

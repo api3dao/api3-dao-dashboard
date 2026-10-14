@@ -8,6 +8,7 @@ import { useChainData } from '../../chain-data';
 import RadioButton from '../../components/radio-button/radio-button';
 import ProposalList from '../proposal-commons/proposal-list';
 import styles from './history.module.scss';
+import SnapshotBanner from '../../components/snapshot-banner';
 import { useHistory } from 'react-router-dom';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import { useHistoryProposals } from '../../logic/proposals/hooks/history-proposals';
@@ -44,10 +45,12 @@ const History = () => {
   }, [history, checkedPrimary, checkedSecondary]);
 
   return (
-    <BaseLayout title="History">
+    <BaseLayout title="Governance History">
       <div className={styles.header}>
-        <Header title="History"></Header>
+        <Header title="Governance History"></Header>
       </div>
+
+      <SnapshotBanner />
 
       <div className={styles.proposalsHeader}>
         <h5>Past Proposals</h5>

@@ -82,7 +82,7 @@ const ProposalList = (props: Props) => {
       <div className={styles.proposalsList}>
         {proposals.map((proposal, index) => {
           const typeAndVoteId = encodeProposalTypeAndVoteId(proposal.type, voteIdFormat(proposal.voteId));
-          const href = `/${proposal.open ? 'governance' : 'history'}/${typeAndVoteId}`;
+          const href = `/history/${typeAndVoteId}`;
           return <ProposalListItem key={typeAndVoteId} proposal={proposal} href={href} index={index} />;
         })}
       </div>

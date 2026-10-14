@@ -69,6 +69,7 @@
 
 .menuItemText {
   padding-left: $space-xs;
+  white-space: nowrap;
   @include font-link-2;
 }
 

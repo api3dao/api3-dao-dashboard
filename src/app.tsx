@@ -12,8 +12,6 @@ import Dashboard from './pages/dashboard';
 import History from './pages/history';
 import HistoryDetails from './pages/history-details';
 import NotFoundPage from './pages/not-found';
-import ProposalDetailsPage from './pages/proposal-commons/proposal-details';
-import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
 import { registerWeb3Modal, wagmiConfig } from './wallet-connect';
 import './styles/variables.module.scss';
@@ -48,12 +46,6 @@ const AppContent = () => {
         <ToastContainer limit={3} pauseOnFocusLoss={false} autoClose={5000} closeOnClick />
 
         <Switch>
-          <Route path="/governance/:typeAndVoteId" exact>
-            <ProposalDetailsPage />
-          </Route>
-          <Route path="/governance" exact>
-            <Proposals />
-          </Route>
           <Route path="/history/:typeAndVoteId" exact>
             <HistoryDetails />
           </Route>

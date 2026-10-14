@@ -5,7 +5,6 @@ import { useApi3Pool } from '../../contracts';
 import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
 import { formatAndRoundApi3, handleTransactionError, images, UNKNOWN_NUMBER } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
-import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout';
 import { Modal } from '../../components/modal';
 import Button from '../../components/button';
@@ -18,8 +17,9 @@ import styles from './dashboard.module.scss';
 import ConfirmUnstakeForm from './forms/confirm-unstake-form';
 import classNames from 'classnames';
 import ConnectButton from '../../components/connect-button';
+import SnapshotBanner from '../../components/snapshot-banner';
 
-type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
+type ModalType = 'withdraw' | 'unstake' | 'confirm-unstake';
 
 const Dashboard = () => {
   const { dashboardState: data, transactions, setChainData, signer, provider } = useChainData();
@@ -38,16 +38,28 @@ const Dashboard = () => {
   const tokenBalances = tokenBalancesSelector(data);
   const pendingUnstake = pendingUnstakeSelector(data);
 
-  const canStake = data && data.userUnstaked.gt(0);
   const canWithdraw = tokenBalances && tokenBalances.withdrawable.gt(0);
   const canInitiateUnstake = data && !pendingUnstake && data.userStaked.gt(0);
 
   return (
     <Layout title="Staking">
+      <SnapshotBanner />
       {pendingUnstake?.canUnstake && <UnstakeBanner canUnstakeAndWithdraw={pendingUnstake.canUnstakeAndWithdraw} />}
 
       {!provider && (
         <>
+          {/* How This Works */}
+          <p className={styles.dashboardHeader}>How This Works</p>
+          <div className={styles.tutorialVideo}>
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/videoseries?list=PL9BKN1mys69GgMLD_EVkH-S3CKrPFf_ct"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+
           {/* Connect Wallet */}
           <div className={styles.connectWalletBox}>
             <div className={styles.connectWalletBoxContent}>
@@ -64,18 +76,6 @@ const Dashboard = () => {
               </ConnectButton>
             </div>
           </div>
-
-          {/* How This Works */}
-          <p className={styles.dashboardHeader}>How This Works</p>
-          <div className={styles.tutorialVideo}>
-            <iframe
-              src="https://www.youtube-nocookie.com/embed/videoseries?list=PL9BKN1mys69GgMLD_EVkH-S3CKrPFf_ct"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
         </>
       )}
 
@@ -88,13 +88,10 @@ const Dashboard = () => {
             <CardHeader>
               <h5>Balance</h5>
               <div className={styles.cardHeaderButton}>
-                <Button
-                  type="secondary"
-                  size="sm"
-                  onClick={() => setOpenModal('deposit')}
-                  disabled={!data}
-                  data-testid="staking-card-deposit-btn"
-                >
+                <Tooltip overlay="Deposits are disabled because DAO governance has moved to Snapshot and the staking pool no longer pays rewards.">
+                  <img src={images.helpOutline} alt="deposit help" />
+                </Tooltip>
+                <Button type="secondary" size="sm" disabled data-testid="staking-card-deposit-btn">
                   Deposit
                 </Button>
               </div>
@@ -128,16 +125,10 @@ const Dashboard = () => {
             <CardHeader>
               <h5>Staking</h5>
               <div className={styles.cardHeaderButton}>
-                <Tooltip overlay="You need to deposit API3 tokens before staking">
-                  <img src={images.helpOutline} alt="new proposal help" />
+                <Tooltip overlay="Staking is disabled because DAO governance has moved to Snapshot and the staking pool no longer pays rewards.">
+                  <img src={images.helpOutline} alt="stake help" />
                 </Tooltip>
-                <Button
-                  type="secondary"
-                  size="sm"
-                  onClick={() => setOpenModal('stake')}
-                  disabled={!canStake}
-                  data-testid="staking-card-stake-btn"
-                >
+                <Button type="secondary" size="sm" disabled data-testid="staking-card-stake-btn">
                   Stake
                 </Button>
               </div>
@@ -185,11 +176,6 @@ const Dashboard = () => {
       </div>
 
       {/* Modals */}
-      {data && (
-        <Modal open={openModal === 'deposit'} onClose={closeModal}>
-          <TokenDepositForm allowance={data.allowance} onClose={closeModal} walletBalance={data.userApi3Balance} />
-        </Modal>
-      )}
       <Modal open={openModal === 'withdraw'} onClose={closeModal}>
         <TokenAmountForm
           title="How many API3 tokens would you like to withdraw?"
@@ -206,24 +192,6 @@ const Dashboard = () => {
           inputValue={inputValue}
           onChange={setInputValue}
           maxValue={tokenBalances?.withdrawable}
-        />
-      </Modal>
-      <Modal open={openModal === 'stake'} onClose={closeModal}>
-        <TokenAmountForm
-          title="How many API3 tokens would you like to stake?"
-          action="Stake"
-          onConfirm={async (parsedValue: BigNumber) => {
-            if (!api3Pool) return;
-
-            const tx = await handleTransactionError(api3Pool.connect(signer!).stake(parsedValue));
-            if (tx) {
-              setChainData('Save stake transaction', { transactions: [...transactions, { type: 'stake', tx }] });
-            }
-            closeModal();
-          }}
-          inputValue={inputValue}
-          onChange={setInputValue}
-          maxValue={data?.userUnstaked}
         />
       </Modal>
       <Modal open={openModal === 'unstake'} onClose={closeModal}>

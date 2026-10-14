@@ -4,7 +4,6 @@ import { useChainData } from '../../chain-data';
 import { images } from '../../utils';
 import classNames from 'classnames';
 import DashboardIcon from './dashboard-icon';
-import ProposalsIcon from './proposals-icon';
 import HistoryIcon from './history-icon';
 import DocsIcon from './docs-icon';
 import SignIn from '../sign-in/sign-in';
@@ -13,8 +12,7 @@ import ExternalLink from '../external-link';
 
 const MenuItems = [
   { to: '/', icon: DashboardIcon, text: 'Staking' },
-  { to: '/governance', icon: ProposalsIcon, text: 'Governance' },
-  { to: '/history', icon: HistoryIcon, text: 'History' },
+  { to: '/history', icon: HistoryIcon, text: 'Governance History' },
 ];
 
 const ExternalLinks = [{ to: 'https://dao-docs.api3.org/', icon: DocsIcon, text: 'DAO Docs' }];
