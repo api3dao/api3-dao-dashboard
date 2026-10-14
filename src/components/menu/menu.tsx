@@ -2,20 +2,25 @@ import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useChainData } from '../../chain-data';
 import { images } from '../../utils';
+import { links } from '../../utils/links';
 import classNames from 'classnames';
 import DashboardIcon from './dashboard-icon';
 import HistoryIcon from './history-icon';
 import DocsIcon from './docs-icon';
+import ProposalsIcon from './proposals-icon';
 import SignIn from '../sign-in/sign-in';
 import styles from './menu.module.scss';
 import ExternalLink from '../external-link';
 
 const MenuItems = [
   { to: '/', icon: DashboardIcon, text: 'Staking' },
-  { to: '/history', icon: HistoryIcon, text: 'Governance History' },
+  { to: '/governance-history', icon: HistoryIcon, text: 'Governance History' },
 ];
 
-const ExternalLinks = [{ to: 'https://dao-docs.api3.org/', icon: DocsIcon, text: 'DAO Docs' }];
+const ExternalLinks = [
+  { to: links.SNAPSHOT, icon: ProposalsIcon, text: 'Snapshot' },
+  { to: 'https://dao-docs.api3.org/', icon: DocsIcon, text: 'DAO Docs' },
+];
 
 export const DesktopMenu = () => {
   const { pathname } = useLocation();

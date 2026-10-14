@@ -34,13 +34,13 @@ const History = () => {
   // useEffect is used because useState behaves asynchronously using onClick handler
   useEffect(() => {
     if (checkedPrimary && !checkedSecondary) {
-      history.replace(`/history?type=primary`);
+      history.replace(`/governance-history?type=primary`);
     } else if (checkedSecondary && !checkedPrimary) {
-      history.replace(`/history?type=secondary`);
+      history.replace(`/governance-history?type=secondary`);
     } else if (!checkedPrimary && !checkedSecondary) {
-      history.replace(`/history?type=none`);
+      history.replace(`/governance-history?type=none`);
     } else {
-      history.replace(`/history`);
+      history.replace(`/governance-history`);
     }
   }, [history, checkedPrimary, checkedSecondary]);
 

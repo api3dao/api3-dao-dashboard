@@ -107,7 +107,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   return (
     <div>
       <div className={styles.proposalDetailsSubheader}>
-        <Link to="/history" className={styles.backBtn} data-cy="back-button">
+        <Link to="/governance-history" className={styles.backBtn} data-cy="back-button">
           <img src={images.arrowLeft} alt="back" />
           Back
         </Link>

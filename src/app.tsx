@@ -1,6 +1,6 @@
 import { WagmiConfig } from 'wagmi';
 import { BaseLayout } from './components/layout';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { images, preloadImageList, useOnMountEffect } from './utils';
 import type { FallbackRender } from '@sentry/react/dist/errorboundary';
@@ -46,12 +46,15 @@ const AppContent = () => {
         <ToastContainer limit={3} pauseOnFocusLoss={false} autoClose={5000} closeOnClick />
 
         <Switch>
-          <Route path="/history/:typeAndVoteId" exact>
+          <Route path="/governance-history/:typeAndVoteId" exact>
             <HistoryDetails />
           </Route>
-          <Route path="/history" exact>
+          <Route path="/governance-history" exact>
             <History />
           </Route>
+          <Redirect from="/history/:typeAndVoteId" to="/governance-history/:typeAndVoteId" exact />
+          <Redirect from="/history" to="/governance-history" exact />
+          <Redirect from="/governance" to="/" exact />
           <Route path="/vesting" exact>
             <Vesting />
           </Route>
