@@ -2,6 +2,7 @@
 @import '../../styles/fonts.module.scss';
 
 .root {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: $space-lg;
