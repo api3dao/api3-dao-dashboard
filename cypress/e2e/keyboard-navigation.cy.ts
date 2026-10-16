@@ -17,6 +17,7 @@ describe('keyboard navigation and accessibility', () => {
 
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Staking').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Governance History').filter(':visible').closest('a'));
+    pressTabAndAssertFocusOutline(() => cy.findAllByText('Snapshot').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('DAO Docs').filter(':visible').closest('a'));
 
     pressTabAndAssertFocusOutline(() => cy.findByText('Go to Snapshot'));

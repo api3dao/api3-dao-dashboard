@@ -3,7 +3,7 @@
 import { EPOCH_LENGTH } from '../support/common';
 
 describe('Malicious proposal validation', () => {
-  beforeEach('reset blockchain', () => {
+  beforeEach(() => {
     cy.resetBlockchain();
   });
 

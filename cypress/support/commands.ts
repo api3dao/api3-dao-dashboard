@@ -1,3 +1,4 @@
+import { providers } from 'ethers';
 import { closeErrorReportingNotice, ethersProvider, HOME_PAGE } from './common';
 
 // -- This is a parent command -- Cypress.Commands.add('login', (email, password) => { ... })
@@ -16,25 +17,42 @@ import { closeErrorReportingNotice, ethersProvider, HOME_PAGE } from './common';
 // NOTE: Not everything should be a custom command and it's perfectly fine to encapsulate login in JS functions. See:
 // https://docs.cypress.io/api/cypress-api/custom-commands#1-Don-t-make-everything-a-custom-command
 
+// The app time runs this far ahead of the real time, so that it matches the chain time after a time travel. We do not
+// use cy.clock(), because it freezes the time, and ethers then never detects new blocks (it caches the block number
+// based on the time). As a result, the app would not update after a transaction.
+let chainTimeOffset = 0;
+
+beforeEach(() => {
+  chainTimeOffset = 0;
+});
+
+Cypress.on('window:before:load', (win) => {
+  const RealDate = win.Date;
+  const now = () => RealDate.now() + chainTimeOffset;
+  win.Date = new Proxy(RealDate, {
+    construct: (target, args) => (args.length === 0 ? new target(now()) : new (target as any)(...args)),
+    get: (target, property) => (property === 'now' ? now : Reflect.get(target, property)),
+  });
+});
+
+Cypress.Commands.add('syncAppTimeWithChain', () => {
+  cy.log('syncAppTimeWithChain');
+
+  // Mines a block, because the latest block can be older than the current chain time
+  cy.wrap<Promise<providers.Block>, providers.Block>(
+    ethersProvider.send('evm_mine', []).then(() => ethersProvider.getBlock('latest'))
+  ).then((block) => {
+    chainTimeOffset = block.timestamp * 1000 - Date.now();
+  });
+});
+
 Cypress.Commands.add('increaseTimeAndRelogin', (timeInSeconds: number) => {
   cy.log('increaseTimeAndRelogin');
 
-  cy.wrap(
-    ethersProvider.send('evm_increaseTime', [timeInSeconds]).then(() => ethersProvider.send('evm_mine', []))
-  ).then(() => cy.clock(Date.now() + 1000 * timeInSeconds, ['Date']));
+  cy.wrap(ethersProvider.send('evm_increaseTime', [timeInSeconds]));
+  cy.syncAppTimeWithChain();
 
   // Re-login to make sure app uses the increased time
-  cy.login();
-});
-
-Cypress.Commands.add('resetClock', () => {
-  cy.log('resetClock');
-
-  cy.clock().then((clock) => {
-    clock.restore();
-  });
-
-  // Re-login to make sure app uses the restored time
   cy.login();
 });
 

@@ -1,5 +1,4 @@
-import { Contract, providers, utils } from 'ethers';
-import contracts from '../../src/contract-deployments/localhost-dao.json';
+import { providers } from 'ethers';
 
 export const ethersProvider = new providers.JsonRpcProvider('http://localhost:8545');
 
@@ -41,24 +40,3 @@ export const closeErrorReportingNotice = () => {
 };
 
 export const HOME_PAGE = 'http://localhost:3000/#/';
-
-// The dashboard no longer allows deposits and stakes, so tests seed them directly on chain (as the first account)
-export const depositAndStake = (depositAmount: string, stakeAmount: string) => {
-  cy.wrap(null).then(async () => {
-    const signer = ethersProvider.getSigner(0);
-    const api3Token = new Contract(contracts.api3Token, ['function approve(address spender, uint256 amount)'], signer);
-    const api3Pool = new Contract(
-      contracts.api3Pool,
-      ['function depositRegular(uint256 amount)', 'function stake(uint256 amount)'],
-      signer
-    );
-
-    const deposit = utils.parseEther(depositAmount);
-    const approveTx = await api3Token.approve(contracts.api3Pool, deposit);
-    await approveTx.wait();
-    const depositTx = await api3Pool.depositRegular(deposit);
-    await depositTx.wait();
-    const stakeTx = await api3Pool.stake(utils.parseEther(stakeAmount));
-    await stakeTx.wait();
-  });
-};

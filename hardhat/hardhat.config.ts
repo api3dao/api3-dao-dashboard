@@ -6,7 +6,7 @@
  * (https://github.com/api3dao/api3-dao). See README for more information.
  */
 import '@nomiclabs/hardhat-ethers';
-import { task, HardhatUserConfig } from 'hardhat/config';
+import { task, types, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
 import dotenv from 'dotenv';
 import { encodeMetadata, goEncodeEvmScript, METADATA_SCHEME_VERSION } from '../src/logic/proposals/encoding';
@@ -50,6 +50,105 @@ task('send-to-account', 'Sends ether or API3 tokens to a specified account')
     console.info(`Sent ${hre.ethers.utils.formatEther(tokens)} API3 tokens to address ${receiver}`);
     await deployer.sendTransaction({ to: receiver, value: ether });
     console.info(`Sent ${hre.ethers.utils.formatEther(ether)} ETH to address ${receiver}`);
+  });
+
+task('deposit-and-stake', 'Deposits and stakes API3 tokens on behalf of a specified account')
+  .addParam('address', 'The account to stake for. It needs enough API3 tokens and ETH for gas')
+  .addParam('deposit', 'Number of API3 tokens to deposit')
+  .addParam('stake', 'Number of API3 tokens to stake. Can be at most the deposited amount')
+  .setAction(async (args, hre) => {
+    const network = hre.network.name;
+    const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
+
+    if (!existsSync(deploymentFileName)) {
+      throw new Error(`Couldn't find deployment file for network: '${network}'.`);
+    }
+
+    const staker: string = args.address;
+    const deposit = hre.ethers.utils.parseEther(args.deposit);
+    const stake = hre.ethers.utils.parseEther(args.stake);
+    const deploymentFile = require(deploymentFileName);
+
+    // Lets the node sign transactions as the staker, so no private key is needed
+    await hre.network.provider.request({ method: 'hardhat_impersonateAccount', params: [staker] });
+    const signer = await hre.ethers.getSigner(staker);
+
+    const api3Token = new hre.ethers.Contract(
+      deploymentFile.api3Token,
+      ['function approve(address spender, uint amount) returns (boolean)'],
+      signer
+    );
+    const api3Pool = new hre.ethers.Contract(
+      deploymentFile.api3Pool,
+      ['function depositRegular(uint256 amount)', 'function stake(uint256 amount)'],
+      signer
+    );
+
+    const approveTx = await api3Token.approve(deploymentFile.api3Pool, deposit);
+    await approveTx.wait();
+    const depositTx = await api3Pool.depositRegular(deposit);
+    await depositTx.wait();
+    console.info(`Deposited ${hre.ethers.utils.formatEther(deposit)} API3 tokens for address ${staker}`);
+    const stakeTx = await api3Pool.stake(stake);
+    await stakeTx.wait();
+    console.info(`Staked ${hre.ethers.utils.formatEther(stake)} API3 tokens for address ${staker}`);
+
+    await hre.network.provider.request({ method: 'hardhat_stopImpersonatingAccount', params: [staker] });
+  });
+
+task('mint-reward', 'Mints the staking reward for the current epoch, if not minted yet').setAction(
+  async (_args, hre) => {
+    const network = hre.network.name;
+    const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
+
+    if (!existsSync(deploymentFileName)) {
+      throw new Error(`Couldn't find deployment file for network: '${network}'.`);
+    }
+
+    const deploymentFile = require(deploymentFileName);
+    const deployer = (await hre.ethers.getSigners())[0];
+    const api3Pool = new hre.ethers.Contract(
+      deploymentFile.api3Pool,
+      [
+        'function mintReward()',
+        'event MintedReward(uint256 indexed epochIndex, uint256 amount, uint256 newApr, uint256 totalStake)',
+      ],
+      deployer
+    );
+
+    const tx = await api3Pool.mintReward();
+    const receipt = await tx.wait();
+    const mintedEvent = receipt.events.find((event: { event?: string }) => event.event === 'MintedReward');
+    if (mintedEvent) {
+      console.info(`Minted ${hre.ethers.utils.formatEther(mintedEvent.args.amount)} API3 tokens as staking reward`);
+    } else {
+      console.info('No reward minted. It is already minted for the current epoch');
+    }
+  }
+);
+
+task('update-pool-minter-status', 'Updates if the pool can mint staking rewards. If not, minting is a no-op')
+  .addParam('status', 'The minter status of the pool (true|false)', undefined, types.boolean)
+  .setAction(async (args, hre) => {
+    const network = hre.network.name;
+    const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
+
+    if (!existsSync(deploymentFileName)) {
+      throw new Error(`Couldn't find deployment file for network: '${network}'.`);
+    }
+
+    const deploymentFile = require(deploymentFileName);
+    // This needs to be in sync with deployer implementation (deployer should be token owner)
+    const deployer = (await hre.ethers.getSigners())[0];
+    const api3Token = new hre.ethers.Contract(
+      deploymentFile.api3Token,
+      ['function updateMinterStatus(address minterAddress, bool minterStatus)'],
+      deployer
+    );
+
+    const tx = await api3Token.updateMinterStatus(deploymentFile.api3Pool, args.status);
+    await tx.wait();
+    console.info(`Updated the pool minter status to ${args.status}`);
   });
 
 task('create-proposal', 'Creates a proposal')
@@ -108,6 +207,44 @@ task('create-proposal', 'Creates a proposal')
 
     await api3Voting['newVote(bytes,string,bool,bool)'](script, encodeMetadata(formData), true, true);
     console.info(`Successfully created a ${formData.type} proposal: ${formData.title}`);
+  });
+
+task('cast-vote', 'Casts a vote on a proposal on behalf of a specified account')
+  .addParam('address', 'The voter. It needs voting power at the time the proposal was created')
+  .addParam('type', 'The proposal type (primary|secondary)')
+  .addParam('voteId', 'The id of the proposal')
+  .addParam('support', 'Whether the voter supports the proposal (true|false)', undefined, types.boolean)
+  .setAction(async (args, hre) => {
+    const network = hre.network.name;
+    const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
+
+    if (!existsSync(deploymentFileName)) {
+      throw new Error(`Couldn't find deployment file for network: '${network}'.`);
+    }
+
+    if (!['primary', 'secondary'].includes(args.type)) {
+      throw new TypeError(`Invalid type argument: ${args.type}`);
+    }
+
+    const voter: string = args.address;
+    const contracts = require(deploymentFileName);
+
+    // Lets the node sign transactions as the voter, so no private key is needed
+    await hre.network.provider.request({ method: 'hardhat_impersonateAccount', params: [voter] });
+    const signer = await hre.ethers.getSigner(voter);
+
+    const api3Voting = new hre.ethers.Contract(
+      args.type === 'primary' ? contracts.votingAppPrimary : contracts.votingAppSecondary,
+      ['function vote(uint256 _voteId, bool _supports, bool _executesIfDecided)'],
+      signer
+    );
+
+    // Executes the proposal if this vote decides it
+    const tx = await api3Voting.vote(args.voteId, args.support, true);
+    await tx.wait();
+    console.info(`Voted ${args.support ? 'for' : 'against'} ${args.type} proposal #${args.voteId} as ${voter}`);
+
+    await hre.network.provider.request({ method: 'hardhat_stopImpersonatingAccount', params: [voter] });
   });
 
 // See https://hardhat.org/config/

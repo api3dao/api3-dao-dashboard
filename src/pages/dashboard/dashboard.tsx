@@ -91,7 +91,7 @@ const Dashboard = () => {
                 <Tooltip overlay="Deposits are disabled because DAO governance has moved to Snapshot and the staking pool no longer pays rewards.">
                   <img src={images.helpOutline} alt="deposit help" />
                 </Tooltip>
-                <Button type="secondary" size="sm" disabled data-testid="staking-card-deposit-btn">
+                <Button type="secondary" size="sm" disabled>
                   Deposit
                 </Button>
               </div>
@@ -128,7 +128,7 @@ const Dashboard = () => {
                 <Tooltip overlay="Staking is disabled because DAO governance has moved to Snapshot and the staking pool no longer pays rewards.">
                   <img src={images.helpOutline} alt="stake help" />
                 </Tooltip>
-                <Button type="secondary" size="sm" disabled data-testid="staking-card-stake-btn">
+                <Button type="secondary" size="sm" disabled>
                   Stake
                 </Button>
               </div>
