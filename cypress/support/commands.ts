@@ -1,5 +1,5 @@
 import { providers } from 'ethers';
-import { closeErrorReportingNotice, ethersProvider, HOME_PAGE } from './common';
+import { closeErrorReportingNotice, ethersProvider, HOME_PAGE, USER_ACCOUNT } from './common';
 
 // -- This is a parent command -- Cypress.Commands.add('login', (email, password) => { ... })
 //
@@ -62,7 +62,9 @@ Cypress.Commands.add('login', () => {
   cy.on('window:before:load', async (win) => {
     // The request `request` function is defined when we use Metamask, so we mock it
     (ethersProvider as any).request = ({ method, params }: any) => {
-      if (method === 'eth_requestAccounts') method = 'eth_accounts';
+      if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
+        return Promise.resolve([USER_ACCOUNT]);
+      }
       return ethersProvider.send(method, params);
     };
     // Simulate injected metamask metamask provider

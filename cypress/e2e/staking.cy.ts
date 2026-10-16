@@ -1,12 +1,17 @@
 /// <reference path="../support/e2e.d.ts" />
 
-import { ACCOUNTS, EPOCH_LENGTH } from '../support/common';
+import { Contract, utils } from 'ethers';
+import { EPOCH_LENGTH, ethersProvider, USER_ACCOUNT } from '../support/common';
 
 // The pool keeps rewards minted in the last 52 epochs locked
 const REWARD_VESTING_PERIOD = 52 * EPOCH_LENGTH;
 
+function sendTokensToUser(amount: string) {
+  cy.exec(`pnpm send-to-account ${USER_ACCOUNT} --tokens ${amount}`);
+}
+
 function depositAndStake(depositAmount: string, stakeAmount: string) {
-  cy.exec(`pnpm deposit-and-stake ${ACCOUNTS[0]} --deposit ${depositAmount} --stake ${stakeAmount}`);
+  cy.exec(`pnpm deposit-and-stake ${USER_ACCOUNT} --deposit ${depositAmount} --stake ${stakeAmount}`);
 }
 
 function turnOffMinting() {
@@ -48,13 +53,29 @@ function closeNotification(message: string) {
   cy.findByText(message).should('not.exist');
 }
 
+function onChainBalance() {
+  return cy
+    .readFile('src/contract-deployments/localhost-dao.json')
+    .then((contracts) => {
+      const api3Token = new Contract(
+        contracts.api3Token,
+        ['function balanceOf(address) view returns (uint256)'],
+        ethersProvider
+      );
+      return api3Token.balanceOf(USER_ACCOUNT);
+    })
+    .then((balance) => utils.formatEther(balance));
+}
+
 describe('after minting is turned off', () => {
   before(() => {
     cy.resetBlockchain();
+    sendTokensToUser('500');
     depositAndStake('500', '100');
     turnOffMinting();
     cy.login();
 
+    onChainBalance().should('equal', '0.0');
     cy.dataCy('balance').should('have.text', '500.0');
     cy.dataCy('unstaked').should('have.text', '400.0');
     cy.dataCy('withdrawable').should('have.text', '400.0');
@@ -92,6 +113,7 @@ describe('after minting is turned off', () => {
     cy.dataCy('staked').should('have.text', '80.0');
     cy.dataCy('unstaked').should('have.text', '420.0');
     cy.dataCy('withdrawable').should('have.text', '420.0');
+    onChainBalance().should('equal', '0.0');
   });
 
   it('user can withdraw', () => {
@@ -100,6 +122,7 @@ describe('after minting is turned off', () => {
     withdraw('50');
     cy.dataCy('withdrawable').should('have.text', '350.0');
     cy.dataCy('unstaked').should('have.text', '350.0');
+    onChainBalance().should('equal', '50.0');
   });
 
   it('user can unstake & withdraw', () => {
@@ -114,10 +137,12 @@ describe('after minting is turned off', () => {
     cy.findAllByRole('button', { name: 'Unstake and Withdraw' }).first().click();
     closeNotification('Success! API3 tokens unstaked and withdrawn.');
     cy.dataCy('pending-unstake').should('not.exist');
-    // The unstaked amount is now fully in the user's wallet. No reward is minted, although an epoch has passed.
+
+    // No reward is minted, although an epoch has passed
     cy.dataCy('balance').should('have.text', '450.0');
     cy.dataCy('staked').should('have.text', '50.0');
     cy.dataCy('unstaked').should('have.text', '400.0');
+    onChainBalance().should('equal', '50.0');
   });
 });
 
@@ -127,6 +152,7 @@ describe('pool activity from before minting was turned off', () => {
   });
 
   it('user can complete an unstake initiated before minting was turned off', () => {
+    sendTokensToUser('500');
     depositAndStake('500', '100');
     cy.login();
     initiateUnstake('20');
@@ -140,9 +166,11 @@ describe('pool activity from before minting was turned off', () => {
     cy.dataCy('staked').should('have.text', '80.0');
     cy.dataCy('unstaked').should('have.text', '420.0');
     cy.dataCy('withdrawable').should('have.text', '420.0');
+    onChainBalance().should('equal', '0.0');
   });
 
   it('user can withdraw rewards minted before minting was turned off, once they unlock', () => {
+    sendTokensToUser('1000');
     depositAndStake('1000', '1000');
     cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // skip the genesis epoch, which has no reward
     cy.exec('pnpm mint-reward');
@@ -162,10 +190,12 @@ describe('pool activity from before minting was turned off', () => {
     withdraw('max');
     cy.dataCy('balance').should('have.text', '7.43');
     cy.dataCy('withdrawable').should('have.text', '0.0');
+    onChainBalance().should('equal', '1000.0');
 
     cy.increaseTimeAndRelogin(REWARD_VESTING_PERIOD);
     cy.dataCy('withdrawable').should('have.text', '7.43');
     withdraw('max');
     cy.dataCy('balance').should('have.text', '0.0');
+    onChainBalance().should('equal', '1007.431506849315068491');
   });
 });
