@@ -1,6 +1,6 @@
 import { BigNumber, utils } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
-import { useEnsName, Address } from 'wagmi';
+import { Address } from 'wagmi';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -26,6 +26,8 @@ import { handleTransactionError, images, messages, useScrollToTop } from '../../
 import ExternalLink from '../../../components/external-link';
 import { ErrorCircleFillIcon } from '../../../components/icons';
 import { DisconnectedProposalPage } from './disconnected-proposal-page';
+import { EnsName } from './ens-name';
+import ProposalCalls from './proposal-calls';
 
 interface ProposalDescriptionProps {
   description: string;
@@ -101,16 +103,16 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   if (!voting || proposal === 'user not signed in') return <DisconnectedProposalPage />;
   if (proposal === 'does not exist') return <>Proposal with such id hasn't been created yet...</>;
 
-  const { decodedEvmScript } = proposal;
+  const { decodedEvmScript, decodedCalls } = proposal;
 
-  if (!decodedEvmScript) {
+  if (!decodedEvmScript && !decodedCalls) {
     return <p>{messages.INVALID_PROPOSAL_FORMAT}</p>;
   }
 
   const voteSliderData = voteSliderSelector(proposal);
   const canVoteData = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
-  const urlTargetAddress = getEtherscanAddressUrl(chainId, decodedEvmScript.targetAddress);
+  const urlTargetAddress = decodedEvmScript && getEtherscanAddressUrl(chainId, decodedEvmScript.targetAddress);
   const backButton = {
     text: 'Back',
     url: proposal.open ? '/governance' : '/history',
@@ -226,47 +228,50 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
             )}
           </p>
         </div>
-        <div className={styles.proposalDetailsItem}>
-          <p className={styles.label}>Target Contract Address</p>
-          <p className={styles.address}>
-            {urlTargetAddress ? (
-              <ExternalLink className={styles.link} href={urlTargetAddress}>
-                <EnsName address={decodedEvmScript.targetAddress as Address} />
-              </ExternalLink>
-            ) : (
-              decodedEvmScript.targetAddress
+        {decodedEvmScript && (
+          <>
+            <div className={styles.proposalDetailsItem}>
+              <p className={styles.label}>Target Contract Address</p>
+              <p className={styles.address}>
+                {urlTargetAddress ? (
+                  <ExternalLink className={styles.link} href={urlTargetAddress}>
+                    <EnsName address={decodedEvmScript.targetAddress as Address} />
+                  </ExternalLink>
+                ) : (
+                  decodedEvmScript.targetAddress
+                )}
+              </p>
+            </div>
+            {proposal.metadata.targetSignature && (
+              <div className={styles.proposalDetailsItem}>
+                <p className={styles.label}>Target Contract Signature</p>
+                <p>{proposal.metadata.targetSignature}</p>
+              </div>
             )}
-          </p>
-        </div>
-        {proposal.metadata.targetSignature && (
+            {decodedEvmScript.value.gt(0) && (
+              <div className={styles.proposalDetailsItem}>
+                <p className={styles.label}>Value (Wei)</p>
+                <p>{decodedEvmScript.value.toString()}</p>
+              </div>
+            )}
+            <div className={styles.proposalDetailsItem}>
+              <p className={styles.label}>Parameters</p>
+              <Parameters parameters={decodedEvmScript.parameters} />
+            </div>
+          </>
+        )}
+        {decodedCalls && (
           <div className={styles.proposalDetailsItem}>
-            <p className={styles.label}>Target Contract Signature</p>
-            <p>{proposal.metadata.targetSignature}</p>
+            <p className={styles.label}>Calls</p>
+            <ProposalCalls calls={decodedCalls} />
           </div>
         )}
-        {decodedEvmScript.value.gt(0) && (
-          <div className={styles.proposalDetailsItem}>
-            <p className={styles.label}>Value (Wei)</p>
-            <p>{decodedEvmScript.value.toString()}</p>
-          </div>
-        )}
-        <div className={styles.proposalDetailsItem}>
-          <p className={styles.label}>Parameters</p>
-          <Parameters parameters={decodedEvmScript.parameters} />
-        </div>
       </div>
     </div>
   );
 };
 
 export default ProposalDetailsPage;
-
-function EnsName(props: { address: Address }) {
-  const { address } = props;
-  const { data } = useEnsName({ address });
-
-  return <>{data || address}</>;
-}
 
 function Parameters(props: { parameters: unknown[] }) {
   const { parameters } = props;

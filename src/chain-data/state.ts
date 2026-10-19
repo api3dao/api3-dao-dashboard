@@ -43,6 +43,19 @@ export interface DecodedEvmScript {
   parameters: unknown[];
   value: BigNumber; // amount of ETH that is sent to the contract
 }
+/**
+ * One call of an EVM script that was not created through the DAO dashboard (metadata version 3). The script is decoded
+ * without knowing the ABI of the target, so the calldata is kept as is.
+ */
+export interface EvmScriptCall {
+  // The contract that ends up being called
+  targetAddress: string;
+  // The agents whose `execute` function forwards the call, outermost first. Empty when the voting app calls the target
+  // directly
+  viaAgents: string[];
+  value: BigNumber; // amount of ETH that is sent to the contract, always zero for direct calls
+  data: string; // calldata of the call to the target, '0x' for a plain ETH transfer
+}
 export interface Proposal {
   voteId: ethers.BigNumber;
   creator: string;
@@ -65,6 +78,8 @@ export interface Proposal {
   userVotingPowerAt: BigNumber;
   // can be null if there was an error when decoding the proposal (proposal created outside DAO dashboard)
   decodedEvmScript: DecodedEvmScript | null;
+  // the calls of a version 3 proposal, null for other versions or when the script cannot be decoded
+  decodedCalls: EvmScriptCall[] | null;
 }
 
 export interface Delegation {
