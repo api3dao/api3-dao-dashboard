@@ -46,7 +46,7 @@ const History = () => {
 
   return (
     <BaseLayout title="Governance History">
-      <div className={styles.header}>
+      <div>
         <Header title="Governance History"></Header>
       </div>
 
