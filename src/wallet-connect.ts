@@ -10,6 +10,7 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 
 const projectId = import.meta.env.VITE_PROJECT_ID;
 const mainnetProviderUrl = import.meta.env.VITE_MAINNET_PROVIDER_URL;
+const hardhatProviderUrl = import.meta.env.VITE_HARDHAT_PROVIDER_URL || 'http://localhost:8545';
 
 if (!projectId) {
   throw new Error('Missing VITE_PROJECT_ID env variable');
@@ -23,7 +24,7 @@ export { projectId };
 
 const chainInfos = [
   { chain: mainnet, rpcUrl: mainnetProviderUrl },
-  { chain: hardhat, rpcUrl: 'http://localhost:8545' },
+  { chain: hardhat, rpcUrl: hardhatProviderUrl },
 ];
 
 // The metadata is used by WalletConnect to display the app information in the user Wallet.
