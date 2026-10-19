@@ -19,7 +19,7 @@ export default function SnapshotBanner() {
       </div>
 
       <div className={styles.linkContainer}>
-        <Button type="primary" size="sm" sm={{ size: 'md' }} href={links.SNAPSHOT} className={styles.link}>
+        <Button type="secondary-neutral" size="sm" sm={{ size: 'md' }} href={links.SNAPSHOT} className={styles.link}>
           Go to Snapshot
           <ExternalLinkIcon />
         </Button>
