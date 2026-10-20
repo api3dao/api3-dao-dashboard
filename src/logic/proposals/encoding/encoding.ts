@@ -22,6 +22,7 @@ import range from 'lodash/range';
 import { DecodedEvmScript, EvmScriptCall, Proposal, ProposalMetadata } from '../../../chain-data';
 import { Api3Agent } from '../../../contracts';
 import { convertToAddressOrThrow } from './ens-name';
+import { isKnownMultiCallScript } from './known-scripts';
 import { MULTI_CALL_METADATA_SCHEME_VERSION } from './metadata';
 import { NewProposalFormData } from './types';
 
@@ -359,6 +360,7 @@ export async function isEvmScriptValid(
 ) {
   const { metadata, decodedEvmScript } = proposal;
   if (metadata.version === MULTI_CALL_METADATA_SCHEME_VERSION) {
+    if (!isKnownMultiCallScript(proposal.script)) return false;
     const calls = decodeCallsScript(proposal.script, api3Agent);
     return calls !== null && encodeCallsScript(calls) === proposal.script.toLowerCase();
   }

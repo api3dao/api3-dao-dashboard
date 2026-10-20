@@ -11,6 +11,7 @@ import {
   encodeFunctionSignature,
   stringifyBigNumbersRecursively,
 } from './encoding';
+import { KNOWN_MULTI_CALL_SCRIPT_HASHES } from './known-scripts';
 import { decodeMetadata, encodeMetadata } from './metadata';
 
 const newFormData = {
@@ -681,10 +682,19 @@ describe('multi call scripts (metadata version 3)', () => {
     expect(decodeCallsScript('not a script', api3Agent)).toBeNull();
   });
 
-  it('is valid when the decoded calls encode back to the same script', async () => {
+  // A version 3 proposal is only valid when its script is a known one
+  const knowing = (script: string) => KNOWN_MULTI_CALL_SCRIPT_HASHES.push(utils.keccak256(script));
+  afterEach(() => {
+    KNOWN_MULTI_CALL_SCRIPT_HASHES.length = 0;
+  });
+
+  it('is valid when the script is known and the decoded calls encode back to the same script', async () => {
     const script = encodeCallsScript(calls);
     const proposal = { type: 'primary' as const, metadata: multiCallMetadata, decodedEvmScript: null, script };
 
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal)).toBe(false);
+
+    knowing(script);
     expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal)).toBe(true);
     const upperCaseScript = '0x' + script.substring(2).toUpperCase();
     expect(await isEvmScriptValid(mockedProvider, api3Agent, { ...proposal, script: upperCaseScript })).toBe(true);
@@ -702,6 +712,7 @@ describe('multi call scripts (metadata version 3)', () => {
       script: tampered,
     };
 
+    knowing(tampered);
     expect(decodeCallsScript(tampered, api3Agent)).not.toBeNull();
     expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal)).toBe(false);
   });
@@ -714,6 +725,7 @@ describe('multi call scripts (metadata version 3)', () => {
       script: '0x00000001ab',
     };
 
+    knowing(proposal.script);
     expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal)).toBe(false);
   });
 });
