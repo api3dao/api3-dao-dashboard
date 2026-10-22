@@ -1,12 +1,17 @@
+import classNames from 'classnames';
 import Button from '../button';
 import { images } from '../../utils';
 import { links } from '../../utils/links';
 import styles from './snapshot-banner.module.scss';
 import { ExternalLinkIcon } from '../icons';
 
-export default function SnapshotBanner() {
+interface Props {
+  className?: string;
+}
+
+export default function SnapshotBanner(props: Props) {
   return (
-    <div className={styles.root}>
+    <div className={classNames(styles.root, props.className)}>
       <div className={styles.content}>
         <img src={images.infoCircle} alt="" />
         <div className={styles.text}>

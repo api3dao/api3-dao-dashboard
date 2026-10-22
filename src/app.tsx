@@ -12,6 +12,7 @@ import Dashboard from './pages/dashboard';
 import History from './pages/history';
 import HistoryDetails from './pages/history-details';
 import NotFoundPage from './pages/not-found';
+import Proposals from './pages/proposals';
 import Vesting from './pages/vesting';
 import { registerWeb3Modal, wagmiConfig } from './wallet-connect';
 import './styles/variables.module.scss';
@@ -54,7 +55,9 @@ const AppContent = () => {
           </Route>
           <Redirect from="/history/:typeAndVoteId" to="/governance-history/:typeAndVoteId" exact />
           <Redirect from="/history" to="/governance-history" exact />
-          <Redirect from="/governance" to="/" exact />
+          <Route path="/governance" exact>
+            <Proposals />
+          </Route>
           <Route path="/vesting" exact>
             <Vesting />
           </Route>

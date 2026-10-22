@@ -14,6 +14,7 @@ import ExternalLink from '../external-link';
 
 const MenuItems = [
   { to: '/', icon: DashboardIcon, text: 'Staking' },
+  { to: '/governance', icon: ProposalsIcon, text: 'Governance' },
   { to: '/governance-history', icon: HistoryIcon, text: 'Governance History' },
 ];
 

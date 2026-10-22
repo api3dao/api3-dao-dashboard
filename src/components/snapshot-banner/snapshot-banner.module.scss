@@ -8,7 +8,6 @@
   gap: $space-lg;
   color: $color-dark-blue-400;
   padding: $space-lg 0;
-  margin: $space-xl 0;
   border-top: 1px solid $color-dark-blue-10;
   border-bottom: 1px solid $color-dark-blue-10;
 
@@ -16,10 +15,6 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin: $space-xxxl 0;
-  }
-  @media (min-width: $md) {
-    margin: $space-xxl 0 72px 0;
   }
 }
 

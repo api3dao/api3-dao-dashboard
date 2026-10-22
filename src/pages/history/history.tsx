@@ -50,7 +50,7 @@ const History = () => {
         <Header title="Governance History"></Header>
       </div>
 
-      <SnapshotBanner />
+      <SnapshotBanner className={styles.snapshotBanner} />
 
       <div className={styles.proposalsHeader}>
         <h5>Past Proposals</h5>

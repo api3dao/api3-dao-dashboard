@@ -43,7 +43,7 @@ const Dashboard = () => {
 
   return (
     <Layout title="Staking">
-      <SnapshotBanner />
+      <SnapshotBanner className={styles.snapshotBanner} />
       {pendingUnstake?.canUnstake && <UnstakeBanner canUnstakeAndWithdraw={pendingUnstake.canUnstakeAndWithdraw} />}
 
       {!provider && (

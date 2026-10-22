@@ -103,6 +103,11 @@
   color: $color-dark-blue-400;
   @include font-link-3;
 
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
   img {
     padding: 4px;
   }

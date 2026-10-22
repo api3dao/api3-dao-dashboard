@@ -96,6 +96,37 @@ task('deposit-and-stake', 'Deposits and stakes API3 tokens on behalf of a specif
     await hre.network.provider.request({ method: 'hardhat_stopImpersonatingAccount', params: [staker] });
   });
 
+task('delegate-voting-power', 'Delegates the voting power of a specified account')
+  .addParam('address', 'The account to delegate from. It needs staked API3 tokens and ETH for gas')
+  .addParam('delegate', 'The account to delegate to')
+  .setAction(async (args, hre) => {
+    const network = hre.network.name;
+    const deploymentFileName = `../src/contract-deployments/${network}-dao.json`;
+
+    if (!existsSync(deploymentFileName)) {
+      throw new Error(`Couldn't find deployment file for network: '${network}'.`);
+    }
+
+    const delegator: string = args.address;
+    const deploymentFile = require(deploymentFileName);
+
+    // Lets the node sign transactions as the delegator, so no private key is needed
+    await hre.network.provider.request({ method: 'hardhat_impersonateAccount', params: [delegator] });
+    const signer = await hre.ethers.getSigner(delegator);
+
+    const api3Pool = new hre.ethers.Contract(
+      deploymentFile.api3Pool,
+      ['function delegateVotingPower(address delegate)'],
+      signer
+    );
+
+    const tx = await api3Pool.delegateVotingPower(args.delegate);
+    await tx.wait();
+    console.info(`Delegated the voting power of address ${delegator} to address ${args.delegate}`);
+
+    await hre.network.provider.request({ method: 'hardhat_stopImpersonatingAccount', params: [delegator] });
+  });
+
 task('mint-reward', 'Mints the staking reward for the current epoch, if not minted yet').setAction(
   async (_args, hre) => {
     const network = hre.network.name;
