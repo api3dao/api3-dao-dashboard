@@ -25,6 +25,7 @@
   }
 
   th {
+    white-space: nowrap;
     @include font-body-7;
     color: $color-dark-blue-50;
   }
@@ -33,12 +34,17 @@
     width: 32px;
   }
 
-  // Addresses and values are never wrapped nor shortened, the calldata column takes the rest and the table scrolls
-  // horizontally on a narrow screen
+  // Addresses and values are never wrapped nor shortened, the calldata column takes the rest. The table scrolls
+  // horizontally only on a screen too narrow for an address
   .address,
   .value {
     white-space: nowrap;
     overflow-wrap: normal;
+  }
+
+  .via {
+    @include font-body-9;
+    color: $color-dark-blue-50;
   }
 }
 
@@ -49,6 +55,7 @@
 .calldata {
   summary {
     cursor: pointer;
+    white-space: nowrap;
   }
 
   code {
@@ -59,4 +66,7 @@
 .rawData {
   display: block;
   margin-top: 4px;
+  // Takes the width of the column without widening it, so that expanding the calldata does not shift the table
+  width: 0;
+  min-width: 100%;
 }

@@ -26,8 +26,7 @@ const ProposalCalls = (props: Props) => {
         <thead>
           <tr>
             <th className={styles.index}>#</th>
-            <th className={styles.address}>Target</th>
-            <th className={styles.address}>Via</th>
+            <th>Target</th>
             {showValue && <th className={styles.value}>Value (Wei)</th>}
             <th>Calldata</th>
           </tr>
@@ -38,11 +37,12 @@ const ProposalCalls = (props: Props) => {
               <td>{index + 1}</td>
               <td className={styles.address}>
                 <AddressLink address={call.targetAddress} chainId={chainId} />
-              </td>
-              <td className={styles.address}>
-                {call.viaAgents.length === 0
-                  ? 'Direct'
-                  : call.viaAgents.map((agent) => <AddressLink key={agent} address={agent} chainId={chainId} />)}
+                {/* The agents that forward the call, outermost first. A call without them is made by the voting app */}
+                {call.viaAgents.map((agent) => (
+                  <div key={agent} className={styles.via}>
+                    via <AddressLink address={agent} chainId={chainId} />
+                  </div>
+                ))}
               </td>
               {showValue && <td className={styles.value}>{call.value.toString()}</td>}
               <td>
@@ -63,7 +63,7 @@ function AddressLink(props: { address: string; chainId: number | undefined }) {
   const url = getEtherscanAddressUrl(chainId, address);
 
   return (
-    <div>
+    <span>
       {url ? (
         <ExternalLink className={styles.link} href={url}>
           <EnsName address={address as Address} />
@@ -71,7 +71,7 @@ function AddressLink(props: { address: string; chainId: number | undefined }) {
       ) : (
         address
       )}
-    </div>
+    </span>
   );
 }
 
