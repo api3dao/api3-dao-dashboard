@@ -263,7 +263,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
         {decodedCalls && (
           <div className={styles.proposalDetailsItem}>
             <p className={styles.label}>Calls</p>
-            <ProposalCalls calls={decodedCalls} />
+            <ProposalCalls calls={decodedCalls} type={proposal.type} />
           </div>
         )}
       </div>

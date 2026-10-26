@@ -1,6 +1,6 @@
 import { utils } from 'ethers';
 import { Address } from 'wagmi';
-import { EvmScriptCall, useChainData } from '../../../chain-data';
+import { EvmScriptCall, ProposalType, useChainData } from '../../../chain-data';
 import ExternalLink from '../../../components/external-link';
 import { getEtherscanAddressUrl } from '../../../contracts';
 import { EnsName } from './ens-name';
@@ -8,6 +8,7 @@ import styles from './proposal-calls.module.scss';
 
 interface Props {
   calls: EvmScriptCall[];
+  type: ProposalType;
 }
 
 /**
@@ -16,8 +17,10 @@ interface Props {
  * choice.
  */
 const ProposalCalls = (props: Props) => {
-  const { calls } = props;
-  const { chainId } = useChainData();
+  const { calls, type } = props;
+  const { chainId, contracts } = useChainData();
+  // The voting app of the proposal executes its script, so it calls every target an agent does not
+  const votingApp = type === 'primary' ? contracts?.votingAppPrimary : contracts?.votingAppSecondary;
   const showValue = calls.some((call) => call.value.gt(0));
 
   return (
@@ -37,12 +40,7 @@ const ProposalCalls = (props: Props) => {
               <td>{index + 1}</td>
               <td className={styles.address}>
                 <AddressLink address={call.targetAddress} chainId={chainId} />
-                {/* The agents that forward the call, outermost first. A call without them is made by the voting app */}
-                {call.viaAgents.map((agent) => (
-                  <div key={agent} className={styles.via}>
-                    via <AddressLink address={agent} chainId={chainId} />
-                  </div>
-                ))}
+                <Caller call={call} votingApp={votingApp} chainId={chainId} />
               </td>
               {showValue && <td className={styles.value}>{call.value.toString()}</td>}
               <td>
@@ -72,6 +70,32 @@ function AddressLink(props: { address: string; chainId: number | undefined }) {
         address
       )}
     </span>
+  );
+}
+
+/**
+ * The address the target sees as the caller: the agent that forwards the call through its "execute" function, or the
+ * voting app for a call it makes itself. Agents further out, which the voting app calls to reach that agent, follow.
+ */
+function Caller(props: { call: EvmScriptCall; votingApp: string | undefined; chainId: number | undefined }) {
+  const { call, votingApp, chainId } = props;
+  const caller = call.viaAgents.at(-1) ?? votingApp;
+  // Outermost first in `viaAgents`, so the agent that calls the caller comes last before it
+  const through = call.viaAgents.slice(0, -1).reverse();
+
+  return (
+    <>
+      {caller && (
+        <div className={styles.caller}>
+          called by <AddressLink address={caller} chainId={chainId} />
+        </div>
+      )}
+      {through.map((agent) => (
+        <div key={agent} className={styles.caller}>
+          through <AddressLink address={agent} chainId={chainId} />
+        </div>
+      ))}
+    </>
   );
 }
 
