@@ -75,27 +75,18 @@ function AddressLink(props: { address: string; chainId: number | undefined }) {
 
 /**
  * The address the target sees as the caller: the agent that forwards the call through its "execute" function, or the
- * voting app for a call it makes itself. Agents further out, which the voting app calls to reach that agent, follow.
+ * voting app for a call it makes itself. An agent can be reached through another one, which only relays the call and is
+ * left out.
  */
 function Caller(props: { call: EvmScriptCall; votingApp: string | undefined; chainId: number | undefined }) {
   const { call, votingApp, chainId } = props;
   const caller = call.viaAgents.at(-1) ?? votingApp;
-  // Outermost first in `viaAgents`, so the agent that calls the caller comes last before it
-  const through = call.viaAgents.slice(0, -1).reverse();
+  if (!caller) return null;
 
   return (
-    <>
-      {caller && (
-        <div className={styles.caller}>
-          called by <AddressLink address={caller} chainId={chainId} />
-        </div>
-      )}
-      {through.map((agent) => (
-        <div key={agent} className={styles.caller}>
-          through <AddressLink address={agent} chainId={chainId} />
-        </div>
-      ))}
-    </>
+    <div className={styles.caller}>
+      called by <AddressLink address={caller} chainId={chainId} />
+    </div>
   );
 }
 
