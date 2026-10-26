@@ -8,8 +8,6 @@
 
 .calls {
   width: 100%;
-  // Fixed layout so that long addresses and calldata wrap inside their columns instead of squeezing the others
-  table-layout: fixed;
   border-collapse: collapse;
   @include font-body-9;
 
@@ -35,12 +33,12 @@
     width: 32px;
   }
 
-  .address {
-    width: 28%;
-  }
-
+  // Addresses and values are never wrapped nor shortened, the calldata column takes the rest and the table scrolls
+  // horizontally on a narrow screen
+  .address,
   .value {
-    width: 13%;
+    white-space: nowrap;
+    overflow-wrap: normal;
   }
 }
 

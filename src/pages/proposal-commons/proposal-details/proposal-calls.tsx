@@ -36,15 +36,15 @@ const ProposalCalls = (props: Props) => {
           {calls.map((call, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>
+              <td className={styles.address}>
                 <AddressLink address={call.targetAddress} chainId={chainId} />
               </td>
-              <td>
+              <td className={styles.address}>
                 {call.viaAgents.length === 0
                   ? 'Direct'
                   : call.viaAgents.map((agent) => <AddressLink key={agent} address={agent} chainId={chainId} />)}
               </td>
-              {showValue && <td>{call.value.toString()}</td>}
+              {showValue && <td className={styles.value}>{call.value.toString()}</td>}
               <td>
                 <Calldata data={call.data} />
               </td>
@@ -84,7 +84,10 @@ function Calldata(props: { data: string }) {
   return (
     <details className={styles.calldata}>
       <summary>
-        <code>{selector}</code> and {Math.max(length - 4, 0)} more bytes
+        <code>
+          {selector}
+          {length > 4 && '...'}
+        </code>
       </summary>
       <code className={styles.rawData}>{data}</code>
     </details>
