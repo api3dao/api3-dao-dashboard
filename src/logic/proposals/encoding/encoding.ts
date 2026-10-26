@@ -272,11 +272,11 @@ export const decodeEvmScript = async (
 };
 
 /**
- * Splits an EVM script into its calls without knowing the ABIs of the targets, which is how proposals created outside
- * of the DAO dashboard (metadata version 3) are decoded. The script has to follow the CallsScript layout, a sequence of
- * (target address, calldata length, calldata) entries. A call that an agent forwards through its "execute" function
- * is unwrapped so that the target, value and calldata are the ones of the inner call, through as many agents as it
- * passes (the primary agent can forward a call to the secondary agent, which forwards it to the target).
+ * Splits an EVM script into its calls without knowing the ABIs of the targets, which is how a metadata version 3
+ * proposal, reserved for the DAO migration proposal, is decoded. The script has to follow the CallsScript layout, a
+ * sequence of (target address, calldata length, calldata) entries. A call that an agent forwards through its "execute"
+ * function is unwrapped so that the target, value and calldata are the ones of the inner call, through as many agents
+ * as it passes (the primary agent can forward a call to the secondary agent, which forwards it to the target).
  *
  * Returns null when the script does not follow the layout or an "execute" call cannot be decoded.
  *

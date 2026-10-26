@@ -48,8 +48,8 @@ export const getProposals = async (
   const composeProposal = async (i: number): Promise<Proposal> => {
     const script = staticVoteData.script[i]!;
     const metadata = startVotesInfo[i]!.metadata;
-    // Proposals created outside of the DAO dashboard are decoded from the script alone, see `decodeCallsScript`, and
-    // only when the script is a known one
+    // A version 3 proposal, reserved for the DAO migration proposal, is decoded from the script alone, see
+    // `decodeCallsScript`, and only when the script is a known one
     const isMultiCall = metadata.version === MULTI_CALL_METADATA_SCHEME_VERSION;
     const decodedEvmScript = isMultiCall ? null : await decodeEvmScript(provider, script, metadata);
     const decodedCalls = isMultiCall && isKnownMultiCallScript(script) ? decodeCallsScript(script, api3Agent) : null;

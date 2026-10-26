@@ -15,9 +15,9 @@ import { NewProposalFormData } from './types';
  */
 export const METADATA_SCHEME_VERSION = '2';
 /**
- * The metadata scheme of proposals created outside of the DAO dashboard whose EVM script holds one or more calls. It
- * carries no target signature, because the script is decoded on its own (see `decodeCallsScript`). The dashboard only
- * decodes this version, it does not create proposals with it.
+ * Reserved for the DAO migration proposal, which performs several calls in its EVM script and is created outside of the
+ * DAO dashboard. It carries no target signature, because the script is decoded on its own (see `decodeCallsScript`).
+ * The dashboard only decodes this version, it does not create proposals with it.
  */
 export const MULTI_CALL_METADATA_SCHEME_VERSION = '3';
 /**

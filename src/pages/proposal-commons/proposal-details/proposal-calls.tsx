@@ -11,8 +11,9 @@ interface Props {
 }
 
 /**
- * The calls of a proposal created outside of the DAO dashboard, one row per call. Addresses and calldata are shown as
- * they are, because the ABIs of the targets are not known, so the reader checks them with the tools of their choice.
+ * The calls of a metadata version 3 proposal, the DAO migration proposal, one row per call. Addresses and calldata are
+ * shown as they are, because the ABIs of the targets are not known, so the reader checks them with the tools of their
+ * choice.
  */
 const ProposalCalls = (props: Props) => {
   const { calls } = props;
