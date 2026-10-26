@@ -84,9 +84,7 @@ export const displayPendingTransaction = async (
 
 // Injects a mocked ethers provider set to make RPC calls to node running on localhost
 export const mockLocalhostWeb3Provider = (window: Window) => {
-  const ethersProvider = new providers.JsonRpcProvider(
-    import.meta.env.VITE_HARDHAT_PROVIDER_URL || 'http://localhost:8545'
-  );
+  const ethersProvider = new providers.JsonRpcProvider('http://localhost:8545');
 
   // The request `request` function is defined when we use Metamask, so we mock it
   (ethersProvider as any).request = ({ method, params }: any) => {

@@ -8,8 +8,6 @@ interface ImportMetaEnv {
   readonly VITE_NODE_ENV: string;
   readonly VITE_PROJECT_ID?: string;
   readonly VITE_MAINNET_PROVIDER_URL?: string;
-  readonly VITE_HARDHAT_PROVIDER_URL?: string;
-  readonly VITE_MULTI_CALL_SCRIPT_HASH?: string;
   readonly VITE_SENTRY_DSN?: string;
   readonly VITE_GTM_ID?: string;
 }
