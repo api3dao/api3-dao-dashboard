@@ -12,6 +12,7 @@ describe('keyboard navigation and accessibility', () => {
     cy.visit('http://localhost:3000/#/');
 
     closeErrorReportingNotice();
+    pressTabAndAssertFocusOutline(() => cy.findByText('Go to Snapshot'));
     pressTabAndAssertFocusOutline(() => cy.dataCy('api3-logo'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Connect Wallet').parent().filter(':visible'));
 
@@ -21,7 +22,6 @@ describe('keyboard navigation and accessibility', () => {
     pressTabAndAssertFocusOutline(() => cy.findAllByText('Snapshot').filter(':visible').closest('a'));
     pressTabAndAssertFocusOutline(() => cy.findAllByText('DAO Docs').filter(':visible').closest('a'));
 
-    pressTabAndAssertFocusOutline(() => cy.findByText('Go to Snapshot'));
     pressTabAndAssertFocusOutline(() => cy.findByTestId('connect-wallet-staking-btn'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Api3.org'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Error Reporting'));
@@ -30,6 +30,6 @@ describe('keyboard navigation and accessibility', () => {
     pressTabAndAssertFocusOutline(() => cy.findByText('Privacy and Cookies'));
     pressTabAndAssertFocusOutline(() => cy.findByText('Terms and Conditions'));
 
-    pressTabAndAssertFocusOutline(() => cy.dataCy('api3-logo')); // Completes the TAB cycle
+    pressTabAndAssertFocusOutline(() => cy.findByText('Go to Snapshot')); // Completes the TAB cycle
   });
 });
