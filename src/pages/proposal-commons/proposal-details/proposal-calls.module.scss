@@ -11,10 +11,6 @@
   border-collapse: collapse;
   @include font-body-9;
 
-  @media (min-width: $md) {
-    @include font-body-6;
-  }
-
   th,
   td {
     padding: 8px 12px 8px 0;

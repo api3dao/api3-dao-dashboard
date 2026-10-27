@@ -11,7 +11,6 @@ import {
   encodeFunctionSignature,
   stringifyBigNumbersRecursively,
 } from './encoding';
-import { KNOWN_MULTI_CALL_SCRIPT_HASHES } from './known-scripts';
 import { decodeMetadata, encodeMetadata } from './metadata';
 
 const newFormData = {
@@ -682,22 +681,27 @@ describe('multi call scripts (metadata version 3)', () => {
     expect(decodeCallsScript('not a script', api3Agent)).toBeNull();
   });
 
-  // A version 3 proposal is only valid when its script is a known one
-  const knowing = (script: string) => KNOWN_MULTI_CALL_SCRIPT_HASHES.push(utils.keccak256(script));
-  afterEach(() => {
-    KNOWN_MULTI_CALL_SCRIPT_HASHES.length = 0;
-  });
+  // A version 3 proposal is only valid when its script is a known one. The known hashes are passed in, so the tests
+  // know nothing about the list the dashboard ships
+  const known = (script: string) => [utils.keccak256(script)];
 
   it('is valid when the script is known and the decoded calls encode back to the same script', async () => {
     const script = encodeCallsScript(calls);
     const proposal = { type: 'primary' as const, metadata: multiCallMetadata, decodedEvmScript: null, script };
 
-    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal)).toBe(false);
-
-    knowing(script);
-    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal)).toBe(true);
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal, [])).toBe(false);
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal, known(script))).toBe(true);
     const upperCaseScript = '0x' + script.substring(2).toUpperCase();
-    expect(await isEvmScriptValid(mockedProvider, api3Agent, { ...proposal, script: upperCaseScript })).toBe(true);
+    expect(
+      await isEvmScriptValid(mockedProvider, api3Agent, { ...proposal, script: upperCaseScript }, known(script))
+    ).toBe(true);
+  });
+
+  it('is invalid for a secondary proposal, even with a known script', async () => {
+    const script = encodeCallsScript(calls);
+    const proposal = { type: 'secondary' as const, metadata: multiCallMetadata, decodedEvmScript: null, script };
+
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal, known(script))).toBe(false);
   });
 
   it('is invalid when the script hides data in the padding of an "execute" call', async () => {
@@ -712,9 +716,8 @@ describe('multi call scripts (metadata version 3)', () => {
       script: tampered,
     };
 
-    knowing(tampered);
     expect(decodeCallsScript(tampered, api3Agent)).not.toBeNull();
-    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal)).toBe(false);
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal, known(tampered))).toBe(false);
   });
 
   it('is invalid when the script cannot be decoded', async () => {
@@ -725,7 +728,6 @@ describe('multi call scripts (metadata version 3)', () => {
       script: '0x00000001ab',
     };
 
-    knowing(proposal.script);
-    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal)).toBe(false);
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal, known(proposal.script))).toBe(false);
   });
 });

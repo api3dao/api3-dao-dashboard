@@ -1,17 +1,16 @@
 import { utils } from 'ethers';
-import { isKnownMultiCallScript, KNOWN_MULTI_CALL_SCRIPT_HASHES } from './known-scripts';
+import { isKnownMultiCallScript } from './known-scripts';
 
 const script = '0x00000001' + '11'.repeat(20) + '00000004deadbeef';
-const hash = utils.keccak256(script);
+const known = [utils.keccak256(script)];
 
-afterEach(() => {
-  KNOWN_MULTI_CALL_SCRIPT_HASHES.length = 0;
+test('a script is known when its hash is listed and the proposal is a primary one', () => {
+  expect(isKnownMultiCallScript(script, 'primary', known)).toBe(true);
+  expect(isKnownMultiCallScript(script, 'secondary', known)).toBe(false);
+  expect(isKnownMultiCallScript(script.replace('deadbeef', 'deadbeee'), 'primary', known)).toBe(false);
+  expect(isKnownMultiCallScript(script, 'primary', [])).toBe(false);
 });
 
-test('a script is known when its hash is listed', () => {
-  expect(isKnownMultiCallScript(script)).toBe(false);
-
-  KNOWN_MULTI_CALL_SCRIPT_HASHES.push(hash);
-  expect(isKnownMultiCallScript(script)).toBe(true);
-  expect(isKnownMultiCallScript(script.replace('deadbeef', 'deadbeee'))).toBe(false);
+test('the list the dashboard ships is the default', () => {
+  expect(isKnownMultiCallScript(script, 'primary')).toBe(false);
 });
