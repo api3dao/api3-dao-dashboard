@@ -14,8 +14,9 @@ function depositAndStake(depositAmount: string, stakeAmount: string) {
   cy.exec(`pnpm deposit-and-stake ${USER_ACCOUNT} --deposit ${depositAmount} --stake ${stakeAmount}`);
 }
 
-function turnOffMinting() {
-  cy.exec('pnpm update-pool-minter-status false');
+// The user holds all the voting power, so their vote alone passes the migration vote
+function migrateDao() {
+  cy.exec(`pnpm execute-migration-vote ${USER_ACCOUNT}`);
 }
 
 function initiateUnstake(amount: string | 'max') {
@@ -67,12 +68,13 @@ function onChainBalance() {
     .then((balance) => utils.formatEther(balance));
 }
 
-describe('after minting is turned off', () => {
+describe('after the DAO migration', () => {
   before(() => {
     cy.resetBlockchain();
     sendTokensToUser('500');
     depositAndStake('500', '100');
-    turnOffMinting();
+    cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // skip the genesis epoch, which allows no votes
+    migrateDao();
     cy.login();
 
     onChainBalance().should('equal', '0.0');
@@ -146,19 +148,19 @@ describe('after minting is turned off', () => {
   });
 });
 
-describe('pool activity from before minting was turned off', () => {
+describe('pool activity from before the DAO migration', () => {
   beforeEach(() => {
     cy.resetBlockchain();
   });
 
-  it('user can complete an unstake initiated before minting was turned off', () => {
+  it('user can complete an unstake initiated before the DAO migration', () => {
     sendTokensToUser('500');
     depositAndStake('500', '100');
     cy.login();
     initiateUnstake('20');
 
-    turnOffMinting();
     cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // add 1 hour to be sure unstake time passed
+    migrateDao();
     unstake();
 
     // No reward is minted, although an epoch has passed
@@ -169,12 +171,12 @@ describe('pool activity from before minting was turned off', () => {
     onChainBalance().should('equal', '0.0');
   });
 
-  it('user can withdraw rewards minted before minting was turned off, once they unlock', () => {
+  it('user can withdraw rewards minted before the DAO migration, once they unlock', () => {
     sendTokensToUser('1000');
     depositAndStake('1000', '1000');
     cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60); // skip the genesis epoch, which has no reward
     cy.exec('pnpm mint-reward');
-    turnOffMinting();
+    migrateDao();
 
     cy.dataCy('staked').should('have.text', '1,007.43');
     cy.dataCy('withdrawable').should('have.text', '0.0');

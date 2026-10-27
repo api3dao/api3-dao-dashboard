@@ -24,6 +24,8 @@ describe('governance', () => {
     cy.exec(`pnpm delegate-voting-power ${USER_ACCOUNT} --delegate ${DELEGATE}`);
     // The delegation can be updated only once per epoch (add 1 hour just to be sure)
     cy.increaseTimeAndRelogin(EPOCH_LENGTH + 60 * 60);
+    // The delegate holds all the voting power, so their vote alone passes the migration vote
+    cy.exec(`pnpm execute-migration-vote ${DELEGATE}`);
     cy.findAllByText('Governance').filter(':visible').click();
 
     cy.findByText('API3 DAO governance has moved to Snapshot.').should('exist');

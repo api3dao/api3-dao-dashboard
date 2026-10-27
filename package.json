@@ -29,7 +29,7 @@
     "deposit-and-stake": "cd hardhat && npx hardhat deposit-and-stake --address",
     "delegate-voting-power": "cd hardhat && npx hardhat delegate-voting-power --address",
     "mint-reward": "cd hardhat && npx hardhat mint-reward",
-    "update-pool-minter-status": "cd hardhat && npx hardhat update-pool-minter-status --status",
+    "execute-migration-vote": "cd hardhat && npx hardhat execute-migration-vote --address",
     "create-proposal": "cd hardhat && npx hardhat create-proposal",
     "cast-vote": "cd hardhat && npx hardhat cast-vote --address",
     "upload-build-to-pinata": "node dev-scripts/upload-build-to-pinata.mjs",
