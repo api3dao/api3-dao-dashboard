@@ -1,9 +1,7 @@
 import { utils } from 'ethers';
-import { Address } from 'wagmi';
 import { EvmScriptCall, ProposalType, useChainData } from '../../../chain-data';
 import ExternalLink from '../../../components/external-link';
 import { getEtherscanAddressUrl } from '../../../contracts';
-import { EnsName } from './ens-name';
 import styles from './proposal-calls.module.scss';
 
 interface Props {
@@ -13,8 +11,8 @@ interface Props {
 
 /**
  * The calls of a metadata version 3 proposal, the DAO migration proposal, one row per call. Addresses and calldata are
- * shown as they are, because the ABIs of the targets are not known, so the reader checks them with the tools of their
- * choice.
+ * shown as they are, no ENS name in place of an address, because the ABIs of the targets are not known and the reader
+ * checks every address against the proposal's own list with the tools of their choice.
  */
 const ProposalCalls = (props: Props) => {
   const { calls, type } = props;
@@ -37,7 +35,7 @@ const ProposalCalls = (props: Props) => {
         <tbody>
           {calls.map((call, index) => (
             <tr key={index}>
-              <td>{index + 1}</td>
+              <td className={styles.index}>{index + 1}</td>
               <td className={styles.address}>
                 <AddressLink address={call.targetAddress} chainId={chainId} />
                 <Caller call={call} votingApp={votingApp} chainId={chainId} />
@@ -64,7 +62,7 @@ function AddressLink(props: { address: string; chainId: number | undefined }) {
     <span>
       {url ? (
         <ExternalLink className={styles.link} href={url}>
-          <EnsName address={address as Address} />
+          {address}
         </ExternalLink>
       ) : (
         address

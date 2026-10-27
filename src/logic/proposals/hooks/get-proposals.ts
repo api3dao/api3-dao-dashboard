@@ -52,7 +52,8 @@ export const getProposals = async (
     // `decodeCallsScript`, and only when the script is a known one
     const isMultiCall = metadata.version === MULTI_CALL_METADATA_SCHEME_VERSION;
     const decodedEvmScript = isMultiCall ? null : await decodeEvmScript(provider, script, metadata);
-    const decodedCalls = isMultiCall && isKnownMultiCallScript(script) ? decodeCallsScript(script, api3Agent) : null;
+    const decodedCalls =
+      isMultiCall && isKnownMultiCallScript(script, type) ? decodeCallsScript(script, api3Agent) : null;
 
     return {
       type,
