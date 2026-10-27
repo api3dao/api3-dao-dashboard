@@ -35,7 +35,7 @@ const ProposalCalls = (props: Props) => {
         <tbody>
           {calls.map((call, index) => (
             <tr key={index}>
-              <td>{index + 1}</td>
+              <td className={styles.index}>{index + 1}</td>
               <td className={styles.address}>
                 <AddressLink address={call.targetAddress} chainId={chainId} />
                 <Caller call={call} votingApp={votingApp} chainId={chainId} />

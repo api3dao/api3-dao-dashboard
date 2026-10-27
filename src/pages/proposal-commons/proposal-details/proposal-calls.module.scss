@@ -4,6 +4,19 @@
 .callsWrapper {
   overflow-x: auto;
   margin-top: 8px;
+  // A screen too narrow for an address scrolls the table sideways. An overlay scrollbar would hide that until the
+  // first swipe, so the wrapper draws its own
+  scrollbar-width: thin;
+  scrollbar-color: $color-dark-blue-50 transparent;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-dark-blue-50;
+    border-radius: 3px;
+  }
 }
 
 .calls {
@@ -28,6 +41,7 @@
 
   .index {
     width: 32px;
+    white-space: nowrap;
   }
 
   // Addresses and values are never wrapped nor shortened, the calldata column takes the rest. The table scrolls
