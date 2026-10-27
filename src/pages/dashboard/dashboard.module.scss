@@ -1,17 +1,6 @@
 @import '../../styles/variables.module.scss';
 @import '../../styles/fonts.module.scss';
 
-.snapshotBanner {
-  margin: $space-xl 0;
-
-  @media (min-width: $sm) {
-    margin: $space-xxxl 0;
-  }
-  @media (min-width: $md) {
-    margin: $space-xxl 0 72px 0;
-  }
-}
-
 .cardsWrapper {
   display: flex;
   flex-direction: column;

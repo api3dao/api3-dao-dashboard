@@ -92,7 +92,7 @@ describe('after the DAO migration', () => {
     cy.useChainSnapshot('user-staked');
 
     cy.findByText('API3 DAO governance has moved to Snapshot.').should('exist');
-    cy.findByRole('link', { name: 'Go to Snapshot' }).should('have.attr', 'href').and('include', 'snapshot.box');
+    cy.findByRole('link', { name: 'Go to Snapshot' }).should('have.attr', 'href', 'https://snapshot.box/#/s:api3.eth');
     cy.findByRole('button', { name: 'Deposit' }).should('be.disabled');
     cy.findByRole('button', { name: 'Stake' }).should('be.disabled');
   });

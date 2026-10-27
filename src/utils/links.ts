@@ -4,7 +4,6 @@ export const links = {
   PRIVACY_AND_COOKIES: 'https://api3.org/privacy-and-cookies/',
   PRIVACY_POLICY: 'https://api3.org/privacy-policy/',
   SENTRY: 'https://sentry.io/',
-  // TODO: Replace with the real Api3 DAO Snapshot space URL
-  SNAPSHOT: 'https://snapshot.box/#/s:PLACEHOLDER',
+  SNAPSHOT: 'https://snapshot.box/#/s:api3.eth',
   TERMS_AND_CONDITIONS: 'https://api3.org/terms-and-conditions/',
 };

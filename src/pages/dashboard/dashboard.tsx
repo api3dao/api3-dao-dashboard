@@ -17,7 +17,6 @@ import styles from './dashboard.module.scss';
 import ConfirmUnstakeForm from './forms/confirm-unstake-form';
 import classNames from 'classnames';
 import ConnectButton from '../../components/connect-button';
-import SnapshotBanner from '../../components/snapshot-banner';
 
 type ModalType = 'withdraw' | 'unstake' | 'confirm-unstake';
 
@@ -43,23 +42,10 @@ const Dashboard = () => {
 
   return (
     <Layout title="Staking">
-      <SnapshotBanner className={styles.snapshotBanner} />
       {pendingUnstake?.canUnstake && <UnstakeBanner canUnstakeAndWithdraw={pendingUnstake.canUnstakeAndWithdraw} />}
 
       {!provider && (
         <>
-          {/* How This Works */}
-          <p className={styles.dashboardHeader}>How This Works</p>
-          <div className={styles.tutorialVideo}>
-            <iframe
-              src="https://www.youtube-nocookie.com/embed/videoseries?list=PL9BKN1mys69GgMLD_EVkH-S3CKrPFf_ct"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-
           {/* Connect Wallet */}
           <div className={styles.connectWalletBox}>
             <div className={styles.connectWalletBoxContent}>
@@ -75,6 +61,18 @@ const Dashboard = () => {
                 Connect Wallet
               </ConnectButton>
             </div>
+          </div>
+
+          {/* How This Works */}
+          <p className={styles.dashboardHeader}>How This Works</p>
+          <div className={styles.tutorialVideo}>
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/videoseries?list=PL9BKN1mys69GgMLD_EVkH-S3CKrPFf_ct"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
           </div>
         </>
       )}

@@ -1,7 +1,6 @@
 import Button from '../../components/button';
 import { useChainData } from '../../chain-data';
 import Layout from '../../components/layout';
-import SnapshotBanner from '../../components/snapshot-banner';
 import { Tooltip } from '../../components/tooltip';
 import ProposalList from '../proposal-commons/proposal-list';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
@@ -15,8 +14,6 @@ const Proposals = () => {
 
   return (
     <Layout title="Governance">
-      <SnapshotBanner className={styles.snapshotBanner} />
-
       {provider && (
         <div className={styles.governanceHeader}>
           <Delegation />

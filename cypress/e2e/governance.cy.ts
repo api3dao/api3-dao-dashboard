@@ -29,7 +29,7 @@ describe('governance', () => {
     cy.findAllByText('Governance').filter(':visible').click();
 
     cy.findByText('API3 DAO governance has moved to Snapshot.').should('exist');
-    cy.findByRole('link', { name: 'Go to Snapshot' }).should('have.attr', 'href').and('include', 'snapshot.box');
+    cy.findByRole('link', { name: 'Go to Snapshot' }).should('have.attr', 'href', 'https://snapshot.box/#/s:api3.eth');
     cy.findByText('There are no active proposals').should('exist');
     cy.findByRole('button', { name: '+ New Proposal' }).should('be.disabled');
     cy.dataCy('delegated-to').should('have.text', `Delegated to: ${DELEGATE}`);

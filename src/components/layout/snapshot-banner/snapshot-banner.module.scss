@@ -1,0 +1,59 @@
+@import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
+
+.root {
+  padding: $space-sm $space-md;
+  background: $color-action-info-50;
+  color: $color-dark-blue-900;
+}
+
+// On mobile the button wraps below the text, in the text column, so that the icon stays centered on the text only
+.content {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: $space-sm;
+  max-width: 818px;
+  margin: 0 auto;
+
+  @media (min-width: $sm) {
+    grid-template-columns: auto 1fr auto;
+    gap: $space-lg;
+  }
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  color: $color-dark-blue-50;
+  @media (min-width: $sm) {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.title {
+  @include font-body-10;
+
+  @media (min-width: $md) {
+    @include font-body-8;
+  }
+}
+
+.subtitle {
+  @include font-body-12;
+
+  @media (min-width: $md) {
+    @include font-body-9;
+  }
+}
+
+.link {
+  grid-column: 2;
+  justify-self: start;
+  gap: 6px;
+
+  @media (min-width: $sm) {
+    grid-column: 3;
+  }
+}

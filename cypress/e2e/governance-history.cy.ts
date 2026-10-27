@@ -54,7 +54,7 @@ describe('governance history', () => {
 
   it('shows past proposals', () => {
     cy.findByText('API3 DAO governance has moved to Snapshot.').should('exist');
-    cy.findByRole('link', { name: 'Go to Snapshot' }).should('have.attr', 'href').and('include', 'snapshot.box');
+    cy.findByRole('link', { name: 'Go to Snapshot' }).should('have.attr', 'href', 'https://snapshot.box/#/s:api3.eth');
 
     cy.dataCy('proposal-item').should('have.length', 2);
     // The newest proposal comes first
