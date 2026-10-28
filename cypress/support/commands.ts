@@ -89,6 +89,13 @@ Cypress.Commands.add('login', () => {
       closeErrorReportingNotice();
     }
   });
+
+  // Close the migration vote modal if it is present. It shows once per page load, so it is not present on a relogin.
+  cy.get('body').then((el) => {
+    if (el.find('#modal').text().includes('Vote on the DAO migration proposal')) {
+      cy.get('#modal').findByRole('button', { name: 'Close' }).click();
+    }
+  });
 });
 
 Cypress.Commands.add('dataCy', (value) => {

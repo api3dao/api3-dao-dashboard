@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ProposalType, updateImmutablyCurried, useChainData, VoterState } from '../../../chain-data';
 import {
   useApi3AgentAddresses,
@@ -24,6 +24,8 @@ interface DynamicVotingData {
   delegateState: number;
 }
 
+export type LoadStatus = 'loading' | 'loaded' | 'not_found' | 'error';
+
 /**
  * Hook which loads a proposal by its id and voting app type. It will also refetch dynamic voting data from chain after
  * every mined block.
@@ -36,8 +38,10 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
   const convenience = useConvenience();
   const agents = useApi3AgentAddresses();
   const { userAccount, setChainData, provider } = useChainData();
+  const [status, setStatus] = useState<LoadStatus>('loading');
 
   const loadProposalsByIds = useCallback(async () => {
+    setStatus('loading');
     if (!api3Voting || !convenience || !provider || !agents) return;
 
     const votingApp = api3Voting[type];
@@ -45,6 +49,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
 
     const goStartVoteFilters = await go(() => votingApp.queryFilter(startVoteFilter));
     if (!goStartVoteFilters.success) {
+      setStatus('error');
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
         errorOrMessage: goStartVoteFilters.error,
@@ -54,6 +59,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
     // There will only be at most one StartEvent response for the given filter
     const goStartVote = goStartVoteFilters.data[0];
     if (!goStartVote) {
+      setStatus('not_found');
       return notifications.error({
         message: messages.PROPOSAL_NOT_FOUND,
         errorOrMessage: messages.PROPOSAL_NOT_FOUND,
@@ -70,6 +76,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
 
     const goOpenVoteIds = await go(() => convenience.getOpenVoteIds(VOTING_APP_IDS[type]));
     if (!goOpenVoteIds.success) {
+      setStatus('error');
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
         errorOrMessage: goOpenVoteIds.error,
@@ -81,6 +88,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
       getProposals(provider, convenience, agents, userAccount, [startVote], openVoteIds, type)
     );
     if (!goLoadProposal.success) {
+      setStatus('error');
       return notifications.error({
         message: messages.FAILED_TO_LOAD_PROPOSALS,
         errorOrMessage: goLoadProposal.error,
@@ -100,6 +108,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
         }
       })
     );
+    setStatus('loaded');
   }, [api3Voting, convenience, agents, userAccount, setChainData, type, id, provider]);
 
   const reloadProposalsByIds = useCallback(async () => {
@@ -152,4 +161,6 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
 
   // TODO: Maybe instead of avoiding `triggerOnMount` we should merge reloadProposalsByIds and loadProposalsByIds
   usePossibleChainDataUpdate(reloadProposalsByIds, { triggerOnMount: false });
+
+  return status;
 };
