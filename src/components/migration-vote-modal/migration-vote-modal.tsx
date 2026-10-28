@@ -5,13 +5,13 @@ import { Modal, ModalFooter, ModalHeader } from '../modal';
 import Button from '../button';
 import styles from './migration-vote-modal.module.scss';
 
-const MIGRATION_PROPODAL_ID = 'primary-17';
+const MIGRATION_PROPOSAL_ID = 'primary-17';
 
 export default function MigrationVoteModal() {
   const history = useHistory();
   const { pathname } = useLocation();
   // Don't show the modal if we're already on the migration proposal's page
-  const [isDismissed, setIsDismissed] = useState(() => pathname.includes(MIGRATION_PROPODAL_ID));
+  const [isDismissed, setIsDismissed] = useState(() => pathname.includes(MIGRATION_PROPOSAL_ID));
   const { userAccount } = useChainData();
 
   const handleModalClose = () => {
@@ -20,7 +20,7 @@ export default function MigrationVoteModal() {
 
   const handleViewProposal = () => {
     handleModalClose();
-    history.push(`/proposals/${MIGRATION_PROPODAL_ID}`);
+    history.push(`/proposals/${MIGRATION_PROPOSAL_ID}`);
   };
 
   return (
