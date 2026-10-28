@@ -15,6 +15,12 @@ import { NewProposalFormData } from './types';
  */
 export const METADATA_SCHEME_VERSION = '2';
 /**
+ * Reserved for the DAO migration proposal, which performs several calls in its EVM script and is created outside of the
+ * DAO dashboard. It carries no target signature, because the script is decoded on its own (see `decodeCallsScript`).
+ * The dashboard only decodes this version, it does not create proposals with it.
+ */
+export const MULTI_CALL_METADATA_SCHEME_VERSION = '3';
+/**
  * The metadata scheme simply takes multiple values and inserts a non printable character used to separate words between
  * each of the values. The delimeter can't be written by user, however nothing prevents people from creating proposals
  * directly (not using DAO dashboard) and they can use whatever metadata scheme they want.
@@ -41,6 +47,10 @@ export const decodeMetadata = (metadata: string): ProposalMetadata | null => {
   const tokens = metadata.split(METADATA_DELIMETER);
   // Metadata encoding is just a convention and people might create proposals directly via the contract, so we need to
   // validate if the metadata has correct format.
+  if (tokens[0] === MULTI_CALL_METADATA_SCHEME_VERSION) {
+    if (tokens.length !== 3) return null;
+    return { version: tokens[0], targetSignature: null, title: tokens[1]!, description: tokens[2]! };
+  }
   if (tokens.length !== 4) return null;
   return { version: tokens[0]!, targetSignature: tokens[1]!, title: tokens[2]!, description: tokens[3]! };
 };

@@ -6,6 +6,7 @@
  * Check out the documentation in the source files for more documentation and details.
  */
 export * from './encoding';
+export * from './known-scripts';
 export * from './metadata';
 export * from './proposal-id';
 export * from './types';

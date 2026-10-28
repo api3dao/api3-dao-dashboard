@@ -1,0 +1,82 @@
+@import '../../../styles/variables.module.scss';
+@import '../../../styles/fonts.module.scss';
+
+.callsWrapper {
+  overflow-x: auto;
+  margin-top: 8px;
+  // A screen too narrow for an address scrolls the table sideways. An overlay scrollbar would hide that until the
+  // first swipe, so the wrapper draws its own
+  scrollbar-width: thin;
+  scrollbar-color: $color-dark-blue-50 transparent;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-dark-blue-50;
+    border-radius: 3px;
+  }
+}
+
+.calls {
+  width: 100%;
+  border-collapse: collapse;
+  @include font-body-9;
+
+  th,
+  td {
+    padding: 8px 12px 8px 0;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+    border-bottom: 1px solid $color-dark-blue-50;
+  }
+
+  th {
+    white-space: nowrap;
+    @include font-body-7;
+    color: $color-dark-blue-50;
+  }
+
+  .index {
+    width: 32px;
+    white-space: nowrap;
+  }
+
+  // Addresses and values are never wrapped nor shortened, the calldata column takes the rest. The table scrolls
+  // horizontally only on a screen too narrow for an address
+  .address,
+  .value {
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
+
+  .caller {
+    @include font-body-9;
+    color: $color-dark-blue-50;
+  }
+}
+
+.link {
+  color: $color-dark-blue-500;
+}
+
+.calldata {
+  summary {
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  code {
+    overflow-wrap: anywhere;
+  }
+}
+
+.rawData {
+  display: block;
+  margin-top: 4px;
+  // Takes the width of the column without widening it, so that expanding the calldata does not shift the table
+  width: 0;
+  min-width: 100%;
+}
