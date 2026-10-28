@@ -9,7 +9,14 @@ import '@nomiclabs/hardhat-ethers';
 import { task, types, HardhatUserConfig } from 'hardhat/config';
 import { existsSync } from 'fs';
 import dotenv from 'dotenv';
-import { encodeMetadata, goEncodeEvmScript, METADATA_SCHEME_VERSION } from '../src/logic/proposals/encoding';
+import {
+  encodeCallsScript,
+  encodeMetadata,
+  goEncodeEvmScript,
+  METADATA_DELIMETER,
+  METADATA_SCHEME_VERSION,
+  MULTI_CALL_METADATA_SCHEME_VERSION,
+} from '../src/logic/proposals/encoding';
 
 dotenv.config({ path: '../.env' });
 
@@ -295,10 +302,7 @@ task(
       'function revokePermission(address entity, address app, bytes32 role)',
       'function removePermissionManager(address app, bytes32 role)',
     ]);
-    const agent = new utils.Interface([
-      'function execute(address target, uint256 ethValue, bytes data)',
-      'function transfer(address token, address to, uint256 value)',
-    ]);
+    const agent = new utils.Interface(['function transfer(address token, address to, uint256 value)']);
     const token = new utils.Interface([
       'function updateMinterStatus(address minterAddress, bool minterStatus)',
       'function mint(address account, uint256 amount)',
@@ -309,9 +313,18 @@ task(
       'function changeMinAcceptQuorumPct(uint64 minAcceptQuorumPct)',
     ]);
 
-    const direct = (target: string, data: string) => ({ target, data });
-    const viaAgent = (target: string, data: string) =>
-      direct(contracts.agentAppPrimary, agent.encodeFunctionData('execute', [target, 0, data]));
+    const direct = (targetAddress: string, data: string) => ({
+      targetAddress,
+      viaAgents: [],
+      value: hre.ethers.BigNumber.from(0),
+      data,
+    });
+    const viaPrimaryAgent = (targetAddress: string, data: string) => ({
+      targetAddress,
+      viaAgents: [contracts.agentAppPrimary],
+      value: hre.ethers.BigNumber.from(0),
+      data,
+    });
 
     // The calls of the mainnet vote script, in the same order. The secondary agent's transfers (calls 3 to 6) are left
     // out, because the tokens they move do not exist locally.
@@ -340,17 +353,23 @@ task(
           await api3Token.balanceOf(contracts.agentAppPrimary),
         ])
       ),
-      viaAgent(contracts.api3Token, token.encodeFunctionData('updateMinterStatus', [contracts.api3Pool, false])),
-      viaAgent(contracts.api3Token, token.encodeFunctionData('updateMinterStatus', [contracts.agentAppPrimary, true])),
-      viaAgent(
+      viaPrimaryAgent(contracts.api3Token, token.encodeFunctionData('updateMinterStatus', [contracts.api3Pool, false])),
+      viaPrimaryAgent(
+        contracts.api3Token,
+        token.encodeFunctionData('updateMinterStatus', [contracts.agentAppPrimary, true])
+      ),
+      viaPrimaryAgent(
         contracts.api3Token,
         token.encodeFunctionData('mint', [
           treasurySafe,
           utils.parseEther('200000000').sub(await api3Token.totalSupply()),
         ])
       ),
-      viaAgent(contracts.api3Token, token.encodeFunctionData('updateMinterStatus', [contracts.agentAppPrimary, false])),
-      viaAgent(contracts.api3Token, token.encodeFunctionData('transferOwnership', [deadAddress])),
+      viaPrimaryAgent(
+        contracts.api3Token,
+        token.encodeFunctionData('updateMinterStatus', [contracts.agentAppPrimary, false])
+      ),
+      viaPrimaryAgent(contracts.api3Token, token.encodeFunctionData('transferOwnership', [deadAddress])),
       direct(
         contracts.acl,
         acl.encodeFunctionData('revokePermission', [
@@ -375,10 +394,10 @@ task(
         contracts.acl,
         acl.encodeFunctionData('removePermissionManager', [contracts.votingAppSecondary, utils.id('CREATE_VOTES_ROLE')])
       ),
-      viaAgent(contracts.votingAppPrimary, voting.encodeFunctionData('changeSupportRequiredPct', [maxPct])),
-      viaAgent(contracts.votingAppPrimary, voting.encodeFunctionData('changeMinAcceptQuorumPct', [maxPct])),
-      viaAgent(contracts.votingAppSecondary, voting.encodeFunctionData('changeSupportRequiredPct', [maxPct])),
-      viaAgent(contracts.votingAppSecondary, voting.encodeFunctionData('changeMinAcceptQuorumPct', [maxPct])),
+      viaPrimaryAgent(contracts.votingAppPrimary, voting.encodeFunctionData('changeSupportRequiredPct', [maxPct])),
+      viaPrimaryAgent(contracts.votingAppPrimary, voting.encodeFunctionData('changeMinAcceptQuorumPct', [maxPct])),
+      viaPrimaryAgent(contracts.votingAppSecondary, voting.encodeFunctionData('changeSupportRequiredPct', [maxPct])),
+      viaPrimaryAgent(contracts.votingAppSecondary, voting.encodeFunctionData('changeMinAcceptQuorumPct', [maxPct])),
       direct(
         contracts.acl,
         acl.encodeFunctionData('removePermissionManager', [contracts.votingAppPrimary, utils.id('MODIFY_SUPPORT_ROLE')])
@@ -426,16 +445,10 @@ task(
         acl.encodeFunctionData('removePermissionManager', [contracts.acl, utils.id('CREATE_PERMISSIONS_ROLE')])
       ),
     ];
-    // See the CallsScript layout in:
-    // https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
-    const script = utils.hexConcat([
-      '0x00000001',
-      ...calls.map(({ target, data }) =>
-        utils.hexConcat([target, utils.hexZeroPad(utils.hexlify(utils.hexDataLength(data)), 4), data])
-      ),
-    ]);
-    // Version 3 of the metadata scheme has no target signature, because the script makes multiple calls
-    const metadata = ['3', 'New path for API3', 'Moves governance to Snapshot'].join(String.fromCharCode(31));
+    const script = encodeCallsScript(calls);
+    const metadata = [MULTI_CALL_METADATA_SCHEME_VERSION, 'New path for API3', 'Moves governance to Snapshot'].join(
+      METADATA_DELIMETER
+    );
 
     // Lets the node sign transactions as the voter, so no private key is needed
     await hre.network.provider.request({ method: 'hardhat_impersonateAccount', params: [voter] });
