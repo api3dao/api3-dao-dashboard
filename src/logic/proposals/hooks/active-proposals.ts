@@ -8,7 +8,12 @@ import {
   VoterState,
 } from '../../../chain-data';
 import { Api3Voting } from '../../../contracts/artifacts';
-import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
+import {
+  useApi3AgentAddresses,
+  useApi3Voting,
+  useConvenience,
+  usePossibleChainDataUpdate,
+} from '../../../contracts/hooks';
 import { messages } from '../../../utils';
 import difference from 'lodash/difference';
 import keyBy from 'lodash/keyBy';
@@ -35,9 +40,10 @@ const useLoadActiveProposals = () => {
 
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
+  const agents = useApi3AgentAddresses();
 
   const loadProposals = useCallback(async () => {
-    if (!api3Voting || !convenience || !provider) return;
+    if (!api3Voting || !convenience || !provider || !agents) return;
 
     const goResponse = await go(async () => {
       const [primaryOpenVoteIds, secondaryOpenVoteIds] = await Promise.all([
@@ -53,6 +59,7 @@ const useLoadActiveProposals = () => {
       const primaryProposals = await getProposals(
         provider,
         convenience,
+        agents,
         userAccount,
         primaryStartVotes,
         primaryOpenVoteIds,
@@ -61,6 +68,7 @@ const useLoadActiveProposals = () => {
       const secondaryProposals = await getProposals(
         provider,
         convenience,
+        agents,
         userAccount,
         secondaryStartVotes,
         secondaryOpenVoteIds,
@@ -92,7 +100,7 @@ const useLoadActiveProposals = () => {
         state.proposals.secondary = { ...state.proposals.secondary, ...proposals.secondary };
       })
     );
-  }, [api3Voting, convenience, userAccount, setChainData, provider]);
+  }, [api3Voting, convenience, agents, userAccount, setChainData, provider]);
 
   useEffect(() => {
     loadProposals();
@@ -104,9 +112,10 @@ const useReloadActiveProposals = () => {
 
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
+  const agents = useApi3AgentAddresses();
 
   const reloadActiveProposals = useCallback(async () => {
-    if (!api3Voting || !convenience || !provider) return;
+    if (!api3Voting || !convenience || !provider || !agents) return;
 
     const loadProposals = async () => {
       const oldActiveProposalIds = openProposalIdsSelector(proposals);
@@ -145,7 +154,10 @@ const useReloadActiveProposals = () => {
           // We don't expect many new proposals to be added, but we are loading as chunks just in case
           const chunks = chunk(newProposalEvents, CHUNKS_SIZE);
           for (const chunk of chunks) {
-            updateState(type, await getProposals(provider, convenience, userAccount, chunk, currentVoteIds, type));
+            updateState(
+              type,
+              await getProposals(provider, convenience, agents, userAccount, chunk, currentVoteIds, type)
+            );
           }
         };
 
@@ -185,7 +197,7 @@ const useReloadActiveProposals = () => {
       // eslint-disable-next-line no-console
       console.error('Unable to reload active proposals', goResponse.error);
     }
-  }, [api3Voting, convenience, userAccount, setChainData, proposals, provider]);
+  }, [api3Voting, convenience, agents, userAccount, setChainData, proposals, provider]);
 
   // Ensure that the proposals are up to date with blockchain
   usePossibleChainDataUpdate(reloadActiveProposals);

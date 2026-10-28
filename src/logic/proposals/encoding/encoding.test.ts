@@ -1,9 +1,11 @@
 import { assertGoError, assertGoSuccess } from '@api3/commons';
-import { constants, providers, BigNumber } from 'ethers';
+import { constants, providers, BigNumber, utils } from 'ethers';
 import { EncodedEvmScriptError } from '.';
 import { updateImmutably } from '../../../chain-data';
 import {
+  decodeCallsScript,
   decodeEvmScript,
+  encodeCallsScript,
   goEncodeEvmScript,
   isEvmScriptValid,
   encodeFunctionSignature,
@@ -602,5 +604,130 @@ describe('isEvmScriptValid', () => {
 
       expect(result).toBe(true);
     });
+  });
+});
+
+describe('multi call scripts (metadata version 3)', () => {
+  const target = '0x1111111111111111111111111111111111111111';
+  const anotherTarget = '0x2222222222222222222222222222222222222222';
+  const recipient = '0x3333333333333333333333333333333333333333';
+  const multiCallMetadata = { version: '3', targetSignature: null, title: 'My title', description: 'My description' };
+
+  // A call the voting app makes itself, a call forwarded by the primary agent, an ETH transfer by the secondary agent
+  // and a call the primary agent forwards to the secondary agent, which forwards it to the target with some ETH
+  const calls = [
+    {
+      targetAddress: target,
+      viaAgents: [],
+      value: BigNumber.from(0),
+      data: encodeFunctionSignature('setValue(uint256)') + constants.HashZero.substring(2),
+    },
+    {
+      targetAddress: anotherTarget,
+      viaAgents: [api3Agent.primary],
+      value: BigNumber.from(0),
+      data: encodeFunctionSignature('pause()'),
+    },
+    { targetAddress: recipient, viaAgents: [api3Agent.secondary], value: BigNumber.from(12), data: '0x' },
+    {
+      targetAddress: anotherTarget,
+      viaAgents: [api3Agent.primary, api3Agent.secondary],
+      value: BigNumber.from(34),
+      data: encodeFunctionSignature('pause()'),
+    },
+  ];
+
+  it('encodes and decodes the calls of a script', () => {
+    const script = encodeCallsScript(calls);
+
+    expect(script.startsWith('0x00000001')).toBe(true);
+    expect(decodeCallsScript(script, api3Agent)).toEqual(
+      calls.map((call) => ({
+        ...call,
+        targetAddress: utils.getAddress(call.targetAddress),
+        viaAgents: call.viaAgents.map((agent) => utils.getAddress(agent)),
+      }))
+    );
+  });
+
+  it('decodes the script of a proposal created through the dashboard as a single forwarded call', async () => {
+    const goRes = await goEncodeEvmScript(mockedProvider, newFormData, api3Agent);
+    assertGoSuccess(goRes);
+
+    const decodedCalls = decodeCallsScript(goRes.data, api3Agent);
+    expect(decodedCalls).toHaveLength(1);
+    expect(decodedCalls![0]!.viaAgents).toEqual([utils.getAddress(api3Agent.primary)]);
+    expect(decodedCalls![0]!.targetAddress).toEqual(newFormData.targetAddress);
+    expect(decodedCalls![0]!.value.toString()).toEqual(newFormData.targetValue);
+    expect(decodedCalls![0]!.data.startsWith(encodeFunctionSignature(newFormData.targetSignature))).toBe(true);
+  });
+
+  it('does not unwrap an "execute" call made to a contract other than the agents', () => {
+    const script = encodeCallsScript([{ ...calls[1]!, viaAgents: [anotherTarget] }]);
+
+    const decodedCalls = decodeCallsScript(script, api3Agent);
+    expect(decodedCalls).toHaveLength(1);
+    expect(decodedCalls![0]!.viaAgents).toEqual([]);
+    expect(decodedCalls![0]!.targetAddress).toEqual(utils.getAddress(anotherTarget));
+    expect(decodedCalls![0]!.data.startsWith(encodeFunctionSignature('execute(address,uint256,bytes)'))).toBe(true);
+  });
+
+  it('returns null for a script that does not follow the CallsScript layout', () => {
+    const script = encodeCallsScript(calls);
+
+    expect(decodeCallsScript('0x00000002' + script.substring(10), api3Agent)).toBeNull(); // unknown spec id
+    expect(decodeCallsScript(script.substring(0, script.length - 2), api3Agent)).toBeNull(); // truncated calldata
+    expect(decodeCallsScript(script + '00', api3Agent)).toBeNull(); // trailing byte
+    expect(decodeCallsScript('not a script', api3Agent)).toBeNull();
+  });
+
+  // A version 3 proposal is only valid when its script is a known one. The known hashes are passed in, so the tests
+  // know nothing about the list the dashboard ships
+  const known = (script: string) => [utils.keccak256(script)];
+
+  it('is valid when the script is known and the decoded calls encode back to the same script', async () => {
+    const script = encodeCallsScript(calls);
+    const proposal = { type: 'primary' as const, metadata: multiCallMetadata, decodedEvmScript: null, script };
+
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal, [])).toBe(false);
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal, known(script))).toBe(true);
+    const upperCaseScript = '0x' + script.substring(2).toUpperCase();
+    expect(
+      await isEvmScriptValid(mockedProvider, api3Agent, { ...proposal, script: upperCaseScript }, known(script))
+    ).toBe(true);
+  });
+
+  it('is invalid for a secondary proposal, even with a known script', async () => {
+    const script = encodeCallsScript(calls);
+    const proposal = { type: 'secondary' as const, metadata: multiCallMetadata, decodedEvmScript: null, script };
+
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal, known(script))).toBe(false);
+  });
+
+  it('is invalid when the script hides data in the padding of an "execute" call', async () => {
+    // The bytes argument of "execute" is padded to a multiple of 32 bytes. Replacing the padding keeps the script
+    // decodable, but encoding the decoded calls again gives a different script.
+    const script = encodeCallsScript([calls[1]!]);
+    const tampered = script.substring(0, script.length - 2) + 'ff';
+    const proposal = {
+      type: 'primary' as const,
+      metadata: multiCallMetadata,
+      decodedEvmScript: null,
+      script: tampered,
+    };
+
+    expect(decodeCallsScript(tampered, api3Agent)).not.toBeNull();
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal, known(tampered))).toBe(false);
+  });
+
+  it('is invalid when the script cannot be decoded', async () => {
+    const proposal = {
+      type: 'primary' as const,
+      metadata: multiCallMetadata,
+      decodedEvmScript: null,
+      script: '0x00000001ab',
+    };
+
+    expect(await isEvmScriptValid(mockedProvider, api3Agent, proposal, known(proposal.script))).toBe(false);
   });
 });

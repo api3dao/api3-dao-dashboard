@@ -19,10 +19,15 @@
 import { go, GoResult, goSync, fail, success } from '@api3/commons';
 import { BigNumber, providers, utils } from 'ethers';
 import range from 'lodash/range';
-import { DecodedEvmScript, Proposal, ProposalMetadata } from '../../../chain-data';
+import { DecodedEvmScript, EvmScriptCall, Proposal, ProposalMetadata } from '../../../chain-data';
 import { Api3Agent } from '../../../contracts';
 import { convertToAddressOrThrow } from './ens-name';
+import { isKnownMultiCallScript, KNOWN_MULTI_CALL_SCRIPT_HASHES } from './known-scripts';
+import { MULTI_CALL_METADATA_SCHEME_VERSION } from './metadata';
 import { NewProposalFormData } from './types';
+
+// The spec ID of Aragon's CallsScript executor, the first 4 bytes of every EVM script the voting app accepts
+const CALLS_SCRIPT_SPEC_ID = '0x00000001';
 
 // Similar to https://web3js.readthedocs.io/en/v1.2.0/web3-eth-abi.html#encodefunctionsignature
 export const encodeFunctionSignature = (functionFragment: string) => {
@@ -187,7 +192,7 @@ export const goEncodeEvmScript = async (
     //
     // Also, remove the 0x prefix in bytes
     const evmScript = [
-      '0x00000001',
+      CALLS_SCRIPT_SPEC_ID,
       api3Agent[formData.type].substring(2),
       callDataLengthInBytes.substring(2),
       callData.substring(2),
@@ -266,12 +271,100 @@ export const decodeEvmScript = async (
   else return null;
 };
 
+/**
+ * Splits an EVM script into its calls without knowing the ABIs of the targets, which is how a metadata version 3
+ * proposal, reserved for the DAO migration proposal, is decoded. The script has to follow the CallsScript layout, a
+ * sequence of (target address, calldata length, calldata) entries. A call that an agent forwards through its "execute"
+ * function is unwrapped so that the target, value and calldata are the ones of the inner call, through as many agents
+ * as it passes (the primary agent can forward a call to the secondary agent, which forwards it to the target).
+ *
+ * Returns null when the script does not follow the layout or an "execute" call cannot be decoded.
+ *
+ * @see EVM script layout:
+ *      https://github.com/aragon/aragonOS/blob/f3ae59b00f73984e562df00129c925339cd069ff/contracts/evmscript/executors/CallsScript.sol#L26
+ *
+ * @param script the EVM script to be decoded
+ * @param api3Agent the addresses of the voting app agents, the only contracts whose "execute" calls are unwrapped
+ */
+export const decodeCallsScript = (script: string, api3Agent: Api3Agent): EvmScriptCall[] | null => {
+  const goDecode = goSync(() => {
+    if (!utils.isHexString(script) || utils.hexDataSlice(script, 0, 4) !== CALLS_SCRIPT_SPEC_ID) {
+      throw new Error('Not a CallsScript');
+    }
+    const agents = [api3Agent.primary, api3Agent.secondary].map((agent) => agent.toLowerCase());
+    const scriptLength = utils.hexDataLength(script);
+    const calls: EvmScriptCall[] = [];
+
+    let offset = 4;
+    while (offset < scriptLength) {
+      // Each entry starts with a 20 byte target address and a 4 byte calldata length
+      if (offset + 24 > scriptLength) throw new Error('Truncated call header');
+      let targetAddress = utils.getAddress(utils.hexDataSlice(script, offset, offset + 20));
+      const dataLength = BigNumber.from(utils.hexDataSlice(script, offset + 20, offset + 24)).toNumber();
+      if (offset + 24 + dataLength > scriptLength) throw new Error('Truncated calldata');
+      let data = utils.hexDataSlice(script, offset + 24, offset + 24 + dataLength);
+      offset += 24 + dataLength;
+
+      // The voting app calls the target directly and sends no ETH
+      const viaAgents: string[] = [];
+      let value = BigNumber.from(0);
+      while (
+        agents.includes(targetAddress.toLowerCase()) &&
+        utils.hexDataSlice(data, 0, 4) === encodedExecuteSignature
+      ) {
+        viaAgents.push(targetAddress);
+        [targetAddress, value, data] = utils.defaultAbiCoder.decode(
+          ['address', 'uint256', 'bytes'],
+          utils.hexDataSlice(data, 4)
+        );
+      }
+      calls.push({ targetAddress, viaAgents, value, data });
+    }
+
+    return calls;
+  });
+
+  return goDecode.success ? goDecode.data : null;
+};
+
+/**
+ * The inverse of `decodeCallsScript`. Encoding the decoded calls again and comparing the result with the on-chain
+ * script is how a version 3 proposal is validated, so a script that only looks like a list of calls (for example with
+ * data hidden in the padding of an "execute" call) does not pass.
+ */
+export const encodeCallsScript = (calls: EvmScriptCall[]) => {
+  const entries = calls.map((call) => {
+    // Wrap the call into the "execute" calls of its agents, the innermost agent first
+    let target = call.targetAddress;
+    let value = call.value;
+    let data = call.data;
+    for (const agent of [...call.viaAgents].reverse()) {
+      data =
+        encodedExecuteSignature +
+        utils.defaultAbiCoder.encode(['address', 'uint256', 'bytes'], [target, value, data]).substring(2);
+      target = agent;
+      value = BigNumber.from(0);
+    }
+    const dataLength = utils.hexZeroPad(BigNumber.from(utils.hexDataLength(data)).toHexString(), 4);
+
+    return target.substring(2) + dataLength.substring(2) + data.substring(2);
+  });
+
+  return (CALLS_SCRIPT_SPEC_ID + entries.join('')).toLowerCase();
+};
+
 export async function isEvmScriptValid(
   provider: providers.Provider,
   api3Agent: Api3Agent,
-  proposal: Pick<Proposal, 'type' | 'metadata' | 'decodedEvmScript' | 'script'>
+  proposal: Pick<Proposal, 'type' | 'metadata' | 'decodedEvmScript' | 'script'>,
+  knownScriptHashes: string[] = KNOWN_MULTI_CALL_SCRIPT_HASHES
 ) {
   const { metadata, decodedEvmScript } = proposal;
+  if (metadata.version === MULTI_CALL_METADATA_SCHEME_VERSION) {
+    if (!isKnownMultiCallScript(proposal.script, proposal.type, knownScriptHashes)) return false;
+    const calls = decodeCallsScript(proposal.script, api3Agent);
+    return calls !== null && encodeCallsScript(calls) === proposal.script.toLowerCase();
+  }
   if (!decodedEvmScript) {
     return false;
   }

@@ -2,9 +2,15 @@ import { BigNumber, providers } from 'ethers';
 import { ProposalType, VoterState } from '../../../chain-data';
 import { Convenience } from '../../../contracts/artifacts';
 import { Proposal } from '../../../chain-data';
-import { decodeEvmScript, decodeMetadata } from '../encoding';
+import {
+  decodeCallsScript,
+  decodeEvmScript,
+  decodeMetadata,
+  isKnownMultiCallScript,
+  MULTI_CALL_METADATA_SCHEME_VERSION,
+} from '../encoding';
 import { blockTimestampToDate } from '../../../utils';
-import { EPOCH_LENGTH, HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
+import { Api3Agent, EPOCH_LENGTH, HUNDRED_PERCENT, isZeroAddress } from '../../../contracts';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 import range from 'lodash/range';
 
@@ -16,6 +22,7 @@ const toPercent = (value: BigNumber) => value.mul(100).div(HUNDRED_PERCENT).toNu
 export const getProposals = async (
   provider: providers.Provider,
   convenience: Convenience,
+  api3Agent: Api3Agent,
   userAccount: string,
   startVoteProposals: StartVoteProposal[],
   openVoteIds: BigNumber[],
@@ -40,7 +47,13 @@ export const getProposals = async (
 
   const composeProposal = async (i: number): Promise<Proposal> => {
     const script = staticVoteData.script[i]!;
-    const decodedEvmScript = await decodeEvmScript(provider, script, startVotesInfo[i]!.metadata);
+    const metadata = startVotesInfo[i]!.metadata;
+    // A version 3 proposal, reserved for the DAO migration proposal, is decoded from the script alone, see
+    // `decodeCallsScript`, and only when the script is a known one
+    const isMultiCall = metadata.version === MULTI_CALL_METADATA_SCHEME_VERSION;
+    const decodedEvmScript = isMultiCall ? null : await decodeEvmScript(provider, script, metadata);
+    const decodedCalls =
+      isMultiCall && isKnownMultiCallScript(script, type) ? decodeCallsScript(script, api3Agent) : null;
 
     return {
       type,
@@ -64,6 +77,7 @@ export const getProposals = async (
       nay: dynamicVoteData.nay[i]!,
 
       decodedEvmScript,
+      decodedCalls,
     };
   };
 
