@@ -171,10 +171,10 @@ const useReloadActiveProposals = () => {
 
             const updatedProposals: Proposal[] = chunkIds.map((id, index) => {
               // TODO: We assume the proposal with the given id exists (and theoretically it might not)
-              const details = proposalDetailsSelector(provider, proposals, type, id);
+              const details = proposalDetailsSelector(proposals, type, id);
 
               return {
-                ...((typeof details === 'string' ? {} : details) as Proposal),
+                ...(details as Proposal),
                 yea: dynamicData.yea[index]!,
                 nay: dynamicData.nay[index]!,
                 executed: dynamicData.executed[index]!,
