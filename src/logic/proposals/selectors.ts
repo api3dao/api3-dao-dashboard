@@ -2,7 +2,7 @@ import { DashboardState, Delegation, Proposal, Proposals, ProposalType } from '.
 import { computePercentage, EPOCH_LENGTH } from '../../contracts';
 import { addSeconds, differenceInDays, isAfter } from 'date-fns';
 import { HUNDRED_PERCENT } from '../../contracts';
-import { BigNumber, providers } from 'ethers';
+import { BigNumber } from 'ethers';
 
 export type ProposalStatus = 'Passing' | 'Failing' | 'Executed' | 'Execute' | 'Rejected';
 export const voteSliderSelector = (proposal: Proposal) => {
@@ -41,17 +41,8 @@ export const voteSliderSelector = (proposal: Proposal) => {
   };
 };
 
-export const proposalDetailsSelector = (
-  provider: providers.Provider | null,
-  proposals: Proposals | null,
-  type: ProposalType,
-  id: BigNumber
-) => {
-  if (!provider) return 'user not signed in';
-  if (!proposals) return 'does not exist';
-
-  const proposal = proposals[type][id.toString()];
-  return proposal ?? 'does not exist';
+export const proposalDetailsSelector = (proposals: Proposals | null, type: ProposalType, id: BigNumber) => {
+  return proposals?.[type][id.toString()];
 };
 
 export const openProposalIdsSelector = (proposals: Proposals | null) => {

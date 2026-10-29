@@ -13,7 +13,7 @@ import ProposalTag from '../proposal-tag';
 import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndVoteId, isEvmScriptValid } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
-import { useProposalById } from '../../../logic/proposals/hooks';
+import { LoadStatus, useProposalById } from '../../../logic/proposals/hooks';
 import ProposalStatus from '../proposal-list/proposal-status';
 import styles from './proposal-details.module.scss';
 import NotFoundPage from '../../not-found';
@@ -57,14 +57,14 @@ interface ProposalDetailsContentProps {
 
 const ProposalDetailsLayout = (props: ProposalDetailsContentProps) => {
   const { type, voteId } = props;
-  const { proposals, provider } = useChainData();
+  const { proposals } = useChainData();
 
-  useProposalById(type, voteId);
+  const loadStatus = useProposalById(type, voteId);
 
-  const proposal = proposalDetailsSelector(provider, proposals, type, voteId);
+  const proposal = proposalDetailsSelector(proposals, type, voteId);
   return (
     <BaseLayout title={`Proposal ${voteId.toString()}`}>
-      <ProposalDetailsContent proposal={proposal} />
+      <ProposalDetailsContent proposal={proposal} loadStatus={loadStatus} />
     </BaseLayout>
   );
 };
@@ -84,17 +84,22 @@ const ProposalDetailsPage = () => {
 };
 
 interface ProposalDetailsProps {
-  proposal: Proposal | 'user not signed in' | 'does not exist';
+  proposal: Proposal | undefined;
+  loadStatus: LoadStatus;
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
-  const { chainId } = useChainData();
-  const { proposal } = props;
-  const isMalicious = useMaliciousProposalCheck(typeof proposal === 'string' ? null : proposal);
+  const { chainId, provider } = useChainData();
+  const { proposal, loadStatus } = props;
+  const isMalicious = useMaliciousProposalCheck(proposal);
   const voting = useApi3Voting();
 
-  if (!voting || proposal === 'user not signed in') return <DisconnectedProposalPage />;
-  if (proposal === 'does not exist') return <>Proposal with such id hasn't been created yet...</>;
+  if (!provider || !voting) return <DisconnectedProposalPage />;
+  if (!proposal) {
+    if (loadStatus === 'loading') return <>Loading...</>;
+    if (loadStatus === 'error') return <>{messages.FAILED_TO_LOAD_PROPOSALS}</>;
+    return <>{messages.PROPOSAL_NOT_FOUND}</>;
+  }
 
   const { decodedEvmScript, decodedCalls } = proposal;
 
@@ -235,7 +240,7 @@ function Parameters(props: { parameters: unknown[] }) {
   );
 }
 
-function useMaliciousProposalCheck(proposal: Proposal | null) {
+function useMaliciousProposalCheck(proposal: Proposal | undefined) {
   const { provider } = useChainData();
   const agents = useApi3AgentAddresses();
   const [isMalicious, setIsMalicious] = useState(false);

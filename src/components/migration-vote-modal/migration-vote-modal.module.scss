@@ -1,0 +1,26 @@
+@import '../../styles/variables.module.scss';
+@import '../../styles/fonts.module.scss';
+
+.description {
+  @include font-body-9;
+  color: $color-dark-blue-400;
+  text-align: center;
+  margin: 0;
+
+  @media (min-width: $sm) {
+    @include font-body-6;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: $space-lg;
+  width: 100%;
+
+  @media (min-width: $sm) {
+    flex-direction: row;
+    justify-content: center;
+    gap: $space-xl;
+  }
+}
