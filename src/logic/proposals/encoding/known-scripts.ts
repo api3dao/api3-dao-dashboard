@@ -8,7 +8,10 @@ import { ProposalType } from '../../../chain-data';
  * the dashboard cannot display, like before this version existed. The list is edited by hand when the proposal is about to be posted, so what the dashboard shows is a
  * script that was reviewed and nothing else. A local preview edits it the same way.
  */
-export const KNOWN_MULTI_CALL_SCRIPT_HASHES: string[] = [];
+export const KNOWN_MULTI_CALL_SCRIPT_HASHES: string[] = [
+  // The 200,000,000 API3 proposal, built at block 26297075
+  '0xd43e2dfeaea2e20c47dedf08405bc3483218dabd87643a0b9ddf3df5a390cf64',
+];
 
 /**
  * The voting app the known scripts belong to. The DAO migration proposal is a primary proposal, and the same script
