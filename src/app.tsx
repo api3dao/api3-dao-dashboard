@@ -19,6 +19,7 @@ import { registerWeb3Modal, wagmiConfig } from './wallet-connect';
 import './styles/variables.module.scss';
 import { notifications } from './components/notifications';
 import { ClearStorageButton } from './components/notifications/clear-storage-button';
+import MigrationVoteModal from './components/migration-vote-modal';
 
 const ErrorBoundary: FallbackRender = (props) => {
   const { error } = props;
@@ -46,8 +47,12 @@ const AppContent = () => {
     <Router>
       <Sentry.ErrorBoundary fallback={(props) => <ErrorBoundary {...props} />}>
         <ToastContainer limit={3} pauseOnFocusLoss={false} autoClose={5000} closeOnClick />
+        <MigrationVoteModal />
 
         <Switch>
+          <Route path="/proposals/:typeAndVoteId" exact>
+            <ProposalDetailsPage />
+          </Route>
           <Route path="/governance/:typeAndVoteId" exact>
             <ProposalDetailsPage />
           </Route>
