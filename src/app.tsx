@@ -1,6 +1,6 @@
 import { WagmiConfig } from 'wagmi';
 import { BaseLayout } from './components/layout';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { images, preloadImageList, useOnMountEffect } from './utils';
 import type { FallbackRender } from '@sentry/react/dist/errorboundary';
@@ -19,7 +19,6 @@ import { registerWeb3Modal, wagmiConfig } from './wallet-connect';
 import './styles/variables.module.scss';
 import { notifications } from './components/notifications';
 import { ClearStorageButton } from './components/notifications/clear-storage-button';
-import MigrationVoteModal from './components/migration-vote-modal';
 
 const ErrorBoundary: FallbackRender = (props) => {
   const { error } = props;
@@ -47,23 +46,21 @@ const AppContent = () => {
     <Router>
       <Sentry.ErrorBoundary fallback={(props) => <ErrorBoundary {...props} />}>
         <ToastContainer limit={3} pauseOnFocusLoss={false} autoClose={5000} closeOnClick />
-        <MigrationVoteModal />
 
         <Switch>
           <Route path="/proposals/:typeAndVoteId" exact>
             <ProposalDetailsPage />
           </Route>
-          <Route path="/governance/:typeAndVoteId" exact>
-            <ProposalDetailsPage />
-          </Route>
-          <Route path="/governance" exact>
-            <Proposals />
-          </Route>
-          <Route path="/history/:typeAndVoteId" exact>
+          <Route path="/governance-history/:typeAndVoteId" exact>
             <HistoryDetails />
           </Route>
-          <Route path="/history" exact>
+          <Route path="/governance-history" exact>
             <History />
+          </Route>
+          <Redirect from="/history/:typeAndVoteId" to="/governance-history/:typeAndVoteId" exact />
+          <Redirect from="/history" to="/governance-history" exact />
+          <Route path="/governance" exact>
+            <Proposals />
           </Route>
           <Route path="/vesting" exact>
             <Vesting />

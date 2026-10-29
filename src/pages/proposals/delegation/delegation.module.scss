@@ -21,9 +21,20 @@
   margin-left: 8px;
 }
 
+.loading {
+  @include font-body-12;
+  color: $color-dark-blue-400;
+  margin-bottom: 21px;
+}
+
 @media (min-width: $md) {
   .delegatedTitle {
     @include font-body-7;
+  }
+
+  .loading {
+    @include font-body-9;
+    margin-bottom: $space-lg;
   }
 
   .delegatedAddress {

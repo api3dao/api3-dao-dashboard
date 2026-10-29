@@ -5,7 +5,6 @@ import { useApi3Pool } from '../../contracts';
 import { pendingUnstakeSelector, tokenBalancesSelector, useLoadDashboardData } from '../../logic/dashboard';
 import { formatAndRoundApi3, handleTransactionError, images, UNKNOWN_NUMBER } from '../../utils';
 import TokenAmountForm from './forms/token-amount-form';
-import TokenDepositForm from './forms/token-deposit-form';
 import Layout from '../../components/layout';
 import { Modal } from '../../components/modal';
 import Button from '../../components/button';
@@ -19,7 +18,7 @@ import ConfirmUnstakeForm from './forms/confirm-unstake-form';
 import classNames from 'classnames';
 import ConnectButton from '../../components/connect-button';
 
-type ModalType = 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'confirm-unstake';
+type ModalType = 'withdraw' | 'unstake' | 'confirm-unstake';
 
 const Dashboard = () => {
   const { dashboardState: data, transactions, setChainData, signer, provider } = useChainData();
@@ -38,7 +37,6 @@ const Dashboard = () => {
   const tokenBalances = tokenBalancesSelector(data);
   const pendingUnstake = pendingUnstakeSelector(data);
 
-  const canStake = data && data.userUnstaked.gt(0);
   const canWithdraw = tokenBalances && tokenBalances.withdrawable.gt(0);
   const canInitiateUnstake = data && !pendingUnstake && data.userStaked.gt(0);
 
@@ -88,13 +86,10 @@ const Dashboard = () => {
             <CardHeader>
               <h5>Balance</h5>
               <div className={styles.cardHeaderButton}>
-                <Button
-                  type="secondary"
-                  size="sm"
-                  onClick={() => setOpenModal('deposit')}
-                  disabled={!data}
-                  data-testid="staking-card-deposit-btn"
-                >
+                <Tooltip overlay="Deposits are disabled because the staking pool no longer pays rewards and DAO governance has moved to Snapshot.">
+                  <img src={images.helpOutline} alt="deposit help" />
+                </Tooltip>
+                <Button type="secondary" size="sm" disabled>
                   Deposit
                 </Button>
               </div>
@@ -128,16 +123,10 @@ const Dashboard = () => {
             <CardHeader>
               <h5>Staking</h5>
               <div className={styles.cardHeaderButton}>
-                <Tooltip overlay="You need to deposit API3 tokens before staking">
-                  <img src={images.helpOutline} alt="new proposal help" />
+                <Tooltip overlay="Staking is disabled because the staking pool no longer pays rewards and DAO governance has moved to Snapshot.">
+                  <img src={images.helpOutline} alt="stake help" />
                 </Tooltip>
-                <Button
-                  type="secondary"
-                  size="sm"
-                  onClick={() => setOpenModal('stake')}
-                  disabled={!canStake}
-                  data-testid="staking-card-stake-btn"
-                >
+                <Button type="secondary" size="sm" disabled>
                   Stake
                 </Button>
               </div>
@@ -185,11 +174,6 @@ const Dashboard = () => {
       </div>
 
       {/* Modals */}
-      {data && (
-        <Modal open={openModal === 'deposit'} onClose={closeModal}>
-          <TokenDepositForm allowance={data.allowance} onClose={closeModal} walletBalance={data.userApi3Balance} />
-        </Modal>
-      )}
       <Modal open={openModal === 'withdraw'} onClose={closeModal}>
         <TokenAmountForm
           title="How many API3 tokens would you like to withdraw?"
@@ -206,24 +190,6 @@ const Dashboard = () => {
           inputValue={inputValue}
           onChange={setInputValue}
           maxValue={tokenBalances?.withdrawable}
-        />
-      </Modal>
-      <Modal open={openModal === 'stake'} onClose={closeModal}>
-        <TokenAmountForm
-          title="How many API3 tokens would you like to stake?"
-          action="Stake"
-          onConfirm={async (parsedValue: BigNumber) => {
-            if (!api3Pool) return;
-
-            const tx = await handleTransactionError(api3Pool.connect(signer!).stake(parsedValue));
-            if (tx) {
-              setChainData('Save stake transaction', { transactions: [...transactions, { type: 'stake', tx }] });
-            }
-            closeModal();
-          }}
-          inputValue={inputValue}
-          onChange={setInputValue}
-          maxValue={data?.userUnstaked}
         />
       </Modal>
       <Modal open={openModal === 'unstake'} onClose={closeModal}>

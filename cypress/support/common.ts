@@ -26,6 +26,8 @@ export const ACCOUNTS = [
   '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199',
 ];
 
+export const USER_ACCOUNT = ACCOUNTS[1];
+
 export const abbrStr = (str: string) => {
   return str.substring(0, 5) + '...' + str.substring(str.length - 4, str.length);
 };

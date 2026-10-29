@@ -48,7 +48,7 @@ const RadialChart = ({ completionPercent }: Props) => {
         fill="#455065"
         fontSize={12}
         fontWeight={600}
-        children="OF TARGET MET"
+        children="OF SUPPLY STAKED"
       />
 
       <defs>

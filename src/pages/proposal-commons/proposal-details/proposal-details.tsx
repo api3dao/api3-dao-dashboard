@@ -6,23 +6,18 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Proposal, ProposalType, useChainData, VOTER_STATES } from '../../../chain-data';
 import { BaseLayout } from '../../../components/layout';
-import { Modal } from '../../../components/modal';
 import VoteSlider from '../vote-slider/vote-slider';
 import VoteStatus from '../vote-status';
 import Timer from '../../../components/timer';
-import Button from '../../../components/button';
 import ProposalTag from '../proposal-tag';
-import { TooltipChecklist } from '../../../components/tooltip';
 import { getEtherscanAddressUrl, useApi3AgentAddresses, useApi3Voting } from '../../../contracts';
 import { decodeProposalTypeAndVoteId, isEvmScriptValid } from '../../../logic/proposals/encoding';
 import { proposalDetailsSelector, voteSliderSelector } from '../../../logic/proposals/selectors';
 import { LoadStatus, useProposalById } from '../../../logic/proposals/hooks';
-import VoteForm from './vote-form/vote-form';
 import ProposalStatus from '../proposal-list/proposal-status';
 import styles from './proposal-details.module.scss';
-import { canVoteSelector } from '../../../logic/proposals/selectors';
 import NotFoundPage from '../../not-found';
-import { handleTransactionError, images, messages, useScrollToTop } from '../../../utils';
+import { images, messages, useScrollToTop } from '../../../utils';
 import ExternalLink from '../../../components/external-link';
 import { ErrorCircleFillIcon } from '../../../components/icons';
 import { DisconnectedProposalPage } from './disconnected-proposal-page';
@@ -94,11 +89,9 @@ interface ProposalDetailsProps {
 }
 
 const ProposalDetailsContent = (props: ProposalDetailsProps) => {
-  const { chainId, signer, provider } = useChainData();
+  const { chainId, provider } = useChainData();
   const { proposal, loadStatus } = props;
   const isMalicious = useMaliciousProposalCheck(proposal);
-  const [voteModalOpen, setVoteModalOpen] = useState(false);
-  const { transactions, setChainData } = useChainData();
   const voting = useApi3Voting();
 
   if (!provider || !voting) return <DisconnectedProposalPage />;
@@ -115,37 +108,15 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
   }
 
   const voteSliderData = voteSliderSelector(proposal);
-  const canVoteData = canVoteSelector(proposal);
   const urlCreator = getEtherscanAddressUrl(chainId, proposal.creator);
   const urlTargetAddress = decodedEvmScript && getEtherscanAddressUrl(chainId, decodedEvmScript.targetAddress);
-  const backButton = {
-    text: 'Back',
-    url: proposal.open ? '/governance' : '/history',
-  };
-
-  const canVoteChecklist = [
-    {
-      checked: canVoteData.hasEnoughVotingPower,
-      label: 'You have staked API3 tokens.',
-    },
-    {
-      checked: canVoteData.isOpen,
-      label: 'The proposal has not ended.',
-    },
-    {
-      checked: canVoteData.isNotDelegated,
-      label: 'Your voting power has not been delegated to another address.',
-    },
-  ];
-
-  const canVote = canVoteChecklist.every((item) => item.checked);
 
   return (
     <div>
       <div className={styles.proposalDetailsSubheader}>
-        <Link to={backButton.url} className={styles.backBtn} data-cy="back-button">
+        <Link to="/governance-history" className={styles.backBtn} data-cy="back-button">
           <img src={images.arrowLeft} alt="back" />
-          {backButton.text}
+          Back
         </Link>
       </div>
 
@@ -175,20 +146,6 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
       <div className={styles.proposalDetailsVoteSection}>
         <VoteSlider {...voteSliderData} size="large" />
         <VoteStatus voterState={voteSliderData.voterState} wasDelegated={voteSliderData.wasDelegated} large />
-        <div className={styles.voteButtonWrapper}>
-          <Button
-            type="secondary"
-            size="sm"
-            md={{ size: 'lg' }}
-            onClick={() => setVoteModalOpen(true)}
-            disabled={!canVote}
-          >
-            Vote
-          </Button>
-          <TooltipChecklist items={canVoteChecklist}>
-            <img src={images.helpOutline} alt="voting help" className={styles.helpIcon} />
-          </TooltipChecklist>
-        </div>
         {proposal.delegateAt && (
           <p className={styles.voteButtonHelperText}>
             {VOTER_STATES[voteSliderData.voterState] === 'Unvoted'
@@ -196,23 +153,6 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
               : 'Your delegate voted for you.'}
           </p>
         )}
-        <Modal open={voteModalOpen} onClose={() => setVoteModalOpen(false)}>
-          <VoteForm
-            voteId={proposal.voteId.toString()}
-            onConfirm={async (choice) => {
-              setVoteModalOpen(false);
-              const tx = await handleTransactionError(
-                voting[proposal.type].connect(signer!).vote(proposal.voteId, choice === 'for', true)
-              );
-              const type = choice === 'for' ? 'vote-for' : 'vote-against';
-              if (tx) {
-                setChainData('Save vote transaction', {
-                  transactions: [...transactions, { tx, type }],
-                });
-              }
-            }}
-          />
-        </Modal>
       </div>
 
       <div className={styles.summary}>
@@ -223,7 +163,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
 
         <div className={styles.proposalDetailsItem}>
           <p className={styles.label}>Creator</p>
-          <p className={styles.address}>
+          <p>
             {urlCreator ? (
               <ExternalLink className={styles.link} href={urlCreator}>
                 <EnsName address={proposal.creator as Address} />
@@ -237,7 +177,7 @@ const ProposalDetailsContent = (props: ProposalDetailsProps) => {
           <>
             <div className={styles.proposalDetailsItem}>
               <p className={styles.label}>Target Contract Address</p>
-              <p className={styles.address}>
+              <p>
                 {urlTargetAddress ? (
                   <ExternalLink className={styles.link} href={urlTargetAddress}>
                     <EnsName address={decodedEvmScript.targetAddress as Address} />

@@ -17,7 +17,7 @@ export const messages = {
 
   // Blockchain errors
   FAILED_TO_LOAD_CHAIN_DATA: 'Failed to load blockchain data. Please try again later.',
-  FAILED_TO_LOAD_TREASURY_AND_DELEGATION: 'Failed to load delegation and treasury data. Please try again later.',
+  FAILED_TO_LOAD_DELEGATION: 'Failed to load delegation data. Please try again later.',
 
   // Delegation errors
   FAILED_TO_LOAD_DELEGATE:
