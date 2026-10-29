@@ -34,13 +34,12 @@ docker run --rm --publish 7770:80 --name api3-dao-dashboard api3/dao-dashboard:l
 Alternatively, you can build the Docker image from source. Note that:
 
 - the production code is located on the `production` branch
-- you need to provide your mainnet provider URL as a build arg (`REACT_APP_MAINNET_PROVIDER_URL`) when building the
-  image
+- you need to provide your mainnet provider URL as a build arg (`VITE_MAINNET_PROVIDER_URL`) when building the image
 
 ```sh
 git clone --depth=1 --branch production https://github.com/api3dao/api3-dao-dashboard.git
 cd api3-dao-dashboard
-docker build --build-arg="REACT_APP_MAINNET_PROVIDER_URL=..." --tag api3-dao-dashboard .
+docker build --build-arg="VITE_MAINNET_PROVIDER_URL=..." --tag api3-dao-dashboard .
 docker run --rm --publish 7770:80 --name api3-dao-dashboard api3-dao-dashboard
 ```
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 
 // Allows access to the previous to the previous value when re-rendering
 // https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state

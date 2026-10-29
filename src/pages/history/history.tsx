@@ -8,7 +8,7 @@ import { useChainData } from '../../chain-data';
 import RadioButton from '../../components/radio-button/radio-button';
 import ProposalList from '../proposal-commons/proposal-list';
 import styles from './history.module.scss';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useTreasuryAndDelegation } from '../../logic/treasury-and-delegation/use-treasury-and-delegation';
 import { useHistoryProposals } from '../../logic/proposals/hooks/history-proposals';
 

@@ -3,7 +3,7 @@ import { useChainData } from '../../chain-data';
 import { useApi3Pool, useApi3Token, useConvenience, usePossibleChainDataUpdate } from '../../contracts';
 import { notifications } from '../../components/notifications';
 import { messages } from '../../utils';
-import { go } from '@api3/promise-utils';
+import { go } from '@api3/commons';
 
 export const useLoadDashboardData = () => {
   const api3Pool = useApi3Pool();

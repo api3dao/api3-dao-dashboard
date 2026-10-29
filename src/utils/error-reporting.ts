@@ -2,11 +2,11 @@ import * as Sentry from '@sentry/react';
 
 let initialised = false;
 export const initSentry = () => {
-  if (initialised || !process.env.REACT_APP_SENTRY_DSN) return;
+  if (initialised || !import.meta.env.VITE_SENTRY_DSN) return;
 
   Sentry.init({
-    dsn: process.env.REACT_APP_SENTRY_DSN,
-    environment: process.env.REACT_APP_NODE_ENV,
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+    environment: import.meta.env.VITE_NODE_ENV,
     integrations(integrations) {
       return integrations.filter((integration) => {
         // Integrations can be filtered out here

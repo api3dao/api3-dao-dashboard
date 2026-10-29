@@ -3,7 +3,7 @@ import { BaseLayout } from './components/layout';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { images, preloadImageList, useOnMountEffect } from './utils';
-import { FallbackRender } from '@sentry/react/dist/errorboundary';
+import type { FallbackRender } from '@sentry/react/dist/errorboundary';
 import { ToastContainer } from 'react-toastify';
 import { useTransactionNotifications } from './contracts';
 import * as Sentry from '@sentry/react';

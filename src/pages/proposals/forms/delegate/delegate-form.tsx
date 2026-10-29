@@ -10,7 +10,7 @@ import { messages } from '../../../../utils/messages';
 import styles from './delegate.module.scss';
 import { handleTransactionError } from '../../../../utils';
 import { convertToAddressOrThrow } from '../../../../logic/proposals/encoding/ens-name';
-import { go } from '@api3/promise-utils';
+import { go } from '@api3/commons';
 import { ExclamationTriangleFillIcon } from '../../../../components/icons';
 
 interface Props {

@@ -1,14 +1,19 @@
 import { useCallback, useEffect } from 'react';
 import { updateImmutablyCurried, useChainData } from '../../../chain-data';
 import { Api3Voting } from '../../../contracts/artifacts';
-import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
+import {
+  useApi3AgentAddresses,
+  useApi3Voting,
+  useConvenience,
+  usePossibleChainDataUpdate,
+} from '../../../contracts/hooks';
 import { messages } from '../../../utils';
 import keyBy from 'lodash/keyBy';
 import { getProposals } from './get-proposals';
 import { BigNumber } from 'ethers';
 import { notifications } from '../../../components/notifications';
 import { VOTING_APP_IDS } from './commons';
-import { go } from '@api3/promise-utils';
+import { go } from '@api3/commons';
 
 const fetchStartVoteEventsForHistoryProposals = async (votingApp: Api3Voting, openVoteIds: BigNumber[]) => {
   const startVoteFilter = votingApp.filters.StartVote(null, null, null);
@@ -25,9 +30,10 @@ const useLoadHistoryProposals = () => {
 
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
+  const agents = useApi3AgentAddresses();
 
   const loadProposals = useCallback(async () => {
-    if (!api3Voting || !convenience || !provider) return;
+    if (!api3Voting || !convenience || !provider || !agents) return;
 
     const goResponse = await go(async () => {
       const [primaryOpenVoteIds, secondaryOpenVoteIds] = await Promise.all([
@@ -43,6 +49,7 @@ const useLoadHistoryProposals = () => {
       const primaryProposals = await getProposals(
         provider,
         convenience,
+        agents,
         userAccount,
         primaryStartVotes,
         primaryOpenVoteIds,
@@ -51,6 +58,7 @@ const useLoadHistoryProposals = () => {
       const secondaryProposals = await getProposals(
         provider,
         convenience,
+        agents,
         userAccount,
         secondaryStartVotes,
         secondaryOpenVoteIds,
@@ -82,7 +90,7 @@ const useLoadHistoryProposals = () => {
         state.proposals.secondary = { ...state.proposals.secondary, ...proposals.secondary };
       })
     );
-  }, [api3Voting, convenience, userAccount, setChainData, provider]);
+  }, [api3Voting, convenience, agents, userAccount, setChainData, provider]);
 
   useEffect(() => {
     loadProposals();

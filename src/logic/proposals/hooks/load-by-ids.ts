@@ -1,13 +1,18 @@
 import { useCallback, useEffect } from 'react';
 import { ProposalType, updateImmutablyCurried, useChainData, VoterState } from '../../../chain-data';
-import { useApi3Voting, useConvenience, usePossibleChainDataUpdate } from '../../../contracts/hooks';
+import {
+  useApi3AgentAddresses,
+  useApi3Voting,
+  useConvenience,
+  usePossibleChainDataUpdate,
+} from '../../../contracts/hooks';
 import { getProposals } from './get-proposals';
 import { BigNumber } from 'ethers';
 import { notifications } from '../../../components/notifications';
 import { messages } from '../../../utils/messages';
 import { StartVoteProposal, VOTING_APP_IDS } from './commons';
 import { isZeroAddress } from '../../../contracts';
-import { go } from '@api3/promise-utils';
+import { go } from '@api3/commons';
 
 interface DynamicVotingData {
   id: BigNumber;
@@ -29,10 +34,11 @@ interface DynamicVotingData {
 export const useProposalById = (type: ProposalType, id: BigNumber) => {
   const api3Voting = useApi3Voting();
   const convenience = useConvenience();
+  const agents = useApi3AgentAddresses();
   const { userAccount, setChainData, provider } = useChainData();
 
   const loadProposalsByIds = useCallback(async () => {
-    if (!api3Voting || !convenience || !provider) return;
+    if (!api3Voting || !convenience || !provider || !agents) return;
 
     const votingApp = api3Voting[type];
     const startVoteFilter = votingApp.filters.StartVote(id, null, null);
@@ -72,7 +78,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
     const openVoteIds = goOpenVoteIds.data;
 
     const goLoadProposal = await go(() =>
-      getProposals(provider, convenience, userAccount, [startVote], openVoteIds, type)
+      getProposals(provider, convenience, agents, userAccount, [startVote], openVoteIds, type)
     );
     if (!goLoadProposal.success) {
       return notifications.error({
@@ -94,7 +100,7 @@ export const useProposalById = (type: ProposalType, id: BigNumber) => {
         }
       })
     );
-  }, [api3Voting, convenience, userAccount, setChainData, type, id, provider]);
+  }, [api3Voting, convenience, agents, userAccount, setChainData, type, id, provider]);
 
   const reloadProposalsByIds = useCallback(async () => {
     if (!convenience) return;

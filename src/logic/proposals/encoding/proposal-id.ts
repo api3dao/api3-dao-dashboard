@@ -1,4 +1,4 @@
-import { goSync } from '@api3/promise-utils';
+import { goSync } from '@api3/commons';
 import { BigNumber } from 'ethers';
 import { ProposalType } from '../../../chain-data';
 
