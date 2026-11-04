@@ -82,7 +82,7 @@ const ProposalList = (props: Props) => {
       <div className={styles.proposalsList}>
         {proposals.map((proposal, index) => {
           const typeAndVoteId = encodeProposalTypeAndVoteId(proposal.type, voteIdFormat(proposal.voteId));
-          const href = `/${proposal.open ? 'governance' : 'history'}/${typeAndVoteId}`;
+          const href = `/governance-history/${typeAndVoteId}`;
           return <ProposalListItem key={typeAndVoteId} proposal={proposal} href={href} index={index} />;
         })}
       </div>
@@ -121,7 +121,11 @@ function ProposalListItem(props: ProposalListItemProps) {
           <ProposalInfoState proposal={proposal} device="desktop" />
           <div className={styles.proposalItemBox}>
             {/* TODO: Probably show deadline instead of startDate, see: https://api3workspace.slack.com/archives/C020RCCC3EJ/p1622639292015100?thread_ts=1622620763.004400&cid=C020RCCC3EJ */}
-            {proposal.open ? <Timer deadline={proposal.deadline} /> : format(proposal.startDate, DATE_FORMAT)}
+            {proposal.open ? (
+              <Timer deadline={proposal.deadline} />
+            ) : (
+              <span className="visual-test:invisible">{format(proposal.startDate, DATE_FORMAT)}</span>
+            )}
           </div>
         </div>
       </div>

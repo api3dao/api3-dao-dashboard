@@ -4,6 +4,7 @@ import {
   calculateAnnualTotalSupplyGrowth,
   calculateAnnualMintedTokens,
   calculateApy,
+  computePercentage,
   min,
   max,
   totalStakedPercentage,
@@ -34,8 +35,9 @@ export const stakingPoolSelector = (dashboardData: ConvenienceDashboardData | nu
 
   const stakingTargetInTokens = absoluteStakeTarget(stakeTarget, api3Supply);
   const stakedPercentage = totalStakedPercentage(totalStake, stakingTargetInTokens);
+  const supplyStakedPercentage = computePercentage(totalStake, api3Supply, true);
 
-  return { currentApy, annualTotalSupplyGrowth, stakingTargetInTokens, stakedPercentage };
+  return { currentApy, annualTotalSupplyGrowth, stakingTargetInTokens, stakedPercentage, supplyStakedPercentage };
 };
 
 export const pendingUnstakeSelector = (dashboardData: ConvenienceDashboardData | null) => {

@@ -5,6 +5,7 @@ import Header from '../header';
 import styles from './layout.module.scss';
 import Button from '../button';
 import ErrorReportingNotice from './error-reporting-notice';
+import SnapshotBanner from './snapshot-banner';
 import { DesktopMenu } from '../menu';
 import ExternalLink from '../external-link';
 import { ALLOW_ANALYTICS, ALLOW_ERROR_REPORTING } from '../../utils/analytics';
@@ -55,6 +56,7 @@ export const BaseLayout = ({ children, title }: BaseLayoutProps) => {
       </Helmet>
 
       <div className={styles.layout}>
+        <SnapshotBanner />
         <Navigation />
         <div className={styles.content}>
           <DesktopMenu />
