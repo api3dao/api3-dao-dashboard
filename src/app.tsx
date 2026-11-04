@@ -59,6 +59,7 @@ const AppContent = () => {
           </Route>
           <Redirect from="/history/:typeAndVoteId" to="/governance-history/:typeAndVoteId" exact />
           <Redirect from="/history" to="/governance-history" exact />
+          <Redirect from="/governance/:typeAndVoteId" to="/governance-history/:typeAndVoteId" exact />
           <Route path="/governance" exact>
             <Proposals />
           </Route>
