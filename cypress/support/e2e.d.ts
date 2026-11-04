@@ -4,12 +4,12 @@
 declare namespace Cypress {
   interface Chainable {
     increaseTimeAndRelogin(timeInSeconds: number): Chainable<void>;
+    syncAppTimeWithChain(): Chainable<void>;
     login(): Chainable<void>;
     createChainSnapshot(name: string): Chainable<void>;
     useChainSnapshot(name: string): Chainable<void>;
     dataCy(value: string): Chainable<Element>;
     resetBlockchain(): Chainable<void>;
-    resetClock(): Chainable<void>;
     switchAccount(index: number): Chainable<void>;
   }
 }

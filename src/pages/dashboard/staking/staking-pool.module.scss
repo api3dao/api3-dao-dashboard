@@ -49,7 +49,7 @@
   padding: $space-md;
   padding-right: 0;
   box-sizing: border-box;
-  gap: $space-xxl;
+  gap: $space-xl;
   width: 100%;
   border-top: 1px solid $color-dark-blue-10;
 
@@ -58,13 +58,16 @@
   }
 
   @media (min-width: $sm) {
+    gap: $space-lg;
     padding-left: 0;
 
     &:nth-of-type(2) {
-      height: unset;
       border-bottom: none;
-      padding-bottom: 0;
     }
+  }
+
+  @media (min-width: $md) {
+    gap: $space-xxl;
   }
 }
 
@@ -79,16 +82,21 @@
 
 .rightColumn {
   width: 100%;
+  align-items: center;
+  gap: $space-sm;
+}
 
-  & img {
-    margin-left: 4px;
-    height: fit-content;
-    margin: auto 0;
-  }
+.endedPill {
+  @include font-tagline-11;
+  flex-shrink: 0;
+  padding: $space-xxs $space-xs;
+  border-radius: 999px;
+  background-color: $color-dark-blue-10;
+  color: $color-dark-blue-100;
 }
 
 .firstSectionLabel {
-  @include font-body-6;
+  @include font-body-9;
   text-wrap: pretty;
   color: $color-dark-blue-100;
 
@@ -104,16 +112,19 @@
 .firstSectionValue {
   @include font-heading-4;
   color: $color-dark-blue-400;
-  width: 120px; // Designs are saying 80px here, but they haven't accounted for the decimals
+  width: 70px;
+
+  @media (min-width: $xs) {
+    width: 100px;
+  }
 
   @media (min-width: $sm) {
-    @include font-heading-4;
-    width: 104px;
+    width: 80px;
   }
 
   @media (min-width: $md) {
     @include font-heading-3;
-    width: 168px;
+    width: 120px;
   }
 }
 
@@ -210,8 +221,6 @@
 
 .secondSectionCellTarget {
   @media (min-width: $sm) {
-    padding-bottom: 0;
-    height: unset;
     border: none;
   }
 }
