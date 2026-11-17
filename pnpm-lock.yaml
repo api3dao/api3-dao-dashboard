@@ -41,7 +41,7 @@ importers:
         specifier: ^9.0.21
         version: 9.0.21
       lodash:
-        specifier: ^4.17.23
+        specifier: ^4.18.1
         version: 4.18.1
       rc-tooltip:
         specifier: ^6.4.0
