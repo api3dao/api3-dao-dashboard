@@ -51,8 +51,7 @@ const encodedExecuteSignature = encodeFunctionSignature('execute(address,uint256
 export class EncodedEvmScriptError extends Error {
   constructor(
     public field:
-      | keyof Pick<NewProposalFormData, 'parameters' | 'targetSignature' | 'targetValue' | 'targetAddress'>
-      | 'generic',
+      keyof Pick<NewProposalFormData, 'parameters' | 'targetSignature' | 'targetValue' | 'targetAddress'> | 'generic',
     public value: string
   ) {
     super(`Invalid field value. Details: field=${field}, value=${value}`);

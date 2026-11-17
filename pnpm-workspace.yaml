@@ -6,6 +6,7 @@ allowBuilds:
   cypress: false
   keccak: false
   less: false
+  protobufjs: false
 
 blockExoticSubdeps: true
 
